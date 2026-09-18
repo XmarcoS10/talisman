@@ -1,0 +1,6 @@
+node_modules/
+dist/
+release/
+*.log
+out.md
+.claude/settings.local.json

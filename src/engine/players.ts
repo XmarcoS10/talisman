@@ -1,0 +1,149 @@
+// Abilità (CA) per ruolo, generazione giocatori, valore, sviluppo annuale.
+import { ADJACENT, BALANCE } from './balance.ts';
+import { ALL_ATTRS, ATTR_GROUPS, type AttrKey, type Attributes, type Personality, type Player, type Position } from './model.ts';
+import { NATIONS } from './names.ts';
+import type { Rng } from './rng.ts';
+
+// Profili di ruolo: attributi chiave per posizione (GUIDA §5.2). I 25 ruoli fini arrivano con la tattica.
+const PROFILES: Record<Position, AttrKey[]> = {
+  GK: ['reflexes', 'oneOnOnes', 'handling', 'aerialReach', 'commandOfArea', 'communication', 'kicking', 'rushingOut', 'positioning', 'concentration'],
+  DC: ['marking', 'tackling', 'heading', 'positioning', 'anticipation', 'bravery', 'strength', 'concentration'],
+  DL: ['tackling', 'marking', 'crossing', 'pace', 'stamina', 'positioning', 'workRate', 'acceleration'],
+  DR: ['tackling', 'marking', 'crossing', 'pace', 'stamina', 'positioning', 'workRate', 'acceleration'],
+  DM: ['tackling', 'passing', 'positioning', 'anticipation', 'teamwork', 'workRate', 'concentration', 'firstTouch'],
+  MC: ['passing', 'firstTouch', 'technique', 'vision', 'decisions', 'teamwork', 'workRate', 'stamina'],
+  ML: ['crossing', 'dribbling', 'passing', 'pace', 'stamina', 'workRate', 'technique', 'acceleration'],
+  MR: ['crossing', 'dribbling', 'passing', 'pace', 'stamina', 'workRate', 'technique', 'acceleration'],
+  AMC: ['passing', 'technique', 'vision', 'firstTouch', 'dribbling', 'flair', 'offTheBall', 'longShots'],
+  AML: ['dribbling', 'pace', 'acceleration', 'technique', 'crossing', 'flair', 'offTheBall', 'finishing'],
+  AMR: ['dribbling', 'pace', 'acceleration', 'technique', 'crossing', 'flair', 'offTheBall', 'finishing'],
+  ST: ['finishing', 'offTheBall', 'composure', 'firstTouch', 'heading', 'pace', 'acceleration', 'dribbling'],
+};
+// attributi che contano per tutti i giocatori di movimento
+const GENERAL: AttrKey[] = ['decisions', 'composure', 'anticipation', 'teamwork', 'pace', 'acceleration', 'stamina', 'strength', 'agility'];
+const GK_ATTRS = new Set<AttrKey>(ATTR_GROUPS.goalkeeping);
+const OUTFIELD_ONLY = new Set<AttrKey>(['crossing', 'dribbling', 'finishing', 'heading', 'longShots', 'marking', 'tackling', 'offTheBall', 'flair']);
+const LEFT_SIDED = new Set<Position>(['DL', 'ML', 'AML']);
+const RIGHT_SIDED = new Set<Position>(['DR', 'MR', 'AMR']);
+
+const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
+const mean = (p: Player, keys: readonly AttrKey[]) => keys.reduce((s, k) => s + p.attrs[k], 0) / keys.length;
+
+/** abilità del giocatore nel ruolo (scala 1-200) senza penalità di familiarità */
+export function abilityAt(p: Player, pos: Position): number {
+  const core = mean(p, PROFILES[pos]);
+  return pos === 'GK' ? Math.round(core * 10) : Math.round((0.65 * core + 0.35 * mean(p, GENERAL)) * 10);
+}
+
+const FAMILIARITY_FACTOR = [0.55, 0.6, 0.7, 0.82, 0.93, 1];
+
+/** rendimento atteso nel ruolo: abilità × familiarità */
+export function ratingAt(p: Player, pos: Position): number {
+  if ((pos === 'GK') !== (p.position === 'GK')) return 10; // portiere fuori dalla porta e viceversa
+  return abilityAt(p, pos) * FAMILIARITY_FACTOR[p.positions[pos] ?? 0]!;
+}
+
+export function recomputeCA(p: Player) {
+  p.ca = abilityAt(p, p.position);
+}
+
+export function age(p: Player, season: number) {
+  return season - p.birthYear;
+}
+
+/** valore di mercato (derivato, mai salvato): ~70M a CA 170, ~1.4M a CA 110 */
+export function marketValue(p: Player, season: number): number {
+  const a = age(p, season);
+  let v = Math.pow(10, p.ca / 35 + 3);
+  if (a < 24) v *= 1 + Math.max(0, p.pa - p.ca) / 60;
+  if (a > 30) v *= Math.max(0.2, 1 - (a - 30) * 0.12);
+  if (p.contract.until <= season) v *= 0.5;
+  const mag = Math.pow(10, Math.floor(Math.log10(v)) - 1);
+  return Math.round(v / mag) * mag;
+}
+
+function personality(rng: Rng): Personality {
+  const axis = () => Math.round(clamp(rng.gauss(11, 4), 1, 20));
+  return { ambition: axis(), professionalism: axis(), loyalty: axis(), temperament: axis(), sociability: axis(), pressureTolerance: axis() };
+}
+
+function pickNation(rng: Rng) {
+  const keys = Object.keys(NATIONS);
+  return keys[rng.weighted(keys.map((k) => NATIONS[k]!.w))]!;
+}
+
+/** distribuisce un CA obiettivo sugli attributi secondo il profilo di ruolo (GUIDA §5.2 punto 3) */
+function distribute(rng: Rng, pos: Position, targetCA: number): Attributes {
+  const level = targetCA / 10;
+  const core = new Set(PROFILES[pos]);
+  const general = new Set(GENERAL);
+  const attrs = {} as Attributes; // riempito sotto per ogni chiave di ALL_ATTRS
+  for (const k of ALL_ATTRS) {
+    let v: number;
+    if (pos === 'GK') v = core.has(k) ? level + 1 + rng.gauss(0, 1.5) : OUTFIELD_ONLY.has(k) ? rng.int(1, 6) : level - 2 + rng.gauss(0, 2.5);
+    else if (GK_ATTRS.has(k)) v = rng.int(1, 4);
+    else if (core.has(k)) v = level + 1.5 + rng.gauss(0, 1.5);
+    else if (general.has(k)) v = level + rng.gauss(0, 1.8);
+    else v = level - 3 + rng.gauss(0, 2.5);
+    attrs[k] = Math.round(clamp(v, 1, 20));
+  }
+  return attrs;
+}
+
+export function makePlayer(rng: Rng, id: number, pos: Position, meanCA: number, season: number, ageRange?: [number, number]): Player {
+  const nation = pickNation(rng);
+  const names = NATIONS[nation]!;
+  const a = ageRange ? rng.int(ageRange[0], ageRange[1]) : Math.round(clamp(rng.gauss(BALANCE.ageMean, BALANCE.ageSigma), 17, 36));
+  let ca = meanCA + rng.gauss(0, BALANCE.caSpread) - Math.max(0, 22 - a) * BALANCE.youthPenaltyPerYear;
+  ca = clamp(ca, 25, 190);
+  const pa = clamp(
+    a <= 23 ? ca + Math.max(0, rng.gauss(25, 15)) + (23 - a) * 5 : ca + Math.max(0, rng.gauss(3, 4)),
+    ca, 200,
+  );
+  const positions: Player['positions'] = { [pos]: 5 };
+  for (const adj of ADJACENT[pos] ?? []) if (rng.next() < 0.5) positions[adj] = rng.int(2, 4);
+
+  const p: Player = {
+    id,
+    firstName: rng.pick(names.first),
+    lastName: rng.pick(names.last),
+    birthYear: season - a,
+    nation,
+    foot: LEFT_SIDED.has(pos) ? (rng.next() < 0.8 ? 'L' : 'R') : RIGHT_SIDED.has(pos) ? 'R' : rng.next() < 0.2 ? 'L' : rng.next() < 0.1 ? 'B' : 'R',
+    heightCm: Math.round(clamp(rng.gauss(pos === 'GK' ? 190 : pos === 'DC' ? 187 : 180, 5), 165, 202)),
+    clubId: null,
+    position: pos,
+    positions,
+    attrs: distribute(rng, pos, ca),
+    ca: 0,
+    pa: Math.round(pa),
+    personality: personality(rng),
+    psych: { morale: 70 },
+    condition: { fitness: 100 },
+    contract: { wage: 0, until: season + rng.int(1, 5) },
+    stats: { apps: 0, goals: 0, assists: 0 },
+    history: [],
+  };
+  recomputeCA(p);
+  p.pa = Math.max(p.pa, p.ca);
+  p.contract.wage = Math.max(30000, Math.round((marketValue(p, season) * 0.12) / 10000) * 10000);
+  return p;
+}
+
+/** sviluppo di fine stagione: crescita fino a ~23, plateau, declino da 30 (i fisici calano prima) */
+export function developSeason(rng: Rng, p: Player, season: number) {
+  const a = age(p, season);
+  let delta: number;
+  if (a <= BALANCE.growthUntil) delta = (p.pa - p.ca) * (0.2 + rng.next() * 0.25);
+  else if (a < BALANCE.declineFrom) delta = rng.gauss(0.5, 3);
+  else delta = -(a - BALANCE.declineFrom + 1) * (1 + rng.next() * 2);
+  delta = Math.min(delta, p.pa - p.ca);
+
+  const physical = new Set<AttrKey>(ATTR_GROUPS.physical);
+  for (const k of ALL_ATTRS) {
+    const w = delta < 0 && physical.has(k) ? 1.6 : 1;
+    p.attrs[k] = Math.round(clamp(p.attrs[k] + (delta / 10) * w + rng.gauss(0, 0.35), 1, 20));
+  }
+  recomputeCA(p);
+  p.pa = Math.max(p.pa, p.ca);
+}
