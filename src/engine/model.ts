@@ -1,5 +1,6 @@
 // Modello dati (GUIDA §4). Entità normalizzate in Record<id, entità>, riferimenti per id.
 // Questo stesso formato è quello del "database della community" caricabile dall'utente.
+import type { RoleId } from './match/roles.ts';
 import type { RngState } from './rng.ts';
 
 // ponytail: id numerici semplici, branded types quando ci saranno più tipi di id che si confondono
@@ -69,6 +70,7 @@ export interface Club {
   compId: CompId;
   playerIds: PlayerId[];
   tactic: Tactic;
+  lineup?: (PlayerId | null)[]; // titolari scelti dall'allenatore, slot per slot (solo club dell'utente)
 }
 
 export const FORMATION_IDS = ['4-3-3', '4-4-2', '4-2-3-1', '3-5-2', '5-3-2'] as const;
@@ -83,6 +85,14 @@ export interface Tactic {
   width: number;
   line: number; // linea difensiva
   directness: number; // passaggi diretti/verticali
+  roles: RoleId[]; // ruolo di ogni slot del modulo, nello stesso ordine
+}
+
+export interface NewsItem {
+  season: number;
+  day: number;
+  key: string; // chiave i18n
+  vars: Record<string, string | number>;
 }
 
 export type MatchEventType = 'goal' | 'penGoal' | 'penMiss' | 'chance' | 'yellow' | 'red' | 'injury' | 'sub';
@@ -153,5 +163,6 @@ export interface WorldState {
   clubs: Record<ClubId, Club>;
   competitions: Record<CompId, Competition>;
   history: SeasonRecord[];
+  news: NewsItem[]; // notizie per l'utente, le più recenti in fondo
   nextPlayerId: number;
 }

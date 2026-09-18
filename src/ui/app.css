@@ -73,6 +73,43 @@ td.zone-up { box-shadow: inset 3px 0 0 var(--positive); } td.zone-down { box-sha
 .score { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--s-4); text-align: center; }
 .score .big { font: 700 52px var(--font-num); }
 
+/* link, avvisi, adattamento al ruolo */
+.link { background: none; border: 0; padding: 0; color: var(--text-1); text-decoration: underline dotted; }
+.link:hover { color: var(--accent); }
+.panel.warn { border-color: var(--warning); color: var(--warning); }
+.fit-good { color: var(--positive); } .fit-mid { color: var(--warning); } .fit-bad { color: var(--negative); }
+
+/* ricerca */
+.search { position: relative; }
+.search input { width: 260px; background: var(--surface-1); border: 1px solid var(--border); color: var(--text-1); padding: 6px 10px; border-radius: var(--r-1); font: inherit; }
+.search-results { position: absolute; top: calc(100% + 4px); right: 0; width: 340px; background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--r-2); box-shadow: var(--shadow-2); z-index: 5; display: flex; flex-direction: column; padding: var(--s-1); }
+.search-results button { display: flex; align-items: center; gap: var(--s-2); background: none; border: 0; text-align: left; padding: 6px var(--s-2); border-radius: var(--r-1); }
+.search-results button:hover, .search-results button:focus-visible { background: var(--surface-2); }
+
+/* tattica */
+.tactics { grid-template-columns: minmax(420px, 520px) 1fr; align-items: start; }
+.pitch { position: relative; aspect-ratio: 68 / 105; border-radius: var(--r-2); overflow: hidden;
+  background: repeating-linear-gradient(to bottom, var(--pitch-1) 0 8.33%, var(--pitch-2) 8.33% 16.66%); }
+.pitch-lines { position: absolute; inset: 3%; border: 2px solid var(--pitch-line); pointer-events: none;
+  background:
+    linear-gradient(var(--pitch-line), var(--pitch-line)) center / 100% 2px no-repeat,
+    radial-gradient(circle, transparent 17%, var(--pitch-line) 17.5%, transparent 18.5%) center / 60% 38% no-repeat; }
+.pitch-lines::before, .pitch-lines::after { content: ''; position: absolute; left: 22%; right: 22%; height: 15%; border: 2px solid var(--pitch-line); }
+.pitch-lines::before { top: -2px; } .pitch-lines::after { bottom: -2px; }
+.slot { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 2px; width: 104px; }
+.slot-dot { width: 40px; height: 40px; border-radius: 50%; border: 3px solid currentColor; background: var(--bg-1); font: 700 14px var(--font-num); cursor: grab; color: var(--text-2); }
+.slot-dot.fit-good { color: var(--positive); } .slot-dot.fit-mid { color: var(--warning); } .slot-dot.fit-bad { color: var(--negative); }
+.slot.selected .slot-dot { box-shadow: 0 0 0 3px var(--accent); }
+.slot.unavailable .slot-dot { background: var(--negative); color: var(--text-1); }
+.slot-name { font-size: 11px; font-weight: 600; background: rgb(0 0 0 / 0.55); padding: 0 6px; border-radius: var(--r-1); white-space: nowrap; }
+.slot-role { font-size: 10px; background: rgb(0 0 0 / 0.55); color: var(--text-2); border: 0; border-radius: var(--r-1); max-width: 104px; }
+select { background: var(--surface-1); color: var(--text-1); border: 1px solid var(--border); border-radius: var(--r-1); padding: 4px 6px; font: inherit; }
+.seg-row { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: var(--r-1); overflow: hidden; }
+.seg button { background: none; border: 0; padding: 4px 10px; font-size: 12px; color: var(--text-2); border-right: 1px solid var(--border); }
+.seg button:last-child { border-right: 0; }
+.seg button.active { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+
 /* avvio */
 .start { max-width: 1100px; margin: 0 auto; padding: var(--s-6) var(--s-5); display: flex; flex-direction: column; gap: var(--s-5); }
 .start input { background: var(--surface-1); border: 1px solid var(--border); color: var(--text-1); padding: var(--s-2) var(--s-3); border-radius: var(--r-1); font: inherit; width: 320px; }

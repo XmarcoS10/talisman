@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react';
 import type { WorldState } from '../../engine/model.ts';
 import { newWorld } from '../../engine/world.ts';
 import { Crest } from '../Crest.tsx';
-import { t } from '../i18n.ts';
+import { fmtDate, fmtSeason, t } from '../i18n.ts';
+import { SLOTS, currentSlot, loadFrom, setCurrentSlot, slotInfo, type Slot } from '../storage.ts';
 
 /** obiettivo stagionale della dirigenza in base alla reputazione nel proprio campionato */
 export function boardGoal(world: WorldState, clubId: number): string {
@@ -13,7 +14,8 @@ export function boardGoal(world: WorldState, clubId: number): string {
   return t(rank < 3 ? 'start.expect.1' : rank < 7 ? 'start.expect.2' : rank < 14 ? 'start.expect.3' : 'start.expect.4');
 }
 
-export function Start({ hasSave, onContinue, onStart }: { hasSave: boolean; onContinue: () => void; onStart: (w: WorldState) => void }) {
+export function Start({ onLoad, onStart }: { onLoad: (w: WorldState) => void; onStart: (w: WorldState) => void }) {
+  const saves = SLOTS.map(slotInfo).filter((s) => s !== null);
   // il seed viene dall'orologio solo qui, nella UI: il motore resta deterministico
   const world = useMemo(() => newWorld(Date.now() >>> 0), []);
   const [name, setName] = useState('');
@@ -23,7 +25,13 @@ export function Start({ hasSave, onContinue, onStart }: { hasSave: boolean; onCo
   const go = () => {
     if (clubId === null || !name.trim()) return;
     world.manager = { name: name.trim(), clubId };
+    // la nuova carriera va nel primo slot libero (se sono pieni, in quello in uso)
+    setCurrentSlot(SLOTS.find((s) => !slotInfo(s)) ?? currentSlot());
     onStart(world);
+  };
+  const load = (s: Slot) => {
+    const w = loadFrom(s);
+    if (w) { setCurrentSlot(s); onLoad(w); }
   };
 
   return (
@@ -33,8 +41,19 @@ export function Start({ hasSave, onContinue, onStart }: { hasSave: boolean; onCo
           <h1>{t('app.title')}</h1>
           <div className="muted">{t('app.tagline')}</div>
         </div>
-        {hasSave && <button className="btn" onClick={onContinue}>{t('start.continue')}</button>}
       </div>
+
+      {saves.length > 0 && (
+        <div className="panel">
+          <h2>{t('start.continue')}</h2>
+          {saves.map((s) => (
+            <button key={s.slot} className="club-card" onClick={() => load(s.slot)}>
+              <span className="num muted">{t('saves.slot', { slot: s.slot })}</span>
+              <div><b>{s.clubName}</b> · {s.manager}<div className="muted">{fmtSeason(s.season)} · {fmtDate(s.season, s.day)}</div></div>
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="panel">
         <h2>{t('start.new')}</h2>

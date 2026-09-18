@@ -74,11 +74,14 @@ describe('salvataggi', () => {
     }
     for (const c of Object.values(raw.clubs) as Record<string, unknown>[]) delete c.tactic;
     const m = deserialize(JSON.stringify(raw));
-    expect(m.schemaVersion).toBe(2);
+    expect(m.schemaVersion).toBe(3);
     const p = Object.values(m.players)[0]!;
     expect(p.discipline).toEqual({ yellows: 0, ban: 0 });
     expect(p.condition.injuryDays).toBe(0);
-    expect(Object.values(m.clubs)[0]!.tactic.formation).toBe('4-3-3');
+    const club = Object.values(m.clubs)[0]!;
+    expect(club.tactic.formation).toBe('4-3-3');
+    expect(club.tactic.roles).toHaveLength(11);
+    expect(m.news).toEqual([]);
     advance(m); // e si gioca
   });
 });

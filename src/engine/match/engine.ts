@@ -6,6 +6,7 @@ import { ratingAt } from '../players.ts';
 import type { Rng } from '../rng.ts';
 import { choose, options, type OnPitch, type Option, type View } from './decision.ts';
 import { inBox, len, segDist, shotGeometry } from './pitch.ts';
+import { ROLES, type RoleId } from './roles.ts';
 import type { Slot } from './tactics.ts';
 
 export interface PStats {
@@ -17,7 +18,7 @@ export interface MP extends OnPitch {
   pos: Position;
   hx: number; // posizione base nel modulo
   hy: number;
-  wide: boolean; // quinto: in possesso fa l'esterno alto
+  roleId: RoleId;
   marked: number; // contrassegno interno della marcatura
   tx: number; // posizione ideale del momento (verso cui corre)
   ty: number;
@@ -29,7 +30,7 @@ export interface TeamSetup {
   club: Club;
   tactic: Tactic;
   mentality: number;
-  xi: { player: Player; slot: Slot }[];
+  xi: { player: Player; slot: Slot; role: RoleId }[];
   bench: Player[];
 }
 
@@ -71,29 +72,17 @@ const LINE = [-0.6, 0, 0.6];
 const TEMPO = [1.2, 1, 0.85];
 const PRESS_STEP = [0.35, 0.5, 0.7]; // quanto esce il pressatore verso il portatore
 
-// in possesso: quanto ogni ruolo segue la palla in avanti (follow), quanto si alza rispetto al modulo (push),
-// fin dove si spinge (maxX), se attacca l'area (runs). Gli esterni di centrocampo diventano ali, i terzini sovrappongono.
-type Band = { follow: number; push: number; maxX: number; runs: boolean };
-const DEF_BAND: Band = { follow: 0.5, push: 0, maxX: 8.5, runs: false };
-const FB_BAND: Band = { follow: 0.6, push: 0.6, maxX: 9.5, runs: false };
-const WIDE_BAND: Band = { follow: 0.7, push: 1.4, maxX: 10.2, runs: true };
-const AM_BAND: Band = { follow: 0.5, push: 0, maxX: 10.1, runs: true };
-const ROLE_BAND: Record<Position, Band> = {
-  GK: DEF_BAND, DC: DEF_BAND, DL: FB_BAND, DR: FB_BAND, DM: { follow: 0.6, push: 0, maxX: 8.5, runs: false },
-  MC: { follow: 0.7, push: 0.4, maxX: 10, runs: true }, ML: WIDE_BAND, MR: WIDE_BAND,
-  AMC: AM_BAND, AML: AM_BAND, AMR: AM_BAND,
-  ST: { follow: 0.35, push: 0, maxX: 10.3, runs: false },
-};
-
 const newPStats = (): PStats => ({ passes: 0, passesOk: 0, keyPasses: 0, shots: 0, onTarget: 0, goals: 0, assists: 0, tackles: 0, dribbles: 0, saves: 0, fouls: 0, yellows: 0, red: false, injured: false, conceded: 0 });
 const newSide = (): SideStats => ({ possession: 0, shots: 0, onTarget: 0, xg: 0, passes: 0, passesOk: 0, tackles: 0, fouls: 0, corners: 0, offsides: 0, yellows: 0, reds: 0 });
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
-const mp = (player: Player, slot: Slot): MP =>
-  ({ p: player, pos: slot.pos, hx: slot.x, hy: slot.y, wide: slot.wide ?? false, marked: 0, x: slot.x, y: slot.y, tx: slot.x, ty: slot.y, energy: player.condition.fitness, on: true, st: newPStats() });
+/** chi va a prendere un cross: testa, coraggio, e la punta di peso ha la precedenza */
+const aerialScore = (m: MP) => m.p.attrs.heading + m.p.attrs.bravery / 2 + m.role.aerial;
+const mp = (player: Player, slot: Slot, role: RoleId): MP =>
+  ({ p: player, pos: slot.pos, hx: slot.x, hy: slot.y, roleId: role, role: ROLES[role], marked: 0, x: slot.x, y: slot.y, tx: slot.x, ty: slot.y, energy: player.condition.fitness, on: true, st: newPStats() });
 
 export function simulate(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: TraceStep[]): SimOutput {
   const teams = setups.map((s, i) => {
-    const on = s.xi.map((e) => mp(e.player, e.slot));
+    const on = s.xi.map((e) => mp(e.player, e.slot, e.role));
     return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide() };
   }) as [Team, Team];
 
@@ -138,15 +127,21 @@ export function simulate(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
     const mmA = att.mentality - 3, wf = WIDTH[att.tactic.width]!;
     for (const m of att.on) {
       if (m === carrier) { m.x = bx; m.y = by; continue; }
-      if (m.pos === 'GK') { runTo(m, Math.min(1.6, 0.6 + Math.max(0, bx - 6) * 0.1), 4, dt); continue; }
-      // la squadra sale a blocco: i centrocampisti accompagnano più di tutti
-      const band = m.wide ? WIDE_BAND : ROLE_BAND[m.pos];
-      let x = m.hx + band.push + (bx - 6) * band.follow + MATCH.mentalityPush * mmA;
+      if (m.pos === 'GK') {
+        const gkMax = m.roleId === 'sweeperKeeper' ? 2.4 : 1.6; // il portiere libero accompagna la linea
+        runTo(m, Math.min(gkMax, 0.6 + Math.max(0, bx - 6) * 0.1), 4, dt);
+        continue;
+      }
+      // la squadra sale a blocco secondo il ruolo di ognuno (roles.ts)
+      const rl = m.role;
+      let x = Math.max(m.hx, rl.baseX) + rl.push + (bx - 6) * rl.follow + MATCH.mentalityPush * mmA;
       // negli ultimi 30 metri chi sa inserirsi attacca l'area
-      if (bx >= 8 && band.runs) x += (m.p.attrs.offTheBall / 20) * MATCH.boxRun;
+      if (bx >= 8 && rl.runs) x += (m.p.attrs.offTheBall / 20) * MATCH.boxRun;
       // movimento senza palla: smarcamenti che aprono (o chiudono) le linee di passaggio
       const mv = MATCH.offBallMove * (0.5 + m.p.attrs.offTheBall / 20);
-      runTo(m, clamp(x + (rng.next() - 0.5) * mv, 0.3, band.maxX), clamp(4 + (m.hy - 4) * wf + (by - 4) * 0.25 + (rng.next() - 0.5) * mv * 1.5, 0.2, 7.8), dt);
+      const side = m.hy > 4.3 ? 1 : m.hy < 3.7 ? -1 : 0; // da che lato gioca, per allargarsi o stringere
+      runTo(m, clamp(x + (rng.next() - 0.5) * mv, 0.3, rl.maxX),
+        clamp(4 + (m.hy - 4) * wf + rl.dy * side + (by - 4) * 0.25 + (rng.next() - 0.5) * mv * 1.5, 0.2, 7.8), dt);
     }
     const dbx = 12 - bx, dby = 8 - by; // palla vista dalla difesa
     const shift = LINE[def.tactic.line]! + 0.25 * (def.mentality - 3);
@@ -155,7 +150,7 @@ export function simulate(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
     let presser: MP | undefined, best = Infinity;
     for (const m of def.on) {
       if (m.pos === 'GK') { m.tx = 0.6; m.ty = 4; continue; }
-      m.tx = clamp(1 + (m.hx - 1) * compact + (dbx - 6) * 0.45 + shift, 0.9, 11.5);
+      m.tx = clamp(1 + (m.hx - 1) * compact * m.role.hold + (dbx - 6) * 0.45 + shift, 0.9, 11.5);
       m.ty = clamp(4 + (m.hy - 4) * 0.7 + (dby - 4) * 0.35, 0.2, 7.8);
       const d = len(m.x - dbx, m.y - dby); // in pressione va chi è davvero più vicino adesso
       if (d < best) { best = d; presser = m; }
@@ -230,7 +225,7 @@ export function simulate(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
     if (tm.subs <= 0 || tm.bench.length === 0) return false;
     const inP = tm.bench.reduce((a, b) => (ratingAt(b, out.pos) > ratingAt(a, out.pos) ? b : a));
     tm.bench = tm.bench.filter((b) => b !== inP);
-    const m = mp(inP, { pos: out.pos, x: out.hx, y: out.hy, wide: out.wide });
+    const m = mp(inP, { pos: out.pos, x: out.hx, y: out.hy }, out.roleId); // entra nello stesso ruolo
     m.x = out.x; m.y = out.y;
     tm.on = tm.on.map((x) => (x === out ? m : x));
     tm.played.push(m);
@@ -343,7 +338,7 @@ export function simulate(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
       const m = def.on[i]!;
       const d = len(defX[i]! - bx, defY[i]! - by);
       if (d < cd && m.pos !== 'GK') { cd = d; closest = m; }
-      if (d < MATCH.pressRadius) pressure += (1 - d / MATCH.pressRadius) * (0.7 + 0.03 * m.p.attrs.workRate) * (m.energy / 100) * PRESS[def.tactic.pressing]! * cv;
+      if (d < MATCH.pressRadius) pressure += (1 - d / MATCH.pressRadius) * (0.7 + 0.03 * m.p.attrs.workRate) * (m.energy / 100) * PRESS[def.tactic.pressing]! * cv * m.role.press;
       if (m.pos !== 'GK') line = Math.max(line, defX[i]!);
     }
     const sign = s === 0 ? 1 : -1;
@@ -432,7 +427,7 @@ export function simulate(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
           att.stats.passesOk++; c.st.passesOk++;
           const inBoxMates = att.on.filter((m) => m !== c && m.pos !== 'GK' && m.x >= 9.5);
           const header = inBoxMates.length
-            ? inBoxMates.reduce((a, b) => (b.p.attrs.heading + b.p.attrs.bravery / 2 > a.p.attrs.heading + a.p.attrs.bravery / 2 ? b : a))
+            ? inBoxMates.reduce((a, b) => (aerialScore(b) > aerialScore(a) ? b : a))
             : best(att, (m) => m.p.attrs.heading, (m) => m !== c && m.pos !== 'GK');
           const dh = best(def, (m) => m.p.attrs.heading, (m) => m.pos !== 'GK');
           lastPass = c;
@@ -449,7 +444,7 @@ export function simulate(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
   function drain() {
     for (const tm of teams) {
       const mins = pendingDrain[tm.side] / 60;
-      for (const m of tm.on) m.energy = Math.max(30, m.energy - mins * (MATCH.drainBase + MATCH.drainStamina * (1 - m.p.attrs.stamina / 20)));
+      for (const m of tm.on) m.energy = Math.max(30, m.energy - mins * m.role.drain * (MATCH.drainBase + MATCH.drainStamina * (1 - m.p.attrs.stamina / 20)));
       pendingDrain[tm.side] = 0;
     }
   }

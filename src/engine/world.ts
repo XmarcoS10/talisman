@@ -1,7 +1,7 @@
 // Mondo: generazione, calendario, avanzamento, classifiche, cambio stagione.
 import { BALANCE, MATCH, SQUAD_TEMPLATE } from './balance.ts';
-import { bestFormation, playMatch } from './match.ts';
-import { DEFAULT_TACTIC } from './match/tactics.ts';
+import { aiSetFormation, playMatch } from './match.ts';
+import { defaultTactic } from './match/tactics.ts';
 import type { Club, ClubId, Competition, Fixture, Player, Position, WorldState } from './model.ts';
 import { CITIES, CLUB_PREFIX, KIT_COLORS, NATIONS } from './names.ts';
 import { age, developSeason, emptyStats, makePlayer } from './players.ts';
@@ -26,7 +26,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
   const rng = new Rng(seed);
   const world: WorldState = {
     schemaVersion: SCHEMA_VERSION, seed, rng: rng.s, season, day: 0,
-    manager: { name: '', clubId: 0 }, players: {}, clubs: {}, competitions: {}, history: [], nextPlayerId: 1,
+    manager: { name: '', clubId: 0 }, players: {}, clubs: {}, competitions: {}, history: [], news: [], nextPlayerId: 1,
   };
   const cities = [...CITIES];
   let clubId = 0;
@@ -41,7 +41,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
         colors: [c1!, c2!, c3!], crest: null, founded: rng.int(1890, 1960), reputation: rep,
         stadium: { name: `Stadio ${rng.pick(NATIONS.ITA!.last)}`, capacity: Math.round((5000 + rep * rep * 7) / 500) * 500 },
         balance: Math.round((rep * rep * 9000) / 100000) * 100000, compId: comp.id, playerIds: [],
-        tactic: { ...DEFAULT_TACTIC },
+        tactic: defaultTactic(),
       };
       for (const [pos, n] of Object.entries(SQUAD_TEMPLATE) as [Position, number][])
         for (let k = 0; k < n; k++) addPlayer(world, rng, club, pos);
@@ -79,7 +79,7 @@ function scheduleSeason(world: WorldState, rng: Rng) {
   for (const comp of Object.values(world.competitions)) comp.fixtures = roundRobin(comp.clubIds, rng);
   // l'IA riadatta il modulo alla rosa ogni estate (il club dell'utente lo sceglie l'utente)
   for (const club of Object.values(world.clubs))
-    if (club.id !== world.manager.clubId || world.history.length === 0) club.tactic.formation = bestFormation(world, club);
+    if (club.id !== world.manager.clubId || world.history.length === 0) aiSetFormation(world, club);
 }
 
 /** giorni che passano: recupero fisico e infortuni che guariscono */
@@ -102,12 +102,16 @@ export function isSeasonOver(world: WorldState) {
   return nextMatchDay(world) === null;
 }
 
-/** gioca il prossimo turno di tutte le competizioni. Restituisce le partite giocate. */
+/**
+ * Gioca il prossimo turno di tutte le competizioni e porta il calendario al giorno della partita successiva,
+ * così forma fisica e infortuni che l'utente vede sono quelli che conteranno. Restituisce le partite giocate.
+ */
 export function advance(world: WorldState): Fixture[] {
   const day = nextMatchDay(world);
   if (day === null) return [];
   const rng = new Rng(world.rng);
-  passDays(world, day - world.day + 1);
+  passDays(world, day - world.day);
+  world.day = day;
   const played: Fixture[] = [];
   for (const comp of Object.values(world.competitions))
     for (const fx of comp.fixtures)
@@ -115,7 +119,9 @@ export function advance(world: WorldState): Fixture[] {
         playMatch(world, rng, fx);
         played.push(fx);
       }
-  world.day = day + 1;
+  const next = nextMatchDay(world);
+  passDays(world, (next ?? day + 1) - day);
+  world.day = next ?? day + 1;
   world.rng = rng.s;
   return played;
 }

@@ -111,7 +111,7 @@ export const MATCH = {
   tempDecisions: 0.04, // per punto di Decisioni sotto 11
   tempPressure: 0.25,
   directnessK: 0.004, // bonus per zona guadagnata, scalato dall'istruzione "verticalità"
-  shotBias: 0.9,
+  shotBias: 0.86,
 
   // contrasti, falli, cartellini, infortuni
   foulBase: 0.3,

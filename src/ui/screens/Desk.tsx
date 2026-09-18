@@ -40,6 +40,12 @@ export function Desk({ world }: { world: WorldState }) {
 
         <div className="panel">
           <h3>{t('desk.news')}</h3>
+          {world.news.filter((n) => n.season === world.season).slice(-6).reverse().map((n, i) => (
+            <div key={`n${i}`} className="row">
+              <span className="num muted">{fmtDate(n.season, n.day)}</span>
+              <span>{t(n.key, n.vars)}</span>
+            </div>
+          ))}
           {[...played].reverse().slice(0, 6).map((fx) => (
             <div key={fx.day} className="row">
               <span className={`form ${outcome(fx, clubId)}`}>{t(`col.${{ W: 'w', D: 'd', L: 'l' }[outcome(fx, clubId)!]}`)}</span>

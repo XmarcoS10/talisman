@@ -5,7 +5,7 @@ import { Crest } from '../Crest.tsx';
 import { shortName } from '../bits.tsx';
 import { t } from '../i18n.ts';
 
-export function LeagueTable({ world, compId, highlight, compact }: { world: WorldState; compId: CompId; highlight: number; compact?: boolean }) {
+export function LeagueTable({ world, compId, highlight, compact, onClub }: { world: WorldState; compId: CompId; highlight: number; compact?: boolean; onClub?: (id: number) => void }) {
   const comp = world.competitions[compId]!;
   let rows = standings(world, comp).map((r, i) => ({ ...r, rank: i + 1 }));
   const n = rows.length;
@@ -28,7 +28,7 @@ export function LeagueTable({ world, compId, highlight, compact }: { world: Worl
           const c = world.clubs[r.clubId]!;
           const zone = r.rank <= comp.promote ? 'zone-up' : r.rank > n - comp.relegate ? 'zone-down' : '';
           return (
-            <tr key={r.clubId} className={r.clubId === highlight ? 'me' : ''}>
+            <tr key={r.clubId} className={`${r.clubId === highlight ? 'me' : ''} ${onClub ? 'clickable' : ''}`} onClick={() => onClub?.(r.clubId)}>
               <td className={`r num ${zone}`}>{r.rank}</td>
               <td><span className="row" style={{ gap: 'var(--s-2)' }}><Crest club={c} size={18} />{c.name}</span></td>
               <td className="r num">{r.p}</td>
@@ -43,7 +43,7 @@ export function LeagueTable({ world, compId, highlight, compact }: { world: Worl
   );
 }
 
-export function Tables({ world, clubId, onPlayer }: { world: WorldState; clubId: number; onPlayer: (id: number) => void }) {
+export function Tables({ world, clubId, onPlayer, onClub }: { world: WorldState; clubId: number; onPlayer: (id: number) => void; onClub: (id: number) => void }) {
   const comps = Object.values(world.competitions).sort((a, b) => a.level - b.level);
   const [compId, setCompId] = useState(world.clubs[clubId]!.compId);
   const comp = world.competitions[compId]!;
@@ -54,7 +54,7 @@ export function Tables({ world, clubId, onPlayer }: { world: WorldState; clubId:
       </div>
       <div className="grid" style={{ gridTemplateColumns: '1fr 320px', alignItems: 'start' }}>
         <div className="panel">
-          <LeagueTable world={world} compId={compId} highlight={clubId} />
+          <LeagueTable world={world} compId={compId} highlight={clubId} onClub={onClub} />
           <div className="row muted" style={{ fontSize: 11 }}>
             {comp.promote > 0 && <span className="pos-good">▌ {t('tables.promotion')}</span>}
             {comp.relegate > 0 && <span className="pos-bad">▌ {t('tables.relegation')}</span>}

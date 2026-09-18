@@ -5,7 +5,7 @@ import { PosBadge, Stars, attrClass, fullName, personalityKey } from '../bits.ts
 import { fmtMoney, fmtSeason, t } from '../i18n.ts';
 import { Status } from './Squad.tsx';
 
-export function PlayerView({ world, playerId, onBack }: { world: WorldState; playerId: number; onBack: () => void }) {
+export function PlayerView({ world, playerId, onBack, onClub }: { world: WorldState; playerId: number; onBack: () => void; onClub: (id: number) => void }) {
   const p = world.players[playerId];
   if (!p) return <button className="btn" onClick={onBack}>{t('player.back')}</button>;
   const club = p.clubId !== null ? world.clubs[p.clubId] : undefined;
@@ -23,7 +23,7 @@ export function PlayerView({ world, playerId, onBack }: { world: WorldState; pla
           <h1>{fullName(p)}</h1>
           <div className="row muted">
             <PosBadge pos={p.position} />
-            <span>{club?.name}</span>·<span>{t('player.age', { age: age(p, world.season) })}</span>·<span>{t(`nat.${p.nation}`)}</span>·
+            {club && <button className="link" onClick={() => onClub(club.id)}>{club.name}</button>}·<span>{t('player.age', { age: age(p, world.season) })}</span>·<span>{t(`nat.${p.nation}`)}</span>·
             <span>{t('player.height', { cm: p.heightCm })}</span>·<span>{t(`player.foot.${p.foot}`)}</span>
           </div>
         </div>

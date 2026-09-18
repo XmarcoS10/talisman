@@ -1,7 +1,8 @@
 // Salvataggi versionati (GUIDA §2.5): ogni save ha schemaVersion e passa dalla catena di migrazioni.
+import { defaultRoles } from './match/tactics.ts';
 import type { WorldState } from './model.ts';
 
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -21,6 +22,11 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
       c.tactic = { formation: '4-3-3', mentality: 3, pressing: 1, tempo: 1, width: 1, line: 1, directness: 1 };
     for (const comp of Object.values(w.competitions as Obj))
       for (const fx of comp.fixtures) if (fx.result) Object.assign(fx.result, { stats: [emptySide(), emptySide()], ratings: {} });
+  },
+  // 2 → 3 (F4, tattica): ruoli per slot, notizie
+  (w) => {
+    for (const c of Object.values(w.clubs as Obj)) c.tactic.roles = defaultRoles(c.tactic.formation);
+    w.news = [];
   },
 ];
 

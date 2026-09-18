@@ -31,6 +31,15 @@ profondità punisce le linee alte. È anche la base per il campo 2D (F6): il `tr
 5 moduli (`tactics.ts`), mentalità 1-5, istruzioni 0-2: pressing, ritmo, ampiezza, linea difensiva, verticalità.
 La mentalità è un compromesso: più offensiva = più gol fatti e subiti (`mentalityCover`, `mentalityCompact`).
 
+**Ruoli** (`roles.ts`, 27 ruoli): ogni ruolo è un vettore di tendenze — posizione in possesso (follow, push, maxX, baseX,
+dy), inserimenti (runs), rientro (hold), voglia di tirare/crossare/dribblare, verticalità, pressing, colpo di testa,
+fatica (drain). I ruoli di default riproducono esattamente la taratura F3: le differenze nascono solo dalle scelte.
+Lezione di bilanciamento: "restare alti senza palla" (hold > 1) è un vantaggio nel modello, non un costo, quindi i
+ruoli offensivi pagano con la fatica. Verifica: `formations.mts` nello scratchpad → portarlo nel sim-cli se servirà spesso.
+
+**Formazione dell'utente**: `club.lineup` (un id per slot). Chi non è disponibile viene sostituito dal migliore per quello
+slot, con una notizia sulla Scrivania. L'IA sceglie modulo (quello che valorizza la rosa) e mentalità (in base all'avversario).
+
 ## Voti
 Base 6,2 + gol, assist, passaggi chiave, tiri in porta, recuperi, dribbling, precisione passaggi, parate,
 porta inviolata/gol subiti per i difensori, risultato; − cartellini. Media ≈ 6,65, 5% sopra l'8.

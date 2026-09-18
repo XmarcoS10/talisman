@@ -32,9 +32,3 @@ export function personalityKey(p: Player): string {
 
 export const fullName = (p: Player) => `${p.firstName} ${p.lastName}`;
 export const shortName = (p: Player) => `${p.firstName[0]}. ${p.lastName}`;
-
-type Sort<T> = { key: keyof T & string; dir: 1 | -1 };
-/** ordinamento cliccando sull'intestazione: stesso tasto inverte */
-export function nextSort<T>(cur: Sort<T>, key: keyof T & string, defaultDir: 1 | -1 = -1): Sort<T> {
-  return cur.key === key ? { key, dir: cur.dir === 1 ? -1 : 1 } : { key, dir: defaultDir };
-}

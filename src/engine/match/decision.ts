@@ -6,6 +6,7 @@ import { MATCH } from '../balance.ts';
 import type { Player, Tactic } from '../model.ts';
 import type { Rng } from '../rng.ts';
 import { len, lossCost, segDist, sigmoid, xG, xT } from './pitch.ts';
+import type { Role } from './roles.ts';
 
 /** giocatore in campo: posizione nel sistema della propria squadra (x verso la porta avversaria) */
 export interface OnPitch {
@@ -13,6 +14,7 @@ export interface OnPitch {
   x: number;
   y: number;
   energy: number;
+  role: Role; // tendenze del ruolo (roles.ts)
 }
 
 export interface View {
@@ -49,7 +51,8 @@ export function options(v: View): Option[] {
   const keep = MATCH.possessionValue * riskW;
   const loss = lossCost(bx, by) * riskW + keep;
   // verticalità: istruzione tattica + impazienza dopo una lunga serie di passaggi
-  const direct = MATCH.directnessK * tactic.directness + MATCH.patience * Math.max(0, v.chain - 5);
+  const rl = c.role;
+  const direct = MATCH.directnessK * tactic.directness + MATCH.patience * Math.max(0, v.chain - 5) + rl.direct;
   const tempoMod = (1 - tactic.tempo) * 0.15; // ritmo alto = più errori
   const out: Option[] = [];
 
@@ -119,7 +122,7 @@ export function options(v: View): Option[] {
   const ty = by + (bx > 7 ? (4 - by) * 0.25 : 0);
   const pd = sigmoid(MATCH.dribBase + MATCH.dribSkill * dribSkill - close * MATCH.dribDef * tackSkill - MATCH.dribPress * pressure
     + (tackler ? (100 - tackler.energy) * MATCH.energySkill : 0) + v.bonus);
-  out.push({ kind: 'dribble', tx, ty, p: pd, tackler: close > 0 ? tackler : undefined, u: pd * (xT(tx, ty) + keep) - (1 - pd) * loss + 0.0008 * a(c, 'flair') });
+  out.push({ kind: 'dribble', tx, ty, p: pd, tackler: close > 0 ? tackler : undefined, u: pd * (xT(tx, ty) + keep) - (1 - pd) * loss + 0.0008 * a(c, 'flair') + rl.dribble });
 
   // 3) TIRO dalla trequarti in su
   if (bx >= MATCH.shotMinX) {
@@ -127,7 +130,7 @@ export function options(v: View): Option[] {
     if (xg > 0.015) {
       const skill = bx < 10 ? a(c, 'longShots') : a(c, 'finishing');
       // tirare chiude quasi sempre l'azione: si rinuncia a metà del valore del possesso
-      out.push({ kind: 'shot', xg, u: xg * (1 + MATCH.shotSkill * skill) * MATCH.shotBias * (1 + MATCH.mentalityShot * mm) - (1 - xg) * keep * 0.5 });
+      out.push({ kind: 'shot', xg, u: xg * (1 + MATCH.shotSkill * skill) * MATCH.shotBias * rl.shoot * (1 + MATCH.mentalityShot * mm) - (1 - xg) * keep * 0.5 });
     }
   }
 
@@ -137,7 +140,7 @@ export function options(v: View): Option[] {
     for (const m of v.mates) if (m !== c && m.x >= 9.8 && m.y > 2 && m.y < 6) attBox++;
     for (let i = 0; i < v.defX.length; i++) if (v.defX[i]! >= 9.8 && v.defY[i]! > 2 && v.defY[i]! < 6) defBox++;
     const p = sigmoid(MATCH.crossBase + MATCH.crossSkill * a(c, 'crossing') + MATCH.crossAtt * attBox - MATCH.crossDef * defBox - MATCH.crossPress * pressure + v.bonus);
-    out.push({ kind: 'cross', p, u: p * MATCH.headerXg * 1.1 - (1 - p) * loss });
+    out.push({ kind: 'cross', p, u: p * MATCH.headerXg * 1.1 * rl.cross - (1 - p) * loss });
   }
   return out;
 }
