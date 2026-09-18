@@ -3,6 +3,7 @@ import { age, marketValue } from '../../engine/players.ts';
 import { Crest } from '../Crest.tsx';
 import { PosBadge, Stars, attrClass, fullName, personalityKey } from '../bits.tsx';
 import { fmtMoney, fmtSeason, t } from '../i18n.ts';
+import { Status } from './Squad.tsx';
 
 export function PlayerView({ world, playerId, onBack }: { world: WorldState; playerId: number; onBack: () => void }) {
   const p = world.players[playerId];
@@ -55,10 +56,22 @@ export function PlayerView({ world, playerId, onBack }: { world: WorldState; pla
             )}
           </div>
           <div className="panel">
+            <h3>{t('player.condition')}</h3>
+            <div className="row">{t('player.fitness', { v: p.condition.fitness })} <Status p={p} /></div>
+            {p.form.length > 0 && (
+              <div className="row">
+                <span className="muted">{t('player.form')}</span>
+                {p.form.map((v, i) => <b key={i} className={`num ${v >= 7.5 ? 'pos-good' : v < 6 ? 'pos-bad' : ''}`}>{v.toFixed(1)}</b>)}
+              </div>
+            )}
+          </div>
+          <div className="panel">
             <h3>{t('player.season')} {fmtSeason(world.season)}</h3>
             <div className="row num">
               <span>{t('col.apps')} {p.stats.apps}</span><span>{t('col.goals')} {p.stats.goals}</span><span>{t('col.assists')} {p.stats.assists}</span>
+              {p.stats.apps > 0 && <span>{t('col.rating')} {(p.stats.ratingSum / p.stats.apps).toFixed(2)}</span>}
             </div>
+            <div className="muted">{t('player.cards', { y: p.stats.yellows, r: p.stats.reds })}</div>
           </div>
           <div className="panel">
             <h3>{t('player.career')}</h3>

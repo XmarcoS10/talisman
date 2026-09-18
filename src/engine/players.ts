@@ -43,6 +43,8 @@ export function ratingAt(p: Player, pos: Position): number {
   return abilityAt(p, pos) * FAMILIARITY_FACTOR[p.positions[pos] ?? 0]!;
 }
 
+export const emptyStats = (): Player['stats'] => ({ apps: 0, goals: 0, assists: 0, yellows: 0, reds: 0, ratingSum: 0 });
+
 export function recomputeCA(p: Player) {
   p.ca = abilityAt(p, p.position);
 }
@@ -119,9 +121,11 @@ export function makePlayer(rng: Rng, id: number, pos: Position, meanCA: number, 
     pa: Math.round(pa),
     personality: personality(rng),
     psych: { morale: 70 },
-    condition: { fitness: 100 },
+    condition: { fitness: 100, injuryDays: 0 },
+    discipline: { yellows: 0, ban: 0 },
+    form: [],
     contract: { wage: 0, until: season + rng.int(1, 5) },
-    stats: { apps: 0, goals: 0, assists: 0 },
+    stats: emptyStats(),
     history: [],
   };
   recomputeCA(p);

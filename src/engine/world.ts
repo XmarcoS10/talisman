@@ -1,9 +1,10 @@
 // Mondo: generazione, calendario, avanzamento, classifiche, cambio stagione.
-import { BALANCE, SQUAD_TEMPLATE } from './balance.ts';
+import { BALANCE, MATCH, SQUAD_TEMPLATE } from './balance.ts';
+import { bestFormation, playMatch } from './match.ts';
+import { DEFAULT_TACTIC } from './match/tactics.ts';
 import type { Club, ClubId, Competition, Fixture, Player, Position, WorldState } from './model.ts';
 import { CITIES, CLUB_PREFIX, KIT_COLORS, NATIONS } from './names.ts';
-import { playMatch } from './match.ts';
-import { age, developSeason, makePlayer } from './players.ts';
+import { age, developSeason, emptyStats, makePlayer } from './players.ts';
 import { Rng } from './rng.ts';
 import { SCHEMA_VERSION } from './save.ts';
 
@@ -40,6 +41,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
         colors: [c1!, c2!, c3!], crest: null, founded: rng.int(1890, 1960), reputation: rep,
         stadium: { name: `Stadio ${rng.pick(NATIONS.ITA!.last)}`, capacity: Math.round((5000 + rep * rep * 7) / 500) * 500 },
         balance: Math.round((rep * rep * 9000) / 100000) * 100000, compId: comp.id, playerIds: [],
+        tactic: { ...DEFAULT_TACTIC },
       };
       for (const [pos, n] of Object.entries(SQUAD_TEMPLATE) as [Position, number][])
         for (let k = 0; k < n; k++) addPlayer(world, rng, club, pos);
@@ -75,6 +77,18 @@ export function roundRobin(clubIds: ClubId[], rng: Rng): Fixture[] {
 function scheduleSeason(world: WorldState, rng: Rng) {
   world.day = 0;
   for (const comp of Object.values(world.competitions)) comp.fixtures = roundRobin(comp.clubIds, rng);
+  // l'IA riadatta il modulo alla rosa ogni estate (il club dell'utente lo sceglie l'utente)
+  for (const club of Object.values(world.clubs))
+    if (club.id !== world.manager.clubId || world.history.length === 0) club.tactic.formation = bestFormation(world, club);
+}
+
+/** giorni che passano: recupero fisico e infortuni che guariscono */
+function passDays(world: WorldState, days: number) {
+  if (days <= 0) return;
+  for (const p of Object.values(world.players)) {
+    p.condition.fitness = Math.min(100, p.condition.fitness + days * MATCH.fitnessRecoveryPerDay);
+    if (p.condition.injuryDays > 0) p.condition.injuryDays = Math.max(0, p.condition.injuryDays - days);
+  }
 }
 
 export function nextMatchDay(world: WorldState): number | null {
@@ -93,6 +107,7 @@ export function advance(world: WorldState): Fixture[] {
   const day = nextMatchDay(world);
   if (day === null) return [];
   const rng = new Rng(world.rng);
+  passDays(world, day - world.day + 1);
   const played: Fixture[] = [];
   for (const comp of Object.values(world.competitions))
     for (const fx of comp.fixtures)
@@ -166,7 +181,8 @@ export function endSeason(world: WorldState): SeasonSummary {
   for (const p of Object.values(world.players)) {
     if (p.clubId === null) continue;
     p.history.push({ season: world.season, clubId: p.clubId, apps: p.stats.apps, goals: p.stats.goals });
-    p.stats = { apps: 0, goals: 0, assists: 0 };
+    p.stats = emptyStats();
+    p.discipline.yellows = 0;
     developSeason(rng, p, world.season + 1);
   }
   world.season++;
@@ -195,6 +211,7 @@ export function endSeason(world: WorldState): SeasonSummary {
     }
   }
 
+  passDays(world, 90); // pausa estiva
   scheduleSeason(world, rng);
   world.rng = rng.s;
   return summary;

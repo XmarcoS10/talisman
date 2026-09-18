@@ -47,9 +47,11 @@ export interface Player {
   pa: number; // potenziale 1-200
   personality: Personality;
   psych: { morale: number }; // 0-100, il resto arriva in F5
-  condition: { fitness: number };
+  condition: { fitness: number; injuryDays: number }; // fitness 0-100; injuryDays > 0 = indisponibile
+  discipline: { yellows: number; ban: number }; // gialli stagionali, giornate di squalifica residue
+  form: number[]; // voti delle ultime 5 partite
   contract: { wage: number; until: number }; // stipendio annuo, anno di scadenza
-  stats: { apps: number; goals: number; assists: number };
+  stats: { apps: number; goals: number; assists: number; yellows: number; reds: number; ratingSum: number };
   history: { season: number; clubId: ClubId; apps: number; goals: number }[];
 }
 
@@ -66,15 +68,61 @@ export interface Club {
   balance: number;
   compId: CompId;
   playerIds: PlayerId[];
+  tactic: Tactic;
 }
 
-export type MatchEvent = { min: number; side: 0 | 1; type: 'goal'; playerId: PlayerId; assistId?: PlayerId };
+export const FORMATION_IDS = ['4-3-3', '4-4-2', '4-2-3-1', '3-5-2', '5-3-2'] as const;
+export type FormationId = (typeof FORMATION_IDS)[number];
+
+/** tattica di squadra (GUIDA §6.4). Istruzioni 0 = basso, 1 = standard, 2 = alto */
+export interface Tactic {
+  formation: FormationId;
+  mentality: number; // 1 difensiva … 5 molto offensiva
+  pressing: number;
+  tempo: number;
+  width: number;
+  line: number; // linea difensiva
+  directness: number; // passaggi diretti/verticali
+}
+
+export type MatchEventType = 'goal' | 'penGoal' | 'penMiss' | 'chance' | 'yellow' | 'red' | 'injury' | 'sub';
+export type MatchEvent = {
+  min: number;
+  side: 0 | 1;
+  type: MatchEventType;
+  playerId: PlayerId;
+  assistId?: PlayerId; // per 'sub': chi entra
+  xg?: number;
+};
+
+export interface SideStats {
+  possession: number; // %
+  shots: number;
+  onTarget: number;
+  xg: number;
+  passes: number;
+  passesOk: number;
+  tackles: number;
+  fouls: number;
+  corners: number;
+  offsides: number;
+  yellows: number;
+  reds: number;
+}
+
+export interface MatchResult {
+  hg: number;
+  ag: number;
+  events: MatchEvent[];
+  stats: [SideStats, SideStats];
+  ratings: Record<PlayerId, number>; // voto di chi è sceso in campo
+}
 
 export interface Fixture {
   day: number; // giorni dall'inizio stagione
   home: ClubId;
   away: ClubId;
-  result?: { hg: number; ag: number; events: MatchEvent[] };
+  result?: MatchResult;
 }
 
 export interface Competition {

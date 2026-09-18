@@ -19,7 +19,12 @@ Marco non programma: fa collaudo, playtest e decisioni. Il codice lo scrive Clau
 7. Commenti in italiano, identificatori in inglese. Componenti React sotto le 200 righe.
 
 ## Comandi
-`pnpm dev` (browser) · `pnpm app` (Electron) · `pnpm test` · `pnpm typecheck` · `pnpm sim -- --seasons 10 --seed 42`
+`pnpm dev` (browser) · `pnpm app` (Electron) · `pnpm test` · `pnpm typecheck`
+`pnpm sim -- --seasons 10 --seed 42` · `pnpm sim -- --matches 3000` (bilanciamento motore partita)
+
+## Motore partita
+Spiegato in `docs/03-match-engine.md`, decisioni in `docs/adr/0002-motore-l2.md`. Il ciclo più caldo è `options()` in
+`match/decision.ts`: niente allocazioni dentro i loop, niente `Math.hypot` (usa `len`).
 
 ## Fatto =
 test verdi + typecheck pulito + report sim nei target.

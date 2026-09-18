@@ -4,13 +4,24 @@ import { age, marketValue } from '../../engine/players.ts';
 import { PosBadge, Stars, fullName, nextSort } from '../bits.tsx';
 import { fmtMoney, t } from '../i18n.ts';
 
-type Row = { p: Player; pos: number; name: string; nat: string; age: number; ca: number; pa: number; value: number; wage: number; contract: number; apps: number; goals: number; assists: number };
+type Row = { p: Player; pos: number; name: string; nat: string; age: number; ca: number; pa: number; value: number; wage: number; contract: number; apps: number; goals: number; assists: number; rating: number };
 const COLS: { key: keyof Row & string; label: string; num?: boolean }[] = [
   { key: 'pos', label: 'col.pos' }, { key: 'name', label: 'col.name' }, { key: 'nat', label: 'col.nat' },
+  { key: 'rating', label: 'col.rating', num: true },
   { key: 'age', label: 'col.age', num: true }, { key: 'ca', label: 'col.ability' }, { key: 'pa', label: 'col.potential' },
   { key: 'value', label: 'col.value', num: true }, { key: 'wage', label: 'col.wage', num: true }, { key: 'contract', label: 'col.contract', num: true },
   { key: 'apps', label: 'col.apps', num: true }, { key: 'goals', label: 'col.goals', num: true }, { key: 'assists', label: 'col.assists', num: true },
 ];
+
+/** segnali di indisponibilità accanto al nome */
+export function Status({ p }: { p: Player }) {
+  return (
+    <>
+      {p.condition.injuryDays > 0 && <span className="status inj" title={t('status.injured', { days: p.condition.injuryDays })}>✚ {p.condition.injuryDays}g</span>}{' '}
+      {p.discipline.ban > 0 && <span className="status ban" title={t('status.banned', { n: p.discipline.ban })}>SQ {p.discipline.ban}</span>}
+    </>
+  );
+}
 
 export function Squad({ world, clubId, onPlayer }: { world: WorldState; clubId: number; onPlayer: (id: number) => void }) {
   const [sort, setSort] = useState<{ key: keyof Row & string; dir: 1 | -1 }>({ key: 'pos', dir: 1 });
@@ -19,6 +30,7 @@ export function Squad({ world, clubId, onPlayer }: { world: WorldState; clubId: 
     return {
       p, pos: POSITIONS.indexOf(p.position), name: p.lastName, nat: p.nation, age: age(p, world.season), ca: p.ca, pa: p.pa,
       value: marketValue(p, world.season), wage: p.contract.wage, contract: p.contract.until, apps: p.stats.apps, goals: p.stats.goals, assists: p.stats.assists,
+      rating: p.stats.apps ? p.stats.ratingSum / p.stats.apps : 0,
     };
   });
   rows.sort((a, b) => {
@@ -45,8 +57,9 @@ export function Squad({ world, clubId, onPlayer }: { world: WorldState; clubId: 
           {rows.map((r) => (
             <tr key={r.p.id} className="clickable" onClick={() => onPlayer(r.p.id)}>
               <td><PosBadge pos={r.p.position} /></td>
-              <td>{fullName(r.p)}</td>
+              <td>{fullName(r.p)} <Status p={r.p} /></td>
               <td className="muted" title={t(`nat.${r.nat}`)}>{r.nat}</td>
+              <td className="r num">{r.rating ? r.rating.toFixed(2) : '-'}</td>
               <td className="r num">{r.age}</td>
               <td><Stars ca={r.ca} /></td>
               <td><Stars ca={r.pa} /></td>
