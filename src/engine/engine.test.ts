@@ -1,7 +1,12 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { SQUAD_TEMPLATE } from './balance.ts';
-import { playMatch } from './match.ts';
+import { developPlayer } from './development.ts';
+import { INJURIES, injure } from './injuries.ts';
+import { pickXI, playMatch } from './match.ts';
+import { chem } from './match/decision.ts';
+import { exclude, makePromise } from './morale.ts';
+import { influence, leaders } from './social.ts';
 import type { Fixture } from './model.ts';
 import { Rng } from './rng.ts';
 import { deserialize, serialize } from './save.ts';
@@ -74,7 +79,7 @@ describe('salvataggi', () => {
     }
     for (const c of Object.values(raw.clubs) as Record<string, unknown>[]) delete c.tactic;
     const m = deserialize(JSON.stringify(raw));
-    expect(m.schemaVersion).toBe(3);
+    expect(m.schemaVersion).toBe(4);
     const p = Object.values(m.players)[0]!;
     expect(p.discipline).toEqual({ yellows: 0, ban: 0 });
     expect(p.condition.injuryDays).toBe(0);
@@ -82,6 +87,8 @@ describe('salvataggi', () => {
     expect(club.tactic.formation).toBe('4-3-3');
     expect(club.tactic.roles).toHaveLength(11);
     expect(m.news).toEqual([]);
+    expect(club.training).toHaveLength(12);
+    expect(club.playerIds.some((id) => Object.keys(m.players[id]!.rel).length > 0)).toBe(true); // grafo sociale creato
     advance(m); // e si gioca
   });
 });
@@ -144,6 +151,58 @@ describe('partita L2', () => {
   }, 30_000);
 });
 
+describe('persone (F5)', () => {
+  it('1000 settimane di sviluppo con allenamenti estremi: attributi sempre in 1-20', () => {
+    const w = newWorld(21);
+    const rng = new Rng(1);
+    const focus = { technical: 3, physical: 3, mental: 3, goalkeeping: 3, setPieces: 3 };
+    for (const p of Object.values(w.players).slice(0, 30)) {
+      for (let week = 0; week < 1000; week++) developPlayer(p, { season: w.season + Math.floor(week / 52), focus, mentor: null }, rng);
+      for (const v of Object.values(p.attrs)) expect(v >= 1 && v <= 20).toBe(true);
+    }
+  });
+
+  it('catalogo infortuni: almeno 60 tipi, durate dentro min-max', () => {
+    expect(Object.keys(INJURIES).length).toBeGreaterThanOrEqual(60);
+    const p = Object.values(newWorld(2).players)[0]!;
+    const rng = new Rng(3);
+    for (let i = 0; i < 300; i++) {
+      const type = injure(rng, p, (['contact', 'muscle', 'overuse'] as const)[i % 3]!);
+      expect(p.condition.injuryDays).toBeGreaterThanOrEqual(type.min);
+      expect(p.condition.injuryDays).toBeLessThanOrEqual(type.max);
+    }
+  });
+
+  it('intesa in campo: al massimo ±8% sul peso di scelta del passaggio', () => {
+    expect(chem(undefined)).toBe(1);
+    expect(chem(100)).toBeCloseTo(1.08);
+    expect(chem(-100)).toBeCloseTo(0.92);
+    expect(chem(-500)).toBeCloseTo(0.92);
+  });
+
+  it('fuori rosa un leader: il gruppo perde fiducia', () => {
+    const w = newWorld(6);
+    const club = w.clubs[w.manager.clubId]!;
+    const leader = w.players[leaders(influence(w, club))[0]!]!;
+    const before = club.playerIds.map((id) => w.players[id]!.psych.trust);
+    exclude(w, club, leader);
+    const after = club.playerIds.map((id) => w.players[id]!.psych.trust);
+    expect(after.reduce((s, v) => s + v, 0)).toBeLessThan(before.reduce((s, v) => s + v, 0) - 20);
+    expect(pickXI(w, club).some((e) => e.player === leader)).toBe(false);
+  });
+
+  it('promessa rotta: fiducia giù, chiede la cessione, l\'allenatore se lo ricorda', () => {
+    const w = newWorld(7);
+    const club = w.clubs[w.manager.clubId]!;
+    const p = w.players[club.playerIds.at(-1)!]!;
+    makePromise(w, p, 'starter');
+    exclude(w, club, p); // e poi non lo fa giocare
+    for (let i = 0; i < 8 && w.promises.length; i++) advance(w);
+    expect(w.manager.broken).toBe(1);
+    expect(p.psych.wantsOut).toBe(true);
+  }, 30_000);
+});
+
 describe('mondo', () => {
   it('rose complete e nessun giocatore in due club', () => {
     const w = newWorld(1);
@@ -179,6 +238,12 @@ describe('mondo', () => {
     expect(w.competitions.ITA1!.clubIds).toHaveLength(20);
     for (const c of Object.values(w.clubs)) expect(c.playerIds.length).toBeGreaterThanOrEqual(25);
     for (const p of Object.values(w.players)) for (const v of Object.values(p.attrs)) expect(v >= 1 && v <= 20).toBe(true);
+    // niente cicli esplosivi: il morale non va a 0 o a 100 per tutti
+    const morale = Object.values(w.players).map((p) => p.psych.morale);
+    const mean = morale.reduce((s, v) => s + v, 0) / morale.length;
+    expect(mean).toBeGreaterThan(35);
+    expect(mean).toBeLessThan(80);
+    expect(Math.max(...morale) - Math.min(...morale)).toBeGreaterThan(20);
     expect(deserialize(serialize(w))).toEqual(w);
   }, 90_000);
 });

@@ -1,11 +1,11 @@
-// Abilità (CA) per ruolo, generazione giocatori, valore, sviluppo annuale.
+// Abilità (CA) per ruolo, generazione giocatori, valore. Lo sviluppo è in development.ts.
 import { ADJACENT, BALANCE } from './balance.ts';
 import { ALL_ATTRS, ATTR_GROUPS, type AttrKey, type Attributes, type Personality, type Player, type Position } from './model.ts';
 import { NATIONS } from './names.ts';
 import type { Rng } from './rng.ts';
 
 // Profili di ruolo: attributi chiave per posizione (GUIDA §5.2). I 25 ruoli fini arrivano con la tattica.
-const PROFILES: Record<Position, AttrKey[]> = {
+export const PROFILES: Record<Position, AttrKey[]> = {
   GK: ['reflexes', 'oneOnOnes', 'handling', 'aerialReach', 'commandOfArea', 'communication', 'kicking', 'rushingOut', 'positioning', 'concentration'],
   DC: ['marking', 'tackling', 'heading', 'positioning', 'anticipation', 'bravery', 'strength', 'concentration'],
   DL: ['tackling', 'marking', 'crossing', 'pace', 'stamina', 'positioning', 'workRate', 'acceleration'],
@@ -20,7 +20,7 @@ const PROFILES: Record<Position, AttrKey[]> = {
   ST: ['finishing', 'offTheBall', 'composure', 'firstTouch', 'heading', 'pace', 'acceleration', 'dribbling'],
 };
 // attributi che contano per tutti i giocatori di movimento
-const GENERAL: AttrKey[] = ['decisions', 'composure', 'anticipation', 'teamwork', 'pace', 'acceleration', 'stamina', 'strength', 'agility'];
+export const GENERAL: AttrKey[] = ['decisions', 'composure', 'anticipation', 'teamwork', 'pace', 'acceleration', 'stamina', 'strength', 'agility'];
 const GK_ATTRS = new Set<AttrKey>(ATTR_GROUPS.goalkeeping);
 const OUTFIELD_ONLY = new Set<AttrKey>(['crossing', 'dribbling', 'finishing', 'heading', 'longShots', 'marking', 'tackling', 'offTheBall', 'flair']);
 const LEFT_SIDED = new Set<Position>(['DL', 'ML', 'AML']);
@@ -120,34 +120,20 @@ export function makePlayer(rng: Rng, id: number, pos: Position, meanCA: number, 
     ca: 0,
     pa: Math.round(pa),
     personality: personality(rng),
-    psych: { morale: 70 },
-    condition: { fitness: 100, injuryDays: 0 },
+    hidden: { injuryProneness: Math.round(clamp(rng.gauss(10, 4), 1, 20)) },
+    psych: { morale: 68, trust: 50, minutes: 0.5, wantsOut: false },
+    rel: {},
+    mentorId: null,
+    condition: { fitness: 100, injuryDays: 0, sharpness: 70, fatigue: 0, injury: null, relapse: 0 },
     discipline: { yellows: 0, ban: 0 },
     form: [],
     contract: { wage: 0, until: season + rng.int(1, 5) },
     stats: emptyStats(),
     history: [],
+    caLog: [],
   };
   recomputeCA(p);
   p.pa = Math.max(p.pa, p.ca);
   p.contract.wage = Math.max(30000, Math.round((marketValue(p, season) * 0.12) / 10000) * 10000);
   return p;
-}
-
-/** sviluppo di fine stagione: crescita fino a ~23, plateau, declino da 30 (i fisici calano prima) */
-export function developSeason(rng: Rng, p: Player, season: number) {
-  const a = age(p, season);
-  let delta: number;
-  if (a <= BALANCE.growthUntil) delta = (p.pa - p.ca) * (0.2 + rng.next() * 0.25);
-  else if (a < BALANCE.declineFrom) delta = rng.gauss(0.5, 3);
-  else delta = -(a - BALANCE.declineFrom + 1) * (1 + rng.next() * 2);
-  delta = Math.min(delta, p.pa - p.ca);
-
-  const physical = new Set<AttrKey>(ATTR_GROUPS.physical);
-  for (const k of ALL_ATTRS) {
-    const w = delta < 0 && physical.has(k) ? 1.6 : 1;
-    p.attrs[k] = Math.round(clamp(p.attrs[k] + (delta / 10) * w + rng.gauss(0, 0.35), 1, 20));
-  }
-  recomputeCA(p);
-  p.pa = Math.max(p.pa, p.ca);
 }

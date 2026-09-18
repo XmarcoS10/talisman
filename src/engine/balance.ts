@@ -10,10 +10,91 @@ export const BALANCE = {
   ageSigma: 4.5,
   youthPenaltyPerYear: 6, // CA in meno per ogni anno sotto i 22
 
-  // --- sviluppo a fine stagione (settimanale dalla F5) ---
-  growthUntil: 23,
-  declineFrom: 30,
   retireFrom: 33,
+} as const;
+
+/** interruttori per i test A/B del sim-cli (non salvati) */
+export const FLAGS = { psychology: true };
+
+// --- sviluppo settimanale (GUIDA §7.1) ---
+// Ogni settimana ogni attributo sale di 1 con probabilità `crescita` o scende di 1 con probabilità `declino`:
+// in media delta piccoli e continui, mai scatti.
+export type AgeCurve = { growFull: number; growEnd: number; declineFrom: number; declineRate: number };
+export const DEV = {
+  growth: 0.0026, // probabilità settimanale di +1 per ogni 10 punti di gap PA−CA (poi × fattori)
+  plateauGrowth: 0.35, // crescita residua tra fine crescita e declino (esperienza)
+  // curve d'età per macro-area: crescita piena fino a growFull, si spegne a growEnd, declino da declineFrom
+  curves: {
+    physical: { growFull: 20, growEnd: 24, declineFrom: 30, declineRate: 0.005 },
+    technical: { growFull: 21, growEnd: 26, declineFrom: 32, declineRate: 0.003 },
+    mental: { growFull: 22, growEnd: 29, declineFrom: 34, declineRate: 0.002 },
+    goalkeeping: { growFull: 23, growEnd: 29, declineFrom: 33, declineRate: 0.004 },
+  } satisfies Record<string, AgeCurve>,
+  weightCore: 1.5, // gli attributi chiave del ruolo crescono di più
+  weightGeneral: 1.2,
+  weightOther: 0.6,
+  injuredGrowth: 0.3,
+  injuredDecline: 1.5,
+  mentorRate: 0.012, // prob. settimanale di +1 a un mentale in cui il mentore è migliore (× Influenza sociale/20)
+  mentorPersonality: 0.03, // prob. settimanale che un asse di personalità si avvicini a quello del mentore
+  mentorMinAge: 27,
+  menteeMaxAge: 21,
+} as const;
+
+// --- allenamento, condizione, infortuni (§7.1-7.2) ---
+export const TRAIN = {
+  load: { tactical: 0.5, physical: 1, technical: 0.6, setPieces: 0.3, match: 0.8, recovery: -0.5, rest: 0 },
+  fitnessPerLoad: 4, // forma fisica spesa in allenamento per unità di carico settimanale
+  fatigueMatch: 3.5, // affaticamento stagionale per 90 minuti giocati
+  fatigueLoad: 0.25, // per unità di carico
+  fatigueRecovery: 2.2, // recupero settimanale di base
+  fatigueRest: 0.8, // in più per seduta di recupero o riposo
+  sharpMatch: 30, // condizione partita per 90 minuti
+  sharpDecay: 8, // persa a settimana
+  sharpPartitella: 3,
+  sharpPreseason: 60, // a inizio stagione, dopo le amichevoli
+  famGain: 1.5, // familiarità col modulo per seduta tattica (× Adattabilità tattica media/11)
+  famDecay: 0.5, // persa a settimana dai moduli non usati
+  famStart: 80, // modulo iniziale
+  famOther: 40,
+  injuryBase: 0.0028, // infortunio in allenamento a settimana, al carico di riferimento
+  loadRef: 5.5, // carico della settimana tipo
+  loadExp: 3, // oltre il riferimento il rischio esplode
+  relapseWindow: 0.5, // giorni a rischio ricaduta = durata × questo (max 28)
+  relapseMatch: 0.6, // probabilità di ricaduta in partita = ricaduta del tipo × questo (appena rientrato)
+} as const;
+
+// --- psicologia e spogliatoio (§7.3) ---
+export const PSYCH = {
+  moraleBase: 62,
+  moraleUp: 0.12, // velocità verso il bersaglio quando sale (+ Resilienza)
+  moraleDown: 0.25, // quando scende (− Resilienza)
+  minutesEma: 0.2, // peso dell'ultima partita nel minutaggio
+  minutesPenalty: 60, // morale perso per minutaggio sotto le attese (× ambizione)
+  resultsK: 12, // morale per punto/partita sopra o sotto le attese (ultime 5)
+  trustK: 0.3,
+  formK: 6,
+  excludedPenalty: 20,
+  feudPenalty: 8,
+  contagion: 0.02,
+  // grafo sociale
+  sameNation: 25,
+  sameLanguage: 12,
+  closeAge: 6,
+  sociability: 0.8,
+  roleRivalry: 12,
+  noise: 10,
+  edgeMin: 20, // sotto questa forza iniziale l'arco è neutro (non salvato)
+  friendDrift: 0.4, // a settimana, per gli archi positivi (× socievolezza)
+  healDrift: 0.3, // gli archi negativi si ricuciono piano
+  rivalryDrift: 1, // due dello stesso ruolo: chi non gioca si inasprisce
+  winBond: 1,
+  bustupP: 0.05, // lite in allenamento, per club a settimana
+  feudAt: -60,
+  feudInfluence: 45,
+  // promesse ed esclusioni
+  promiseWindow: 8,
+  promiseNeed: { starter: 6, minutes: 3 },
 } as const;
 
 // --- motore partita L2 (GUIDA §6) ---
@@ -78,7 +159,7 @@ export const MATCH = {
 
   // tiro e xG (§6.3): logit = base + angolo·a − distanza_m·d − pressione·p (+ colpo di testa)
   shotMinX: 7,
-  xgBase: -1.33,
+  xgBase: -1.27,
   xgAngle: 1.6,
   xgDist: 0.1,
   xgPress: 0.45,
@@ -111,7 +192,7 @@ export const MATCH = {
   tempDecisions: 0.04, // per punto di Decisioni sotto 11
   tempPressure: 0.25,
   directnessK: 0.004, // bonus per zona guadagnata, scalato dall'istruzione "verticalità"
-  shotBias: 0.86,
+  shotBias: 0.84,
 
   // contrasti, falli, cartellini, infortuni
   foulBase: 0.3,
@@ -122,8 +203,7 @@ export const MATCH = {
   bookedCaution: 0.35, // probabilità di giallo ridotta per chi è già ammonito
   redP: 0.003,
   injuryOnFoul: 0.025,
-  injuryPerPlayer: 0.006, // infortunio "senza contatto" per giocatore a partita
-  injuryMeanDays: 14,
+  injuryPerPlayer: 0.006, // infortunio "senza contatto" per giocatore a partita (× rischio personale, injuries.ts)
 
   // condizione fisica
   drainBase: 0.22, // energia persa al minuto
@@ -140,6 +220,12 @@ export const MATCH = {
   momentumShot: 3,
   momentumDecay: 0.97,
   momentumK: 0.15, // logit massimo dato dal momentum, attenuato dalla Compostezza
+
+  // persone (F5): logit in più/in meno per il portatore
+  moraleK: 0.002, // per punto di morale sopra/sotto 60
+  sharpK: 0.003, // per punto di condizione partita sotto 100
+  famK: 0.15, // modulo del tutto sconosciuto
+  chemPass: 0.08, // peso della scelta di passaggio: ±8% tra amici/nemici (§7.3)
 
   homeBoost: 0.12, // logit in più per la squadra di casa (pubblico)
   protectLeadFrom: 55, // minuto da cui chi è in vantaggio abbassa la mentalità di 1

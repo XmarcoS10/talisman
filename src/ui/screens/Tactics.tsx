@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { isAvailable, pickXI, slotRating, xiStrength } from '../../engine/match.ts';
+import { canPlay, familiarityOf, pickXI, slotRating, xiStrength } from '../../engine/match.ts';
 import { validRole } from '../../engine/match/roles.ts';
 import { FORMATIONS, defaultRoles } from '../../engine/match/tactics.ts';
 import { FORMATION_IDS, POSITIONS, type FormationId, type Tactic, type WorldState } from '../../engine/model.ts';
@@ -48,7 +48,7 @@ export function Tactics({ world, onChange, onPlayer }: { world: WorldState; onCh
     ? [...players].sort((a, b) => slotRating(b, sel) - slotRating(a, sel))
     : [...players].sort((a, b) => POSITIONS.indexOf(a.position) - POSITIONS.indexOf(b.position) || b.ca - a.ca);
   const current = pickXI(world, club, tac.formation, lineup);
-  const warnings = lineup.map((id) => (id != null ? world.players[id] : undefined)).filter((p) => p && !isAvailable(p));
+  const warnings = lineup.map((id) => (id != null ? world.players[id] : undefined)).filter((p) => p && !canPlay(club, p));
   const selRole = selected !== null && sel ? validRole(tac.roles[selected], sel.pos) : null;
 
   return (
@@ -62,6 +62,7 @@ export function Tactics({ world, onChange, onPlayer }: { world: WorldState; onCh
             </select>
           </label>
           <span className="muted">{t('tactics.strength')} <b className="num">{Math.round(xiStrength(current))}</b></span>
+          <span className="muted" title={t('tactics.familiarityHint')}>{t('tactics.familiarity', { v: Math.round(familiarityOf(club)) })}</span>
           <button className="btn" onClick={() => update(autoPick)}>{t('tactics.auto')}</button>
         </div>
         <Pitch world={world} club={club} selected={selected} onSelect={setSelected} onAssign={assign}
@@ -89,7 +90,7 @@ export function Tactics({ world, onChange, onPlayer }: { world: WorldState; onCh
                   <tr key={p.id} className={`clickable ${slotIdx >= 0 ? 'me' : ''}`} draggable onDragStart={(e) => e.dataTransfer.setData('text/plain', String(p.id))}
                     onClick={() => (selected !== null ? assign(p.id, selected) : onPlayer(p.id))}>
                     <td><PosBadge pos={p.position} /></td>
-                    <td>{shortName(p)} <Status p={p} /></td>
+                    <td>{shortName(p)} <Status p={p} out={club.excluded.includes(p.id)} /></td>
                     <td className="num muted">{p.condition.fitness}%</td>
                     <td>{sel ? <span className={fitClass(p.positions[sel.pos])}><Stars ca={slotRating(p, sel)} /></span> : <Stars ca={p.ca} />}</td>
                     <td className="muted">{slotIdx >= 0 ? t(`pos.${slots[slotIdx]!.pos}`) : ''}</td>

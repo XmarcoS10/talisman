@@ -2,7 +2,7 @@
 // Ogni opzione ha: p = probabilità di riuscita, u = utilità attesa in "gol attesi".
 // u = p · valore_dopo − (1 − p) · costo_della_perdita · avversione_al_rischio (+ preferenze tattiche).
 // La scelta è un softmax con temperatura: Decisioni alte → quasi sempre l'opzione migliore.
-import { MATCH } from '../balance.ts';
+import { FLAGS, MATCH } from '../balance.ts';
 import type { Player, Tactic } from '../model.ts';
 import type { Rng } from '../rng.ts';
 import { len, lossCost, segDist, sigmoid, xG, xT } from './pitch.ts';
@@ -15,6 +15,7 @@ export interface OnPitch {
   y: number;
   energy: number;
   role: Role; // tendenze del ruolo (roles.ts)
+  mod: number; // logit personale del giorno: morale, condizione partita, familiarità col modulo
 }
 
 export interface View {
@@ -36,12 +37,15 @@ export interface View {
 }
 
 export type Option =
-  | { kind: 'pass'; to: OnPitch; tx: number; ty: number; p: number; off: number; u: number }
+  | { kind: 'pass'; to: OnPitch; tx: number; ty: number; p: number; off: number; u: number; w: number } // w: intesa (chem)
   | { kind: 'dribble'; tx: number; ty: number; p: number; tackler: OnPitch | undefined; u: number }
   | { kind: 'shot'; xg: number; u: number }
   | { kind: 'cross'; p: number; u: number };
 
 const a = (pl: OnPitch, k: keyof Player['attrs']) => pl.p.attrs[k] - 11; // attributo centrato su 11
+const NO_REL: Record<number, number> = {};
+/** moltiplicatore del peso di scelta di un passaggio dalla relazione tra i due (−100…100): ±8% al massimo */
+export const chem = (s: number | undefined) => (s === undefined ? 1 : 1 + (Math.max(-100, Math.min(100, s)) / 100) * MATCH.chemPass);
 
 export function options(v: View): Option[] {
   const { carrier: c, bx, by, tactic, pressure } = v;
@@ -62,6 +66,8 @@ export function options(v: View): Option[] {
   // parte del logit che dipende solo dal portatore
   const passLogit0 = MATCH.passBase - MATCH.passPress * pressure + MATCH.passSkill * a(c, 'passing') + tempoMod + v.bonus;
   const vision = MATCH.passVision * a(c, 'vision');
+  // spogliatoio in campo (§7.3): tra amici ci si cerca un po' di più, tra nemici un po' di meno
+  const rel = FLAGS.psychology ? c.p.rel : NO_REL;
   for (const m of v.mates) {
     if (m === c) continue;
     const dx = m.x - bx, dy = m.y - by;
@@ -88,7 +94,7 @@ export function options(v: View): Option[] {
     const edge = v.offsideLine - MATCH.offsideWindow;
     const off = dx > 1 && m.x > edge ? Math.min(0.6, MATCH.offsideBase + MATCH.offsidePerZone * (m.x - edge)) : 0;
     const pe = p * (1 - off);
-    out.push({ kind: 'pass', to: m, tx: m.x, ty: m.y, p, off, u: pe * (xT(m.x, m.y) + keep) - (1 - pe) * loss + direct * dx });
+    out.push({ kind: 'pass', to: m, tx: m.x, ty: m.y, p, off, u: pe * (xT(m.x, m.y) + keep) - (1 - pe) * loss + direct * dx, w: chem(rel[m.p.id]) });
   }
   // 1b) PALLA IN PROFONDITÀ nello spazio tra la linea difensiva e il portiere: punisce le linee alte
   const space = MATCH.gkLineX - v.offsideLine;
@@ -104,7 +110,7 @@ export function options(v: View): Option[] {
         + MATCH.passSkill * a(c, 'passing') + 2 * vision + v.bonus);
       const off = MATCH.throughOffside * (1 - (m.p.attrs.offTheBall - 11) * 0.04);
       const pe = p * (1 - off);
-      out.push({ kind: 'pass', to: m, tx, ty: m.y, p, off, u: pe * (xT(tx, m.y) + keep) - (1 - pe) * loss + direct * (tx - bx) });
+      out.push({ kind: 'pass', to: m, tx, ty: m.y, p, off, u: pe * (xT(tx, m.y) + keep) - (1 - pe) * loss + direct * (tx - bx), w: chem(rel[m.p.id]) });
     }
   }
   if (v.isGK) return out; // il portiere si limita a giocarla
@@ -152,7 +158,8 @@ export function choose(rng: Rng, opts: Option[], c: OnPitch, pressure: number): 
   let max = -Infinity;
   for (const o of opts) if (o.u > max) max = o.u;
   let tot = 0;
-  for (const o of opts) tot += (o.u = Math.exp((o.u - max) / temp)); // u riusato come peso: l'opzione non serve più
+  // u riusato come peso: l'opzione non serve più
+  for (const o of opts) tot += (o.u = Math.exp((o.u - max) / temp) * (o.kind === 'pass' ? o.w : 1));
   let x = rng.next() * tot;
   for (const o of opts) if ((x -= o.u) < 0) return o;
   return opts[opts.length - 1]!;

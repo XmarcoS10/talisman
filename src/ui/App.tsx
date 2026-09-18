@@ -5,6 +5,7 @@ import { Crest } from './Crest.tsx';
 import { fmtDate, fmtMoney, fmtSeason, t } from './i18n.ts';
 import { ClubView } from './screens/ClubView.tsx';
 import { Desk } from './screens/Desk.tsx';
+import { Dressing } from './screens/Dressing.tsx';
 import { Fixtures } from './screens/Fixtures.tsx';
 import { MatchModal } from './screens/MatchReport.tsx';
 import { SeasonModal } from './screens/Modals.tsx';
@@ -14,15 +15,16 @@ import { Squad } from './screens/Squad.tsx';
 import { Start } from './screens/Start.tsx';
 import { Tables } from './screens/Tables.tsx';
 import { Tactics } from './screens/Tactics.tsx';
+import { Training } from './screens/Training.tsx';
 import { Search } from './Search.tsx';
 import { currentSlot, saveTo } from './storage.ts';
 
 type Screen =
-  | { name: 'desk' | 'squad' | 'tactics' | 'tables' | 'fixtures' | 'saves' }
+  | { name: 'desk' | 'squad' | 'tactics' | 'training' | 'dressing' | 'tables' | 'fixtures' | 'saves' }
   | { name: 'player'; id: number; back: Screen }
   | { name: 'club'; id: number; back: Screen };
 type Modal = { kind: 'match'; fx: Fixture; others: Fixture[] } | { kind: 'season'; summary: SeasonSummary; myPos: number } | null;
-const NAV = ['desk', 'squad', 'tactics', 'tables', 'fixtures', 'saves'] as const;
+const NAV = ['desk', 'squad', 'tactics', 'training', 'dressing', 'tables', 'fixtures', 'saves'] as const;
 
 const autosave = (w: WorldState) => { if (!saveTo(currentSlot(), w)) console.error('Salvataggio fallito'); };
 
@@ -102,10 +104,12 @@ export function App() {
         {screen.name === 'desk' && <Desk world={world} />}
         {screen.name === 'squad' && <Squad world={world} clubId={club.id} onPlayer={openPlayer} />}
         {screen.name === 'tactics' && <Tactics world={world} onChange={changed} onPlayer={openPlayer} />}
+        {screen.name === 'training' && <Training world={world} onChange={changed} onPlayer={openPlayer} />}
+        {screen.name === 'dressing' && <Dressing world={world} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'tables' && <Tables world={world} clubId={club.id} onPlayer={openPlayer} onClub={openClub} />}
         {screen.name === 'fixtures' && <Fixtures world={world} clubId={club.id} />}
         {screen.name === 'saves' && <Saves world={world} onLoad={open} />}
-        {screen.name === 'player' && <PlayerView world={world} playerId={screen.id} onBack={() => setScreen(screen.back)} onClub={openClub} />}
+        {screen.name === 'player' && <PlayerView world={world} playerId={screen.id} onBack={() => setScreen(screen.back)} onClub={openClub} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'club' && <ClubView world={world} clubId={screen.id} onPlayer={openPlayer} onBack={() => setScreen(screen.back)} />}
       </main>
 

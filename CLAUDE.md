@@ -21,6 +21,11 @@ Marco non programma: fa collaudo, playtest e decisioni. Il codice lo scrive Clau
 ## Comandi
 `pnpm dev` (browser) · `pnpm app` (Electron) · `pnpm test` · `pnpm typecheck`
 `pnpm sim -- --seasons 10 --seed 42` · `pnpm sim -- --matches 3000` (bilanciamento motore partita)
+`pnpm sim -- --dev 10` (curve di sviluppo) · `pnpm sim -- --psych 20` (A/B della psicologia, ~5 min)
+
+## Persone (F5)
+Settimana = `trainWeek` (allenamento, condizione, infortuni, sviluppo) + `weekPsych` (grafo, morale, contagio) per ogni club,
+chiamate da `passDays` in `world.ts`. Decisioni in `docs/adr/0004-persone.md`.
 
 ## Motore partita
 Spiegato in `docs/03-match-engine.md`, decisioni in `docs/adr/0002-motore-l2.md`. Il ciclo più caldo è `options()` in

@@ -3,9 +3,12 @@ import { age, marketValue } from '../../engine/players.ts';
 import { Crest } from '../Crest.tsx';
 import { PosBadge, Stars, attrClass, fullName, personalityKey } from '../bits.tsx';
 import { fmtMoney, fmtSeason, t } from '../i18n.ts';
+import { DevPanel, PeoplePanel } from './PlayerPeople.tsx';
 import { Status } from './Squad.tsx';
 
-export function PlayerView({ world, playerId, onBack, onClub }: { world: WorldState; playerId: number; onBack: () => void; onClub: (id: number) => void }) {
+type Props = { world: WorldState; playerId: number; onBack: () => void; onClub: (id: number) => void; onChange: () => void; onPlayer: (id: number) => void };
+
+export function PlayerView({ world, playerId, onBack, onClub, onChange, onPlayer }: Props) {
   const p = world.players[playerId];
   if (!p) return <button className="btn" onClick={onBack}>{t('player.back')}</button>;
   const club = p.clubId !== null ? world.clubs[p.clubId] : undefined;
@@ -33,7 +36,7 @@ export function PlayerView({ world, playerId, onBack, onClub }: { world: WorldSt
         </div>
       </div>
 
-      <div className="grid" style={{ gridTemplateColumns: '1fr 1fr 1fr 300px', alignItems: 'start' }}>
+      <div className="grid" style={{ gridTemplateColumns: '1fr 1fr 1fr 320px', alignItems: 'start' }}>
         {groups.map((g) => (
           <div key={g} className="panel" style={{ gap: 0 }}>
             <h3 style={{ marginBottom: 'var(--s-2)' }}>{t(`group.${g}`)}</h3>
@@ -43,6 +46,8 @@ export function PlayerView({ world, playerId, onBack, onClub }: { world: WorldSt
           </div>
         ))}
         <div className="grid">
+          <PeoplePanel world={world} p={p} onChange={onChange} onPlayer={onPlayer} />
+          <DevPanel world={world} p={p} />
           <div className="panel">
             <h3>{t('player.value')}</h3>
             <div className="num" style={{ fontSize: 22 }}>{fmtMoney(marketValue(p, world.season))}</div>

@@ -3,13 +3,16 @@ import { ATTR_GROUPS, POSITIONS, type AttrKey, type Player, type WorldState } fr
 import { age, marketValue } from '../../engine/players.ts';
 import { PosBadge, Stars, attrClass, fullName } from '../bits.tsx';
 import { fmtMoney, t } from '../i18n.ts';
+import { moraleClass } from './Graph.tsx';
 
 /** segnali di indisponibilità accanto al nome */
-export function Status({ p }: { p: Player }) {
+export function Status({ p, out = false }: { p: Player; out?: boolean }) {
   return (
     <>
       {p.condition.injuryDays > 0 && <span className="status inj" title={t('status.injured', { days: p.condition.injuryDays })}>✚ {p.condition.injuryDays}g</span>}{' '}
-      {p.discipline.ban > 0 && <span className="status ban" title={t('status.banned', { n: p.discipline.ban })}>SQ {p.discipline.ban}</span>}
+      {p.discipline.ban > 0 && <span className="status ban" title={t('status.banned', { n: p.discipline.ban })}>SQ {p.discipline.ban}</span>}{' '}
+      {p.condition.injuryDays === 0 && p.condition.relapse > 0 && <span className="status ban" title={t('status.relapse')}>⚠</span>}{' '}
+      {out && <span className="status inj" title={t('status.excluded')}>FR</span>}
     </>
   );
 }
@@ -25,6 +28,7 @@ function columns(view: View, season: number): Col[] {
     { key: 'ca', label: t('col.ability'), value: (p) => p.ca, cell: (p) => <Stars ca={p.ca} /> },
     { key: 'pa', label: t('col.potential'), value: (p) => p.pa, cell: (p) => <Stars ca={p.pa} /> },
     { key: 'fit', label: t('col.fitness'), num: true, value: (p) => p.condition.fitness, cell: (p) => `${p.condition.fitness}%` },
+    { key: 'morale', label: t('col.morale'), num: true, value: (p) => p.psych.morale, cell: (p) => <b className={`m-text-${moraleClass(p.psych.morale)}`}>{Math.round(p.psych.morale)}</b> },
     { key: 'value', label: t('col.value'), num: true, value: (p) => marketValue(p, season), cell: (p) => fmtMoney(marketValue(p, season)) },
     { key: 'wage', label: t('col.wage'), num: true, value: (p) => p.contract.wage, cell: (p) => fmtMoney(p.contract.wage) },
     { key: 'contract', label: t('col.contract'), num: true, value: (p) => p.contract.until, cell: (p) => <span className={p.contract.until <= season ? 'pos-bad' : ''}>{p.contract.until}</span> },
@@ -50,7 +54,7 @@ export function Squad({ world, clubId, onPlayer, title }: { world: WorldState; c
   const cols = columns(view, world.season);
   const fixed: Col[] = [
     { key: 'pos', label: t('col.pos'), value: (p) => POSITIONS.indexOf(p.position), cell: (p) => <PosBadge pos={p.position} /> },
-    { key: 'name', label: t('col.name'), value: (p) => p.lastName, cell: (p) => <>{fullName(p)} <Status p={p} /></> },
+    { key: 'name', label: t('col.name'), value: (p) => p.lastName, cell: (p) => <>{fullName(p)} <Status p={p} out={world.clubs[clubId]!.excluded.includes(p.id)} /></> },
     { key: 'nat', label: t('col.nat'), value: (p) => p.nation, cell: (p) => <span className="muted" title={t(`nat.${p.nation}`)}>{p.nation}</span> },
   ];
   const all = [...fixed, ...cols];

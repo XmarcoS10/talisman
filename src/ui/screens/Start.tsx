@@ -24,7 +24,7 @@ export function Start({ onLoad, onStart }: { onLoad: (w: WorldState) => void; on
 
   const go = () => {
     if (clubId === null || !name.trim()) return;
-    world.manager = { name: name.trim(), clubId };
+    Object.assign(world.manager, { name: name.trim(), clubId });
     // la nuova carriera va nel primo slot libero (se sono pieni, in quello in uso)
     setCurrentSlot(SLOTS.find((s) => !slotInfo(s)) ?? currentSlot());
     onStart(world);

@@ -1,8 +1,13 @@
 // Salvataggi versionati (GUIDA §2.5): ogni save ha schemaVersion e passa dalla catena di migrazioni.
+import { TRAIN } from './balance.ts';
 import { defaultRoles } from './match/tactics.ts';
-import type { WorldState } from './model.ts';
+import type { Club, WorldState } from './model.ts';
+import { Rng } from './rng.ts';
+import { seedMinutes } from './morale.ts';
+import { initRelations } from './social.ts';
+import { defaultTraining } from './training.ts';
 
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 4;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -27,6 +32,27 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
   (w) => {
     for (const c of Object.values(w.clubs as Obj)) c.tactic.roles = defaultRoles(c.tactic.formation);
     w.news = [];
+  },
+  // 3 → 4 (F5, persone): allenamento, condizione estesa, psicologia, grafo sociale, promesse, registro delle cause
+  (w) => {
+    const rng = new Rng(w.seed + w.season);
+    for (const p of Object.values(w.players as Obj)) {
+      p.hidden = { injuryProneness: Math.round(Math.max(1, Math.min(20, rng.gauss(10, 4)))) };
+      p.psych = { morale: p.psych?.morale ?? 68, trust: 50, minutes: 0.5, wantsOut: false };
+      p.rel = {};
+      p.mentorId = null;
+      Object.assign(p.condition, { sharpness: 70, fatigue: 0, injury: null, relapse: 0 });
+      for (const h of p.history) h.ca = p.ca;
+      p.caLog = [p.ca];
+    }
+    for (const c of Object.values(w.clubs as Obj)) {
+      Object.assign(c, { training: defaultTraining(), familiarity: { [c.tactic.formation]: TRAIN.famStart }, excluded: [], feuds: [] });
+      initRelations(w as unknown as WorldState, c as Club, rng); // forma garantita dalle righe sopra
+      seedMinutes(w as unknown as WorldState, c as Club);
+    }
+    Object.assign(w.manager, { kept: 0, broken: 0 });
+    w.causal = [];
+    w.promises = [];
   },
 ];
 

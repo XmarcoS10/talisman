@@ -60,7 +60,7 @@ td.zone-up { box-shadow: inset 3px 0 0 var(--positive); } td.zone-down { box-sha
 
 /* attributi */
 .attr { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid color-mix(in srgb, var(--border) 40%, transparent); }
-.attr b { font: 600 13px var(--font-num); width: 24px; text-align: right; }
+.attr b { font: 600 13px var(--font-num); min-width: 24px; text-align: right; white-space: nowrap; }
 .a1 { color: var(--negative); } .a2 { color: var(--text-2); } .a3 { color: var(--text-1); } .a4 { color: var(--accent); }
 
 /* modale */
@@ -116,3 +116,31 @@ select { background: var(--surface-1); color: var(--text-1); border: 1px solid v
 .clubs { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: var(--s-2); }
 .club-card { display: flex; gap: var(--s-3); align-items: center; text-align: left; background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--r-2); padding: var(--s-2) var(--s-3); }
 .club-card.selected { border-color: var(--accent); background: var(--surface-2); }
+
+/* allenamento */
+.bar { display: inline-block; width: 120px; height: 8px; border-radius: 4px; background: var(--surface-3); overflow: hidden; vertical-align: middle; }
+.bar span { display: block; height: 100%; background: var(--accent); }
+.bar.mid span { background: var(--warning); } .bar.bad span { background: var(--negative); }
+.week { display: grid; grid-template-columns: 90px repeat(6, 1fr); gap: var(--s-1); align-items: center; }
+.week select { width: 100%; border-left: 3px solid var(--text-3); }
+.week .cat-tactical { border-left-color: var(--data-1); } .week .cat-physical { border-left-color: var(--data-4); }
+.week .cat-technical { border-left-color: var(--data-2); } .week .cat-setPieces { border-left-color: var(--data-3); }
+.week .cat-match { border-left-color: var(--accent); } .week .cat-recovery, .week .cat-rest { border-left-color: var(--text-3); color: var(--text-2); }
+.attr.clickable { cursor: pointer; } .attr.clickable:hover { background: var(--surface-2); }
+
+/* spogliatoio */
+.graph { width: 100%; height: auto; background: var(--bg-1); border-radius: var(--r-2); }
+.graph .edge.friend { stroke: var(--positive); } .graph .edge.rival { stroke: var(--negative); }
+.graph .edge.feud { stroke-dasharray: 6 4; opacity: 1; }
+.graph .node { cursor: pointer; transition: opacity 120ms var(--ease); }
+.graph .node circle { stroke: var(--bg-0); stroke-width: 2; }
+.graph .node circle.out { stroke: var(--text-2); stroke-dasharray: 3 2; }
+.graph .node text { font: 600 10px var(--font-ui); fill: var(--text-1); paint-order: stroke; stroke: var(--bg-1); stroke-width: 3px; }
+.m-good { fill: var(--positive); } .m-mid { fill: var(--warning); } .m-bad { fill: var(--negative); }
+.m-text-good { color: var(--positive); } .m-text-mid { color: var(--warning); } .m-text-bad { color: var(--negative); }
+
+/* grafico di crescita */
+.chart { width: 100%; height: auto; }
+.chart polyline { fill: none; stroke: var(--accent); stroke-width: 2; }
+.chart circle { fill: var(--accent); }
+.chart text { font: 10px var(--font-num); fill: var(--text-3); }

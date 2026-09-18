@@ -1,15 +1,17 @@
 // Laboratorio di bilanciamento: simula senza UI e confronta con docs/balance/targets.md.
 // Stagioni: pnpm sim -- --seasons 10 --seed 42 [--report out.md]
 // Partite:  pnpm sim -- --matches 10000 --seed 42 [--report out.md]
+// Persone:  pnpm sim -- --dev 10 · pnpm sim -- --psych 20 (people.ts)
 import { writeFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { pickXI, playMatch, xiStrength } from '../engine/match.ts';
 import type { Fixture, SideStats, WorldState } from '../engine/model.ts';
 import { Rng } from '../engine/rng.ts';
 import { advance, endSeason, isSeasonOver, newWorld, standings } from '../engine/world.ts';
+import { devReport, psychReport } from './people.ts';
 
 const { values } = parseArgs({
-  options: { seasons: { type: 'string' }, matches: { type: 'string' }, seed: { type: 'string', default: '42' }, report: { type: 'string' } },
+  options: { seasons: { type: 'string' }, matches: { type: 'string' }, dev: { type: 'string' }, psych: { type: 'string' }, seed: { type: 'string', default: '42' }, report: { type: 'string' } },
 });
 const seed = Number(values.seed);
 const t0 = performance.now();
@@ -74,10 +76,22 @@ function seasonsReport(seasons: number) {
   const corrs: number[] = [];
   const agg = new Agg();
   const injuriesPerTeam: number[] = [];
+  // tutti gli infortuni (partita + allenamento): ogni infortunio crea un nuovo oggetto condition.injury
+  const lastInj = new Map<number, unknown>();
+  let allInjuries = 0;
+  const morale: number[] = [];
   for (let s = 0; s < seasons; s++) {
     const serieA = world.competitions.ITA1!;
     const strength = new Map(serieA.clubIds.map((id) => [id, xiStrength(pickXI(world, world.clubs[id]!))]));
-    while (!isSeasonOver(world)) advance(world);
+    while (!isSeasonOver(world)) {
+      advance(world);
+      for (const p of Object.values(world.players)) {
+        const inj = p.condition.injury;
+        if (inj && inj !== lastInj.get(p.id)) allInjuries++;
+        lastInj.set(p.id, inj);
+      }
+    }
+    for (const p of Object.values(world.players)) morale.push(p.psych.morale);
     for (const fx of serieA.fixtures) agg.add(fx);
     injuriesPerTeam.push(agg.injuries / 20 / (s + 1));
     const table = standings(world, serieA);
@@ -92,7 +106,10 @@ function seasonsReport(seasons: number) {
     `# Report simulazione — ${seasons} stagioni, seed ${seed}`, '',
     '| Metrica (Serie A) | Valore | Target | |', '|---|---|---|---|',
     ...matchRows(agg),
-    info('Infortuni in partita per squadra/stagione', (agg.injuries / 20 / seasons).toFixed(1), '12-18 con gli allenamenti (F5)'),
+    info('Infortuni in partita per squadra/stagione', (agg.injuries / 20 / seasons).toFixed(1), ''),
+    row('Infortuni totali per squadra/stagione (tutte le leghe)', allInjuries / Object.keys(world.clubs).length / seasons, 12, 18, (v) => v.toFixed(1)),
+    info('Morale a fine stagione: media · 10° · 90° percentile', ((q) => `${avg(morale).toFixed(0)} · ${q(0.1)} · ${q(0.9)}`)(
+      (x: number) => [...morale].sort((a, b) => a - b)[Math.floor(x * morale.length)]!.toFixed(0)), ''),
     row('Correlazione forza ↔ punti', avg(corrs), 0.75, 0.85),
     row('Campioni diversi', new Set(champions).size, Math.min(4, seasons), seasons, (v) => String(v)),
     row('Punti massimi del campione', maxPts, 70, 100, (v) => String(v)),
@@ -138,6 +155,7 @@ function matchesReport(n: number) {
   ];
 }
 
-const report = (values.matches ? matchesReport(Number(values.matches)) : seasonsReport(Number(values.seasons ?? 10))).join('\n');
+const report = (values.dev ? devReport(seed, Number(values.dev)) : values.psych ? psychReport(seed, Number(values.psych))
+  : values.matches ? matchesReport(Number(values.matches)) : seasonsReport(Number(values.seasons ?? 10))).join('\n');
 console.log(report);
 if (values.report) writeFileSync(values.report, report + '\n');

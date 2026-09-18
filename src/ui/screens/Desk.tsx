@@ -1,7 +1,7 @@
 import type { WorldState } from '../../engine/model.ts';
 import { nextMatchDay, standings } from '../../engine/world.ts';
 import { Crest } from '../Crest.tsx';
-import { fmtDate, fmtSeason, t } from '../i18n.ts';
+import { fmtDate, fmtSeason, t, tEvent } from '../i18n.ts';
 import { outcome } from './Fixtures.tsx';
 import { boardGoal } from './Start.tsx';
 import { LeagueTable } from './Tables.tsx';
@@ -43,7 +43,7 @@ export function Desk({ world }: { world: WorldState }) {
           {world.news.filter((n) => n.season === world.season).slice(-6).reverse().map((n, i) => (
             <div key={`n${i}`} className="row">
               <span className="num muted">{fmtDate(n.season, n.day)}</span>
-              <span>{t(n.key, n.vars)}</span>
+              <span>{tEvent(n.key, n.vars)}</span>
             </div>
           ))}
           {[...played].reverse().slice(0, 6).map((fx) => (

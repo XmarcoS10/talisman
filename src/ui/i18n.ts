@@ -12,7 +12,16 @@ export function t(key: string, vars?: Record<string, string | number>): string {
   return vars ? s.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? `{${k}}`)) : s;
 }
 
-const money = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', notation: 'compact', maximumFractionDigits: 1 });
+/** notizie e voci del Causal Log: le variabili che sono a loro volta chiavi (infortunio, attributo, cause) si traducono */
+export function tEvent(key: string, vars: Record<string, string | number>): string {
+  const v = { ...vars };
+  if (typeof v.injury === 'string') v.injury = t(`injury.${v.injury}`).toLowerCase();
+  if (typeof v.attr === 'string') v.attr = t(`attr.${v.attr}`);
+  if (typeof v.why === 'string') v.why = v.why.split(',').map((w) => t(w)).join(', ');
+  return t(key, v);
+}
+
+const money =new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', notation: 'compact', maximumFractionDigits: 1 });
 export const fmtMoney = (v: number) => money.format(v);
 
 /** la stagione parte il 22 agosto; `day` = giorni dall'inizio */

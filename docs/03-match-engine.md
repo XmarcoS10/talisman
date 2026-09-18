@@ -40,6 +40,13 @@ ruoli offensivi pagano con la fatica. Verifica: `formations.mts` nello scratchpa
 **Formazione dell'utente**: `club.lineup` (un id per slot). Chi non è disponibile viene sostituito dal migliore per quello
 slot, con una notizia sulla Scrivania. L'IA sceglie modulo (quello che valorizza la rosa) e mentalità (in base all'avversario).
 
+## Persone in campo (F5)
+Ogni giocatore entra con un logit personale del giorno (`dayMod` in `engine.ts`), sommato al bonus del portatore:
+morale (`moraleK`, centrato su 65), condizione partita sotto 80 (`sharpK`), modulo poco conosciuto (`famK`).
+Nella scelta del passaggio il peso di ogni compagno è moltiplicato per l'intesa (`chem` in `decision.ts`): ±8% al massimo
+tra amici o nemici. Gli infortuni "senza contatto" dipendono dal rischio personale e chi è rientrato da poco può ricadere.
+Con `FLAGS.psychology = false` morale e relazioni non entrano in campo (test A/B, `pnpm sim -- --psych 20`).
+
 ## Voti
 Base 6,2 + gol, assist, passaggi chiave, tiri in porta, recuperi, dribbling, precisione passaggi, parate,
 porta inviolata/gol subiti per i difensori, risultato; − cartellini. Media ≈ 6,65, 5% sopra l'8.

@@ -1,16 +1,21 @@
 // Punto d'ingresso della partita: formazioni, disponibilità, applicazione dei risultati al mondo.
-import { MATCH } from './balance.ts';
+import { MATCH, TRAIN } from './balance.ts';
+import { injure, matchInjuryP, relapseRisk } from './injuries.ts';
+import { afterMatch } from './morale.ts';
 import { simulate, type TeamSetup } from './match/engine.ts';
 import { validRole } from './match/roles.ts';
 import { FORMATIONS, defaultRoles, type Slot } from './match/tactics.ts';
 import { FORMATION_IDS, type Club, type FormationId, type Fixture, type Player, type WorldState } from './model.ts';
-import { addNews } from './news.ts';
+import { addCause, addNews, pName } from './news.ts';
 import { ratingAt } from './players.ts';
 import type { Rng } from './rng.ts';
 
 export type LineupSlot = { slot: Slot; player: Player; rating: number };
 
 export const isAvailable = (p: Player) => p.condition.injuryDays === 0 && p.discipline.ban === 0;
+/** selezionabile dal proprio club: disponibile e non messo fuori rosa */
+export const canPlay = (club: Club, p: Player) => isAvailable(p) && !club.excluded.includes(p.id);
+export const familiarityOf = (club: Club, f: FormationId = club.tactic.formation) => club.familiarity[f] ?? TRAIN.famOther;
 
 /** rendimento atteso di p nello slot, stanchezza compresa */
 export const slotRating = (p: Player, slot: Slot) => ratingAt(p, slot.pos) * (0.7 + (0.3 * p.condition.fitness) / 100);
@@ -20,12 +25,12 @@ export const slotRating = (p: Player, slot: Slot) => ratingAt(p, slot.pos) * (0.
  * le scelte disponibili si rispettano, gli altri slot li riempie il migliore rimasto (greedy, portiere prima).
  */
 export function pickXI(world: WorldState, club: Club, formation: FormationId = club.tactic.formation, fixed: readonly (number | null)[] = []): LineupSlot[] {
-  const pool = club.playerIds.map((id) => world.players[id]!).filter(isAvailable);
+  const pool = club.playerIds.map((id) => world.players[id]!).filter((p) => canPlay(club, p));
   const slots = FORMATIONS[formation];
   const chosen: (Player | undefined)[] = slots.map((_, i) => {
     const id = fixed[i];
     const p = id != null ? world.players[id] : undefined;
-    return p && p.clubId === club.id && isAvailable(p) ? p : undefined;
+    return p && p.clubId === club.id && canPlay(club, p) ? p : undefined;
   });
   const used = new Set(chosen.filter((p) => p).map((p) => p!.id));
   return slots.map((slot, i) => {
@@ -79,11 +84,12 @@ export function userXI(world: WorldState, club: Club): LineupSlot[] {
 function setup(world: WorldState, club: Club, xi: LineupSlot[], mentality: number): TeamSetup {
   const inXI = new Set(xi.map((e) => e.player.id));
   const bench = club.playerIds.map((id) => world.players[id]!)
-    .filter((p) => !inXI.has(p.id) && isAvailable(p))
+    .filter((p) => !inXI.has(p.id) && canPlay(club, p))
     .sort((a, b) => b.ca - a.ca)
     .slice(0, MATCH.benchSize);
   return {
-    club, tactic: club.tactic, mentality, bench,
+    club, tactic: club.tactic, mentality, bench, familiarity: familiarityOf(club),
+    injuryP: (p) => ({ muscle: matchInjuryP(p, world.season), relapse: relapseRisk(p) }),
     xi: xi.map((e, i) => ({ player: e.player, slot: e.slot, role: validRole(club.tactic.roles[i], e.slot.pos) })),
   };
 }
@@ -111,19 +117,27 @@ export function playMatch(world: WorldState, rng: Rng, fx: Fixture) {
     const club = clubs[side]!;
     const mine = club.id === me;
     const playedIds = new Set(list.map((m) => m.p.id));
+    const mins = new Map(list.map((m) => [m.p.id, { mins: Math.max(1, m.st.to - m.st.from), started: m.st.from === 0 }]));
     for (const m of list) {
       const p = m.p;
-      const name = `${p.firstName} ${p.lastName}`;
+      const name = pName(p);
       const rating = result.ratings[p.id]!;
       p.stats.apps++;
       p.stats.goals += m.st.goals;
       p.stats.assists += m.st.assists;
       p.stats.ratingSum += rating;
       p.form = [...p.form.slice(-4), rating];
-      p.condition.fitness = Math.round(m.energy);
+      const c = p.condition;
+      const share = mins.get(p.id)!.mins / 90;
+      c.fitness = Math.round(m.energy);
+      c.sharpness = Math.min(100, c.sharpness + TRAIN.sharpMatch * share);
+      c.fatigue = Math.min(100, Math.round((c.fatigue + TRAIN.fatigueMatch * share) * 10) / 10);
       if (m.st.injured) {
-        p.condition.injuryDays = 1 + Math.round(-Math.log(1 - rng.next()) * MATCH.injuryMeanDays);
-        if (mine) addNews(world, 'news.injury', { name, days: p.condition.injuryDays });
+        const type = injure(rng, p, m.st.injuryCtx);
+        if (mine) {
+          addNews(world, 'news.injury', { name, injury: type.id, days: c.injuryDays });
+          addCause(world, p, 'cause.injury', { injury: type.id, days: c.injuryDays });
+        }
       }
       if (m.st.red) {
         p.stats.reds++;
@@ -143,5 +157,7 @@ export function playMatch(world: WorldState, rng: Rng, fx: Fixture) {
       const p = world.players[id]!;
       if (p.discipline.ban > 0 && !playedIds.has(id)) p.discipline.ban--;
     }
+    const diff = side === 0 ? result.hg - result.ag : result.ag - result.hg;
+    afterMatch(world, club, mins, diff > 0);
   });
 }
