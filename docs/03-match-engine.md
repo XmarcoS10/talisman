@@ -47,6 +47,13 @@ Nella scelta del passaggio il peso di ogni compagno è moltiplicato per l'intesa
 tra amici o nemici. Gli infortuni "senza contatto" dipendono dal rischio personale e chi è rientrato da poco può ricadere.
 Con `FLAGS.psychology = false` morale e relazioni non entrano in campo (test A/B, `pnpm sim -- --psych 20`).
 
+## Dal registro al campo 2D (F6)
+`runMatch()` esegue la partita un'azione alla volta: la schermata Live simula solo quanto le serve per stare davanti alla
+riproduzione, così cambi e istruzioni decisi in panchina contano davvero. Ogni azione scrive un `TraceStep` con le posizioni
+di tutti in coordinate globali (la squadra ospite gioca a specchio), palla, portatore, esito, minuto e punteggio.
+`ui/match/playback.ts` interpola: i giocatori corrono verso la posizione del fotogramma successivo, la palla percorre la
+traiettoria dell'azione nella prima parte dell'intervallo e poi aspetta. Decisioni in `docs/adr/0005-partita-2d.md`.
+
 ## Voti
 Base 6,2 + gol, assist, passaggi chiave, tiri in porta, recuperi, dribbling, precisione passaggi, parate,
 porta inviolata/gol subiti per i difensori, risultato; − cartellini. Media ≈ 6,65, 5% sopra l'8.

@@ -31,5 +31,7 @@ Report completi in questa cartella (`f5-*.md`, `development.md`, `psychology.md`
 | Monte ingaggi / fatturato | 55 – 80% | — (F8) |
 | Voto medio in pagella | ~6,6-6,8 | ✅ 6,65 (F4) |
 | Tempo avanzamento giornata (UI, con salvataggio) | < 400 ms (P5: < 100 ms) | ✅/⚠️ ~150 ms |
+| Partita live: fotogrammi coerenti e simulazione pigra | test verdi | ✅ `playback.test.ts` |
+| Partita live: fps con 4× | > 55 fps | da provare a mano (il browser ferma l'animazione in secondo piano) |
 | Tempo stagione batch | < 25 s | ✅ ~3,9 s |
 | 10.000 partite | < 20 s | ❌ ~41 s |

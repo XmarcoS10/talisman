@@ -144,3 +144,27 @@ select { background: var(--surface-1); color: var(--text-1); border: 1px solid v
 .chart polyline { fill: none; stroke: var(--accent); stroke-width: 2; }
 .chart circle { fill: var(--accent); }
 .chart text { font: 10px var(--font-num); fill: var(--text-3); }
+
+/* partita live (F6) */
+.live { display: grid; grid-template-columns: 250px minmax(0, 1fr) 330px; gap: var(--s-4); padding: var(--s-4); height: 100%; box-sizing: border-box; overflow: auto; }
+.live-bench { align-content: start; }
+.live-bench td { height: 26px; }
+.live-head { flex-direction: row; align-items: center; justify-content: center; gap: var(--s-5); padding: var(--s-2) var(--s-4); }
+.live-head .big { font: 700 30px var(--font-num); }
+.pitch2d { width: 100%; aspect-ratio: 16 / 9; border-radius: var(--r-2); background: var(--bg-0); border: 1px solid var(--border); display: block; }
+.live-controls { flex-direction: row; align-items: center; flex-wrap: wrap; gap: var(--s-2); padding: var(--s-2) var(--s-3); }
+.timeline { position: relative; height: 26px; background: var(--surface-2); border-radius: var(--r-1); }
+.timeline .bar { position: absolute; inset: 0 auto 0 0; background: color-mix(in srgb, var(--accent) 25%, transparent); border-radius: var(--r-1); }
+.timeline .mark { position: absolute; top: 2px; transform: translateX(-50%); background: none; border: 0; font-size: 12px; line-height: 22px; padding: 0 2px; filter: grayscale(0.6); }
+.timeline .mark.me { filter: none; }
+.live-analyst { align-content: start; }
+.live-analyst .analyst { border-top: 1px solid var(--border); padding-top: var(--s-3); }
+.live-analyst .analyst p { margin: var(--s-2) 0 0; }
+.river line { stroke: var(--border); }
+.river polyline { fill: none; stroke: var(--accent); stroke-width: 2; }
+.zones { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-1); }
+.zones div { display: grid; justify-items: center; padding: var(--s-2) 0; border-radius: var(--r-1); font-size: 11px; }
+.network rect { fill: var(--pitch-1); }
+.network line { stroke: var(--accent); opacity: 0.55; }
+.network circle { fill: var(--surface-3); stroke: var(--accent); stroke-width: 1.5; }
+.network text { font: 9px var(--font-ui); fill: var(--text-2); }

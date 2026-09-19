@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import type { Fixture, WorldState } from '../engine/model.ts';
-import { advance, endSeason, isSeasonOver, standings, type SeasonSummary } from '../engine/world.ts';
+import { advance, beginMatchDay, endSeason, isSeasonOver, nextMatchDay, standings, type LiveDay, type SeasonSummary } from '../engine/world.ts';
 import { Crest } from './Crest.tsx';
 import { fmtDate, fmtMoney, fmtSeason, t } from './i18n.ts';
 import { ClubView } from './screens/ClubView.tsx';
 import { Desk } from './screens/Desk.tsx';
 import { Dressing } from './screens/Dressing.tsx';
 import { Fixtures } from './screens/Fixtures.tsx';
+import { Live } from './screens/Live.tsx';
 import { MatchModal } from './screens/MatchReport.tsx';
 import { SeasonModal } from './screens/Modals.tsx';
 import { PlayerView } from './screens/PlayerView.tsx';
@@ -32,6 +33,7 @@ export function App() {
   const [world, setWorld] = useState<WorldState | null>(null);
   const [screen, setScreen] = useState<Screen>({ name: 'desk' });
   const [modal, setModal] = useState<Modal>(null);
+  const [liveDay, setLiveDay] = useState<LiveDay | null>(null);
   const [, rerender] = useReducer((x: number) => x + 1, 0); // il motore muta il mondo sul posto
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -60,22 +62,37 @@ export function App() {
       // "/" = cerca giocatori e club
       if (e.key === '/' && !typing && world) { e.preventDefault(); searchRef.current?.focus(); return; }
       // Spazio = continua, ovunque tranne nei campi (chiude anche il risultato aperto)
-      if (e.key !== ' ' || typing) return;
+      if (e.key !== ' ' || typing || liveDay) return;
       e.preventDefault();
       if (modal) setModal(null);
       else onAdvance();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onAdvance, modal, world]);
+  }, [onAdvance, modal, world, liveDay]);
 
-  const open = (w: WorldState) => { setWorld(w); setScreen({ name: 'desk' }); setModal(null); };
+  const open = (w: WorldState) => { setWorld(w); setScreen({ name: 'desk' }); setModal(null); setLiveDay(null); };
   if (!world) return <Start onLoad={open} onStart={(w) => { autosave(w); open(w); }} />;
+  if (liveDay) {
+    return (
+      <Live world={world} live={liveDay} onFinish={(played) => {
+        setLiveDay(null);
+        const others = played.slice(1).filter((f) => world.clubs[f.home]!.compId === world.clubs[world.manager.clubId]!.compId);
+        setModal({ kind: 'match', fx: played[0]!, others });
+        autosave(world);
+        rerender();
+      }} />
+    );
+  }
 
   const club = world.clubs[world.manager.clubId]!;
   const openPlayer = (id: number) => setScreen({ name: 'player', id, back: screen });
   const openClub = (id: number) => setScreen(id === club.id ? { name: 'squad' } : { name: 'club', id, back: screen });
   const changed = () => { autosave(world); rerender(); };
+  // gioca il club dell'utente nel prossimo turno? allora si può seguire dal vivo
+  const day = nextMatchDay(world);
+  const myMatchDay = day !== null && Object.values(world.competitions).some((c) =>
+    c.fixtures.some((f) => f.day === day && !f.result && (f.home === club.id || f.away === club.id)));
 
   return (
     <div className="shell">
@@ -88,6 +105,7 @@ export function App() {
           <span className="num">{fmtDate(world.season, world.day)}</span>
           <span className="muted">{t('top.balance')} <span className="num">{fmtMoney(club.balance)}</span></span>
         </div>
+        {myMatchDay && <button className="btn" onClick={() => setLiveDay(beginMatchDay(world))}>{t('top.watch')} ▶</button>}
         <button className="btn primary" onClick={onAdvance} title={t('top.advanceHint')}>
           {t(isSeasonOver(world) ? 'top.endSeason' : 'top.advance')} ▸
         </button>

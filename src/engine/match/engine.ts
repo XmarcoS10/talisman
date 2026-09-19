@@ -11,7 +11,7 @@ import type { Slot } from './tactics.ts';
 
 export interface PStats {
   passes: number; passesOk: number; keyPasses: number; shots: number; onTarget: number; goals: number; assists: number;
-  tackles: number; dribbles: number; saves: number; fouls: number; yellows: number; red: boolean; injured: boolean; conceded: number;
+  tackles: number; dribbles: number; duelsLost: number; saves: number; fouls: number; yellows: number; red: boolean; injured: boolean; conceded: number;
   injuryCtx: 'contact' | 'muscle' | 'relapse';
   from: number; // minuti in campo: da … a
   to: number;
@@ -37,9 +37,10 @@ export interface TeamSetup {
   bench: Player[];
   familiarity: number; // 0-100, col modulo in uso
   injuryP: (p: Player) => { muscle: number; relapse: number }; // rischio personale di infortunio in partita
+  auto?: boolean; // false: cambi e mentalità li decide l'utente dal vivo (schermata Live)
 }
 
-interface Team {
+export interface Team {
   side: 0 | 1;
   tactic: Tactic;
   baseMentality: number; // quella decisa dall'allenatore
@@ -50,13 +51,18 @@ interface Team {
   subs: number;
   stats: SideStats;
   fam: number;
+  auto: boolean; // false = i cambi li fa l'utente dalla panchina (F6)
 }
 
-/** registro delle azioni: diagnostica del bilanciamento e, in F6, sorgente del replay 2D */
+/**
+ * registro delle azioni: diagnostica del bilanciamento e sorgente del replay 2D (F6).
+ * Posizioni e palla sono in coordinate di campo "globali": x 0-12 verso la porta della squadra 1, y 0-8.
+ */
 export interface TraceStep {
   half: number;
-  t: number;
-  side: 0 | 1;
+  t: number; // secondi dall'inizio del tempo
+  min: number;
+  side: 0 | 1; // chi ha la palla
   kind: 'pass' | 'dribble' | 'shot' | 'cross';
   bx: number;
   by: number;
@@ -65,6 +71,31 @@ export interface TraceStep {
   p?: number;
   xg?: number;
   pressure: number;
+  mom: number; // momentum (+ casa, − ospiti)
+  from: number; // id del portatore
+  to?: number; // id del destinatario (passaggio)
+  ok?: boolean; // azione riuscita
+  ids: number[]; // giocatori in campo, prima quelli della squadra 0
+  px: number[];
+  py: number[];
+  n0: number; // quanti dei primi `ids` sono della squadra 0
+  score: [number, number];
+}
+
+/** partita eseguibile azione per azione: la usa la schermata Live (F6) */
+export interface MatchRun {
+  tick(): void;
+  readonly done: boolean;
+  minute(): number;
+  readonly score: [number, number];
+  readonly events: MatchEvent[];
+  readonly teams: [Team, Team];
+  readonly frames: TraceStep[];
+  /** cambio deciso dall'allenatore: chi esce, chi entra (stesso ruolo) */
+  sub(side: 0 | 1, outId: number, inId: number): boolean;
+  rating(m: MP): number;
+  /** gioca fino alla fine e restituisce il risultato */
+  result(): SimOutput;
 }
 
 export interface SimOutput {
@@ -78,7 +109,7 @@ const LINE = [-0.6, 0, 0.6];
 const TEMPO = [1.2, 1, 0.85];
 const PRESS_STEP = [0.35, 0.5, 0.7]; // quanto esce il pressatore verso il portatore
 
-const newPStats = (from: number): PStats => ({ passes: 0, passesOk: 0, keyPasses: 0, shots: 0, onTarget: 0, goals: 0, assists: 0, tackles: 0, dribbles: 0, saves: 0, fouls: 0, yellows: 0, red: false, injured: false, conceded: 0, injuryCtx: 'contact', from, to: 90 });
+const newPStats = (from: number): PStats => ({ passes: 0, passesOk: 0, keyPasses: 0, shots: 0, onTarget: 0, goals: 0, assists: 0, tackles: 0, dribbles: 0, duelsLost: 0, saves: 0, fouls: 0, yellows: 0, red: false, injured: false, conceded: 0, injuryCtx: 'contact', from, to: 90 });
 const newSide = (): SideStats => ({ possession: 0, shots: 0, onTarget: 0, xg: 0, passes: 0, passesOk: 0, tackles: 0, fouls: 0, corners: 0, offsides: 0, yellows: 0, reds: 0 });
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 /** chi va a prendere un cross: testa, coraggio, e la punta di peso ha la precedenza */
@@ -91,10 +122,15 @@ const mp = (player: Player, slot: Slot, role: RoleId, fam: number, from = 0): MP
   ({ p: player, pos: slot.pos, hx: slot.x, hy: slot.y, roleId: role, role: ROLES[role], marked: 0, x: slot.x, y: slot.y, tx: slot.x, ty: slot.y,
     energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from) });
 
+/** partita simulata tutta d'un fiato (mondo che avanza, sim-cli, test) */
 export function simulate(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: TraceStep[]): SimOutput {
+  return runMatch(rng, setups, trace).result();
+}
+
+export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: TraceStep[]): MatchRun {
   const teams = setups.map((s, i) => {
     const on = s.xi.map((e) => mp(e.player, e.slot, e.role, s.familiarity));
-    return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity };
+    return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity, auto: s.auto !== false };
   }) as [Team, Team];
 
   const events: MatchEvent[] = [];
@@ -240,9 +276,9 @@ export function simulate(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
     if (carrier === m) carrier = nearest(tm, m.x, m.y);
   }
 
-  function substitute(tm: Team, out: MP): boolean {
-    if (tm.subs <= 0 || tm.bench.length === 0) return false;
-    const inP = tm.bench.reduce((a, b) => (ratingAt(b, out.pos) > ratingAt(a, out.pos) ? b : a));
+  function substitute(tm: Team, out: MP, chosen?: Player): boolean {
+    if (tm.subs <= 0 || tm.bench.length === 0 || !out.on) return false;
+    const inP = chosen ?? tm.bench.reduce((a, b) => (ratingAt(b, out.pos) > ratingAt(a, out.pos) ? b : a));
     tm.bench = tm.bench.filter((b) => b !== inP);
     const m = mp(inP, { pos: out.pos, x: out.hx, y: out.hy }, out.roleId, tm.fam, minute()); // entra nello stesso ruolo
     m.x = out.x; m.y = out.y;
@@ -387,12 +423,31 @@ export function simulate(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
     momentum *= MATCH.momentumDecay;
   }
 
+  /** fotogramma per il replay 2D: tutti in campo in coordinate globali (la squadra 1 gioca a specchio) */
+  function frame(o: Option): TraceStep {
+    const ids: number[] = [], px: number[] = [], py: number[] = [];
+    for (const tm of teams)
+      for (const m of tm.on) {
+        ids.push(m.p.id);
+        px.push(tm.side === 0 ? m.x : 12 - m.x);
+        py.push(tm.side === 0 ? m.y : 8 - m.y);
+      }
+    const gx = (x: number) => (s === 0 ? x : 12 - x);
+    const gy = (y: number) => (s === 0 ? y : 8 - y);
+    const f: TraceStep = {
+      half, t, min: minute(), side: s, kind: o.kind, bx: gx(bx), by: gy(by), pressure: 0, mom: Math.round(momentum), from: carrier.p.id,
+      ids, px, py, n0: teams[0].on.length, score: [score[0], score[1]],
+      ...(o.kind === 'pass' ? { tx: gx(o.tx), ty: gy(o.ty), p: o.p, to: (o.to as MP).p.id }
+        : o.kind === 'dribble' ? { tx: gx(o.tx), ty: gy(o.ty), p: o.p }
+        : o.kind === 'shot' ? { xg: o.xg } : { p: o.p }),
+    };
+    trace!.push(f);
+    return f;
+  }
+
   /** esegue l'opzione scelta dal portatore */
   function act(att: Team, def: Team, c: MP, defX: number[], defY: number[], o: Option) {
-    if (trace) {
-      trace.push({ half, t, side: s, kind: o.kind, bx, by, pressure: 0,
-        ...(o.kind === 'pass' || o.kind === 'dribble' ? { tx: o.tx, ty: o.ty, p: o.p } : o.kind === 'shot' ? { xg: o.xg } : { p: o.p }) });
-    }
+    const f = trace ? frame(o) : null;
     switch (o.kind) {
       case 'pass': {
         att.stats.passes++; c.st.passes++;
@@ -402,6 +457,7 @@ export function simulate(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
           gain(def, nearest(def, 12 - o.tx, 8 - o.ty));
         } else if (rng.next() < o.p) {
           att.stats.passesOk++; c.st.passesOk++;
+          if (f) f.ok = true;
           lastPass = c;
           chain++;
           carrier = o.to as MP;
@@ -427,25 +483,30 @@ export function simulate(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
         if (tk && rng.next() < foulP) foul(tk, c);
         else if (rng.next() < o.p) {
           c.st.dribbles++;
+          if (f) f.ok = true;
           bx = o.tx; by = o.ty;
           lastPass = null;
           t += MATCH.dribbleTime;
         } else {
           const w = tk ?? nearest(def, 12 - bx, 8 - by);
-          w.st.tackles++; def.stats.tackles++;
+          w.st.tackles++; def.stats.tackles++; c.st.duelsLost++;
           t += MATCH.turnoverTime + 1;
           gain(def, w);
         }
         break;
       }
-      case 'shot':
+      case 'shot': {
+        const before = score[s];
         shoot(c, o.xg, 'open');
+        if (f) f.ok = score[s] > before;
         break;
+      }
       case 'cross': {
         att.stats.passes++; c.st.passes++;
         t += MATCH.passTime;
         if (rng.next() < o.p) {
           att.stats.passesOk++; c.st.passesOk++;
+          if (f) f.ok = true;
           const inBoxMates = att.on.filter((m) => m !== c && m.pos !== 'GK' && m.x >= 9.5);
           const header = inBoxMates.length
             ? inBoxMates.reduce((a, b) => (aerialScore(b) > aerialScore(a) ? b : a))
@@ -471,46 +532,81 @@ export function simulate(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
   }
 
   let subIdx = 0;
-  for (half = 1; half <= 2; half++) {
+  let length = 0;
+  let output: SimOutput | null = null;
+
+  function startHalf(h: number) {
+    half = h;
     t = 0;
-    const length = 45 * 60 + (half === 1 ? rng.int(0, 3) : rng.int(2, 6)) * 60;
-    kickoff(half === 1 ? 0 : 1);
-    while (t < length) {
-      step();
-      const min = minute();
-      // stato della partita: nel finale chi è avanti si copre, chi è sotto si sbilancia
-      for (const tm of teams) {
-        const diff = score[tm.side] - score[tm.side === 0 ? 1 : 0];
-        let m = tm.baseMentality;
-        if (min >= MATCH.protectLeadFrom && diff > 0) m--;
-        if (min >= MATCH.chaseFrom && diff < 0) m++;
-        if (min >= MATCH.chaseFrom + 15 && diff < 0) m++;
-        tm.mentality = clamp(m, 1, 5);
-      }
-      // cambi: ai minuti previsti esce il più stanco, se è sotto soglia
-      if (subIdx < MATCH.subMinutes.length && min >= MATCH.subMinutes[subIdx]!) {
-        subIdx++;
-        for (const tm of teams) {
-          const tired = tm.on.filter((m) => m.pos !== 'GK').sort((a, b) => a.energy - b.energy)[0];
-          if (tired && tired.energy < MATCH.subEnergy) substitute(tm, tired);
-        }
-      }
-      for (const sc of scheduled) if (sc.at <= min && sc.who.on && !sc.who.st.injured) injure(sc.team, sc.who, sc.ctx);
-    }
+    length = 45 * 60 + (h === 1 ? rng.int(0, 3) : rng.int(2, 6)) * 60;
+    kickoff(h === 1 ? 0 : 1);
   }
 
-  const total = teams[0].stats.possession + teams[1].stats.possession || 1;
-  const poss0 = Math.round((teams[0].stats.possession / total) * 100);
-  teams[0].stats.possession = poss0;
-  teams[1].stats.possession = 100 - poss0;
-  for (const tm of teams) tm.stats.xg = Math.round(tm.stats.xg * 100) / 100;
+  function finish() {
+    const total = teams[0].stats.possession + teams[1].stats.possession || 1;
+    const poss0 = Math.round((teams[0].stats.possession / total) * 100);
+    teams[0].stats.possession = poss0;
+    teams[1].stats.possession = 100 - poss0;
+    for (const tm of teams) tm.stats.xg = Math.round(tm.stats.xg * 100) / 100;
+    const ratings: Record<number, number> = {};
+    teams.forEach((tm, i) => {
+      const diff = score[i]! - score[1 - i]!;
+      for (const m of tm.played) ratings[m.p.id] = rate(m, diff, score[1 - i]!);
+    });
+    output = { result: { hg: score[0], ag: score[1], events, stats: [teams[0].stats, teams[1].stats], ratings }, played: [teams[0].played, teams[1].played] };
+  }
 
-  const ratings: Record<number, number> = {};
-  teams.forEach((tm, i) => {
-    const diff = score[i]! - score[1 - i]!;
-    for (const m of tm.played) ratings[m.p.id] = rate(m, diff, score[1 - i]!);
-  });
-  return { result: { hg: score[0], ag: score[1], events, stats: [teams[0].stats, teams[1].stats], ratings }, played: [teams[0].played, teams[1].played] };
+  /** una azione del portatore, più quello che succede intorno (stato della partita, cambi, infortuni) */
+  function tick() {
+    if (output) return;
+    step();
+    const min = minute();
+    // stato della partita: nel finale chi è avanti si copre, chi è sotto si sbilancia
+    for (const tm of teams) {
+      const diff = score[tm.side] - score[tm.side === 0 ? 1 : 0];
+      let m = tm.baseMentality;
+      if (min >= MATCH.protectLeadFrom && diff > 0) m--;
+      if (min >= MATCH.chaseFrom && diff < 0) m++;
+      if (min >= MATCH.chaseFrom + 15 && diff < 0) m++;
+      tm.mentality = clamp(m, 1, 5);
+    }
+    // cambi: ai minuti previsti esce il più stanco, se è sotto soglia
+    if (subIdx < MATCH.subMinutes.length && min >= MATCH.subMinutes[subIdx]!) {
+      subIdx++;
+      for (const tm of teams) {
+        if (tm.auto === false) continue; // la panchina la gestisce l'utente
+        const tired = tm.on.filter((m) => m.pos !== 'GK').sort((a, b) => a.energy - b.energy)[0];
+        if (tired && tired.energy < MATCH.subEnergy) substitute(tm, tired);
+      }
+    }
+    for (const sc of scheduled) if (sc.at <= min && sc.who.on && !sc.who.st.injured) injure(sc.team, sc.who, sc.ctx);
+    if (t >= length) { if (half === 1) startHalf(2); else finish(); }
+  }
+
+  startHalf(1);
+  return {
+    tick,
+    get done() { return output !== null; },
+    minute,
+    score,
+    events,
+    teams,
+    frames: trace ?? [],
+    sub(side, outId, inId) {
+      const tm = teams[side];
+      const out = tm.on.find((m) => m.p.id === outId);
+      const inP = tm.bench.find((b) => b.id === inId);
+      return out && inP ? substitute(tm, out, inP) : false;
+    },
+    rating(m) {
+      const i = teams[0].played.includes(m) ? 0 : 1;
+      return rate(m, score[i]! - score[1 - i]!, score[1 - i]!);
+    },
+    result() {
+      while (!output) tick();
+      return output;
+    },
+  };
 }
 
 /** voto in pagella 3-10 (algoritmo documentato: base 6 + contributi) */

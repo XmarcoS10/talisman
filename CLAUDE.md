@@ -7,6 +7,7 @@ Marco non programma: fa collaudo, playtest e decisioni. Il codice lo scrive Clau
 - `src/engine/` — core di simulazione puro. NON importa React, DOM, Electron o `node:*` (lo verifica `engine.test.ts`).
 - `src/sim-cli/` — laboratorio di bilanciamento in Node (`pnpm sim`).
 - `src/ui/` — React. Stringhe in `it.json` via `t()`, colori solo dai token di `tokens.css`.
+- `src/ui/match/` — campo 2D: interpolazione dal registro del motore, disegno su canvas, regole dell'analista.
 - `electron/main.cjs` — guscio desktop.
 
 ## Regole

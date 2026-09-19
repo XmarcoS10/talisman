@@ -11,7 +11,7 @@ import { Status } from './Squad.tsx';
 type Instr = 'pressing' | 'tempo' | 'width' | 'line' | 'directness';
 const INSTRUCTIONS: Instr[] = ['pressing', 'tempo', 'width', 'line', 'directness'];
 
-function Seg({ label, value, options, onChange }: { label: string; value: number; options: string[]; onChange: (v: number) => void }) {
+export function Seg({ label, value, options, onChange }: { label: string; value: number; options: string[]; onChange: (v: number) => void }) {
   return (
     <div className="seg-row">
       <span className="muted">{label}</span>

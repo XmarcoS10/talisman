@@ -1,7 +1,8 @@
 // Mondo: generazione, calendario, avanzamento, classifiche, cambio stagione.
 import { BALANCE, MATCH, SQUAD_TEMPLATE, TRAIN } from './balance.ts';
 import { heal } from './injuries.ts';
-import { aiSetFormation, playMatch } from './match.ts';
+import { aiSetFormation, applyMatch, matchSetups, playMatch } from './match.ts';
+import { runMatch, type MatchRun } from './match/engine.ts';
 import { defaultTactic } from './match/tactics.ts';
 import type { Club, ClubId, Competition, Fixture, Player, Position, WorldState } from './model.ts';
 import { CITIES, CLUB_PREFIX, KIT_COLORS, NATIONS } from './names.ts';
@@ -148,7 +149,46 @@ export function advance(world: WorldState): Fixture[] {
   return played;
 }
 
-export type TableRow = { clubId: ClubId; p: number; w: number; d: number; l: number; gf: number; ga: number; pts: number };
+/** giornata seguita dal vivo (F6): la partita dell'utente si gioca azione per azione, il resto alla fine */
+export interface LiveDay {
+  day: number;
+  fx: Fixture;
+  run: MatchRun;
+  rng: Rng;
+}
+
+/** apre la giornata: se gioca il club dell'utente restituisce la partita da seguire, altrimenti null (usa advance) */
+export function beginMatchDay(world: WorldState): LiveDay | null {
+  const day = nextMatchDay(world);
+  if (day === null) return null;
+  const me = world.manager.clubId;
+  let mine: Fixture | undefined;
+  for (const comp of Object.values(world.competitions))
+    for (const fx of comp.fixtures) if (fx.day === day && (fx.home === me || fx.away === me)) mine = fx;
+  if (!mine) return null;
+  const rng = new Rng(world.rng);
+  passDays(world, rng, day - world.day, 0);
+  world.day = day;
+  return { day, fx: mine, run: runMatch(rng, matchSetups(world, mine, true), []), rng };
+}
+
+/** chiude la giornata: applica la partita seguita, gioca le altre e porta il calendario alla prossima */
+export function finishMatchDay(world: WorldState, live: LiveDay): Fixture[] {
+  const { day, rng } = live;
+  applyMatch(world, rng, live.fx, live.run.result());
+  const played: Fixture[] = [live.fx];
+  for (const comp of Object.values(world.competitions))
+    for (const fx of comp.fixtures)
+      if (fx.day === day && fx !== live.fx && !fx.result) { playMatch(world, rng, fx); played.push(fx); }
+  if ((day / DAYS_BETWEEN_ROUNDS) % 4 === 0) for (const p of Object.values(world.players)) p.caLog.push(p.ca);
+  const next = nextMatchDay(world);
+  passDays(world, rng, (next ?? day + 1) - day, next === null ? 0 : 1);
+  world.day = next ?? day + 1;
+  world.rng = rng.s;
+  return played;
+}
+
+export type TableRow ={ clubId: ClubId; p: number; w: number; d: number; l: number; gf: number; ga: number; pts: number };
 
 /** classifica derivata dai risultati (non salvata) */
 export function standings(world: WorldState, comp: Competition): TableRow[] {

@@ -2,7 +2,7 @@
 import { MATCH, TRAIN } from './balance.ts';
 import { injure, matchInjuryP, relapseRisk } from './injuries.ts';
 import { afterMatch } from './morale.ts';
-import { simulate, type TeamSetup } from './match/engine.ts';
+import { simulate, type SimOutput, type TeamSetup } from './match/engine.ts';
 import { validRole } from './match/roles.ts';
 import { FORMATIONS, defaultRoles, type Slot } from './match/tactics.ts';
 import { FORMATION_IDS, type Club, type FormationId, type Fixture, type Player, type WorldState } from './model.ts';
@@ -100,17 +100,28 @@ function aiMentality(mine: number, theirs: number, home: boolean) {
   return diff > 8 ? 4 : diff < -8 ? 2 : 3;
 }
 
-export function playMatch(world: WorldState, rng: Rng, fx: Fixture) {
+/** formazioni e istruzioni delle due squadre; `live` = la panchina del club dell'utente la gestisce lui (F6) */
+export function matchSetups(world: WorldState, fx: Fixture, live = false): [TeamSetup, TeamSetup] {
   const me = world.manager.clubId;
   const clubs = [world.clubs[fx.home]!, world.clubs[fx.away]!] as const;
   const xis = clubs.map((c) => (c.id === me ? userXI(world, c) : pickXI(world, c)));
   const str = xis.map(xiStrength);
-  const setups = clubs.map((c, i) => {
-    const mentality = c.id === me ? c.tactic.mentality : aiMentality(str[i]!, str[1 - i]!, i === 0);
-    return setup(world, c, xis[i]!, mentality);
+  return clubs.map((c, i) => {
+    const mine = c.id === me;
+    const mentality = mine ? c.tactic.mentality : aiMentality(str[i]!, str[1 - i]!, i === 0);
+    return { ...setup(world, c, xis[i]!, mentality), auto: !(mine && live) };
   }) as [TeamSetup, TeamSetup];
+}
 
-  const { result, played } = simulate(rng, setups);
+export function playMatch(world: WorldState, rng: Rng, fx: Fixture) {
+  applyMatch(world, rng, fx, simulate(rng, matchSetups(world, fx)));
+}
+
+/** scrive nel mondo quello che è successo in partita: statistiche, condizione, infortuni, cartellini, spogliatoio */
+export function applyMatch(world: WorldState, rng: Rng, fx: Fixture, out: SimOutput) {
+  const me = world.manager.clubId;
+  const clubs = [world.clubs[fx.home]!, world.clubs[fx.away]!] as const;
+  const { result, played } = out;
   fx.result = result;
 
   played.forEach((list, side) => {
