@@ -69,6 +69,35 @@ describe('partita in 2D (F6)', () => {
     expect(run.frames.at(-1)!.ids).toContain(inP.id);
   });
 
+  it('in trasferta il campo si specchia: attacchiamo sempre verso destra, in tutti e due i tempi', () => {
+    // stessa partita, ma l'utente allena la squadra ospite
+    const w = newWorld(17);
+    const [home, away] = w.competitions.ITA1!.clubIds;
+    w.manager.clubId = away!;
+    const fx: Fixture = { day: 0, home: home!, away: away! };
+    const run = runMatch(new Rng(4), matchSetups(w, fx, true), []);
+    run.result();
+    const at = timeline(run.frames);
+    const gkId = run.teams[1].on.find((m) => m.pos === 'GK')!.p.id;
+    for (const half of [1, 2]) {
+      // una nostra azione offensiva: nel sistema grezzo la palla va verso x = 0, presentata deve andare verso x = 12
+      const idx = run.frames.findIndex((f) => f.half === half && f.side === 1 && f.bx < 3);
+      expect(idx).toBeGreaterThanOrEqual(0);
+      const raw = sample(run.frames, at, at[idx]!)!;
+      const shown = sample(run.frames, at, at[idx]!, true)!;
+      expect(raw.bx).toBeLessThan(3);
+      expect(shown.bx).toBeGreaterThan(9); // attacchiamo verso destra
+      const gk = shown.ids.indexOf(gkId);
+      expect(gk).toBeGreaterThanOrEqual(0);
+      expect(shown.x[gk]!).toBeLessThan(4); // il nostro portiere resta a sinistra
+      shown.ids.forEach((id, i) => {
+        const j = raw.ids.indexOf(id);
+        expect(shown.x[i]!).toBeCloseTo(12 - raw.x[j]!, 5);
+        expect(shown.y[i]!).toBeCloseTo(8 - raw.y[j]!, 5);
+      });
+    }
+  });
+
   it("l'analista ha almeno 60 regole e dice qualcosa di sensato", () => {
     expect(RULES.length).toBeGreaterThanOrEqual(60);
     expect(new Set(RULES.map((r) => r.id)).size).toBe(RULES.length);

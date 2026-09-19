@@ -3,7 +3,8 @@ import { useEffect, useReducer, useRef, useState } from 'react';
 import type { Fixture, Tactic, WorldState } from '../../engine/model.ts';
 import { finishMatchDay, type LiveDay } from '../../engine/world.ts';
 import { context, pick } from '../match/analyst.ts';
-import { ensure, sample, timeline, SPEEDS } from '../match/playback.ts';
+import { ensure, matchMinutes, sample, timeline, SPEEDS, SPEED_LABELS } from '../match/playback.ts';
+import { lines } from '../match/commentary.ts';
 import { Camera, draw, resetTrail, type Look } from '../match/renderer.ts';
 import { Crest } from '../Crest.tsx';
 import { shortName } from '../bits.tsx';
@@ -26,15 +27,16 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   const said = useRef(new Map<string, number>());
   const [playing, setPlaying] = useState(true);
   const [speed, setSpeed] = useState(0);
-  const [follow, setFollow] = useState(true);
+  const [follow, setFollow] = useState(false); // di default si vede tutto il campo
   const [pause, setPause] = useState(false); // pausa tattica
   const [phrase, setPhrase] = useState<{ id: string; vars: Record<string, string | number> } | null>(null);
   const [, rerender] = useReducer((x: number) => x + 1, 0);
 
   const look: Look = useRef<Look>({
     colors: [clubs[0].colors[0]!, clubs[1].colors[0] === clubs[0].colors[0] ? clubs[1].colors[1]! : clubs[1].colors[0]!],
-    numbers: new Map(), names: new Map(), follow: true,
+    numbers: new Map(), names: new Map(), mine: me,
   }).current;
+  const mirror = me === 1; // la squadra dell'utente attacca sempre verso destra
   run.teams.forEach((tm) => tm.played.forEach((m, i) => {
     if (!look.numbers.has(m.p.id)) look.numbers.set(m.p.id, i + 1);
     look.names.set(m.p.id, shortName(m.p));
@@ -58,7 +60,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
         const w = el.clientWidth * dpr, h = el.clientHeight * dpr;
         if (el.width !== w || el.height !== h) { el.width = w; el.height = h; }
         const ctx = el.getContext('2d');
-        const st = sample(run.frames, at.current, T.current);
+        const st = sample(run.frames, at.current, T.current, mirror);
         if (ctx) {
           if (st) cam.current.step(st.bx, st.by, dt, follow, w, h);
           draw(ctx, w, h, st, look, cam.current, css);
@@ -70,9 +72,9 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [playing, pause, speed, follow, run, look]);
+  }, [playing, pause, speed, follow, run, look, mirror]);
 
-  const st = sample(run.frames, at.current, T.current);
+  const st = sample(run.frames, at.current, T.current, mirror);
   const min = st?.frame.min ?? 0;
   const score = st?.frame.score ?? [0, 0];
   const ctx = context(run, me, run.frames, world.clubs[world.manager.clubId]!.playerIds
@@ -120,10 +122,19 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
           <span className="row">{clubs[1].shortName}<Crest club={clubs[1]} size={28} /></span>
           <span className="num muted">{over ? t('match.fullTime') : `${min}'`}</span>
         </div>
-        <canvas ref={canvas} className="pitch2d" />
+        <div className="pitch-wrap">
+          <canvas ref={canvas} className="pitch2d" />
+          <span className="attack-dir">{t('live.attackRight', { club: clubs[me].shortName })}</span>
+        </div>
+        <div className="panel say">
+          {lines(run.frames, st?.i ?? 0, look.names).map((l, i, a) => (
+            <div key={`${l.key}${i}`} className={`${i === a.length - 1 ? 'now' : 'muted'} ${l.big ? 'big' : ''}`}>{t(l.key, l.vars)}</div>
+          ))}
+        </div>
         <div className="panel live-controls">
           <button className="btn primary" onClick={() => setPlaying(!playing)} disabled={over}>{playing ? '❚❚' : '▶'}</button>
-          <Seg label={t('live.speed')} value={speed} options={['1×', '2×', '4×']} onChange={setSpeed} />
+          <Seg label={t('live.speed')} value={speed} options={[...SPEED_LABELS]} onChange={setSpeed} />
+          <span className="muted">{t('live.duration', { n: matchMinutes(speed) })}</span>
           <button className="btn" onClick={nextEvent} disabled={over}>{t('live.nextEvent')}</button>
           <button className="btn" onClick={() => setPause(!pause)}>{t('live.tacticalPause')}</button>
           <button className="btn" onClick={() => setFollow(!follow)}>{t(follow ? 'live.wide' : 'live.follow')}</button>

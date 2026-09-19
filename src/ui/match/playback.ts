@@ -4,7 +4,11 @@
 // traiettoria dell'azione (passaggio, conduzione, tiro) e poi aspetta.
 import type { MatchRun, TraceStep } from '../../engine/match/engine.ts';
 
-export const SPEEDS = [30, 60, 120] as const; // secondi di gioco per secondo reale (1x = 90' in 3 minuti)
+// secondi di gioco per secondo reale: a 1× un'azione media (≈ 6,7 s di gioco) dura più di un secondo sullo schermo
+export const SPEEDS = [6, 12, 30] as const;
+export const SPEED_LABELS = ['1×', '2×', '5×'] as const;
+/** durata stimata di una partita intera a questa velocità, in minuti */
+export const matchMinutes = (speed: number) => Math.round(5700 / SPEEDS[speed]! / 60);
 const GAP = 2; // secondi di stacco tra primo e secondo tempo
 
 export interface Live {
@@ -16,6 +20,9 @@ export interface Live {
   by: number;
   frame: TraceStep;
   next: TraceStep | null;
+  i: number; // indice del fotogramma corrente
+  carrier: number; // id di chi ha la palla
+  passTo: number | null; // destinatario di un passaggio ancora in volo
 }
 
 /** tempo cumulato: i fotogrammi hanno il tempo del proprio tempo di gioco */
@@ -45,8 +52,12 @@ export function ensure(run: MatchRun, at: number[], until: number) {
 
 const ease = (u: number) => (u < 0.5 ? 2 * u * u : 1 - (1 - u) ** 2 * 2);
 
-/** stato del campo al tempo di riproduzione `T` (secondi cumulati) */
-export function sample(frames: TraceStep[], at: number[], T: number): Live | null {
+/**
+ * stato del campo al tempo di riproduzione `T` (secondi cumulati).
+ * `mirror` specchia tutto per la presentazione: la squadra dell'utente attacca sempre verso destra, in ogni tempo
+ * (il motore non cambia campo all'intervallo: la squadra 0 attacca sempre verso x = 12).
+ */
+export function sample(frames: TraceStep[], at: number[], T: number, mirror = false): Live | null {
   if (!frames.length) return null;
   let i = at.length - 1;
   while (i > 0 && at[i]! > T) i--;
@@ -81,5 +92,14 @@ export function sample(frames: TraceStep[], at: number[], T: number): Live | nul
     bx += (next.bx - bx) * w;
     by += (next.by - by) * w;
   }
-  return { x, y, ids: f.ids, n0: f.n0, bx, by, frame: f, next };
+  if (mirror) {
+    for (let k = 0; k < x.length; k++) { x[k] = 12 - x[k]!; y[k] = 8 - y[k]!; }
+    bx = 12 - bx;
+    by = 8 - by;
+  }
+  return {
+    x, y, ids: f.ids, n0: f.n0, bx, by, frame: f, next, i,
+    carrier: f.from,
+    passTo: f.kind === 'pass' && u < flight ? f.to ?? null : null,
+  };
 }
