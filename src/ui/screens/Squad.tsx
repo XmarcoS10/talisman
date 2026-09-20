@@ -31,7 +31,9 @@ function columns(view: View, season: number, rep: number, world: WorldState, own
     { key: 'ca', label: t('col.ability'), value: (p) => p.ca, cell: (p) => (own ? <Stars ca={p.ca} /> : <Ability world={world} p={p} which="ca" />) },
     { key: 'pa', label: t('col.potential'), value: (p) => p.pa, cell: (p) => (own ? <Stars ca={p.pa} /> : <Ability world={world} p={p} which="pa" />) },
     { key: 'fit', label: t('col.fitness'), num: true, value: (p) => p.condition.fitness, cell: (p) => `${p.condition.fitness}%` },
-    { key: 'morale', label: t('col.morale'), num: true, value: (p) => p.psych.morale, cell: (p) => <b className={`m-text-${moraleClass(p.psych.morale)}`}>{Math.round(p.psych.morale)}</b> },
+    // il morale di uno spogliatoio che non è il tuo non lo puoi sapere
+    { key: 'morale', label: t('col.morale'), num: true, value: (p) => (own ? p.psych.morale : 0),
+      cell: (p) => (own ? <b className={`m-text-${moraleClass(p.psych.morale)}`}>{Math.round(p.psych.morale)}</b> : <span className="muted">?</span>) },
     { key: 'value', label: t('col.value'), num: true, value: (p) => value(p, season, { clubRep: rep }), cell: (p) => fmtMoney(value(p, season, { clubRep: rep })) },
     { key: 'wage', label: t('col.wage'), num: true, value: (p) => p.contract.wage, cell: (p) => fmtMoney(p.contract.wage) },
     { key: 'contract', label: t('col.contract'), num: true, value: (p) => p.contract.until, cell: (p) => <span className={p.contract.until <= season ? 'pos-bad' : ''}>{p.contract.until}</span> },

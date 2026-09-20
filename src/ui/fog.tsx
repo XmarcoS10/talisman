@@ -17,6 +17,9 @@ export function Est({ b }: { b: Band }) {
   );
 }
 
+/** stesse unità delle stelle: 0,5 … 5 */
+const inStars = (ca: number) => Math.max(0.5, Math.min(5, Math.round(((ca - 40) / 130) * 10) / 2));
+
 /** abilità o potenziale: stelle se lo conosci, intervallo se lo stai indovinando */
 export function Ability({ world, p, which }: { world: WorldState; p: Player; which: 'ca' | 'pa' }) {
   const [lo, hi] = range(world, p, which);
@@ -24,7 +27,7 @@ export function Ability({ world, p, which }: { world: WorldState; p: Player; whi
   return (
     <span className="est range" title={t('fog.range', { lo, hi })}>
       <Stars ca={lo} />
-      <i>–{Math.round(((hi - 40) / 130) * 10) / 2}</i>
+      <i>→ {inStars(hi).toString().replace('.', ',')}</i>
     </span>
   );
 }
