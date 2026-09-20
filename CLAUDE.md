@@ -28,6 +28,12 @@ Marco non programma: fa collaudo, playtest e decisioni. Il codice lo scrive Clau
 Settimana = `trainWeek` (allenamento, condizione, infortuni, sviluppo) + `weekPsych` (grafo, morale, contagio) per ogni club,
 chiamate da `passDays` in `world.ts`. Decisioni in `docs/adr/0004-persone.md`.
 
+## Mercato (F7)
+`src/engine/transfers/` (valore, trattativa, agenti, IA di mercato, contratti) e `src/engine/scouting/`
+(nebbia e osservatori). Finestre: estiva in `endSeason`, invernale in `passDays`. Decisioni in
+`docs/adr/0006-mercato.md`, report con `pnpm sim -- --market 5` in `docs/balance/market.md`.
+**Regola §7.6: dei giocatori non dell'utente non si mostra mai un valore vero** — si passa da `scouting/fog.ts`.
+
 ## Motore partita
 Spiegato in `docs/03-match-engine.md`, decisioni in `docs/adr/0002-motore-l2.md` e `docs/adr/0005-partita-2d.md`.
 Le decisioni restano per azione; col registro acceso (partita seguita dal vivo) il motore emette anche `run.track`,
