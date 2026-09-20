@@ -3,6 +3,7 @@ import { ADJACENT, BALANCE } from './balance.ts';
 import { ALL_ATTRS, ATTR_GROUPS, type AttrKey, type Attributes, type Personality, type Player, type Position } from './model.ts';
 import { NATIONS } from './names.ts';
 import type { Rng } from './rng.ts';
+import { value, wageFor } from './transfers/valuation.ts';
 
 // Profili di ruolo: attributi chiave per posizione (GUIDA §5.2). I 25 ruoli fini arrivano con la tattica.
 export const PROFILES: Record<Position, AttrKey[]> = {
@@ -53,16 +54,6 @@ export function age(p: Player, season: number) {
   return season - p.birthYear;
 }
 
-/** valore di mercato (derivato, mai salvato): ~70M a CA 170, ~1.4M a CA 110 */
-export function marketValue(p: Player, season: number): number {
-  const a = age(p, season);
-  let v = Math.pow(10, p.ca / 35 + 3);
-  if (a < 24) v *= 1 + Math.max(0, p.pa - p.ca) / 60;
-  if (a > 30) v *= Math.max(0.2, 1 - (a - 30) * 0.12);
-  if (p.contract.until <= season) v *= 0.5;
-  const mag = Math.pow(10, Math.floor(Math.log10(v)) - 1);
-  return Math.round(v / mag) * mag;
-}
 
 function personality(rng: Rng): Personality {
   const axis = () => Math.round(clamp(rng.gauss(11, 4), 1, 20));
@@ -134,6 +125,6 @@ export function makePlayer(rng: Rng, id: number, pos: Position, meanCA: number, 
   };
   recomputeCA(p);
   p.pa = Math.max(p.pa, p.ca);
-  p.contract.wage = Math.max(30000, Math.round((marketValue(p, season) * 0.12) / 10000) * 10000);
+  p.contract.wage = wageFor(value(p, season));
   return p;
 }

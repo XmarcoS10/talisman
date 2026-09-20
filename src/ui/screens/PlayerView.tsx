@@ -1,5 +1,6 @@
 import { ATTR_GROUPS, type WorldState } from '../../engine/model.ts';
-import { age, marketValue } from '../../engine/players.ts';
+import { age } from '../../engine/players.ts';
+import { value } from '../../engine/transfers/valuation.ts';
 import { Crest } from '../Crest.tsx';
 import { PosBadge, Stars, attrClass, fullName, personalityKey } from '../bits.tsx';
 import { fmtMoney, fmtSeason, t } from '../i18n.ts';
@@ -50,7 +51,7 @@ export function PlayerView({ world, playerId, onBack, onClub, onChange, onPlayer
           <DevPanel world={world} p={p} />
           <div className="panel">
             <h3>{t('player.value')}</h3>
-            <div className="num" style={{ fontSize: 22 }}>{fmtMoney(marketValue(p, world.season))}</div>
+            <div className="num" style={{ fontSize: 22 }}>{fmtMoney(value(p, world.season, { clubRep: world.clubs[p.clubId ?? 0]?.reputation }))}</div>
             <div className="muted">{t('player.contract', { year: p.contract.until })} · {t('player.wage', { wage: fmtMoney(p.contract.wage) })}</div>
           </div>
           <div className="panel">

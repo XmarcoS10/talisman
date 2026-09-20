@@ -247,3 +247,31 @@ export const ADJACENT: Partial<Record<Position, Position[]>> = {
   DL: ['ML'], DR: ['MR'], DC: ['DM'], DM: ['MC', 'DC'], MC: ['DM', 'AMC'],
   ML: ['AML', 'DL'], MR: ['AMR', 'DR'], AMC: ['MC', 'ST'], AML: ['ML', 'ST'], AMR: ['MR', 'ST'], ST: ['AMC'],
 };
+
+// --- mercato (GUIDA §7.5) ---
+// Il valore è derivato, mai salvato. La spina dorsale è 10^(CA/caK + caC): ≈70M a CA 170, ≈1,4M a CA 110.
+export const MARKET = {
+  caK: 35,
+  caC: 3,
+  // età: si paga il picco, si svaluta la coda
+  peakFrom: 24,
+  peakTo: 29,
+  youngGap: 1 / 60, // per punto di potenziale non ancora espresso, sotto i 24 anni
+  youngMax: 1.8, // tetto al premio per il potenziale
+  oldFrom: 30,
+  oldRate: 0.15, // valore perso per anno oltre i 30: a 34 anni vale meno della metà di un 27enne pari abilità
+  oldFloor: 0.2,
+  // contratto residuo (anni): chi scade vale meno perché puoi aspettarlo
+  contractShort: 0.45, // scade a fine stagione
+  contractOne: 0.75,
+  contractLong: 1.08, // tre anni o più
+  // ruolo: il mercato non paga tutti i ruoli allo stesso modo
+  roleMul: { GK: 0.75, DC: 0.85, DL: 0.9, DR: 0.9, DM: 0.95, MC: 1, ML: 1, MR: 1, AMC: 1.15, AML: 1.12, AMR: 1.12, ST: 1.2 } as Record<Position, number>,
+  homeNation: 1.06, // giocatore della stessa nazione della lega: meno attriti, più richiesta
+  repK: 0.0025, // per punto di reputazione del club di appartenenza
+  formK: 0.04, // per punto di media voto sopra o sotto il 6,5 nelle ultime 5
+  formMax: 0.2,
+  wantsOut: 0.85, // chi ha chiesto la cessione ha meno potere contrattuale
+  wageOfValue: 0.12, // stipendio annuo tipico come quota del valore
+  wageMin: 30000,
+} as const;
