@@ -8,8 +8,9 @@ import { initRelations } from './social.ts';
 import { defaultTraining } from './training.ts';
 import { assignAgents } from './transfers/agents.ts';
 import { makeScouts } from './scouting/scouts.ts';
+import { newBoard } from './board/board.ts';
 
-export const SCHEMA_VERSION = 10;
+export const SCHEMA_VERSION = 11;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -88,6 +89,8 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
     for (const c of Object.values(w.clubs as Obj))
       Object.assign(c, { books: [], debts: [], credits: [], sanction: { kind: 'none', seasons: 0, points: 0 } });
   },
+  // 10 → 11 (F8, dirigenza): le quattro barre della fiducia e il contratto con la società
+  (w) => { w.manager.board = newBoard(); },
 ];
 
 export function serialize(world: WorldState): string {

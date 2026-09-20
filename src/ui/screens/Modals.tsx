@@ -3,8 +3,9 @@ import type { SeasonSummary } from '../../engine/world.ts';
 import { Crest } from '../Crest.tsx';
 import { fmtSeason, t } from '../i18n.ts';
 
-export function SeasonModal({ world, summary, myPos, onClose }: { world: WorldState; summary: SeasonSummary; myPos: number; onClose: () => void }) {
+export function SeasonModal({ world, summary, myPos, onClose, onQuit }: { world: WorldState; summary: SeasonSummary; myPos: number; onClose: () => void; onQuit: () => void }) {
   const name = (id: number) => world.clubs[id]!.name;
+  const board = world.manager.board;
   return (
     <div className="overlay">
       <div className="modal">
@@ -21,7 +22,12 @@ export function SeasonModal({ world, summary, myPos, onClose }: { world: WorldSt
         </div>
         <div>{t('season.yourPos', { club: name(world.manager.clubId), pos: myPos })}</div>
         <div className="muted">{t('season.retired', { n: summary.retired })}</div>
-        <button className="btn primary" autoFocus onClick={onClose}>{t('season.next', { season: fmtSeason(world.season) })}</button>
+        <div className={`banner ${board.sacked ? 'warn' : ''}`}>
+          {t(board.sacked ? 'season.sacked' : 'season.boardTrust', { trust: Math.round(board.trust.board) })}
+        </div>
+        {board.sacked
+          ? <button className="btn primary" autoFocus onClick={onQuit}>{t('season.toMenu')}</button>
+          : <button className="btn primary" autoFocus onClick={onClose}>{t('season.next', { season: fmtSeason(world.season) })}</button>}
       </div>
     </div>
   );

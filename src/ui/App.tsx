@@ -3,6 +3,7 @@ import type { Fixture, WorldState } from '../engine/model.ts';
 import { advance, beginMatchDay, endSeason, isSeasonOver, nextMatchDay, standings, type LiveDay, type SeasonSummary } from '../engine/world.ts';
 import { Crest } from './Crest.tsx';
 import { fmtDate, fmtMoney, fmtSeason, t } from './i18n.ts';
+import { BoardView } from './screens/BoardView.tsx';
 import { ClubView } from './screens/ClubView.tsx';
 import { Desk } from './screens/Desk.tsx';
 import { Dressing } from './screens/Dressing.tsx';
@@ -24,11 +25,11 @@ import { Search } from './Search.tsx';
 import { currentSlot, saveTo } from './storage.ts';
 
 type Screen =
-  | { name: 'desk' | 'squad' | 'tactics' | 'training' | 'dressing' | 'market' | 'scouts' | 'finance' | 'tables' | 'fixtures' | 'saves' }
+  | { name: 'desk' | 'squad' | 'tactics' | 'training' | 'dressing' | 'market' | 'scouts' | 'finance' | 'board' | 'tables' | 'fixtures' | 'saves' }
   | { name: 'player'; id: number; back: Screen }
   | { name: 'club'; id: number; back: Screen };
 type Modal = { kind: 'match'; fx: Fixture; others: Fixture[] } | { kind: 'season'; summary: SeasonSummary; myPos: number } | null;
-const NAV = ['desk', 'squad', 'tactics', 'training', 'dressing', 'market', 'scouts', 'finance', 'tables', 'fixtures', 'saves'] as const;
+const NAV = ['desk', 'squad', 'tactics', 'training', 'dressing', 'market', 'scouts', 'finance', 'board', 'tables', 'fixtures', 'saves'] as const;
 
 const autosave = (w: WorldState) => { if (!saveTo(currentSlot(), w)) console.error('Salvataggio fallito'); };
 
@@ -130,6 +131,7 @@ export function App() {
         {screen.name === 'market' && <Market world={world} onPlayer={openPlayer} />}
         {screen.name === 'scouts' && <Scouts world={world} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'finance' && <Finance world={world} />}
+        {screen.name === 'board' && <BoardView world={world} onChange={changed} />}
         {screen.name === 'tables' && <Tables world={world} clubId={club.id} onPlayer={openPlayer} onClub={openClub} />}
         {screen.name === 'fixtures' && <Fixtures world={world} clubId={club.id} />}
         {screen.name === 'saves' && <Saves world={world} onLoad={open} />}
@@ -138,7 +140,7 @@ export function App() {
       </main>
 
       {modal?.kind === 'match' && <MatchModal world={world} fx={modal.fx} others={modal.others} onClose={() => setModal(null)} />}
-      {modal?.kind === 'season' && <SeasonModal world={world} summary={modal.summary} myPos={modal.myPos} onClose={() => setModal(null)} />}
+      {modal?.kind === 'season' && <SeasonModal world={world} summary={modal.summary} myPos={modal.myPos} onClose={() => setModal(null)} onQuit={() => { setModal(null); setWorld(null); }} />}
     </div>
   );
 }

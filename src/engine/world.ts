@@ -7,6 +7,7 @@ import { defaultTactic } from './match/tactics.ts';
 import { PHILOSOPHIES, type Club, type ClubId, type Competition, type Fixture, type Player, type Position, type WorldState } from './model.ts';
 import { CITIES, CLUB_PREFIX, KIT_COLORS, NATIONS } from './names.ts';
 import { seedMinutes, weekPsych } from './morale.ts';
+import { newBoard, endSeasonBoard, weekBoard } from './board/board.ts';
 import { addNews, pName } from './news.ts';
 import { age, emptyStats, makePlayer } from './players.ts';
 import { Rng } from './rng.ts';
@@ -38,7 +39,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
   const rng = new Rng(seed);
   const world: WorldState = {
     schemaVersion: SCHEMA_VERSION, seed, rng: rng.s, season, day: 0,
-    manager: { name: '', clubId: 0, kept: 0, broken: 0 }, players: {}, clubs: {}, competitions: {}, history: [], news: [],
+    manager: { name: '', clubId: 0, kept: 0, broken: 0, board: newBoard() }, players: {}, clubs: {}, competitions: {}, history: [], news: [],
     causal: [], promises: [], talks: [], nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
   };
   const cities = [...CITIES];
@@ -126,6 +127,7 @@ function passDays(world: WorldState, rng: Rng, days: number, weeks: number) {
       weekPsych(world, club, rng);
     }
     weekCosts(world, 1); // stipendi, staff, stadio
+    weekBoard(world); // le quattro barre della fiducia
     weekScouting(world, rng); // gli osservatori diradano la nebbia
     // gli agenti si muovono: quello che riguarda il club dell'utente diventa notizia
     for (const mv of weekAgents(world, rng)) {
@@ -231,8 +233,10 @@ export function standings(world: WorldState, comp: Competition): TableRow[] {
   const rows = new Map<ClubId, TableRow>(comp.clubIds.map((id) => [id, { clubId: id, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }]));
   for (const fx of comp.fixtures) {
     if (!fx.result) continue;
-    const h = rows.get(fx.home)!;
-    const a = rows.get(fx.away)!;
+    // dopo promozioni e retrocessioni il calendario vecchio cita club che non sono più in questa lega
+    const h = rows.get(fx.home);
+    const a = rows.get(fx.away);
+    if (!h || !a) continue;
     const { hg, ag } = fx.result;
     h.p++; a.p++;
     h.gf += hg; h.ga += ag; a.gf += ag; a.ga += hg;
@@ -264,6 +268,7 @@ export function endSeason(world: WorldState): SeasonSummary {
 
   const tables = comps.map((c) => standings(world, c));
   comps.forEach((comp, i) => seasonIncome(world, comp, tables[i]!)); // tv, sponsor, premi
+  endSeasonBoard(world); // il verdetto della dirigenza, prima che cambino le categorie
   settleInstalments(world); // le rate dei trasferimenti
   checkFFP(world); // fair play finanziario: richiamo, blocco, penalizzazione
   comps.forEach((comp, i) => {

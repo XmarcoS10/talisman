@@ -448,3 +448,30 @@ export const FIN = {
   minSquad: 22, // sotto questa rosa non si taglia più
   fireSaleAt: -0.6, // cassa così negativa: si vende per forza
 } as const;
+
+// --- dirigenza e fiducia (GUIDA §7.7) ---
+export const BOARD = {
+  start: 60, // fiducia iniziale delle quattro barre
+  // quanto pesa fare meglio o peggio della posizione attesa, per posizione di scarto
+  boardPerPlace: 2.2,
+  fansPerPlace: 1.8,
+  pressPerPlace: 1.5,
+  formWeight: 0.6, // le ultime cinque partite muovono tifosi e stampa più della classifica
+  squadFromMorale: 0.5, // la barra "squadra" segue il morale medio dello spogliatoio
+  inertia: 0.25, // quanto si muove a settimana verso il bersaglio: la fiducia ha memoria
+  // il contratto esplicito con la dirigenza (la nostra idea: obiettivi negoziati, non subiti)
+  dealMaxSeasons: 3,
+  dealCostPerSeason: 6, // fiducia che costa chiedere tempo
+  dealCostPerPlace: 3, // …e che si guadagna accettando un obiettivo più alto
+  shield: 0.5, // quanto conta meno un anno storto dentro un contratto di transizione
+  // capitale politico: le richieste costano
+  capitalStart: 50,
+  capitalPerSeason: 20, // si ricarica a fine stagione
+  costBudget: 25,
+  costFacility: 35,
+  costSale: 15,
+  budgetGrant: 0.25, // quota di cassa sbloccata da una richiesta di budget accolta
+  // esonero
+  sackAt: 18, // sotto questa fiducia della dirigenza a fine stagione si è fuori
+  warnAt: 32,
+} as const;

@@ -343,13 +343,22 @@ export interface Talk {
 }
 
 
+/** rapporto con la dirigenza (§7.7): quattro barre separate, e un contratto esplicito rinegoziabile */
+export interface Board {
+  trust: { board: number; fans: number; squad: number; press: number }; // 0-100
+  deal: { seasons: number; position: number }; // obiettivo concordato: entro quante stagioni, quale piazzamento
+  capital: number; // capitale politico per le richieste, 0-100
+  verdicts: { season: number; position: number; expected: number; trust: number }[];
+  sacked: boolean;
+}
+
 export interface WorldState {
   schemaVersion: number;
   seed: number;
   rng: RngState;
   season: number; // anno di inizio stagione (2026 = 2026/27)
   day: number; // prossimo giorno da giocare
-  manager: { name: string; clubId: ClubId; kept: number; broken: number }; // promesse mantenute/rotte: memoria pluriennale
+  manager: { name: string; clubId: ClubId; kept: number; broken: number; board: Board }; // promesse mantenute/rotte: memoria pluriennale
   players: Record<PlayerId, Player>;
   clubs: Record<ClubId, Club>;
   agents: Record<AgentId, Agent>;
