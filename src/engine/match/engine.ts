@@ -25,6 +25,8 @@ export interface MP extends OnPitch {
   marked: number; // contrassegno interno della marcatura
   tx: number; // posizione ideale del momento (verso cui corre)
   ty: number;
+  jx: number; // smarcamento casuale dell'azione in corso (estratto una volta per azione)
+  jy: number;
   on: boolean;
   st: PStats;
 }
@@ -82,6 +84,27 @@ export interface TraceStep {
   score: [number, number];
 }
 
+/**
+ * fotogramma di posizione: il campo ogni `MATCH.frameTick` secondi di gioco (F6.2).
+ * Coordinate globali come TraceStep. È la sorgente del 2D: fra un fotogramma e l'altro non succede nulla.
+ */
+export interface PosFrame {
+  at: number; // secondi di riproduzione cumulati (il gioco fermo è compresso)
+  min: number;
+  half: number;
+  ids: number[]; // condiviso finché la formazione non cambia
+  n0: number;
+  xy: Float32Array; // x e y alternate, nell'ordine di `ids`
+  bx: number;
+  by: number;
+  carrier: number; // id di chi ha la palla, 0 se è in viaggio
+  to: number; // id di chi la sta aspettando, 0 se nessuno
+  sc0: number; // punteggio in questo momento
+  sc1: number;
+  step: number; // indice del TraceStep in corso, per il racconto
+  dead: boolean; // gioco fermo
+}
+
 /** partita eseguibile azione per azione: la usa la schermata Live (F6) */
 export interface MatchRun {
   tick(): void;
@@ -91,6 +114,8 @@ export interface MatchRun {
   readonly events: MatchEvent[];
   readonly teams: [Team, Team];
   readonly frames: TraceStep[];
+  /** posizioni continue per il 2D: vuoto se la partita non traccia */
+  readonly track: PosFrame[];
   /** cambio deciso dall'allenatore: chi esce, chi entra (stesso ruolo) */
   sub(side: 0 | 1, outId: number, inId: number): boolean;
   rating(m: MP): number;
@@ -112,6 +137,8 @@ const PRESS_STEP = [0.35, 0.5, 0.7]; // quanto esce il pressatore verso il porta
 const newPStats = (from: number): PStats => ({ passes: 0, passesOk: 0, keyPasses: 0, shots: 0, onTarget: 0, goals: 0, assists: 0, tackles: 0, dribbles: 0, duelsLost: 0, saves: 0, fouls: 0, yellows: 0, red: false, injured: false, conceded: 0, injuryCtx: 'contact', from, to: 90 });
 const newSide = (): SideStats => ({ possession: 0, shots: 0, onTarget: 0, xg: 0, passes: 0, passesOk: 0, tackles: 0, fouls: 0, corners: 0, offsides: 0, yellows: 0, reds: 0 });
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+/** accelerazione e frenata: la palla non viaggia a velocità costante */
+const ease = (u: number) => (u < 0.5 ? 2 * u * u : 1 - (1 - u) ** 2 * 2);
 /** chi va a prendere un cross: testa, coraggio, e la punta di peso ha la precedenza */
 const aerialScore = (m: MP) => m.p.attrs.heading + m.p.attrs.bravery / 2 + m.role.aerial;
 /** logit personale del giorno, centrato sul giocatore "normale" (morale 65, condizione ≥ 80, modulo conosciuto) */
@@ -120,7 +147,7 @@ const dayMod = (p: Player, fam: number) =>
   - MATCH.famK * Math.max(0, 1 - fam / 90);
 const mp = (player: Player, slot: Slot, role: RoleId, fam: number, from = 0): MP =>
   ({ p: player, pos: slot.pos, hx: slot.x, hy: slot.y, roleId: role, role: ROLES[role], marked: 0, x: slot.x, y: slot.y, tx: slot.x, ty: slot.y,
-    energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from) });
+    jx: 0, jy: 0, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from) });
 
 /** partita simulata tutta d'un fiato (mondo che avanza, sim-cli, test) */
 export function simulate(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: TraceStep[]): SimOutput {
@@ -164,6 +191,9 @@ export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
   let lastPlace = 0;
   let markStamp = 0;
   const clock = () => half * 10000 + t;
+  // dal sistema di chi attacca alle coordinate globali (la squadra 1 gioca a specchio)
+  const gx = (x: number) => (s === 0 ? x : 12 - x);
+  const gy = (y: number) => (s === 0 ? y : 8 - y);
   function runTo(m: MP, x: number, y: number, dt: number) {
     const dx = x - m.x, dy = y - m.y;
     const d = len(dx, dy);
@@ -174,16 +204,33 @@ export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
   /** impegno difensivo: con mentalità offensiva si rientra meno e si pressa peggio */
   const cover = (tm: Team) => 1 - MATCH.mentalityCover * (tm.mentality - 3);
 
-  function place() {
-    const dt = Math.min(30, Math.max(0.5, clock() - lastPlace));
-    lastPlace = clock();
-    const att = teams[s], def = teams[1 - s]!;
+  /** chi tiene la palla adesso (nessuno mentre è in viaggio) e chi la sta aspettando */
+  let holder: MP | null = null;
+  let meet: MP | null = null;
+  let snap = true; // il portatore sta sulla palla; nei passi intermedi ci corre invece di comparirci
+
+  /** gli smarcamenti si estraggono una volta per azione: dentro l'azione il movimento è continuo, non nervoso */
+  function jitter() {
+    for (const m of teams[s].on) {
+      if (m === carrier || m.pos === 'GK') continue;
+      m.jx = (rng.next() - 0.5) * MATCH.offBallMove;
+      m.jy = (rng.next() - 0.5) * MATCH.offBallMove * 1.5;
+    }
+  }
+
+  function aimAtt() {
+    const att = teams[s];
     const mmA = att.mentality - 3, wf = WIDTH[att.tactic.width]!;
     for (const m of att.on) {
-      if (m === carrier) { m.x = bx; m.y = by; continue; }
+      if (m === holder) {
+        if (snap) { m.x = bx; m.y = by; }
+        m.tx = bx; m.ty = by;
+        continue;
+      }
+      if (m === meet) { m.tx = bx; m.ty = by; continue; } // va incontro alla palla in viaggio
       if (m.pos === 'GK') {
         const gkMax = m.roleId === 'sweeperKeeper' ? 2.4 : 1.6; // il portiere libero accompagna la linea
-        runTo(m, Math.min(gkMax, 0.6 + Math.max(0, bx - 6) * 0.1), 4, dt);
+        m.tx = Math.min(gkMax, 0.6 + Math.max(0, bx - 6) * 0.1); m.ty = 4;
         continue;
       }
       // la squadra sale a blocco secondo il ruolo di ognuno (roles.ts)
@@ -192,11 +239,15 @@ export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
       // negli ultimi 30 metri chi sa inserirsi attacca l'area
       if (bx >= 8 && rl.runs) x += (m.p.attrs.offTheBall / 20) * MATCH.boxRun;
       // movimento senza palla: smarcamenti che aprono (o chiudono) le linee di passaggio
-      const mv = MATCH.offBallMove * (0.5 + m.p.attrs.offTheBall / 20);
+      const mv = 0.5 + m.p.attrs.offTheBall / 20;
       const side = m.hy > 4.3 ? 1 : m.hy < 3.7 ? -1 : 0; // da che lato gioca, per allargarsi o stringere
-      runTo(m, clamp(x + (rng.next() - 0.5) * mv, 0.3, rl.maxX),
-        clamp(4 + (m.hy - 4) * wf + rl.dy * side + (by - 4) * 0.25 + (rng.next() - 0.5) * mv * 1.5, 0.2, 7.8), dt);
+      m.tx = clamp(x + m.jx * mv, 0.3, rl.maxX);
+      m.ty = clamp(4 + (m.hy - 4) * wf + rl.dy * side + (by - 4) * 0.25 + m.jy * mv, 0.2, 7.8);
     }
+  }
+
+  function aimDef() {
+    const att = teams[s], def = teams[1 - s]!;
     const dbx = 12 - bx, dby = 8 - by; // palla vista dalla difesa
     const shift = LINE[def.tactic.line]! + 0.25 * (def.mentality - 3);
     // senza palla il blocco si accorcia: anche punte e trequartisti rientrano, di più se la mentalità è prudente
@@ -237,8 +288,126 @@ export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
       presser.tx += (dbx - presser.tx) * f;
       presser.ty += (dby - presser.ty) * f;
     }
-    for (const m of def.on) runTo(m, m.tx, m.ty, dt);
   }
+
+  const move = (tm: Team, dt: number) => { for (const m of tm.on) runTo(m, m.tx, m.ty, dt); };
+  /** un passo di movimento: prima si muove chi ha palla, poi la difesa si riposiziona su quello che vede */
+  function advance(dt: number) {
+    aimAtt();
+    move(teams[s], dt);
+    aimDef();
+    move(teams[1 - s]!, dt);
+  }
+
+  /** senza registro il campo fa un salto solo per azione: è la modalità del sim-cli e del mondo che avanza */
+  function place() {
+    const dt = Math.min(30, Math.max(0.5, clock() - lastPlace));
+    lastPlace = clock();
+    holder = carrier;
+    meet = null;
+    jitter();
+    advance(dt);
+  }
+
+  // --- traccia densa di posizioni (F6.2) ---
+  const track: PosFrame[] = [];
+  let playAt = 0; // secondi di riproduzione già emessi
+  let lastBall = { x: 6, y: 4 }; // palla globale a inizio intervallo
+  let lastStep = -1; // ultima azione già raccontata: un intervallo a vuoto non la ripercorre
+  let ids0: number[] = [];
+  let idsDirty = true;
+  const roster = () => {
+    if (idsDirty) {
+      ids0 = [];
+      for (const tm of teams) for (const m of tm.on) ids0.push(m.p.id);
+      idsDirty = false;
+    }
+    return ids0;
+  };
+
+  function emit(dead: boolean) {
+    const ids = roster();
+    const xy = new Float32Array(ids.length * 2);
+    let k = 0;
+    for (const tm of teams)
+      for (const m of tm.on) {
+        xy[k++] = tm.side === 0 ? m.x : 12 - m.x;
+        xy[k++] = tm.side === 0 ? m.y : 8 - m.y;
+      }
+    track.push({
+      at: playAt, min: minute(), half, ids, n0: teams[0].on.length, xy, bx: gx(bx), by: gy(by),
+      carrier: holder ? holder.p.id : 0, to: meet ? meet.p.id : 0, sc0: score[0], sc1: score[1],
+      step: Math.max(0, trace!.length - 1), dead,
+    });
+  }
+
+  /**
+   * col registro acceso lo stesso intervallo si gioca a passi fissi: la palla viaggia e decelera, i 22
+   * ricalcolano la posizione ideale a ogni passo. È da qui che nascono coperture e inserimenti visibili.
+   *
+   * Vincolo: il bilanciamento non deve cambiare. Le posizioni di fine intervallo sono quelle del motore
+   * (calcolate prima, con lo stesso consumo di casualità), i passi intermedi sono il racconto di come ci
+   * si è arrivati e vi si ricongiungono (peso `w`, che vale 1 all'ultimo passo).
+   */
+  function replay() {
+    const dt = Math.min(30, Math.max(0.5, clock() - lastPlace));
+    lastPlace = clock();
+    const f = trace!.length ? trace![trace!.length - 1]! : null; // l'azione appena eseguita
+    const dead = dt >= MATCH.deadFrom;
+    const g0 = lastBall;
+    const g1 = { x: gx(bx), y: gy(by) };
+    const next = carrier; // chi avrà la palla a fine intervallo
+
+    const all = [...teams[0].on, ...teams[1].on];
+    const sx = all.map((m) => m.x), sy = all.map((m) => m.y);
+    holder = carrier;
+    meet = null;
+    jitter();
+    advance(dt); // posizioni autorevoli
+    const ex = all.map((m) => m.x), ey = all.map((m) => m.y);
+    all.forEach((m, i) => { m.x = sx[i]!; m.y = sy[i]!; });
+
+    // dove era indirizzata la palla: destinatario, zona di conduzione, porta.
+    // Se l'azione è già stata raccontata (intervallo a vuoto, es. dopo il calcio d'inizio) la palla non riparte.
+    const fresh = f !== null && trace!.length - 1 !== lastStep;
+    lastStep = trace!.length - 1;
+    const wp = !fresh || !f ? g1 : f.kind === 'shot' ? { x: f.side === 0 ? 12 : 0, y: 4 } : f.tx !== undefined ? { x: f.tx, y: f.ty! } : g1;
+    const flight = dead ? 0.2 : f && f.kind === 'dribble' ? 1 : MATCH.ballFlight;
+    const n = Math.max(1, Math.ceil(dt / MATCH.frameTick));
+    for (let k = 1; k <= n; k++) {
+      const u = k / n;
+      const v = ease(Math.min(1, u / flight));
+      let px = g0.x + (wp.x - g0.x) * v, py = g0.y + (wp.y - g0.y) * v;
+      if (u > flight) { // raccordo verso dove riparte davvero l'azione (rimessa, rinvio, recupero)
+        const w = (u - flight) / (1 - flight);
+        px += (g1.x - px) * w;
+        py += (g1.y - py) * w;
+      }
+      bx = s === 0 ? px : 12 - px;
+      by = s === 0 ? py : 8 - py;
+      const flying = u < flight && fresh && f!.kind !== 'dribble';
+      holder = flying ? null : next;
+      meet = flying ? next : null;
+      snap = false;
+      advance(dt / n);
+      snap = true;
+      const w = u * u; // ricongiungimento alle posizioni autorevoli
+      all.forEach((m, i) => {
+        m.x += (sx[i]! + (ex[i]! - sx[i]!) * u - m.x) * w;
+        m.y += (sy[i]! + (ey[i]! - sy[i]!) * u - m.y) * w;
+      });
+      emit(dead);
+      playAt += dt / n / (dead ? MATCH.deadSpeed : 1);
+    }
+    all.forEach((m, i) => { m.x = ex[i]!; m.y = ey[i]!; });
+    holder = next;
+    meet = null;
+    bx = s === 0 ? g1.x : 12 - g1.x;
+    by = s === 0 ? g1.y : 8 - g1.y;
+    lastBall = g1;
+  }
+
+  const settle = () => (trace ? replay() : place());
 
   function nearest(tm: Team, x: number, y: number, skipGK = false): MP {
     let best: MP = tm.on[0]!, bd = Infinity;
@@ -263,7 +432,7 @@ export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
   function kickoff(side: 0 | 1) {
     s = side; bx = 6; by = 4; lastPass = null; chain = 0;
     carrier = teams[side].on.find((m) => m.pos === 'ST' || m.pos === 'AMC') ?? teams[side].on[teams[side].on.length - 1]!;
-    place();
+    settle();
   }
 
   const best = (tm: Team, f: (m: MP) => number, filter: (m: MP) => boolean = () => true) =>
@@ -273,6 +442,7 @@ export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
     m.on = false;
     m.st.to = minute();
     tm.on = tm.on.filter((x) => x !== m);
+    idsDirty = true;
     if (carrier === m) carrier = nearest(tm, m.x, m.y);
   }
 
@@ -283,6 +453,7 @@ export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
     const m = mp(inP, { pos: out.pos, x: out.hx, y: out.hy }, out.roleId, tm.fam, minute()); // entra nello stesso ruolo
     m.x = out.x; m.y = out.y;
     tm.on = tm.on.map((x) => (x === out ? m : x));
+    idsDirty = true;
     tm.played.push(m);
     out.on = false;
     out.st.to = minute();
@@ -386,7 +557,7 @@ export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
 
   function step() {
     const att = teams[s], def = teams[1 - s]!;
-    place();
+    settle();
     const defX = def.on.map((m) => 12 - m.x), defY = def.on.map((m) => 8 - m.y);
     const cv = cover(def);
     const defAnt = def.on.map((m) => (0.6 + 0.03 * m.p.attrs.anticipation) * cv);
@@ -432,8 +603,6 @@ export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
         px.push(tm.side === 0 ? m.x : 12 - m.x);
         py.push(tm.side === 0 ? m.y : 8 - m.y);
       }
-    const gx = (x: number) => (s === 0 ? x : 12 - x);
-    const gy = (y: number) => (s === 0 ? y : 8 - y);
     const f: TraceStep = {
       half, t, min: minute(), side: s, kind: o.kind, bx: gx(bx), by: gy(by), pressure: 0, mom: Math.round(momentum), from: carrier.p.id,
       ids, px, py, n0: teams[0].on.length, score: [score[0], score[1]],
@@ -592,6 +761,7 @@ export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
     events,
     teams,
     frames: trace ?? [],
+    track,
     sub(side, outId, inId) {
       const tm = teams[side];
       const out = tm.on.find((m) => m.p.id === outId);

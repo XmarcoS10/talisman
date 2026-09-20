@@ -36,3 +36,39 @@
 `src/ui/match/playback.test.ts`: fotogrammi coerenti (22 giocatori dentro il campo, tempo che non torna indietro),
 simulazione pigra, cambio dalla panchina che entra davvero, almeno 60 regole dell'analista senza ripetizioni.
 I fotogrammi al secondo vanno provati a mano: il browser ferma l'animazione quando la finestra non è in primo piano.
+
+---
+
+## Aggiornamento F6.2 — il motore produce il movimento, non più l'interpolazione
+
+**Data:** 20/09/2026 · **Stato:** accettato
+
+Il giudizio di prova su F6 era «non si capisce cosa succede». La causa non era il disegno ma la granularità: un
+fotogramma ogni azione (≈6,7 s di gioco) e i 22 che scivolavano in linea retta fra una posizione e l'altra.
+
+### Fatto
+- **Traccia densa** (`run.track`, tipo `PosFrame`): il motore emette il campo **ogni 0,25 s di gioco**
+  (`MATCH.frameTick`), ≈22.600 fotogrammi a partita invece di ≈850. Ogni fotogramma ha le posizioni in un
+  `Float32Array`, la palla, chi la tiene, chi la aspetta, punteggio, minuto e l'azione in corso.
+- **`place()` spezzato in `aimAtt` / `aimDef` / `advance`**: dentro l'intervallo la palla viaggia e **decelera**, e i 22
+  ricalcolano la posizione ideale a ogni passo. Difensori che si riposizionano mentre il pallone è in volo, punte che
+  attaccano l'area, blocco che si accorcia: cose che prima esistevano solo come salto.
+- **Gioco fermo raccontato**: rimesse, rinvii ed esultanze non sono più un buco nella riproduzione. Si vedono, ma
+  scorrono 8 volte più in fretta (`MATCH.deadSpeed`), così una partita dura ≈12 minuti reali a 1×.
+- **La presentazione non decide più niente**: `playback.ts` sceglie il fotogramma e interpola il poco che serve per i
+  60 fps. Lo specchiamento per la squadra dell'utente resta lì, com'era in F6.1.
+
+### La scelta che conta: il bilanciamento non si tocca
+Far decidere ai passi intermedi le posizioni vere **sposta i risultati**: misurato, si passava da 2,77 a 2,48 gol a
+partita, perché difensori che si riposizionano di continuo difendono meglio. Farlo anche nel sim-cli costerebbe 12 volte
+il tempo di calcolo (62 ms contro 4,8 ms a partita), su un tempo di simulazione già fuori target.
+
+Quindi: **le posizioni di fine intervallo restano quelle del motore** (calcolate prima, con lo stesso identico consumo di
+casualità), e i passi intermedi si ricongiungono a quelle con peso `u²`. Il racconto è il percorso, gli estremi sono la
+verità. La traccia densa si costruisce solo quando la partita è seguita dal vivo: `pnpm sim` non paga nulla.
+
+| Cosa | Perché |
+|---|---|
+| Ricongiungimento `u²` invece di posizioni intermedie autorevoli | 2,60 gol a partita invariati, bit per bit: una partita guardata è identica alla stessa partita simulata |
+| Traccia solo dal vivo | il sim-cli resta a 4,8 ms a partita; 7,6 MB di fotogrammi si tengono in memoria solo per la partita che si sta guardando |
+| 0,25 s per fotogramma | sotto mezza zona di spostamento per fotogramma anche per chi corre di più: nessun teletrasporto |

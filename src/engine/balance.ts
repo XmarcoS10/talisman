@@ -128,6 +128,11 @@ export const MATCH = {
   markRadius: 1.5,
   pressRadius: 1.4,
   runSpeed: 0.55, // zone al secondo con cui un giocatore raggiunge la sua posizione (≈ 4,8 m/s di media)
+  // movimento continuo (F6.2): tra una decisione e l'altra il campo avanza a passi fissi
+  frameTick: 0.25, // secondi di gioco per fotogramma di posizione
+  ballFlight: 0.6, // quota dell'intervallo in cui la palla è in viaggio (il resto è gioco fermo o conduzione)
+  deadSpeed: 8, // il gioco fermo (rimesse, esultanza) scorre più in fretta nella riproduzione
+  deadFrom: 12, // oltre questi secondi un intervallo è gioco fermo
   offBallMove: 1.2, // ampiezza (zone) degli smarcamenti casuali di chi attacca
   patience: 0.0015, // voglia di verticalizzare in più per ogni passaggio consecutivo oltre il 5°
   boxRun: 0.6, // zone di inserimento in area (× Inserimenti/20) per centrocampisti e trequartisti

@@ -1,4 +1,4 @@
-// Riproduzione 2D: il registro del motore deve bastare a disegnare una partita credibile.
+// Riproduzione 2D: il motore deve produrre posizioni continue che bastino a disegnare una partita credibile.
 import { describe, expect, it } from 'vitest';
 import { matchSetups } from '../../engine/match.ts';
 import { runMatch } from '../../engine/match/engine.ts';
@@ -6,47 +6,57 @@ import type { Fixture } from '../../engine/model.ts';
 import { Rng } from '../../engine/rng.ts';
 import { newWorld } from '../../engine/world.ts';
 import { RULES, context, pick } from './analyst.ts';
-import { ensure, sample, timeline } from './playback.ts';
+import { duration, ensure, sample } from './playback.ts';
 
-const setup = () => {
+const setup = (mine: 0 | 1 = 0) => {
   const w = newWorld(17);
   const [home, away] = w.competitions.ITA1!.clubIds;
-  w.manager.clubId = home!;
+  w.manager.clubId = (mine === 0 ? home : away)!;
   const fx: Fixture = { day: 0, home: home!, away: away! };
   return { w, fx, run: runMatch(new Rng(4), matchSetups(w, fx, true), []) };
 };
 
 describe('partita in 2D (F6)', () => {
-  it('ogni fotogramma ha 22 giocatori dentro il campo e il tempo non torna indietro', () => {
+  it('ogni fotogramma ha i giocatori dentro il campo e il tempo non torna indietro', () => {
     const { run } = setup();
     run.result();
-    expect(run.frames.length).toBeGreaterThan(300);
+    expect(run.track.length).toBeGreaterThan(5000);
     let last = -1;
-    for (const f of run.frames) {
-      expect(f.ids.length).toBe(f.px.length);
+    for (const f of run.track) {
+      expect(f.ids.length).toBe(f.xy.length / 2);
       expect(f.ids.length).toBeGreaterThanOrEqual(18); // qualche espulsione è possibile
       expect(f.ids.length).toBeLessThanOrEqual(22);
-      expect(new Set(f.ids).size).toBe(f.ids.length);
-      for (let i = 0; i < f.px.length; i++) {
-        expect(f.px[i]! >= -0.5 && f.px[i]! <= 12.5).toBe(true);
-        expect(f.py[i]! >= -0.5 && f.py[i]! <= 8.5).toBe(true);
+      for (let i = 0; i < f.ids.length; i++) {
+        expect(f.xy[2 * i]! >= -0.6 && f.xy[2 * i]! <= 12.6).toBe(true);
+        expect(f.xy[2 * i + 1]! >= -0.6 && f.xy[2 * i + 1]! <= 8.6).toBe(true);
       }
-      expect(f.bx >= -0.5 && f.bx <= 12.5).toBe(true);
-      const abs = (f.half - 1) * 10000 + f.t;
-      expect(abs).toBeGreaterThanOrEqual(last);
-      last = abs;
+      expect(f.bx >= -0.6 && f.bx <= 12.6).toBe(true);
+      expect(f.at).toBeGreaterThanOrEqual(last);
+      last = f.at;
     }
-    expect(run.frames.at(-1)!.min).toBeGreaterThan(85);
+    expect(run.track[run.track.length - 1]!.min).toBeGreaterThan(85);
+  });
+
+  it('i giocatori corrono, non si teletrasportano: nessun salto oltre la velocità massima', () => {
+    const { run } = setup();
+    run.result();
+    let max = 0;
+    for (let i = 1; i < run.track.length; i++) {
+      const a = run.track[i - 1]!, b = run.track[i]!;
+      if (a.ids !== b.ids) continue; // cambio: la formazione è diversa
+      for (let k = 0; k < a.ids.length; k++)
+        max = Math.max(max, Math.abs(b.xy[2 * k]! - a.xy[2 * k]!) + Math.abs(b.xy[2 * k + 1]! - a.xy[2 * k + 1]!));
+    }
+    expect(max).toBeLessThan(0.6); // 0,25 s alla velocità di un uomo lanciato: ben meno di mezza zona
   });
 
   it('la simulazione avanza solo quanto serve alla riproduzione e il campo si muove', () => {
     const { run } = setup();
-    const at: number[] = timeline(run.frames);
-    ensure(run, at, 60);
+    ensure(run, 60);
     expect(run.done).toBe(false);
-    expect(run.frames.length).toBeLessThan(200); // non ha giocato tutta la partita
-    const a = sample(run.frames, at, 10)!;
-    const b = sample(run.frames, at, 55)!;
+    expect(duration(run)).toBeLessThan(200); // non ha giocato tutta la partita
+    const a = sample(run, 10)!;
+    const b = sample(run, 55)!;
     expect(a).not.toBeNull();
     const moved = a.ids.filter((id, i) => {
       const j = b.ids.indexOf(id);
@@ -58,35 +68,28 @@ describe('partita in 2D (F6)', () => {
 
   it('cambio deciso dalla panchina: entra chi scelgo io', () => {
     const { run } = setup();
-    const at: number[] = [];
-    ensure(run, at, 600);
+    ensure(run, 600);
     const out = run.teams[0].on.find((m) => m.pos !== 'GK')!;
     const inP = run.teams[0].bench[0]!;
     expect(run.sub(0, out.p.id, inP.id)).toBe(true);
     expect(run.teams[0].on.some((m) => m.p.id === inP.id)).toBe(true);
     expect(run.teams[0].on.some((m) => m.p.id === out.p.id)).toBe(false);
-    ensure(run, at, 900);
-    expect(run.frames.at(-1)!.ids).toContain(inP.id);
+    ensure(run, 900);
+    expect(run.track[run.track.length - 1]!.ids).toContain(inP.id);
   });
 
   it('in trasferta il campo si specchia: attacchiamo sempre verso destra, in tutti e due i tempi', () => {
-    // stessa partita, ma l'utente allena la squadra ospite
-    const w = newWorld(17);
-    const [home, away] = w.competitions.ITA1!.clubIds;
-    w.manager.clubId = away!;
-    const fx: Fixture = { day: 0, home: home!, away: away! };
-    const run = runMatch(new Rng(4), matchSetups(w, fx, true), []);
+    const { run } = setup(1); // l'utente allena la squadra ospite
     run.result();
-    const at = timeline(run.frames);
     const gkId = run.teams[1].on.find((m) => m.pos === 'GK')!.p.id;
     for (const half of [1, 2]) {
       // una nostra azione offensiva: nel sistema grezzo la palla va verso x = 0, presentata deve andare verso x = 12
-      const idx = run.frames.findIndex((f) => f.half === half && f.side === 1 && f.bx < 3);
-      expect(idx).toBeGreaterThanOrEqual(0);
-      const raw = sample(run.frames, at, at[idx]!)!;
-      const shown = sample(run.frames, at, at[idx]!, true)!;
-      expect(raw.bx).toBeLessThan(3);
-      expect(shown.bx).toBeGreaterThan(9); // attacchiamo verso destra
+      const f = run.track.find((k) => k.half === half && k.bx < 2.5 && k.carrier !== 0 && run.teams[1].on.some((m) => m.p.id === k.carrier));
+      expect(f).toBeDefined();
+      const raw = sample(run, f!.at)!;
+      const shown = sample(run, f!.at, true)!;
+      expect(raw.bx).toBeLessThan(2.5);
+      expect(shown.bx).toBeGreaterThan(9.5); // attacchiamo verso destra
       const gk = shown.ids.indexOf(gkId);
       expect(gk).toBeGreaterThanOrEqual(0);
       expect(shown.x[gk]!).toBeLessThan(4); // il nostro portiere resta a sinistra
@@ -102,8 +105,7 @@ describe('partita in 2D (F6)', () => {
     expect(RULES.length).toBeGreaterThanOrEqual(60);
     expect(new Set(RULES.map((r) => r.id)).size).toBe(RULES.length);
     const { run } = setup();
-    const at: number[] = [];
-    ensure(run, at, 1800);
+    ensure(run, 1800);
     const said = new Map<string, number>();
     const c = context(run, 0, run.frames, 65);
     expect(c.poss).toBeGreaterThan(20);

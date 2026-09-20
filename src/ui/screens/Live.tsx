@@ -3,7 +3,7 @@ import { useEffect, useReducer, useRef, useState } from 'react';
 import type { Fixture, Tactic, WorldState } from '../../engine/model.ts';
 import { finishMatchDay, type LiveDay } from '../../engine/world.ts';
 import { context, pick } from '../match/analyst.ts';
-import { ensure, matchMinutes, sample, timeline, SPEEDS, SPEED_LABELS } from '../match/playback.ts';
+import { atMinute, duration, ensure, matchMinutes, sample, SPEEDS, SPEED_LABELS } from '../match/playback.ts';
 import { lines } from '../match/commentary.ts';
 import { Camera, draw, resetTrail, type Look } from '../match/renderer.ts';
 import { Crest } from '../Crest.tsx';
@@ -21,7 +21,6 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   const me: 0 | 1 = fx.home === world.manager.clubId ? 0 : 1;
   const clubs = [world.clubs[fx.home]!, world.clubs[fx.away]!] as const;
   const canvas = useRef<HTMLCanvasElement>(null);
-  const at = useRef<number[]>(timeline(run.frames));
   const T = useRef(0);
   const cam = useRef(new Camera());
   const said = useRef(new Map<string, number>());
@@ -52,7 +51,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
       last = now;
       if (playing && !pause) {
         T.current += dt * SPEEDS[speed]!;
-        ensure(run, at.current, T.current);
+        ensure(run, T.current);
       }
       const el = canvas.current;
       if (el) {
@@ -60,7 +59,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
         const w = el.clientWidth * dpr, h = el.clientHeight * dpr;
         if (el.width !== w || el.height !== h) { el.width = w; el.height = h; }
         const ctx = el.getContext('2d');
-        const st = sample(run.frames, at.current, T.current, mirror);
+        const st = sample(run, T.current, mirror);
         if (ctx) {
           if (st) cam.current.step(st.bx, st.by, dt, follow, w, h);
           draw(ctx, w, h, st, look, cam.current, css);
@@ -74,9 +73,9 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
     return () => cancelAnimationFrame(raf);
   }, [playing, pause, speed, follow, run, look, mirror]);
 
-  const st = sample(run.frames, at.current, T.current, mirror);
-  const min = st?.frame.min ?? 0;
-  const score = st?.frame.score ?? [0, 0];
+  const st = sample(run, T.current, mirror);
+  const min = st?.min ?? 0;
+  const score = st?.score ?? [0, 0];
   const ctx = context(run, me, run.frames, world.clubs[world.manager.clubId]!.playerIds
     .reduce((s, id) => s + world.players[id]!.psych.morale, 0) / world.clubs[world.manager.clubId]!.playerIds.length);
 
@@ -88,23 +87,22 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
     if (p) setTimeout(() => setPhrase(p), 0);
   }
 
-  const over = run.done && T.current >= (at.current[at.current.length - 1] ?? 0);
+  const over = run.done && T.current >= duration(run);
   const jumpTo = (minute: number) => {
-    const i = run.frames.findIndex((f) => f.min >= minute);
-    if (i >= 0) { T.current = at.current[i]!; resetTrail(); }
+    const a = atMinute(run.track, minute);
+    if (a !== null) { T.current = a; resetTrail(); }
   };
   const nextEvent = () => {
     const n = run.events.length;
     let guard = 0;
-    while (!run.done && run.events.length === n && guard++ < 4000) ensure(run, at.current, (at.current.at(-1) ?? 0) + 30);
+    while (!run.done && run.events.length === n && guard++ < 4000) ensure(run, duration(run) + 30);
     const ev = run.events[n];
     if (ev) jumpTo(ev.min); else toEnd();
   };
-  // la partita finisce di giocarsi subito: il registro va riallineato tutto in una volta
+  // la partita finisce di giocarsi subito
   const toEnd = () => {
     run.result();
-    at.current = timeline(run.frames);
-    T.current = at.current[at.current.length - 1] ?? 0;
+    T.current = duration(run);
     resetTrail();
     setPlaying(false);
   };

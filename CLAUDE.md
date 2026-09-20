@@ -29,7 +29,10 @@ Settimana = `trainWeek` (allenamento, condizione, infortuni, sviluppo) + `weekPs
 chiamate da `passDays` in `world.ts`. Decisioni in `docs/adr/0004-persone.md`.
 
 ## Motore partita
-Spiegato in `docs/03-match-engine.md`, decisioni in `docs/adr/0002-motore-l2.md`. Il ciclo più caldo è `options()` in
+Spiegato in `docs/03-match-engine.md`, decisioni in `docs/adr/0002-motore-l2.md` e `docs/adr/0005-partita-2d.md`.
+Le decisioni restano per azione; col registro acceso (partita seguita dal vivo) il motore emette anche `run.track`,
+il campo ogni 0,25 s. Le posizioni di fine intervallo sono quelle del motore: i passi intermedi non spostano il
+bilanciamento e il sim-cli non li calcola. Il ciclo più caldo è `options()` in
 `match/decision.ts`: niente allocazioni dentro i loop, niente `Math.hypot` (usa `len`).
 
 ## Fatto =
