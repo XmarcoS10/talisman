@@ -13,6 +13,7 @@ import { Rng } from './rng.ts';
 import { SCHEMA_VERSION } from './save.ts';
 import { dropRelations, initRelations } from './social.ts';
 import { assignAgents, dropClient, weekAgents } from './transfers/agents.ts';
+import { aiRenewals, loanOutYouth, movePreSigned, preContracts, returnLoans, signFreeAgents } from './transfers/contracts.ts';
 import { isWinterWindow, runWindow } from './transfers/market.ts';
 import { defaultTraining, trainWeek } from './training.ts';
 
@@ -104,7 +105,10 @@ function scheduleSeason(world: WorldState, rng: Rng) {
  */
 function passDays(world: WorldState, rng: Rng, days: number, weeks: number) {
   // mercato di gennaio: si apre una volta, quando il calendario ci passa sopra
-  if (days > 0 && !isWinterWindow(world.day) && isWinterWindow(world.day + days)) runWindow(world, rng, true);
+  if (days > 0 && !isWinterWindow(world.day) && isWinterWindow(world.day + days)) {
+    runWindow(world, rng, true);
+    preContracts(world, rng); // da gennaio si firma a parametro zero per la stagione dopo
+  }
   for (let w = 0; w < weeks; w++) {
     for (const club of Object.values(world.clubs)) {
       trainWeek(world, club, rng);
@@ -287,13 +291,14 @@ export function endSeason(world: WorldState): SeasonSummary {
       }
       return !retire;
     });
-    // ponytail: rinnovo automatico di tutti i contratti finché non c'è il mercato (F7)
-    for (const id of club.playerIds) {
-      const p = world.players[id]!;
-      if (p.contract.until < world.season) p.contract.until = world.season + rng.int(1, 3);
-    }
   }
+  // contratti: rientri dai prestiti, chi aveva firmato altrove se ne va, poi i rinnovi
+  returnLoans(world, rng);
+  movePreSigned(world, rng);
+  aiRenewals(world, rng);
   summary.signings = runWindow(world, rng); // mercato estivo: prima si compra…
+  signFreeAgents(world, rng); // …poi si guarda chi è rimasto senza contratto
+  loanOutYouth(world, rng); // e i ragazzi che non giocherebbero vanno a farsi le ossa
   for (const club of Object.values(world.clubs)) {
     // …poi il vivaio riempie i ruoli rimasti scoperti (stub dello youth intake §7.8)
     club.excluded = club.excluded.filter((id) => club.playerIds.includes(id));

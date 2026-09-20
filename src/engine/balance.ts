@@ -359,3 +359,29 @@ export const CLUB_AI = {
   sellBackup: 0.32,
   contractYears: [3, 5] as const,
 } as const;
+
+// --- contratti (GUIDA §7.5) ---
+export const CONTRACT = {
+  yearsYoung: 5, // durata offerta sotto i 24 anni
+  yearsPeak: 4,
+  yearsOld: 2, // sopra i 31
+  oldFrom: 31,
+  youngTo: 24,
+  releaseMul: 2.2, // clausola rescissoria come multiplo del valore, quando c'è
+  releaseP: 0.25, // quanti contratti ne hanno una
+  acceptWage: 0.92, // accetta se gli offri almeno questa quota di quanto chiede…
+  loyalty: 0.02, // …meno uno sconto per ogni punto di Lealtà sopra 10 (al massimo il 20%)
+  ambitionLevel: 0.02, // chi è ambizioso vuole anche il club all'altezza: per punto di reputazione mancante
+  unhappyRefuse: 40, // sotto questo morale non rinnova comunque
+  renewFrom: 1, // si rinnova quando mancano al massimo tot stagioni
+  keepBelowAge: 33, // oltre questa età un club IA non rinnova quasi mai
+  keepGap: -18, // se è sotto il livello del club di così tanto, si lascia andare
+  preContractFrom: 175, // da gennaio (stesso giorno della finestra invernale) si firma a parametro zero
+  freeWageMul: 1.15, // chi arriva gratis chiede più stipendio: non c'è cartellino da pagare
+  loanMaxAge: 21, // oltre questa età non è più un prestito formativo
+  loanRank: 2, // quanti gli stanno davanti nel ruolo perché convenga mandarlo a giocare
+  loanRepGap: 8, // il club ospite deve essere di un gradino sotto
+  loanP: 0.45,
+  loanMinutes: 45, // minuti garantiti tipici in un prestito con condizioni
+  loanBuyMul: 1.05, // riscatto pattuito, sul valore di oggi
+} as const;

@@ -56,10 +56,31 @@ export interface Player {
   condition: Condition;
   discipline: { yellows: number; ban: number }; // gialli stagionali, giornate di squalifica residue
   form: number[]; // voti delle ultime 5 partite
-  contract: { wage: number; until: number }; // stipendio annuo, anno di scadenza
+  contract: Contract;
   stats: { apps: number; goals: number; assists: number; yellows: number; reds: number; ratingSum: number };
   history: { season: number; clubId: ClubId; apps: number; goals: number; ca: number }[];
   caLog: number[]; // CA ogni 4 giornate della stagione in corso (grafico di crescita)
+}
+
+/** contratto (§7.5): stipendio annuo, scadenza, clausole, prestito in corso */
+export interface Contract {
+  wage: number;
+  until: number; // stagione in cui scade (until < season = svincolato)
+  release: number | null; // clausola rescissoria: pagata per intero, il club non può opporsi
+  sellOn: number; // quota della prossima rivendita dovuta al club precedente, 0…0.3
+  sellOnTo: ClubId | null; // a chi è dovuta
+  loan: Loan | null;
+  preSigned: ClubId | null; // ha già firmato per un altro club a parametro zero (§7.5)
+}
+
+/** prestito con condizioni (§7.5) */
+export interface Loan {
+  from: ClubId; // il proprietario del cartellino
+  until: number; // stagione di rientro
+  minutes: number; // minuti garantiti a partita, 0 = nessuna condizione
+  noPlayVsOwner: boolean; // non può essere schierato contro chi lo possiede
+  buy: number | null; // riscatto pattuito
+  obligation: boolean; // obbligo invece che diritto
 }
 
 export interface Condition {

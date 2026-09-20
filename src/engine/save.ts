@@ -8,7 +8,7 @@ import { initRelations } from './social.ts';
 import { defaultTraining } from './training.ts';
 import { assignAgents } from './transfers/agents.ts';
 
-export const SCHEMA_VERSION = 6;
+export const SCHEMA_VERSION = 7;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -66,6 +66,11 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
   (w) => {
     const rng = new Rng(w.seed + 91);
     for (const c of Object.values(w.clubs as Obj)) c.philosophy = rng.pick([...PHILOSOPHIES]);
+  },
+  // 6 → 7 (F7, contratti): clausole, percentuale di rivendita, prestiti, parametro zero
+  (w) => {
+    for (const p of Object.values(w.players as Obj))
+      Object.assign(p.contract, { release: null, sellOn: 0, sellOnTo: null, loan: null, preSigned: null });
   },
 ];
 

@@ -5,7 +5,7 @@ import { afterMatch } from './morale.ts';
 import { simulate, type SimOutput, type TeamSetup } from './match/engine.ts';
 import { validRole } from './match/roles.ts';
 import { FORMATIONS, defaultRoles, type Slot } from './match/tactics.ts';
-import { FORMATION_IDS, type Club, type FormationId, type Fixture, type Player, type WorldState } from './model.ts';
+import { FORMATION_IDS, type Club, type ClubId, type FormationId, type Fixture, type Player, type WorldState } from './model.ts';
 import { addCause, addNews, pName } from './news.ts';
 import { ratingAt } from './players.ts';
 import type { Rng } from './rng.ts';
@@ -14,7 +14,10 @@ export type LineupSlot = { slot: Slot; player: Player; rating: number };
 
 export const isAvailable = (p: Player) => p.condition.injuryDays === 0 && p.discipline.ban === 0;
 /** selezionabile dal proprio club: disponibile e non messo fuori rosa */
-export const canPlay = (club: Club, p: Player) => isAvailable(p) && !club.excluded.includes(p.id);
+export const canPlay = (club: Club, p: Player, opponent?: ClubId) =>
+  isAvailable(p) && !club.excluded.includes(p.id)
+  // prestito con divieto: non lo puoi schierare contro chi possiede il cartellino (§7.5)
+  && !(opponent !== undefined && p.contract.loan?.noPlayVsOwner && p.contract.loan.from === opponent);
 export const familiarityOf = (club: Club, f: FormationId = club.tactic.formation) => club.familiarity[f] ?? TRAIN.famOther;
 
 /** rendimento atteso di p nello slot, stanchezza compresa */
@@ -24,13 +27,13 @@ export const slotRating = (p: Player, slot: Slot) => ratingAt(p, slot.pos) * (0.
  * Formazione per il modulo. `fixed` = scelte dell'allenatore slot per slot (null = decidi tu):
  * le scelte disponibili si rispettano, gli altri slot li riempie il migliore rimasto (greedy, portiere prima).
  */
-export function pickXI(world: WorldState, club: Club, formation: FormationId = club.tactic.formation, fixed: readonly (number | null)[] = []): LineupSlot[] {
-  const pool = club.playerIds.map((id) => world.players[id]!).filter((p) => canPlay(club, p));
+export function pickXI(world: WorldState, club: Club, formation: FormationId = club.tactic.formation, fixed: readonly (number | null)[] = [], opponent?: ClubId): LineupSlot[] {
+  const pool = club.playerIds.map((id) => world.players[id]!).filter((p) => canPlay(club, p, opponent));
   const slots = FORMATIONS[formation];
   const chosen: (Player | undefined)[] = slots.map((_, i) => {
     const id = fixed[i];
     const p = id != null ? world.players[id] : undefined;
-    return p && p.clubId === club.id && canPlay(club, p) ? p : undefined;
+    return p && p.clubId === club.id && canPlay(club, p, opponent) ? p : undefined;
   });
   const used = new Set(chosen.filter((p) => p).map((p) => p!.id));
   return slots.map((slot, i) => {
@@ -68,9 +71,9 @@ export function aiSetFormation(world: WorldState, club: Club) {
 }
 
 /** titolari del club dell'utente: le sue scelte, con chi non è disponibile sostituito dal migliore */
-export function userXI(world: WorldState, club: Club): LineupSlot[] {
+export function userXI(world: WorldState, club: Club, opponent?: ClubId): LineupSlot[] {
   const fixed = club.lineup?.length === FORMATIONS[club.tactic.formation].length ? club.lineup : [];
-  const xi = pickXI(world, club, club.tactic.formation, fixed);
+  const xi = pickXI(world, club, club.tactic.formation, fixed, opponent);
   xi.forEach((e, i) => {
     const wanted = fixed[i];
     if (wanted != null && wanted !== e.player.id) {
@@ -81,10 +84,10 @@ export function userXI(world: WorldState, club: Club): LineupSlot[] {
   return xi;
 }
 
-function setup(world: WorldState, club: Club, xi: LineupSlot[], mentality: number): TeamSetup {
+function setup(world: WorldState, club: Club, xi: LineupSlot[], mentality: number, opponent?: ClubId): TeamSetup {
   const inXI = new Set(xi.map((e) => e.player.id));
   const bench = club.playerIds.map((id) => world.players[id]!)
-    .filter((p) => !inXI.has(p.id) && canPlay(club, p))
+    .filter((p) => !inXI.has(p.id) && canPlay(club, p, opponent))
     .sort((a, b) => b.ca - a.ca)
     .slice(0, MATCH.benchSize);
   return {
@@ -104,12 +107,12 @@ function aiMentality(mine: number, theirs: number, home: boolean) {
 export function matchSetups(world: WorldState, fx: Fixture, live = false): [TeamSetup, TeamSetup] {
   const me = world.manager.clubId;
   const clubs = [world.clubs[fx.home]!, world.clubs[fx.away]!] as const;
-  const xis = clubs.map((c) => (c.id === me ? userXI(world, c) : pickXI(world, c)));
+  const xis = clubs.map((c, i) => (c.id === me ? userXI(world, c, clubs[1 - i]!.id) : pickXI(world, c, c.tactic.formation, [], clubs[1 - i]!.id)));
   const str = xis.map(xiStrength);
   return clubs.map((c, i) => {
     const mine = c.id === me;
     const mentality = mine ? c.tactic.mentality : aiMentality(str[i]!, str[1 - i]!, i === 0);
-    return { ...setup(world, c, xis[i]!, mentality), auto: !(mine && live) };
+    return { ...setup(world, c, xis[i]!, mentality, clubs[1 - i]!.id), auto: !(mine && live) };
   }) as [TeamSetup, TeamSetup];
 }
 

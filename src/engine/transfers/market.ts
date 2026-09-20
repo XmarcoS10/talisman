@@ -21,13 +21,24 @@ export function transfer(world: WorldState, rng: Rng, p: Player, buyer: Club, of
   // libro mastro delle finanze (§7.7, F8)
   buyer.balance -= offer.fee + offer.agentFee;
   seller.balance += offer.fee;
+  // percentuale di rivendita dovuta al club precedente (§7.5)
+  const owed = p.contract.sellOnTo !== null ? world.clubs[p.contract.sellOnTo] : undefined;
+  if (owed && p.contract.sellOn > 0) {
+    const share = Math.round(offer.fee * p.contract.sellOn);
+    seller.balance -= share;
+    owed.balance += share;
+  }
 
   seller.playerIds = seller.playerIds.filter((id) => id !== p.id);
   seller.excluded = seller.excluded.filter((id) => id !== p.id);
   seller.feuds = seller.feuds.filter((f) => f.a !== p.id && f.b !== p.id);
   dropRelations(world, p);
   p.clubId = buyer.id;
-  p.contract = { wage, until: world.season + rng.int(CLUB_AI.contractYears[0], CLUB_AI.contractYears[1]) };
+  p.contract = {
+    ...p.contract, wage, until: world.season + rng.int(CLUB_AI.contractYears[0], CLUB_AI.contractYears[1]),
+    preSigned: null, release: null, loan: null,
+    sellOn: offer.sellOn, sellOnTo: offer.sellOn > 0 ? seller.id : null, // la prossima cessione paga il dazio
+  };
   p.psych.wantsOut = false;
   p.psych.trust = 55;
   p.psych.morale = clamp(p.psych.morale + 10, 0, 100); // il trasferimento voluto tira su

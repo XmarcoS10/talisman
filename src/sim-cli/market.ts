@@ -25,6 +25,8 @@ export function marketReport(seed: number, seasons: number): string[] {
   const clubs = () => Object.values(world.clubs);
   const values: number[] = [];
   const signings: number[] = [];
+  const loaned: number[] = [];
+  const freeLeft: number[] = [];
   const ratios: number[] = [];
   const ages: number[] = [];
   const lines: string[] = [];
@@ -45,9 +47,13 @@ export function marketReport(seed: number, seasons: number): string[] {
     }
     ratios.push(avg(r));
     ages.push(avg(clubs().map((c) => avg(c.playerIds.map((id) => world.season - world.players[id]!.birthYear)))));
+    const loans = Object.values(world.players).filter((p) => p.contract.loan).length;
+    const free = Object.values(world.players).filter((p) => p.clubId === null).length;
+    loaned.push(loans);
+    freeLeft.push(free);
     const v = avg(Object.values(world.players).map((p) => value(p, world.season, { clubRep: 50 })));
     values.push(v);
-    lines.push(`- ${world.season - 1}/${String(world.season).slice(2)}: ${sum.signings} acquisti · valore medio ${money(v)} · ingaggi/fatturato ${pct(avg(r))} (max ${pct(Math.max(...r))}) · età ${ages[ages.length - 1]!.toFixed(1)}`);
+    lines.push(`- ${world.season - 1}/${String(world.season).slice(2)}: ${sum.signings} acquisti · valore medio ${money(v)} · ingaggi/fatturato ${pct(avg(r))} (max ${pct(Math.max(...r))}) · età ${ages[ages.length - 1]!.toFixed(1)} · ${loans} in prestito · ${free} svincolati`);
   }
   const inflation = values[values.length - 1]! / start;
   const red = clubs().filter((c) => c.balance < 0).length;
@@ -61,6 +67,8 @@ export function marketReport(seed: number, seasons: number): string[] {
     row('Club sopra l\'85% per più di due stagioni', overCap, 0, 0, (v) => String(v)),
     row('Età media delle rose', avg(ages), 24, 28, (v) => v.toFixed(1)),
     row('Top 50 nei dieci club più blasonati', migration(world), 0.4, 0.95, pct),
+    row('Giocatori in prestito', avg(loaned), 5, 120, (v) => v.toFixed(0)),
+    row('Svincolati rimasti senza squadra', avg(freeLeft), 0, 60, (v) => v.toFixed(0)),
     info('Club col bilancio in rosso', String(red), 'raro'),
     info('Cassa media dei club', money(avg(clubs().map((c) => c.balance)))),
     '', '## Stagione per stagione', ...lines,
