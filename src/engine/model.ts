@@ -7,6 +7,7 @@ import type { RngState } from './rng.ts';
 export type PlayerId = number;
 export type ClubId = number;
 export type CompId = string;
+export type AgentId = number;
 
 export const POSITIONS = ['GK', 'DL', 'DC', 'DR', 'DM', 'ML', 'MC', 'MR', 'AML', 'AMC', 'AMR', 'ST'] as const;
 export type Position = (typeof POSITIONS)[number];
@@ -51,6 +52,7 @@ export interface Player {
   psych: Psych;
   rel: Record<PlayerId, number>; // grafo sociale (§7.3): forza −100…100 verso i compagni, solo archi non neutri, simmetrico
   mentorId: PlayerId | null; // veterano che gli fa da mentore (§7.1)
+  agentId: AgentId | null; // chi cura i suoi interessi (§7.5)
   condition: Condition;
   discipline: { yellows: number; ban: number }; // gialli stagionali, giornate di squalifica residue
   form: number[]; // voti delle ultime 5 partite
@@ -74,6 +76,20 @@ export interface Psych {
   trust: number; // rapporto con l'allenatore 0-100
   minutes: number; // minutaggio recente 0-1 (media mobile delle ultime partite)
   wantsOut: boolean; // ha chiesto la cessione (promessa rotta): pesa sul mercato (F7)
+}
+
+/**
+ * agente (§7.5). Ha una personalità e una memoria per club: chi gli ha rotto una promessa paga di più,
+ * chi lo ha trattato bene vede i suoi assistiti per primo.
+ */
+export interface Agent {
+  id: AgentId;
+  name: string;
+  greed: number; // 1-20: quanto vuole di commissione
+  honesty: number; // 1-20: basso = gonfia le richieste e apre aste
+  reach: number; // 1-20: quanto riesce a muovere il mercato
+  clientIds: PlayerId[];
+  memory: Record<ClubId, number>; // −100…100 verso ogni club, solo i rapporti non neutri
 }
 
 export interface Club {
@@ -213,10 +229,12 @@ export interface WorldState {
   manager: { name: string; clubId: ClubId; kept: number; broken: number }; // promesse mantenute/rotte: memoria pluriennale
   players: Record<PlayerId, Player>;
   clubs: Record<ClubId, Club>;
+  agents: Record<AgentId, Agent>;
   competitions: Record<CompId, Competition>;
   history: SeasonRecord[];
   news: NewsItem[]; // notizie per l'utente, le più recenti in fondo
   causal: CausalEvent[]; // registro delle cause per i giocatori dell'utente, i più recenti in fondo
   promises: PlayerPromise[]; // promesse attive dell'utente
   nextPlayerId: number;
+  nextAgentId: number;
 }

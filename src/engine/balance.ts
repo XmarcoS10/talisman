@@ -305,3 +305,22 @@ export const DEAL = {
   reopenDays: 14, // giorni prima di poter riaprire dopo una rottura
   agentCut: 0.06, // commissione dell'agente sull'affare
 } as const;
+
+// --- agenti (GUIDA §7.5) ---
+export const AGENT = {
+  portfolio: [5, 18] as const, // quanti assistiti a testa
+  greedCut: 0.6, // moltiplicatore base della commissione, + avidità/20
+  grudge: 0.01, // commissione in più per punto di memoria negativa verso il club
+  memoryDrift: 1.5, // la memoria torna verso lo zero, a settimana
+  brokenPromise: 22, // memoria persa quando l'allenatore rompe una promessa a un assistito
+  keptPromise: 10,
+  soldWell: 8, // memoria guadagnata da un affare concluso
+  walkedAway: 6, // memoria persa da una trattativa rotta
+  renewFrom: 1, // anni di contratto residuo sotto i quali l'agente chiede il rinnovo
+  renewAsk: 1.25, // stipendio chiesto al rinnovo, come multiplo di quello coerente col valore
+  renewGreed: 0.02, // in più per punto di avidità sopra 10
+  proposeP: 0.1, // probabilità settimanale che un agente proponga un assistito a un club
+  threatFrom: -50, // sotto questa memoria l'agente comincia a spingere per l'uscita
+  threatMorale: 45, // ...e serve anche un assistito scontento
+  threatP: 0.25,
+} as const;

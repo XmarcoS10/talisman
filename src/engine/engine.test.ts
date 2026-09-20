@@ -9,7 +9,7 @@ import { exclude, makePromise } from './morale.ts';
 import { influence, leaders } from './social.ts';
 import type { Fixture } from './model.ts';
 import { Rng } from './rng.ts';
-import { deserialize, serialize } from './save.ts';
+import { deserialize, serialize, SCHEMA_VERSION } from './save.ts';
 import { advance, endSeason, isSeasonOver, newWorld, roundRobin, standings } from './world.ts';
 
 describe('confini del motore (GUIDA §2)', () => {
@@ -79,7 +79,7 @@ describe('salvataggi', () => {
     }
     for (const c of Object.values(raw.clubs) as Record<string, unknown>[]) delete c.tactic;
     const m = deserialize(JSON.stringify(raw));
-    expect(m.schemaVersion).toBe(4);
+    expect(m.schemaVersion).toBe(SCHEMA_VERSION);
     const p = Object.values(m.players)[0]!;
     expect(p.discipline).toEqual({ yellows: 0, ban: 0 });
     expect(p.condition.injuryDays).toBe(0);
@@ -89,6 +89,7 @@ describe('salvataggi', () => {
     expect(m.news).toEqual([]);
     expect(club.training).toHaveLength(12);
     expect(club.playerIds.some((id) => Object.keys(m.players[id]!.rel).length > 0)).toBe(true); // grafo sociale creato
+    expect(club.playerIds.every((id) => m.players[id]!.agentId !== null)).toBe(true); // ognuno col suo agente
     advance(m); // e si gioca
   });
 });

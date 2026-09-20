@@ -6,8 +6,9 @@ import { Rng } from './rng.ts';
 import { seedMinutes } from './morale.ts';
 import { initRelations } from './social.ts';
 import { defaultTraining } from './training.ts';
+import { assignAgents } from './transfers/agents.ts';
 
-export const SCHEMA_VERSION = 4;
+export const SCHEMA_VERSION = 5;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -53,6 +54,13 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
     Object.assign(w.manager, { kept: 0, broken: 0 });
     w.causal = [];
     w.promises = [];
+  },
+  // 4 → 5 (F7, mercato): ogni giocatore ha un agente
+  (w) => {
+    for (const p of Object.values(w.players as Obj)) p.agentId = null;
+    w.agents = {};
+    w.nextAgentId = 1;
+    assignAgents(w as unknown as WorldState, new Rng(w.seed + 77)); // forma garantita dalle righe sopra
   },
 ];
 

@@ -7,10 +7,12 @@ import { defaultTactic } from './match/tactics.ts';
 import type { Club, ClubId, Competition, Fixture, Player, Position, WorldState } from './model.ts';
 import { CITIES, CLUB_PREFIX, KIT_COLORS, NATIONS } from './names.ts';
 import { seedMinutes, weekPsych } from './morale.ts';
+import { addNews, pName } from './news.ts';
 import { age, emptyStats, makePlayer } from './players.ts';
 import { Rng } from './rng.ts';
 import { SCHEMA_VERSION } from './save.ts';
 import { dropRelations, initRelations } from './social.ts';
+import { assignAgents, dropClient, weekAgents } from './transfers/agents.ts';
 import { defaultTraining, trainWeek } from './training.ts';
 
 export const DAYS_BETWEEN_ROUNDS = 7;
@@ -33,7 +35,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
   const world: WorldState = {
     schemaVersion: SCHEMA_VERSION, seed, rng: rng.s, season, day: 0,
     manager: { name: '', clubId: 0, kept: 0, broken: 0 }, players: {}, clubs: {}, competitions: {}, history: [], news: [],
-    causal: [], promises: [], nextPlayerId: 1,
+    causal: [], promises: [], nextPlayerId: 1, agents: {}, nextAgentId: 1,
   };
   const cities = [...CITIES];
   let clubId = 0;
@@ -63,6 +65,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
     initRelations(world, club, rng);
     seedMinutes(world, club);
   }
+  assignAgents(world, rng);
   world.rng = rng.s;
   return world;
 }
@@ -99,11 +102,22 @@ function scheduleSeason(world: WorldState, rng: Rng) {
  * stagionale è alto) e guarigioni
  */
 function passDays(world: WorldState, rng: Rng, days: number, weeks: number) {
-  for (let w = 0; w < weeks; w++)
+  for (let w = 0; w < weeks; w++) {
     for (const club of Object.values(world.clubs)) {
       trainWeek(world, club, rng);
       weekPsych(world, club, rng);
     }
+    // gli agenti si muovono: quello che riguarda il club dell'utente diventa notizia
+    for (const mv of weekAgents(world, rng)) {
+      const mine = world.manager.clubId;
+      if (mv.kind === 'renew' && mv.player.clubId === mine)
+        addNews(world, 'news.agentRenew', { agent: mv.agent.name, name: pName(mv.player), wage: mv.wage });
+      else if (mv.kind === 'push' && mv.player.clubId === mine)
+        addNews(world, 'news.agentPush', { agent: mv.agent.name, name: pName(mv.player) });
+      else if (mv.kind === 'propose' && mv.to === mine)
+        addNews(world, 'news.agentPropose', { agent: mv.agent.name, name: pName(mv.player), club: world.clubs[mv.player.clubId!]!.shortName });
+    }
+  }
   if (days <= 0) return;
   for (const p of Object.values(world.players)) {
     const rec = days * MATCH.fitnessRecoveryPerDay * (1 - p.condition.fatigue / 200);
@@ -264,6 +278,7 @@ export function endSeason(world: WorldState): SeasonSummary {
       const retire = a >= BALANCE.retireFrom && rng.next() < (a - BALANCE.retireFrom + 1) * 0.25;
       if (retire) {
         dropRelations(world, p);
+        dropClient(world, p);
         delete world.players[id];
         summary.retired++;
       }
@@ -283,6 +298,7 @@ export function endSeason(world: WorldState): SeasonSummary {
     }
     initRelations(world, club, rng, youth);
   }
+  assignAgents(world, rng); // i ragazzi del vivaio trovano chi li cura
   world.promises = world.promises.filter((pr) => world.players[pr.playerId]);
 
   passDays(world, rng, 90, 13); // pausa estiva e preparazione

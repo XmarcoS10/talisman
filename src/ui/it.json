@@ -31,6 +31,9 @@
   "news.feud": "Faida nello spogliatoio: {a} e {b} non si parlano più. Intervieni dallo Spogliatoio.",
   "news.promiseKept": "Promessa mantenuta: {name} ha avuto lo spazio che gli avevi promesso.",
   "news.promiseBroken": "Promessa rotta: {name} si sente preso in giro e chiede di essere ceduto.",
+  "news.agentRenew": "{agent}, agente di {name}, chiede il rinnovo: {wage} l'anno.",
+  "news.agentPush": "{agent} spinge per far partire {name}: dice che qui non è considerato.",
+  "news.agentPropose": "{agent} ti propone {name} ({club}).",
   "news.leaderExcluded": "Il gruppo dirigente non ha preso bene l'esclusione di {name}.",
 
   "cause.up": "{attr} sale a {v} ({why})",

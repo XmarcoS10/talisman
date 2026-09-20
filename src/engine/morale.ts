@@ -1,10 +1,11 @@
 // Morale multi-componente, contagio emotivo, promesse ed esclusioni (GUIDA §7.3).
-import { PSYCH } from './balance.ts';
+import { AGENT, PSYCH } from './balance.ts';
 import type { Club, Player, PlayerId, PlayerPromise, WorldState } from './model.ts';
 import { addCause, addNews, pName } from './news.ts';
 import { age } from './players.ts';
 import type { Rng } from './rng.ts';
 import { bond, influence, leaders, weekSocial } from './social.ts';
+import { agentOf, remember } from './transfers/agents.ts';
 
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 
@@ -118,6 +119,8 @@ function resolvePromise(world: WorldState, club: Club, pr: PlayerPromise, kept: 
   world.promises = world.promises.filter((x) => x !== pr);
   const p = world.players[pr.playerId]!;
   const ps = p.psych;
+  const agent = agentOf(world, p); // l'agente se lo ricorda, e alla prossima trattativa si vede
+  if (agent) remember(agent, club.id, kept ? AGENT.keptPromise : -AGENT.brokenPromise);
   if (kept) {
     world.manager.kept++;
     ps.trust = clamp(ps.trust + 12, 0, 100);
