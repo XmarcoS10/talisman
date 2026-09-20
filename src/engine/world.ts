@@ -15,6 +15,7 @@ import { dropRelations, initRelations } from './social.ts';
 import { assignAgents, dropClient, weekAgents } from './transfers/agents.ts';
 import { aiRenewals, loanOutYouth, movePreSigned, preContracts, returnLoans, signFreeAgents } from './transfers/contracts.ts';
 import { isWinterWindow, runWindow } from './transfers/market.ts';
+import { makeScouts, weekScouting } from './scouting/scouts.ts';
 import { defaultTraining, trainWeek } from './training.ts';
 
 export const DAYS_BETWEEN_ROUNDS = 7;
@@ -37,7 +38,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
   const world: WorldState = {
     schemaVersion: SCHEMA_VERSION, seed, rng: rng.s, season, day: 0,
     manager: { name: '', clubId: 0, kept: 0, broken: 0 }, players: {}, clubs: {}, competitions: {}, history: [], news: [],
-    causal: [], promises: [], nextPlayerId: 1, agents: {}, nextAgentId: 1,
+    causal: [], promises: [], nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
   };
   const cities = [...CITIES];
   let clubId = 0;
@@ -52,7 +53,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
         colors: [c1!, c2!, c3!], crest: null, founded: rng.int(1890, 1960), reputation: rep, philosophy: rng.pick([...PHILOSOPHIES]),
         stadium: { name: `Stadio ${rng.pick(NATIONS.ITA!.last)}`, capacity: Math.round((5000 + rep * rep * 7) / 500) * 500 },
         balance: Math.round((rep * rep * 9000) / 100000) * 100000, compId: comp.id, playerIds: [],
-        tactic: defaultTactic(), training: defaultTraining(), familiarity: {}, excluded: [], feuds: [],
+        tactic: defaultTactic(), training: defaultTraining(), familiarity: {}, excluded: [], feuds: [], scoutIds: [],
       };
       for (const [pos, n] of Object.entries(SQUAD_TEMPLATE) as [Position, number][])
         for (let k = 0; k < n; k++) addPlayer(world, rng, club, pos);
@@ -68,6 +69,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
     seedMinutes(world, club);
   }
   assignAgents(world, rng);
+  makeScouts(world, rng);
   world.rng = rng.s;
   return world;
 }
@@ -114,6 +116,7 @@ function passDays(world: WorldState, rng: Rng, days: number, weeks: number) {
       trainWeek(world, club, rng);
       weekPsych(world, club, rng);
     }
+    weekScouting(world, rng); // gli osservatori diradano la nebbia
     // gli agenti si muovono: quello che riguarda il club dell'utente diventa notizia
     for (const mv of weekAgents(world, rng)) {
       const mine = world.manager.clubId;

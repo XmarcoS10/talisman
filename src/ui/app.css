@@ -174,3 +174,8 @@ select { background: var(--surface-1); color: var(--text-1); border: 1px solid v
 .say { gap: 2px; padding: var(--s-2) var(--s-3); min-height: 62px; justify-content: center; }
 .say .now { color: var(--text-1); font-weight: 600; }
 .say .big { font: 700 22px var(--font-title); color: var(--accent); letter-spacing: 0.04em; }
+
+/* stime sotto nebbia (§7.6): il numero non è mai da solo, l'incertezza si vede */
+.est { display: inline-flex; align-items: baseline; gap: 2px; white-space: nowrap; }
+.est i { font-style: normal; font-size: 0.78em; color: var(--text-3); }
+.est.range { gap: 4px; }

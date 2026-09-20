@@ -385,3 +385,35 @@ export const CONTRACT = {
   loanMinutes: 45, // minuti garantiti tipici in un prestito con condizioni
   loanBuyMul: 1.05, // riscatto pattuito, sul valore di oggi
 } as const;
+
+// --- scouting e informazione imperfetta (GUIDA §7.6) ---
+export const SCOUT = {
+  // quello che si sa gratis
+  publicBase: 8,
+  publicRep: 0.35, // per punto di reputazione del club
+  publicApps: 0.4, // per presenza in carriera
+  publicAppsMax: 25,
+  publicCap: 62, // senza osservatori non si arriva mai a conoscerlo davvero
+  // incertezza
+  bandMax: 5, // ± punti su un attributo, a conoscenza zero
+  caBand: 22, // ± sull'abilità attuale
+  paBand: 40, // ± sul potenziale
+  paFloor: 6, // il potenziale non si sa mai con certezza
+  noiseShare: 0.55, // quanta parte della banda è errore casuale
+  biasShare: 0.5, // …e quanta errore sistematico dell'osservatore
+  personalityAt: 55, // conoscenza da cui si capisce che tipo è
+  sampleOk: 12, // sotto queste presenze i numeri per 90 minuti non dicono niente
+  // osservatori
+  perClub: 3,
+  freePool: 12,
+  wageBase: 40000,
+  wagePerJudge: 6000,
+  weekGain: 2.2, // conoscenza a settimana su un giocatore osservato
+  judgeGain: 0.12, // per punto di Giudizio
+  contactGain: 0.01, // per punto di rete di contatti nella sua nazione
+  watchPerWeek: 6, // quanti giocatori riesce a seguire in una settimana
+  analystGain: 1.2, // l'analista dati cresce più piano ma su tutti i giocatori dell'incarico
+  analystWatch: 20,
+  reportAt: 45, // conoscenza da cui manda un rapporto
+  reportEvery: 25, // e poi ogni tot punti in più
+} as const;

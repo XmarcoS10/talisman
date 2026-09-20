@@ -7,8 +7,9 @@ import { seedMinutes } from './morale.ts';
 import { initRelations } from './social.ts';
 import { defaultTraining } from './training.ts';
 import { assignAgents } from './transfers/agents.ts';
+import { makeScouts } from './scouting/scouts.ts';
 
-export const SCHEMA_VERSION = 7;
+export const SCHEMA_VERSION = 8;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -71,6 +72,14 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
   (w) => {
     for (const p of Object.values(w.players as Obj))
       Object.assign(p.contract, { release: null, sellOn: 0, sellOnTo: null, loan: null, preSigned: null });
+  },
+  // 7 → 8 (F7, scouting): osservatori e nebbia dell'informazione
+  (w) => {
+    for (const c of Object.values(w.clubs as Obj)) c.scoutIds = [];
+    w.scouts = {};
+    w.known = {};
+    w.nextScoutId = 1;
+    makeScouts(w as unknown as WorldState, new Rng(w.seed + 113)); // forma garantita dalle righe sopra
   },
 ];
 

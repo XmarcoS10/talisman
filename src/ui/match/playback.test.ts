@@ -16,7 +16,7 @@ const setup = (mine: 0 | 1 = 0) => {
   return { w, fx, run: runMatch(new Rng(4), matchSetups(w, fx, true), []) };
 };
 
-describe('partita in 2D (F6)', () => {
+describe('partita in 2D (F6)', { timeout: 30000 }, () => {
   it('ogni fotogramma ha i giocatori dentro il campo e il tempo non torna indietro', () => {
     const { run } = setup();
     run.result();

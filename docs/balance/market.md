@@ -1,25 +1,25 @@
-# Report mercato — 5 stagioni, seed 42
+# Report mercato â€” 5 stagioni, seed 42
 
 | Metrica | Valore | Target | |
 |---|---|---|---|
-| Acquisti per finestra estiva | 87 | 20 – 90 | ✅ |
-| Inflazione dei prezzi sull'intero periodo | 1.04× | 0.70× – 1.40× | ✅ |
-| Monte ingaggi su fatturato (media) | 27% | 15% – 75% | ✅ |
-| Monte ingaggi su fatturato (massimo) | 66% | 0% – 85% | ✅ |
-| Club sopra l'85% per più di due stagioni | 0 | 0 – 0 | ✅ |
-| Età media delle rose | 25.9 | 24.0 – 28.0 | ✅ |
-| Top 50 nei dieci club più blasonati | 88% | 40% – 95% | ✅ |
-| Giocatori in prestito | 30 | 5 – 120 | ✅ |
-| Svincolati rimasti senza squadra | 5 | 0 – 60 | ✅ |
+| Acquisti per finestra estiva | 83 | 20 â€“ 90 | âœ… |
+| Inflazione dei prezzi sull'intero periodo | 1.00Ã— | 0.70Ã— â€“ 1.40Ã— | âœ… |
+| Monte ingaggi su fatturato (media) | 26% | 15% â€“ 75% | âœ… |
+| Monte ingaggi su fatturato (massimo) | 69% | 0% â€“ 85% | âœ… |
+| Club sopra l'85% per piÃ¹ di due stagioni | 0 | 0 â€“ 0 | âœ… |
+| EtÃ  media delle rose | 25.8 | 24.0 â€“ 28.0 | âœ… |
+| Top 50 nei dieci club piÃ¹ blasonati | 90% | 40% â€“ 95% | âœ… |
+| Giocatori in prestito | 33 | 5 â€“ 120 | âœ… |
+| Svincolati rimasti senza squadra | 7 | 0 â€“ 60 | âœ… |
 | Club col bilancio in rosso | 0 | raro | |
-| Cassa media dei club | 29.1M |  | |
+| Cassa media dei club | 29.3M |  | |
 
 ## Stagione per stagione
-- 2026/27: 95 acquisti · valore medio 8.0M · ingaggi/fatturato 27% (max 86%) · età 25.8 · 11 in prestito · 0 svincolati
-- 2027/28: 87 acquisti · valore medio 8.4M · ingaggi/fatturato 27% (max 80%) · età 26.0 · 29 in prestito · 5 svincolati
-- 2028/29: 76 acquisti · valore medio 8.4M · ingaggi/fatturato 26% (max 81%) · età 26.1 · 31 in prestito · 5 svincolati
-- 2029/30: 87 acquisti · valore medio 8.5M · ingaggi/fatturato 27% (max 69%) · età 25.9 · 38 in prestito · 8 svincolati
-- 2030/31: 90 acquisti · valore medio 8.8M · ingaggi/fatturato 26% (max 66%) · età 25.7 · 40 in prestito · 8 svincolati
+- 2026/27: 92 acquisti Â· valore medio 8.3M Â· ingaggi/fatturato 26% (max 87%) Â· etÃ  25.7 Â· 16 in prestito Â· 0 svincolati
+- 2027/28: 79 acquisti Â· valore medio 8.4M Â· ingaggi/fatturato 27% (max 85%) Â· etÃ  25.8 Â· 31 in prestito Â· 3 svincolati
+- 2028/29: 78 acquisti Â· valore medio 8.2M Â· ingaggi/fatturato 26% (max 73%) Â· etÃ  26.0 Â· 38 in prestito Â· 4 svincolati
+- 2029/30: 85 acquisti Â· valore medio 8.1M Â· ingaggi/fatturato 26% (max 68%) Â· etÃ  25.9 Â· 41 in prestito Â· 14 svincolati
+- 2030/31: 81 acquisti Â· valore medio 8.4M Â· ingaggi/fatturato 25% (max 69%) Â· etÃ  25.6 Â· 39 in prestito Â· 15 svincolati
 
 ## Note oneste su questo report
 

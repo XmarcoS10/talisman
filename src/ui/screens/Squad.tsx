@@ -3,6 +3,8 @@ import { ATTR_GROUPS, POSITIONS, type AttrKey, type Player, type WorldState } fr
 import { age } from '../../engine/players.ts';
 import { value } from '../../engine/transfers/valuation.ts';
 import { PosBadge, Stars, attrClass, fullName } from '../bits.tsx';
+import { estimate } from '../../engine/scouting/fog.ts';
+import { Ability, Est } from '../fog.tsx';
 import { fmtMoney, t } from '../i18n.ts';
 import { moraleClass } from './Graph.tsx';
 
@@ -22,12 +24,12 @@ type Col = { key: string; label: string; title?: string; num?: boolean; value: (
 type View = 'general' | 'stats' | keyof typeof ATTR_GROUPS;
 const VIEWS: View[] = ['general', 'stats', 'technical', 'mental', 'physical', 'goalkeeping'];
 
-function columns(view: View, season: number, rep: number): Col[] {
+function columns(view: View, season: number, rep: number, world: WorldState, own: boolean): Col[] {
   const avg = (p: Player) => (p.stats.apps ? p.stats.ratingSum / p.stats.apps : 0);
   if (view === 'general') return [
     { key: 'age', label: t('col.age'), num: true, value: (p) => age(p, season) },
-    { key: 'ca', label: t('col.ability'), value: (p) => p.ca, cell: (p) => <Stars ca={p.ca} /> },
-    { key: 'pa', label: t('col.potential'), value: (p) => p.pa, cell: (p) => <Stars ca={p.pa} /> },
+    { key: 'ca', label: t('col.ability'), value: (p) => p.ca, cell: (p) => (own ? <Stars ca={p.ca} /> : <Ability world={world} p={p} which="ca" />) },
+    { key: 'pa', label: t('col.potential'), value: (p) => p.pa, cell: (p) => (own ? <Stars ca={p.pa} /> : <Ability world={world} p={p} which="pa" />) },
     { key: 'fit', label: t('col.fitness'), num: true, value: (p) => p.condition.fitness, cell: (p) => `${p.condition.fitness}%` },
     { key: 'morale', label: t('col.morale'), num: true, value: (p) => p.psych.morale, cell: (p) => <b className={`m-text-${moraleClass(p.psych.morale)}`}>{Math.round(p.psych.morale)}</b> },
     { key: 'value', label: t('col.value'), num: true, value: (p) => value(p, season, { clubRep: rep }), cell: (p) => fmtMoney(value(p, season, { clubRep: rep })) },
@@ -45,14 +47,16 @@ function columns(view: View, season: number, rep: number): Col[] {
   ];
   return (ATTR_GROUPS[view] as readonly AttrKey[]).map((k) => ({
     key: k, label: t(`attr.${k}`).slice(0, 4), title: t(`attr.${k}`), num: true,
-    value: (p: Player) => p.attrs[k], cell: (p: Player) => <b className={attrClass(p.attrs[k])}>{p.attrs[k]}</b>,
+    value: (p: Player) => p.attrs[k],
+    cell: (p: Player) => (own ? <b className={attrClass(p.attrs[k])}>{p.attrs[k]}</b> : <Est b={estimate(world, p, k)} />),
   }));
 }
 
 export function Squad({ world, clubId, onPlayer, title }: { world: WorldState; clubId: number; onPlayer: (id: number) => void; title?: string }) {
   const [view, setView] = useState<View>('general');
   const [sort, setSort] = useState<{ key: string; dir: 1 | -1 }>({ key: 'pos', dir: 1 });
-  const cols = columns(view, world.season, world.clubs[clubId]!.reputation);
+  const own = clubId === world.manager.clubId;
+  const cols = columns(view, world.season, world.clubs[clubId]!.reputation, world, own);
   const fixed: Col[] = [
     { key: 'pos', label: t('col.pos'), value: (p) => POSITIONS.indexOf(p.position), cell: (p) => <PosBadge pos={p.position} /> },
     { key: 'name', label: t('col.name'), value: (p) => p.lastName, cell: (p) => <>{fullName(p)} <Status p={p} out={world.clubs[clubId]!.excluded.includes(p.id)} /></> },

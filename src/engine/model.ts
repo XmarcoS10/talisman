@@ -8,6 +8,7 @@ export type PlayerId = number;
 export type ClubId = number;
 export type CompId = string;
 export type AgentId = number;
+export type ScoutId = number;
 
 export const POSITIONS = ['GK', 'DL', 'DC', 'DR', 'DM', 'ML', 'MC', 'MR', 'AML', 'AMC', 'AMR', 'ST'] as const;
 export type Position = (typeof POSITIONS)[number];
@@ -117,6 +118,46 @@ export interface Agent {
 export const PHILOSOPHIES = ['youth', 'veterans', 'physical', 'technical', 'balanced'] as const;
 export type Philosophy = (typeof PHILOSOPHIES)[number];
 
+/**
+ * osservatore (§7.6). Giudizio, rete di contatti per area geografica e un bias sistematico:
+ * un osservatore mediocre non fa solo rumore, sbaglia sempre nella stessa direzione. Le bufale sono una feature.
+ */
+export interface Scout {
+  id: ScoutId;
+  name: string;
+  nation: string;
+  clubId: ClubId | null; // null = libero, assumibile
+  judgeAbility: number; // 1-20, giudizio delle abilità
+  judgePotential: number; // 1-20, giudizio del potenziale
+  bias: number; // −1 pessimista … +1 ottimista, sistematico
+  contacts: Record<string, number>; // nazione → forza della rete 0-100
+  wage: number;
+  assignment: ScoutTask | null;
+  analyst: boolean; // analista dati invece che osservatore sul campo
+}
+
+/** incarico: una nazione, un club o un singolo giocatore */
+export type ScoutTask =
+  | { kind: 'nation'; nation: string }
+  | { kind: 'club'; clubId: ClubId }
+  | { kind: 'player'; playerId: PlayerId };
+
+/** quanto ne sappiamo di un giocatore non nostro (§7.6) */
+export interface Known {
+  k: number; // conoscenza 0-100
+  by: ScoutId | null; // chi ce l'ha messa: il suo bias colora la stima
+  reports: ScoutReport[];
+}
+
+export interface ScoutReport {
+  season: number;
+  day: number;
+  scoutId: ScoutId;
+  verdict: string; // chiave i18n
+  ca: [number, number]; // intervallo stimato
+  pa: [number, number];
+}
+
 export interface Club {
   id: ClubId;
   name: string;
@@ -136,6 +177,7 @@ export interface Club {
   training: TrainingCat[]; // settimana tipo: 12 sedute (mattina/pomeriggio × 6 giorni)
   familiarity: Partial<Record<FormationId, number>>; // quanto la squadra conosce ogni modulo 0-100
   excluded: PlayerId[]; // fuori rosa
+  scoutIds: ScoutId[];
   feuds: Feud[]; // faide aperte nello spogliatoio
 }
 
@@ -256,6 +298,8 @@ export interface WorldState {
   players: Record<PlayerId, Player>;
   clubs: Record<ClubId, Club>;
   agents: Record<AgentId, Agent>;
+  scouts: Record<ScoutId, Scout>;
+  known: Record<PlayerId, Known>; // la nebbia: solo quello che l'utente ha scoperto
   competitions: Record<CompId, Competition>;
   history: SeasonRecord[];
   news: NewsItem[]; // notizie per l'utente, le più recenti in fondo
@@ -263,4 +307,5 @@ export interface WorldState {
   promises: PlayerPromise[]; // promesse attive dell'utente
   nextPlayerId: number;
   nextAgentId: number;
+  nextScoutId: number;
 }

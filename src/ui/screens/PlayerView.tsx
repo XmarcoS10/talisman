@@ -3,6 +3,8 @@ import { age } from '../../engine/players.ts';
 import { value } from '../../engine/transfers/valuation.ts';
 import { Crest } from '../Crest.tsx';
 import { PosBadge, Stars, attrClass, fullName, personalityKey } from '../bits.tsx';
+import { estimate, personalityKnown } from '../../engine/scouting/fog.ts';
+import { Ability, Est, Known } from '../fog.tsx';
 import { fmtMoney, fmtSeason, t } from '../i18n.ts';
 import { DevPanel, PeoplePanel } from './PlayerPeople.tsx';
 import { Status } from './Squad.tsx';
@@ -13,6 +15,7 @@ export function PlayerView({ world, playerId, onBack, onClub, onChange, onPlayer
   const p = world.players[playerId];
   if (!p) return <button className="btn" onClick={onBack}>{t('player.back')}</button>;
   const club = p.clubId !== null ? world.clubs[p.clubId] : undefined;
+  const own = p.clubId === world.manager.clubId;
   const groups = p.position === 'GK' ? (['goalkeeping', 'mental', 'physical'] as const) : (['technical', 'mental', 'physical'] as const);
   const secondary = Object.entries(p.positions).filter(([pos]) => pos !== p.position);
 
@@ -32,8 +35,11 @@ export function PlayerView({ world, playerId, onBack, onClub, onChange, onPlayer
           </div>
         </div>
         <div className="grid" style={{ gridTemplateColumns: 'auto auto', gap: 'var(--s-1) var(--s-3)', alignItems: 'center' }}>
-          <span className="muted">{t('col.ability')}</span><Stars ca={p.ca} />
-          <span className="muted">{t('col.potential')}</span><Stars ca={p.pa} />
+          <span className="muted">{t('col.ability')}</span>
+          {own ? <Stars ca={p.ca} /> : <Ability world={world} p={p} which="ca" />}
+          <span className="muted">{t('col.potential')}</span>
+          {own ? <Stars ca={p.pa} /> : <Ability world={world} p={p} which="pa" />}
+          {!own && <Known world={world} p={p} />}
         </div>
       </div>
 
@@ -42,7 +48,9 @@ export function PlayerView({ world, playerId, onBack, onClub, onChange, onPlayer
           <div key={g} className="panel" style={{ gap: 0 }}>
             <h3 style={{ marginBottom: 'var(--s-2)' }}>{t(`group.${g}`)}</h3>
             {ATTR_GROUPS[g].map((k) => (
-              <div key={k} className="attr"><span>{t(`attr.${k}`)}</span><b className={attrClass(p.attrs[k])}>{p.attrs[k]}</b></div>
+              <div key={k} className="attr"><span>{t(`attr.${k}`)}</span>
+                {own ? <b className={attrClass(p.attrs[k])}>{p.attrs[k]}</b> : <Est b={estimate(world, p, k)} />}
+              </div>
             ))}
           </div>
         ))}
@@ -56,7 +64,7 @@ export function PlayerView({ world, playerId, onBack, onClub, onChange, onPlayer
           </div>
           <div className="panel">
             <h3>{t('player.personality')}</h3>
-            <div>{t(personalityKey(p))}</div>
+            <div>{own || personalityKnown(world, p) ? t(personalityKey(p)) : t('fog.personality')}</div>
             {secondary.length > 0 && (
               <div className="row muted">{t('player.positions')}: {secondary.map(([pos]) => t(`pos.${pos}`)).join(', ')}</div>
             )}
