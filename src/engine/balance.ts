@@ -275,3 +275,33 @@ export const MARKET = {
   wageOfValue: 0.12, // stipendio annuo tipico come quota del valore
   wageMin: 30000,
 } as const;
+
+// --- trattative (GUIDA §7.5) ---
+// La trattativa è a concessioni alternate: il venditore parte alto, scende verso un prezzo di riserva
+// che il compratore non vede mai, e perde la pazienza se viene preso in giro.
+export const DEAL = {
+  askStart: 1.45, // prima richiesta, come multiplo del valore
+  sellPremium: 0.7, // sovrapprezzo massimo per chi non vuole vendere per niente
+  fireSale: 0.55, // sconto massimo per chi vuole liberarsene (fuori rosa, ha chiesto la cessione, scade)
+  needPremium: 0.4, // quanto in più è disposto a pagare chi ha un buco in quel ruolo
+  noise: 0.08, // rumore sul prezzo di riserva: due club non valutano mai identico
+  // come il venditore valuta un pacchetto che non è solo contanti
+  instalment: 0.07, // sconto per ogni anno di dilazione
+  bonusOdds: 0.45, // quanto conta un bonus presenze/gol: si incassa forse
+  sellOnWorth: 0.45, // la % rivendita vale meno di quanto varrebbe incassata oggi
+  swapDiscount: 0.7, // le contropartite si valutano meno del loro prezzo di listino
+  swapUnwanted: 0.45, // ...e molto meno se in quel ruolo sei già coperto
+  optionWorth: 0.3, // un diritto di riscatto vale una frazione dell'obbligo
+  loanFeeWorth: 1, // il prestito oneroso si incassa e basta
+  // concessioni e pazienza
+  concession: 0.22, // quanto il venditore si avvicina al proprio limite a ogni giro
+  accept: 0.99, // si accetta a partire da questa quota della richiesta
+  minStep: 0.04, // rilancio minimo perché l'offerta non sia una presa in giro
+  patienceRound: 12, // pazienza persa a ogni giro
+  patienceLowball: 28, // pazienza persa per un rilancio irrisorio
+  patiencePro: 1.4, // il club più blasonato ne ha meno: tratta da posizione di forza
+  rounds: 8, // oltre questi giri la trattativa si chiude comunque
+  walkAway: 1.5, // il compratore molla se la richiesta supera di tanto il proprio tetto
+  reopenDays: 14, // giorni prima di poter riaprire dopo una rottura
+  agentCut: 0.06, // commissione dell'agente sull'affare
+} as const;
