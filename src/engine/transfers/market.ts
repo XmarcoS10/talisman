@@ -2,14 +2,15 @@
 // Il legame col pilastro 1: ogni acquisto entra nello spogliatoio e sposta le aspettative di chi gioca
 // in quel ruolo. È la cosa che si vede e che FM non racconta.
 import { AGENT, CLUB_AI } from '../balance.ts';
-import type { Club, Player, WorldState } from '../model.ts';
+import type { Club, Offer, Player, Talk, WorldState } from '../model.ts';
 import { addCause, addNews, pName } from '../news.ts';
 import { abilityAt } from '../players.ts';
 import type { Rng } from '../rng.ts';
 import { dropRelations, initRelations } from '../social.ts';
 import { agentOf, commission, remember, renewalWage } from './agents.ts';
-import { plan, sellWillingness, shortlist } from './club-ai.ts';
-import { cashNow, counterOffer, openTalk, reply, type Offer, type TalkCtx } from './negotiation.ts';
+import { acceptsRenewal } from './contracts.ts';
+import { needs, plan, sellWillingness, shortlist } from './club-ai.ts';
+import { cashNow, counterOffer, openTalk, reopen, reply, type TalkCtx } from './negotiation.ts';
 import { value } from './valuation.ts';
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
@@ -127,3 +128,62 @@ export function runWindow(world: WorldState, rng: Rng, winter = false): number {
 
 /** le finestre: l'estate fra due stagioni, e due settimane a metà campionato */
 export const isWinterWindow = (day: number) => day >= CLUB_AI.winterFrom && day < CLUB_AI.winterTo;
+
+// --- la trattativa condotta dall'utente (§7.5, schermata Trattativa) ---
+
+/** il contesto di una trattativa, ricalcolato ogni volta: niente valori derivati salvati */
+export function talkCtx(world: WorldState, p: Player, buyer: Club): TalkCtx {
+  const seller = world.clubs[p.clubId!]!;
+  const urgency = needs(world, buyer).find((n) => (p.positions[n.pos] ?? 0) >= 4)?.urgency ?? 0.3;
+  return {
+    value: value(p, world.season, { clubRep: seller.reputation }),
+    willing: sellWillingness(world, seller, p),
+    need: urgency,
+    sellerRep: seller.reputation,
+    release: p.contract.release,
+  };
+}
+
+export const talkFor = (world: WorldState, p: Player) =>
+  world.talks.find((t) => t.playerId === p.id && t.buyer === world.manager.clubId) ?? null;
+
+/** apre (o riapre) la trattativa per un giocatore. `null` se non è trattabile */
+export function startTalk(world: WorldState, rng: Rng, p: Player): Talk | null {
+  if (p.clubId === null || p.clubId === world.manager.clubId) return null;
+  const buyer = world.clubs[world.manager.clubId]!;
+  const open = talkFor(world, p);
+  if (open) { reopen(open, world.day); return open; }
+  const t = openTalk(rng, p.id, p.clubId, buyer.id, talkCtx(world, p, buyer));
+  world.talks.push(t);
+  return t;
+}
+
+export type OfferResult = { kind: 'accept' | 'counter' | 'reject'; ask: number; signed: boolean; why?: 'wage' | 'unhappy' | 'ambition' | 'preSigned' | 'cash' };
+
+/**
+ * manda un'offerta. Due sì servono per chiudere: quello del club che vende e quello del giocatore,
+ * che sullo stipendio ha voce in capitolo come chiunque altro.
+ */
+export function sendOffer(world: WorldState, rng: Rng, p: Player, o: Offer, wage: number): OfferResult {
+  const buyer = world.clubs[world.manager.clubId]!;
+  const talk = talkFor(world, p) ?? startTalk(world, rng, p);
+  if (!talk) return { kind: 'reject', ask: 0, signed: false };
+  const ctx = talkCtx(world, p, buyer);
+  if (cashNow(o) > buyer.balance) return { kind: 'counter', ask: talk.ask, signed: false, why: 'cash' };
+  const r = reply(talk, o, ctx, world.day);
+  if (r.kind !== 'accept' || !talk.deal) return { ...r, signed: false };
+  const answer = acceptsRenewal(world, p, buyer, wage);
+  if (!answer.ok) return { ...r, signed: false, why: answer.why }; // il club ha detto sì, lui no
+  transfer(world, rng, p, buyer, talk.deal, wage);
+  world.talks = world.talks.filter((t) => t !== talk);
+  return { ...r, signed: true };
+}
+
+/** lascia perdere: la trattativa si chiude e il venditore se lo ricorda */
+export function dropTalk(world: WorldState, p: Player) {
+  const t = talkFor(world, p);
+  if (!t) return;
+  world.talks = world.talks.filter((x) => x !== t);
+  const a = agentOf(world, p);
+  if (a) remember(a, world.manager.clubId, -AGENT.walkedAway);
+}

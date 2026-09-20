@@ -63,12 +63,10 @@ export function wantsToKeep(world: WorldState, club: Club, p: Player): boolean {
   return sellWillingness(world, club, p) < CLUB_AI.sellSurplus || club.playerIds.length <= CLUB_AI.squadMin;
 }
 
-/**
- * i rinnovi di fine stagione: chi si vuole tenere riceve un'offerta, gli altri vanno a scadenza.
- * ponytail: anche il club dell'utente li fa da solo, finché non c'è la schermata contratti; intanto avvisa.
- */
+/** i rinnovi di fine stagione dell'IA: chi si vuole tenere riceve un'offerta, gli altri vanno a scadenza */
 export function aiRenewals(world: WorldState, rng: Rng) {
   for (const club of Object.values(world.clubs)) {
+    if (club.id === world.manager.clubId) { userExpiring(world, club); continue; } // i tuoi li decidi tu
     for (const id of [...club.playerIds]) {
       const p = world.players[id]!;
       if (p.contract.loan || expires(p, world.season) > CONTRACT.renewFrom) continue;
@@ -84,6 +82,20 @@ export function aiRenewals(world: WorldState, rng: Rng) {
         release(world, club, p);
         if (club.id === world.manager.clubId) addNews(world, 'news.expired', { name: pName(p) });
       }
+    }
+  }
+}
+
+/** i tuoi in scadenza: l'assistente non firma niente al posto tuo, ti avvisa e basta */
+function userExpiring(world: WorldState, club: Club) {
+  for (const id of [...club.playerIds]) {
+    const p = world.players[id]!;
+    if (p.contract.loan || expires(p, world.season) > CONTRACT.renewFrom) continue;
+    if (expires(p, world.season) < 0) {
+      release(world, club, p);
+      addNews(world, 'news.expired', { name: pName(p) });
+    } else {
+      addNews(world, 'news.expiring', { name: pName(p), wage: askingWage(world, p, club), until: p.contract.until });
     }
   }
 }

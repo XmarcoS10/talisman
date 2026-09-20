@@ -288,6 +288,35 @@ export interface SeasonRecord {
   topScorer: { playerId: PlayerId; goals: number } | null;
 }
 
+/** l'offerta, con tutti i parametri della specifica */
+export interface Offer {
+  fee: number; // parte fissa
+  years: number; // in quante stagioni è rateizzata (1 = subito)
+  bonusApps: number; // bonus presenze
+  bonusGoals: number; // bonus gol
+  sellOn: number; // % sulla futura rivendita, 0…0.3
+  swap: { playerId: PlayerId; value: number; wanted: boolean }[]; // contropartite, col loro valore
+  loan: { fee: number; buy: number; obligation: boolean } | null; // prestito con diritto o obbligo di riscatto
+  agentFee: number; // commissione all'agente, a carico del compratore
+}
+
+export type TalkState = 'open' | 'agreed' | 'broken' | 'closed';
+
+export interface Talk {
+  playerId: PlayerId;
+  seller: ClubId;
+  buyer: ClubId;
+  reserve: number; // prezzo di riserva, nascosto al compratore
+  ask: number; // richiesta attuale, questa si vede
+  last: number; // valore percepito dell'ultima offerta ricevuta
+  patience: number; // 0-100
+  round: number;
+  state: TalkState;
+  reopenDay: number; // dal giorno in cui si può riprovare
+  deal: Offer | null; // l'offerta accettata
+}
+
+
 export interface WorldState {
   schemaVersion: number;
   seed: number;
@@ -305,6 +334,7 @@ export interface WorldState {
   news: NewsItem[]; // notizie per l'utente, le più recenti in fondo
   causal: CausalEvent[]; // registro delle cause per i giocatori dell'utente, i più recenti in fondo
   promises: PlayerPromise[]; // promesse attive dell'utente
+  talks: Talk[]; // trattative aperte dall'utente (§7.5)
   nextPlayerId: number;
   nextAgentId: number;
   nextScoutId: number;

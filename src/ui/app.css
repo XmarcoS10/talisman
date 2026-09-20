@@ -179,3 +179,18 @@ select { background: var(--surface-1); color: var(--text-1); border: 1px solid v
 .est { display: inline-flex; align-items: baseline; gap: 2px; white-space: nowrap; }
 .est i { font-style: normal; font-size: 0.78em; color: var(--text-3); }
 .est.range { gap: 4px; }
+
+/* schermate del mercato (F7) */
+.grid.market { grid-template-columns: 260px minmax(0, 1fr); align-items: start; }
+.filters { max-width: 260px; }
+.filters label { display: grid; gap: var(--s-1); font-size: 0.9em; color: var(--text-2); }
+.filters label.check { display: flex; align-items: center; gap: var(--s-2); }
+.grid.two { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2); }
+.grid.two label { display: grid; gap: var(--s-1); font-size: 0.9em; color: var(--text-2); }
+.deal .row.wrap, .row.wrap { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
+.banner { padding: var(--s-2) var(--s-3); border-radius: var(--r-1); background: var(--bg-1); }
+.banner.ok { background: color-mix(in srgb, var(--positive) 18%, var(--bg-1)); }
+.banner.warn { background: color-mix(in srgb, var(--negative) 18%, var(--bg-1)); }
+.report { display: grid; grid-template-columns: 180px 130px 1fr auto; gap: var(--s-2); align-items: baseline; padding: var(--s-1) 0; border-bottom: 1px solid var(--border); }
+.btn.small { padding: 2px 8px; font-size: 0.85em; }
+.link { background: none; border: 0; color: var(--accent); cursor: pointer; padding: 0; text-align: left; }

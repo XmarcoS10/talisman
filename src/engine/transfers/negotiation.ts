@@ -3,20 +3,8 @@
 // più alta e scende di poco a ogni giro; la pazienza si consuma, e un rilancio irrisorio la brucia in fretta.
 // Rotta la trattativa si può riaprire, ma non subito.
 import { DEAL } from '../balance.ts';
-import type { ClubId, PlayerId } from '../model.ts';
+import type { ClubId, Offer, PlayerId, Talk } from '../model.ts';
 import type { Rng } from '../rng.ts';
-
-/** l'offerta, con tutti i parametri della specifica */
-export interface Offer {
-  fee: number; // parte fissa
-  years: number; // in quante stagioni è rateizzata (1 = subito)
-  bonusApps: number; // bonus presenze
-  bonusGoals: number; // bonus gol
-  sellOn: number; // % sulla futura rivendita, 0…0.3
-  swap: { playerId: PlayerId; value: number; wanted: boolean }[]; // contropartite, col loro valore
-  loan: { fee: number; buy: number; obligation: boolean } | null; // prestito con diritto o obbligo di riscatto
-  agentFee: number; // commissione all'agente, a carico del compratore
-}
 
 export const emptyOffer = (fee = 0): Offer =>
   ({ fee, years: 1, bonusApps: 0, bonusGoals: 0, sellOn: 0, swap: [], loan: null, agentFee: 0 });
@@ -41,22 +29,6 @@ export interface TalkCtx {
   need: number; // 0…1: quanto il compratore ha bisogno di quel ruolo
   sellerRep: number; // reputazione del venditore 1-100
   release: number | null; // clausola rescissoria, se c'è
-}
-
-export type TalkState = 'open' | 'agreed' | 'broken' | 'closed';
-
-export interface Talk {
-  playerId: PlayerId;
-  seller: ClubId;
-  buyer: ClubId;
-  reserve: number; // prezzo di riserva, nascosto al compratore
-  ask: number; // richiesta attuale, questa si vede
-  last: number; // valore percepito dell'ultima offerta ricevuta
-  patience: number; // 0-100
-  round: number;
-  state: TalkState;
-  reopenDay: number; // dal giorno in cui si può riprovare
-  deal: Offer | null; // l'offerta accettata
 }
 
 /**

@@ -3,7 +3,10 @@ import { age } from '../../engine/players.ts';
 import { value } from '../../engine/transfers/valuation.ts';
 import { Crest } from '../Crest.tsx';
 import { PosBadge, Stars, attrClass, fullName, personalityKey } from '../bits.tsx';
+import { useState } from 'react';
 import { estimate, personalityKnown } from '../../engine/scouting/fog.ts';
+import { ContractPanel } from './ContractPanel.tsx';
+import { Deal } from './Deal.tsx';
 import { Ability, Est, Known } from '../fog.tsx';
 import { fmtMoney, fmtSeason, t } from '../i18n.ts';
 import { DevPanel, PeoplePanel } from './PlayerPeople.tsx';
@@ -16,6 +19,7 @@ export function PlayerView({ world, playerId, onBack, onClub, onChange, onPlayer
   if (!p) return <button className="btn" onClick={onBack}>{t('player.back')}</button>;
   const club = p.clubId !== null ? world.clubs[p.clubId] : undefined;
   const own = p.clubId === world.manager.clubId;
+  const [deal, setDeal] = useState(false);
   const groups = p.position === 'GK' ? (['goalkeeping', 'mental', 'physical'] as const) : (['technical', 'mental', 'physical'] as const);
   const secondary = Object.entries(p.positions).filter(([pos]) => pos !== p.position);
 
@@ -55,7 +59,11 @@ export function PlayerView({ world, playerId, onBack, onClub, onChange, onPlayer
           </div>
         ))}
         <div className="grid">
-          <PeoplePanel world={world} p={p} onChange={onChange} onPlayer={onPlayer} />
+          {own && <ContractPanel world={world} p={p} onChange={onChange} />}
+          {!own && p.clubId !== null && (deal
+            ? <Deal world={world} p={p} onChange={onChange} onClose={() => setDeal(false)} />
+            : <button className="btn primary" onClick={() => setDeal(true)}>{t('deal.start')}</button>)}
+          {own && <PeoplePanel world={world} p={p} onChange={onChange} onPlayer={onPlayer} />}
           <DevPanel world={world} p={p} />
           <div className="panel">
             <h3>{t('player.value')}</h3>
