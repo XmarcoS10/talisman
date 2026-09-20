@@ -11,6 +11,7 @@ import { Live } from './screens/Live.tsx';
 import { MatchModal } from './screens/MatchReport.tsx';
 import { SeasonModal } from './screens/Modals.tsx';
 import { PlayerView } from './screens/PlayerView.tsx';
+import { Finance } from './screens/Finance.tsx';
 import { Market } from './screens/Market.tsx';
 import { Saves } from './screens/Saves.tsx';
 import { Scouts } from './screens/Scouts.tsx';
@@ -23,11 +24,11 @@ import { Search } from './Search.tsx';
 import { currentSlot, saveTo } from './storage.ts';
 
 type Screen =
-  | { name: 'desk' | 'squad' | 'tactics' | 'training' | 'dressing' | 'market' | 'scouts' | 'tables' | 'fixtures' | 'saves' }
+  | { name: 'desk' | 'squad' | 'tactics' | 'training' | 'dressing' | 'market' | 'scouts' | 'finance' | 'tables' | 'fixtures' | 'saves' }
   | { name: 'player'; id: number; back: Screen }
   | { name: 'club'; id: number; back: Screen };
 type Modal = { kind: 'match'; fx: Fixture; others: Fixture[] } | { kind: 'season'; summary: SeasonSummary; myPos: number } | null;
-const NAV = ['desk', 'squad', 'tactics', 'training', 'dressing', 'market', 'scouts', 'tables', 'fixtures', 'saves'] as const;
+const NAV = ['desk', 'squad', 'tactics', 'training', 'dressing', 'market', 'scouts', 'finance', 'tables', 'fixtures', 'saves'] as const;
 
 const autosave = (w: WorldState) => { if (!saveTo(currentSlot(), w)) console.error('Salvataggio fallito'); };
 
@@ -128,6 +129,7 @@ export function App() {
         {screen.name === 'dressing' && <Dressing world={world} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'market' && <Market world={world} onPlayer={openPlayer} />}
         {screen.name === 'scouts' && <Scouts world={world} onChange={changed} onPlayer={openPlayer} />}
+        {screen.name === 'finance' && <Finance world={world} />}
         {screen.name === 'tables' && <Tables world={world} clubId={club.id} onPlayer={openPlayer} onClub={openClub} />}
         {screen.name === 'fixtures' && <Fixtures world={world} clubId={club.id} />}
         {screen.name === 'saves' && <Saves world={world} onLoad={open} />}

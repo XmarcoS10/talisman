@@ -9,7 +9,7 @@ import { defaultTraining } from './training.ts';
 import { assignAgents } from './transfers/agents.ts';
 import { makeScouts } from './scouting/scouts.ts';
 
-export const SCHEMA_VERSION = 9;
+export const SCHEMA_VERSION = 10;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -83,6 +83,11 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
   },
   // 8 → 9 (F7, schermate): le trattative aperte dall'utente si salvano
   (w) => { w.talks = []; },
+  // 9 → 10 (F8, finanze): conto economico, rate, fair play finanziario
+  (w) => {
+    for (const c of Object.values(w.clubs as Obj))
+      Object.assign(c, { books: [], debts: [], credits: [], sanction: { kind: 'none', seasons: 0, points: 0 } });
+  },
 ];
 
 export function serialize(world: WorldState): string {

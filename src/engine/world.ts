@@ -1,5 +1,5 @@
 // Mondo: generazione, calendario, avanzamento, classifiche, cambio stagione.
-import { BALANCE, MATCH, SQUAD_TEMPLATE, TRAIN } from './balance.ts';
+import { BALANCE, FIN, MARKET, MATCH, SQUAD_TEMPLATE, TRAIN } from './balance.ts';
 import { heal } from './injuries.ts';
 import { aiSetFormation, applyMatch, matchSetups, playMatch } from './match.ts';
 import { runMatch, type MatchRun } from './match/engine.ts';
@@ -13,9 +13,10 @@ import { Rng } from './rng.ts';
 import { SCHEMA_VERSION } from './save.ts';
 import { dropRelations, initRelations } from './social.ts';
 import { assignAgents, dropClient, weekAgents } from './transfers/agents.ts';
-import { aiRenewals, loanOutYouth, movePreSigned, preContracts, returnLoans, signFreeAgents } from './transfers/contracts.ts';
+import { aiRenewals, loanOutYouth, movePreSigned, preContracts, release, returnLoans, signFreeAgents } from './transfers/contracts.ts';
 import { isWinterWindow, runWindow } from './transfers/market.ts';
 import { makeScouts, weekScouting } from './scouting/scouts.ts';
+import { checkFFP, estimate, gate, seasonIncome, settleInstalments, trimWages, weekCosts } from './finance/ledger.ts';
 import { defaultTraining, trainWeek } from './training.ts';
 
 export const DAYS_BETWEEN_ROUNDS = 7;
@@ -52,7 +53,8 @@ export function newWorld(seed: number, season = 2026): WorldState {
         id: clubId++, name: `${rng.pick(CLUB_PREFIX)} ${city}`, shortName: city.replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase(), city,
         colors: [c1!, c2!, c3!], crest: null, founded: rng.int(1890, 1960), reputation: rep, philosophy: rng.pick([...PHILOSOPHIES]),
         stadium: { name: `Stadio ${rng.pick(NATIONS.ITA!.last)}`, capacity: Math.round((5000 + rep * rep * 7) / 500) * 500 },
-        balance: Math.round((rep * rep * 9000) / 100000) * 100000, compId: comp.id, playerIds: [],
+        balance: Math.round((rep * rep * 9000) / 100000) * 100000, books: [], debts: [], credits: [],
+        sanction: { kind: 'none', seasons: 0, points: 0 }, compId: comp.id, playerIds: [],
         tactic: defaultTactic(), training: defaultTraining(), familiarity: {}, excluded: [], feuds: [], scoutIds: [],
       };
       for (const [pos, n] of Object.entries(SQUAD_TEMPLATE) as [Position, number][])
@@ -67,6 +69,13 @@ export function newWorld(seed: number, season = 2026): WorldState {
     club.familiarity = { [club.tactic.formation]: TRAIN.famStart };
     initRelations(world, club, rng);
     seedMinutes(world, club);
+  }
+  // gli stipendi di partenza si riscalano sul fatturato stimato: un club non nasce già fuori dal tetto
+  for (const club of Object.values(world.clubs)) {
+    const squad = club.playerIds.map((id) => world.players[id]!);
+    const bill = squad.reduce((a, p) => a + p.contract.wage, 0);
+    const k = bill > 0 ? (estimate(world, club) * FIN.startWageShare) / bill : 1;
+    for (const p of squad) p.contract.wage = Math.max(MARKET.wageMin, Math.round((p.contract.wage * k) / 10000) * 10000);
   }
   assignAgents(world, rng);
   makeScouts(world, rng);
@@ -116,6 +125,7 @@ function passDays(world: WorldState, rng: Rng, days: number, weeks: number) {
       trainWeek(world, club, rng);
       weekPsych(world, club, rng);
     }
+    weekCosts(world, 1); // stipendi, staff, stadio
     weekScouting(world, rng); // gli osservatori diradano la nebbia
     // gli agenti si muovono: quello che riguarda il club dell'utente diventa notizia
     for (const mv of weekAgents(world, rng)) {
@@ -162,6 +172,7 @@ export function advance(world: WorldState): Fixture[] {
     for (const fx of comp.fixtures)
       if (fx.day === day) {
         playMatch(world, rng, fx);
+        gate(world, fx);
         played.push(fx);
       }
   // ogni 4 giornate un punto nel grafico di crescita
@@ -200,10 +211,11 @@ export function beginMatchDay(world: WorldState): LiveDay | null {
 export function finishMatchDay(world: WorldState, live: LiveDay): Fixture[] {
   const { day, rng } = live;
   applyMatch(world, rng, live.fx, live.run.result());
+  gate(world, live.fx);
   const played: Fixture[] = [live.fx];
   for (const comp of Object.values(world.competitions))
     for (const fx of comp.fixtures)
-      if (fx.day === day && fx !== live.fx && !fx.result) { playMatch(world, rng, fx); played.push(fx); }
+      if (fx.day === day && fx !== live.fx && !fx.result) { playMatch(world, rng, fx); gate(world, fx); played.push(fx); }
   if ((day / DAYS_BETWEEN_ROUNDS) % 4 === 0) for (const p of Object.values(world.players)) p.caLog.push(p.ca);
   const next = nextMatchDay(world);
   passDays(world, rng, (next ?? day + 1) - day, next === null ? 0 : 1);
@@ -228,6 +240,7 @@ export function standings(world: WorldState, comp: Competition): TableRow[] {
     else if (hg < ag) { a.w++; h.l++; a.pts += 3; }
     else { h.d++; a.d++; h.pts++; a.pts++; }
   }
+  for (const row of rows.values()) row.pts -= world.clubs[row.clubId]!.sanction.points;
   return [...rows.values()].sort(
     (x, y) => y.pts - x.pts || y.gf - y.ga - (x.gf - x.ga) || y.gf - x.gf || world.clubs[x.clubId]!.name.localeCompare(world.clubs[y.clubId]!.name),
   );
@@ -250,6 +263,9 @@ export function endSeason(world: WorldState): SeasonSummary {
   const summary: SeasonSummary = { season: world.season, champions: {}, promoted: [], relegated: [], retired: 0, signings: 0 };
 
   const tables = comps.map((c) => standings(world, c));
+  comps.forEach((comp, i) => seasonIncome(world, comp, tables[i]!)); // tv, sponsor, premi
+  settleInstalments(world); // le rate dei trasferimenti
+  checkFFP(world); // fair play finanziario: richiamo, blocco, penalizzazione
   comps.forEach((comp, i) => {
     const table = tables[i]!;
     const top = topScorers(world, comp, 1)[0];
@@ -299,9 +315,11 @@ export function endSeason(world: WorldState): SeasonSummary {
   returnLoans(world, rng);
   movePreSigned(world, rng);
   aiRenewals(world, rng);
+  trimWages(world, (club, id) => release(world, club, world.players[id]!)); // chi sfora taglia gli ingaggi
   summary.signings = runWindow(world, rng); // mercato estivo: prima si compra…
   signFreeAgents(world, rng); // …poi si guarda chi è rimasto senza contratto
   loanOutYouth(world, rng); // e i ragazzi che non giocherebbero vanno a farsi le ossa
+  trimWages(world, (club, id) => release(world, club, world.players[id]!)); // ricontrollo dopo il mercato
   for (const club of Object.values(world.clubs)) {
     // …poi il vivaio riempie i ruoli rimasti scoperti (stub dello youth intake §7.8)
     club.excluded = club.excluded.filter((id) => club.playerIds.includes(id));

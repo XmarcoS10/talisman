@@ -4,18 +4,12 @@
 import { BALANCE, CLUB_AI, SQUAD_TEMPLATE } from '../balance.ts';
 import type { Club, Player, Position, WorldState } from '../model.ts';
 import { abilityAt } from '../players.ts';
+import { mustSell, revenue, wageBill } from '../finance/ledger.ts';
 import { value } from './valuation.ts';
-
-/** fatturato stimato. ponytail: stadio + reputazione finché non arrivano le finanze vere (§7.7, F8) */
-export const revenue = (club: Club) =>
-  club.stadium.capacity * CLUB_AI.revenuePerSeat + club.reputation * club.reputation * CLUB_AI.revenuePerRep2;
-
-export const wageBill = (world: WorldState, club: Club) =>
-  club.playerIds.reduce((a, id) => a + world.players[id]!.contract.wage, 0);
 
 /** quanto può ancora mettere in stipendi prima di sforare */
 export const wageRoom = (world: WorldState, club: Club) =>
-  revenue(club) * CLUB_AI.wageCapOfRevenue - wageBill(world, club);
+  revenue(world, club) * CLUB_AI.wageCapOfRevenue - wageBill(world, club);
 
 /** quanto può spendere in cartellini in questa finestra */
 export const transferBudget = (world: WorldState, club: Club) =>
@@ -61,6 +55,7 @@ export function taste(club: Club, p: Player, season: number): number {
 /** quanto il club proprietario è disposto a cederlo, 0…1 */
 export function sellWillingness(world: WorldState, club: Club, p: Player): number {
   if (club.playerIds.length <= CLUB_AI.squadMin) return CLUB_AI.sellStripped; // con la rosa all'osso non si cede
+  if (mustSell(world, club)) return CLUB_AI.sellBroke; // con la cassa a picco si vende e basta
   if (club.excluded.includes(p.id)) return CLUB_AI.sellExcluded;
   if (p.psych.wantsOut) return CLUB_AI.sellWantsOut;
   if (p.contract.until <= world.season) return CLUB_AI.sellExpiring;

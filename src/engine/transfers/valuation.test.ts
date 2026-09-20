@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { Player, Position } from '../model.ts';
 import { makePlayer, recomputeCA } from '../players.ts';
 import { Rng } from '../rng.ts';
+import { MARKET } from '../balance.ts';
 import { value, wageFor } from './valuation.ts';
 
 const SEASON = 2026;
@@ -60,7 +61,7 @@ describe('valore di mercato (F7)', () => {
 
   it('lo stipendio segue il valore e non scende sotto il minimo', () => {
     expect(wageFor(50_000_000)).toBeGreaterThan(wageFor(5_000_000));
-    expect(wageFor(0)).toBe(30000);
+    expect(wageFor(0)).toBe(MARKET.wageMin);
   });
 
   it('CA ricalcolato dagli attributi: il valore non dipende da una cache stantia', () => {

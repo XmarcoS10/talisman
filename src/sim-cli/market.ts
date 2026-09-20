@@ -1,5 +1,5 @@
 // Report del mercato (GUIDA §13, P9 punto 8): inflazione, monte ingaggi, movimenti, età delle rose.
-import { revenue, wageBill } from '../engine/transfers/club-ai.ts';
+import { revenue, wageBill } from '../engine/finance/ledger.ts';
 import { value } from '../engine/transfers/valuation.ts';
 import type { WorldState } from '../engine/model.ts';
 import { advance, endSeason, isSeasonOver, newWorld } from '../engine/world.ts';
@@ -38,9 +38,9 @@ export function marketReport(seed: number, seasons: number): string[] {
     while (!isSeasonOver(world)) advance(world);
     const sum = endSeason(world);
     signings.push(sum.signings);
-    const r = clubs().map((c) => wageBill(world, c) / revenue(c));
+    const r = clubs().map((c) => wageBill(world, c) / revenue(world, c));
     for (const c of clubs()) {
-      const x = wageBill(world, c) / revenue(c);
+      const x = wageBill(world, c) / revenue(world, c);
       const n = x > 0.85 ? (over.get(c.id) ?? 0) + 1 : 0;
       over.set(c.id, n);
       if (n > 2) overCap++;
@@ -63,7 +63,7 @@ export function marketReport(seed: number, seasons: number): string[] {
     row('Acquisti per finestra estiva', avg(signings), 20, 90, (v) => v.toFixed(0)),
     row('Inflazione dei prezzi sull\'intero periodo', inflation, 0.7, 1.4, (v) => `${v.toFixed(2)}×`),
     row('Monte ingaggi su fatturato (media)', avg(ratios), 0.15, 0.75, pct),
-    row('Monte ingaggi su fatturato (massimo)', Math.max(...clubs().map((c) => wageBill(world, c) / revenue(c))), 0, 0.85, pct),
+    row('Monte ingaggi su fatturato (massimo)', Math.max(...clubs().map((c) => wageBill(world, c) / revenue(world, c))), 0, 0.85, pct),
     row('Club sopra l\'85% per più di due stagioni', overCap, 0, 0, (v) => String(v)),
     row('Età media delle rose', avg(ages), 24, 28, (v) => v.toFixed(1)),
     row('Top 50 nei dieci club più blasonati', migration(world), 0.4, 0.95, pct),

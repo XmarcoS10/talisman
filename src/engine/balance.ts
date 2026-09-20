@@ -273,7 +273,7 @@ export const MARKET = {
   formMax: 0.2,
   wantsOut: 0.85, // chi ha chiesto la cessione ha meno potere contrattuale
   wageOfValue: 0.12, // stipendio annuo tipico come quota del valore
-  wageMin: 30000,
+  wageMin: 90000, // il minimo sindacale di un professionista
 } as const;
 
 // --- trattative (GUIDA §7.5) ---
@@ -356,6 +356,7 @@ export const CLUB_AI = {
   sellSurplus: 0.6,
   sellKey: 0.08,
   sellStripped: 0.05, // rosa già ridotta all'osso
+  sellBroke: 0.9, // cassa a picco: si vende per fare cassa
   sellBackup: 0.32,
   contractYears: [3, 5] as const,
 } as const;
@@ -416,4 +417,34 @@ export const SCOUT = {
   analystWatch: 20,
   reportAt: 45, // conoscenza da cui manda un rapporto
   reportEvery: 25, // e poi ogni tot punti in più
+} as const;
+
+// --- finanze (GUIDA §7.7) ---
+// Il conto è per cassa: entra quando incassi, esce quando paghi. Niente ammortamenti: le rate sono rate.
+export const FIN = {
+  // biglietti: prezzo per posto, riempimento secondo rendimento e avversario
+  ticket: 24, // euro medi a spettatore in massima serie
+  ticketByLevel: 0.55, // quanto vale un biglietto in seconda serie
+  fillBase: 0.62,
+  fillForm: 0.22, // per punti a partita sopra o sotto 1,4
+  fillRep: 0.0035, // per punto di reputazione dell'avversario
+  fillMin: 0.25,
+  // diritti tv e sponsor, a fine stagione
+  tvBase: [48_000_000, 7_000_000] as const, // per livello di campionato, a chi arriva primo
+  tvLast: 0.55, // quota che tocca all'ultima in classifica
+  sponsorPerRep2: 2200, // sponsor sulla reputazione al quadrato: non è lineare
+  merchPerRep2: 1300,
+  prizePerPosition: 250_000,
+  prizeChampion: 4_000_000,
+  // uscite: struttura e stadio costano in proporzione a quanto giri
+  staffOfRevenue: 0.12,
+  stadiumOfRevenue: 0.1,
+  // fair play finanziario semplificato: sanzioni progressive, non morte istantanea
+  ffpWageCap: 0.72, // monte ingaggi su fatturato oltre il quale scatta il richiamo
+  ffpDebtCap: -0.35, // cassa negativa oltre questa quota del fatturato
+  ffpPoints: 4, // penalizzazione quando si continua a sforare
+  ffpFreezeSeasons: 1,
+  startWageShare: 0.55, // all'inizio del mondo il monte ingaggi è questa quota del fatturato stimato
+  minSquad: 22, // sotto questa rosa non si taglia più
+  fireSaleAt: -0.6, // cassa così negativa: si vende per forza
 } as const;

@@ -158,6 +158,28 @@ export interface ScoutReport {
   pa: [number, number];
 }
 
+/** rata di un trasferimento ancora da incassare o da pagare (§7.7) */
+export interface Instalment {
+  to: ClubId; // chi deve incassare
+  amount: number; // quota per stagione
+  seasons: number; // quante ne restano
+}
+
+/** una voce del conto economico della stagione, in euro */
+export interface Books {
+  season: number;
+  gate: number; // biglietti
+  tv: number;
+  sponsor: number;
+  merch: number;
+  prize: number; // premi di classifica
+  transfersIn: number;
+  wages: number;
+  staff: number;
+  stadium: number;
+  transfersOut: number;
+}
+
 export interface Club {
   id: ClubId;
   name: string;
@@ -170,6 +192,10 @@ export interface Club {
   philosophy: Philosophy;
   stadium: { name: string; capacity: number };
   balance: number;
+  books: Books[]; // conto economico stagione per stagione, il più recente in fondo (§7.7)
+  debts: Instalment[]; // rate ancora da pagare
+  credits: Instalment[]; // rate ancora da incassare
+  sanction: { kind: 'none' | 'warning' | 'freeze' | 'points'; seasons: number; points: number }; // fair play finanziario
   compId: CompId;
   playerIds: PlayerId[];
   tactic: Tactic;

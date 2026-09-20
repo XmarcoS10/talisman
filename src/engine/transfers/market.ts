@@ -7,6 +7,7 @@ import { addCause, addNews, pName } from '../news.ts';
 import { abilityAt } from '../players.ts';
 import type { Rng } from '../rng.ts';
 import { dropRelations, initRelations } from '../social.ts';
+import { books } from '../finance/ledger.ts';
 import { agentOf, commission, remember, renewalWage } from './agents.ts';
 import { acceptsRenewal } from './contracts.ts';
 import { needs, plan, sellWillingness, shortlist } from './club-ai.ts';
@@ -18,12 +19,19 @@ const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v
 /** esegue il trasferimento: soldi, contratto, spogliatoio */
 export function transfer(world: WorldState, rng: Rng, p: Player, buyer: Club, offer: Offer, wage: number) {
   const seller = world.clubs[p.clubId!]!;
-  // ponytail: le rate si valutano in trattativa ma il cartellino si paga tutto subito, finché non c'è il
-  // libro mastro delle finanze (§7.7, F8)
-  buyer.balance -= offer.fee + offer.agentFee;
-  seller.balance += offer.fee;
+  // il cartellino si paga a rate se così è stato pattuito: la prima quota adesso, le altre a ogni stagione
+  const share = Math.round(offer.fee / Math.max(1, offer.years));
+  const now = share + offer.agentFee;
+  buyer.balance -= now;
+  seller.balance += share;
+  books(buyer, world.season).transfersOut += now;
+  books(seller, world.season).transfersIn += share;
+  if (offer.years > 1) {
+    buyer.debts.push({ to: seller.id, amount: share, seasons: offer.years - 1 });
+    seller.credits.push({ to: seller.id, amount: share, seasons: offer.years - 1 });
+  }
   // percentuale di rivendita dovuta al club precedente (§7.5)
-  const owed = p.contract.sellOnTo !== null ? world.clubs[p.contract.sellOnTo] : undefined;
+  const owed = p.contract.sellOnTo !== null && p.contract.sellOnTo !== seller.id ? world.clubs[p.contract.sellOnTo] : undefined;
   if (owed && p.contract.sellOn > 0) {
     const share = Math.round(offer.fee * p.contract.sellOn);
     seller.balance -= share;
@@ -103,6 +111,7 @@ export function runWindow(world: WorldState, rng: Rng, winter = false): number {
   let done = 0;
   const clubs = rng.shuffle(Object.values(world.clubs).filter((c) => c.id !== world.manager.clubId));
   for (const club of clubs) {
+    if (club.sanction.kind === 'freeze' || club.sanction.kind === 'points') continue; // mercato bloccato
     const pl = plan(world, club);
     if (pl.full || pl.needs.length === 0) continue;
     let budget = pl.budget;
