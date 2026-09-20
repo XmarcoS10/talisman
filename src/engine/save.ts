@@ -1,14 +1,14 @@
 // Salvataggi versionati (GUIDA §2.5): ogni save ha schemaVersion e passa dalla catena di migrazioni.
 import { TRAIN } from './balance.ts';
 import { defaultRoles } from './match/tactics.ts';
-import type { Club, WorldState } from './model.ts';
+import { PHILOSOPHIES, type Club, type WorldState } from './model.ts';
 import { Rng } from './rng.ts';
 import { seedMinutes } from './morale.ts';
 import { initRelations } from './social.ts';
 import { defaultTraining } from './training.ts';
 import { assignAgents } from './transfers/agents.ts';
 
-export const SCHEMA_VERSION = 5;
+export const SCHEMA_VERSION = 6;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -61,6 +61,11 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
     w.agents = {};
     w.nextAgentId = 1;
     assignAgents(w as unknown as WorldState, new Rng(w.seed + 77)); // forma garantita dalle righe sopra
+  },
+  // 5 → 6 (F7, IA di mercato): ogni club ha una filosofia
+  (w) => {
+    const rng = new Rng(w.seed + 91);
+    for (const c of Object.values(w.clubs as Obj)) c.philosophy = rng.pick([...PHILOSOPHIES]);
   },
 ];
 

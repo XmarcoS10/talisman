@@ -4,7 +4,7 @@ import { heal } from './injuries.ts';
 import { aiSetFormation, applyMatch, matchSetups, playMatch } from './match.ts';
 import { runMatch, type MatchRun } from './match/engine.ts';
 import { defaultTactic } from './match/tactics.ts';
-import type { Club, ClubId, Competition, Fixture, Player, Position, WorldState } from './model.ts';
+import { PHILOSOPHIES, type Club, type ClubId, type Competition, type Fixture, type Player, type Position, type WorldState } from './model.ts';
 import { CITIES, CLUB_PREFIX, KIT_COLORS, NATIONS } from './names.ts';
 import { seedMinutes, weekPsych } from './morale.ts';
 import { addNews, pName } from './news.ts';
@@ -13,6 +13,7 @@ import { Rng } from './rng.ts';
 import { SCHEMA_VERSION } from './save.ts';
 import { dropRelations, initRelations } from './social.ts';
 import { assignAgents, dropClient, weekAgents } from './transfers/agents.ts';
+import { isWinterWindow, runWindow } from './transfers/market.ts';
 import { defaultTraining, trainWeek } from './training.ts';
 
 export const DAYS_BETWEEN_ROUNDS = 7;
@@ -47,7 +48,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
       const [c1, c2, c3] = rng.shuffle(KIT_COLORS);
       const club: Club = {
         id: clubId++, name: `${rng.pick(CLUB_PREFIX)} ${city}`, shortName: city.replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase(), city,
-        colors: [c1!, c2!, c3!], crest: null, founded: rng.int(1890, 1960), reputation: rep,
+        colors: [c1!, c2!, c3!], crest: null, founded: rng.int(1890, 1960), reputation: rep, philosophy: rng.pick([...PHILOSOPHIES]),
         stadium: { name: `Stadio ${rng.pick(NATIONS.ITA!.last)}`, capacity: Math.round((5000 + rep * rep * 7) / 500) * 500 },
         balance: Math.round((rep * rep * 9000) / 100000) * 100000, compId: comp.id, playerIds: [],
         tactic: defaultTactic(), training: defaultTraining(), familiarity: {}, excluded: [], feuds: [],
@@ -102,6 +103,8 @@ function scheduleSeason(world: WorldState, rng: Rng) {
  * stagionale è alto) e guarigioni
  */
 function passDays(world: WorldState, rng: Rng, days: number, weeks: number) {
+  // mercato di gennaio: si apre una volta, quando il calendario ci passa sopra
+  if (days > 0 && !isWinterWindow(world.day) && isWinterWindow(world.day + days)) runWindow(world, rng, true);
   for (let w = 0; w < weeks; w++) {
     for (const club of Object.values(world.clubs)) {
       trainWeek(world, club, rng);
@@ -231,13 +234,13 @@ export function topScorers(world: WorldState, comp: Competition, n = 10): Player
     .slice(0, n);
 }
 
-export type SeasonSummary = { season: number; champions: Record<string, ClubId>; promoted: ClubId[]; relegated: ClubId[]; retired: number };
+export type SeasonSummary = { season: number; champions: Record<string, ClubId>; promoted: ClubId[]; relegated: ClubId[]; retired: number; signings: number };
 
 /** fine stagione: albo d'oro, promozioni/retrocessioni, sviluppo, ritiri, vivaio, nuovo calendario */
 export function endSeason(world: WorldState): SeasonSummary {
   const rng = new Rng(world.rng);
   const comps = Object.values(world.competitions).sort((a, b) => a.level - b.level);
-  const summary: SeasonSummary = { season: world.season, champions: {}, promoted: [], relegated: [], retired: 0 };
+  const summary: SeasonSummary = { season: world.season, champions: {}, promoted: [], relegated: [], retired: 0, signings: 0 };
 
   const tables = comps.map((c) => standings(world, c));
   comps.forEach((comp, i) => {
@@ -289,7 +292,10 @@ export function endSeason(world: WorldState): SeasonSummary {
       const p = world.players[id]!;
       if (p.contract.until < world.season) p.contract.until = world.season + rng.int(1, 3);
     }
-    // vivaio: riempie i ruoli scoperti con ragazzi di 16-18 anni (stub dello youth intake §7.8)
+  }
+  summary.signings = runWindow(world, rng); // mercato estivo: prima si compra…
+  for (const club of Object.values(world.clubs)) {
+    // …poi il vivaio riempie i ruoli rimasti scoperti (stub dello youth intake §7.8)
     club.excluded = club.excluded.filter((id) => club.playerIds.includes(id));
     const youth: Player[] = [];
     for (const [pos, n] of Object.entries(SQUAD_TEMPLATE) as [Position, number][]) {

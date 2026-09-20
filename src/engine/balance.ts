@@ -283,7 +283,7 @@ export const DEAL = {
   askStart: 1.45, // prima richiesta, come multiplo del valore
   sellPremium: 0.7, // sovrapprezzo massimo per chi non vuole vendere per niente
   fireSale: 0.55, // sconto massimo per chi vuole liberarsene (fuori rosa, ha chiesto la cessione, scade)
-  needPremium: 0.4, // quanto in più è disposto a pagare chi ha un buco in quel ruolo
+  needPremium: 0.6, // quanto in più è disposto a pagare chi ha un buco in quel ruolo
   noise: 0.08, // rumore sul prezzo di riserva: due club non valutano mai identico
   // come il venditore valuta un pacchetto che non è solo contanti
   instalment: 0.07, // sconto per ogni anno di dilazione
@@ -323,4 +323,39 @@ export const AGENT = {
   threatFrom: -50, // sotto questa memoria l'agente comincia a spingere per l'uscita
   threatMorale: 45, // ...e serve anche un assistito scontento
   threatP: 0.25,
+} as const;
+
+// --- IA di mercato dei club (GUIDA §7.5, §7.9) ---
+export const CLUB_AI = {
+  budgetShare: 0.45, // quota di cassa che un club è disposto a spendere in una finestra
+  wageCapOfRevenue: 0.7, // monte ingaggi sostenibile: oltre si vende e non si compra
+  revenuePerSeat: 1100, // ponytail: fatturato stimato da stadio e blasone finché non ci sono le finanze (§7.7, F8)
+  revenuePerRep2: 9700, // per reputazione al quadrato: i diritti tv e gli sponsor non sono lineari
+  squadMax: 30, // oltre questa rosa non si compra
+  squadMin: 22,
+  starterBonus: 15, // il titolare di un club sta sopra la media della sua rosa: è quello il livello da tenere
+  needCount: 0.6, // urgenza per ogni uomo mancante rispetto alla rosa tipo
+  needQuality: 0.05, // urgenza per punto di CA mancante
+  buyFrom: 0.35, // urgenza minima per aprire una trattativa
+  dealsPerWindow: 3, // tentativi di acquisto per club in una finestra
+  shortlist: 6,
+  upgrade: 4, // punti di CA in più perché valga la pena comprarlo
+  // gusto: moltiplicatore di appetito secondo la filosofia
+  tasteYouth: 0.06, // per anno sotto i 24
+  tasteVeteran: 0.05, // per anno sopra i 28
+  tastePhysical: 0.02, // per punto di fisico sopra la media
+  tasteTechnical: 0.02,
+  // finestra invernale, in giorni dall'inizio stagione
+  winterFrom: 175,
+  winterTo: 189,
+  winterDeals: 1,
+  // quanto è disposto a cedere il venditore
+  sellExcluded: 0.95,
+  sellWantsOut: 0.8,
+  sellExpiring: 0.7,
+  sellSurplus: 0.6,
+  sellKey: 0.08,
+  sellStripped: 0.05, // rosa già ridotta all'osso
+  sellBackup: 0.32,
+  contractYears: [3, 5] as const,
 } as const;

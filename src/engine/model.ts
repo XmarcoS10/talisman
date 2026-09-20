@@ -92,6 +92,10 @@ export interface Agent {
   memory: Record<ClubId, number>; // −100…100 verso ogni club, solo i rapporti non neutri
 }
 
+/** filosofia del club (§7.9): decide il gusto sul mercato, non la forza */
+export const PHILOSOPHIES = ['youth', 'veterans', 'physical', 'technical', 'balanced'] as const;
+export type Philosophy = (typeof PHILOSOPHIES)[number];
+
 export interface Club {
   id: ClubId;
   name: string;
@@ -101,6 +105,7 @@ export interface Club {
   crest: string | null; // dataURL/percorso dal database importato; null = stemma procedurale
   founded: number;
   reputation: number; // 1-100
+  philosophy: Philosophy;
   stadium: { name: string; capacity: number };
   balance: number;
   compId: CompId;

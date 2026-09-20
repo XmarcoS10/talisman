@@ -1,0 +1,118 @@
+// La finestra di mercato: mette insieme piano del club, trattativa e agenti, ed esegue i trasferimenti.
+// Il legame col pilastro 1: ogni acquisto entra nello spogliatoio e sposta le aspettative di chi gioca
+// in quel ruolo. È la cosa che si vede e che FM non racconta.
+import { AGENT, CLUB_AI } from '../balance.ts';
+import type { Club, Player, WorldState } from '../model.ts';
+import { addCause, addNews, pName } from '../news.ts';
+import { abilityAt } from '../players.ts';
+import type { Rng } from '../rng.ts';
+import { dropRelations, initRelations } from '../social.ts';
+import { agentOf, commission, remember, renewalWage } from './agents.ts';
+import { plan, sellWillingness, shortlist } from './club-ai.ts';
+import { cashNow, counterOffer, openTalk, reply, type Offer, type TalkCtx } from './negotiation.ts';
+import { value } from './valuation.ts';
+
+const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+
+/** esegue il trasferimento: soldi, contratto, spogliatoio */
+export function transfer(world: WorldState, rng: Rng, p: Player, buyer: Club, offer: Offer, wage: number) {
+  const seller = world.clubs[p.clubId!]!;
+  // ponytail: le rate si valutano in trattativa ma il cartellino si paga tutto subito, finché non c'è il
+  // libro mastro delle finanze (§7.7, F8)
+  buyer.balance -= offer.fee + offer.agentFee;
+  seller.balance += offer.fee;
+
+  seller.playerIds = seller.playerIds.filter((id) => id !== p.id);
+  seller.excluded = seller.excluded.filter((id) => id !== p.id);
+  seller.feuds = seller.feuds.filter((f) => f.a !== p.id && f.b !== p.id);
+  dropRelations(world, p);
+  p.clubId = buyer.id;
+  p.contract = { wage, until: world.season + rng.int(CLUB_AI.contractYears[0], CLUB_AI.contractYears[1]) };
+  p.psych.wantsOut = false;
+  p.psych.trust = 55;
+  p.psych.morale = clamp(p.psych.morale + 10, 0, 100); // il trasferimento voluto tira su
+  buyer.playerIds.push(p.id);
+  initRelations(world, buyer, rng, [p]);
+
+  // effetto spogliatoio: chi giocava in quel ruolo vede arrivare un concorrente
+  for (const id of buyer.playerIds) {
+    const q = world.players[id]!;
+    if (q.id === p.id || (q.positions[p.position] ?? 0) < 4) continue;
+    const worse = abilityAt(p, p.position) - abilityAt(q, p.position);
+    if (worse <= 0) continue;
+    q.psych.morale = clamp(q.psych.morale - Math.min(12, worse * 0.4), 0, 100);
+    q.psych.minutes = Math.max(0, q.psych.minutes - 0.05);
+    addCause(world, q, 'cause.newRival', { name: pName(p) });
+    if (worse > 20 && q.personality.ambition > 13 && rng.next() < 0.3) q.psych.wantsOut = true;
+  }
+
+  const a = agentOf(world, p);
+  if (a) { remember(a, buyer.id, AGENT.soldWell); remember(a, seller.id, Math.round(AGENT.soldWell / 2)); }
+  const me = world.manager.clubId;
+  if (buyer.id === me) addNews(world, 'news.signed', { name: pName(p), club: seller.shortName, fee: offer.fee });
+  else if (seller.id === me) addNews(world, 'news.sold', { name: pName(p), club: buyer.shortName, fee: offer.fee });
+  else if (p.ca >= 150) addNews(world, 'news.transfer', { name: pName(p), from: seller.shortName, to: buyer.shortName, fee: offer.fee });
+}
+
+/** prova a comprare `p`: trattativa completa, dal primo contatto all'accordo o alla rottura */
+export function pursue(world: WorldState, rng: Rng, buyer: Club, p: Player, budget: number, room: number, urgency = 0.6): Offer | null {
+  const seller = world.clubs[p.clubId!]!;
+  const a = agentOf(world, p);
+  const wage = renewalWage(a, p, world.season, buyer.reputation);
+  if (wage > room) return null; // lo stipendio non sta nel monte ingaggi
+  const ctx: TalkCtx = {
+    value: value(p, world.season, { clubRep: seller.reputation }),
+    willing: sellWillingness(world, seller, p),
+    need: urgency,
+    sellerRep: seller.reputation,
+    release: null,
+  };
+  const talk = openTalk(rng, p.id, seller.id, buyer.id, ctx);
+  let last: Offer | null = null;
+  while (talk.state === 'open') {
+    const o = counterOffer(talk, ctx, budget);
+    if (!o) break;
+    o.agentFee = commission(a, o.fee, buyer.id);
+    if (cashNow(o) > budget) break;
+    last = o;
+    reply(talk, o, ctx, world.day);
+  }
+  if (talk.state !== 'agreed' || !talk.deal) return null;
+  const deal = talk.deal;
+  transfer(world, rng, p, buyer, deal, wage);
+  return last;
+}
+
+/**
+ * una finestra di mercato: ogni club IA lavora il proprio piano, i più urgenti per primi.
+ * ponytail: l'IA non compra dal club dell'utente finché non c'è la schermata per accettare le offerte.
+ */
+export function runWindow(world: WorldState, rng: Rng, winter = false): number {
+  let done = 0;
+  const clubs = rng.shuffle(Object.values(world.clubs).filter((c) => c.id !== world.manager.clubId));
+  for (const club of clubs) {
+    const pl = plan(world, club);
+    if (pl.full || pl.needs.length === 0) continue;
+    let budget = pl.budget;
+    let room = pl.wageRoom;
+    let deals = 0;
+    const max = winter ? CLUB_AI.winterDeals : CLUB_AI.dealsPerWindow;
+    for (const need of pl.needs) {
+      if (deals >= max || budget <= 0 || room <= 0) break;
+      for (const target of shortlist(world, club, need, budget)) {
+        if (target.clubId === world.manager.clubId) continue;
+        const o = pursue(world, rng, club, target, budget, room, need.urgency);
+        if (!o) continue;
+        budget -= cashNow(o);
+        room -= renewalWage(agentOf(world, target), target, world.season, club.reputation);
+        deals++;
+        done++;
+        break;
+      }
+    }
+  }
+  return done;
+}
+
+/** le finestre: l'estate fra due stagioni, e due settimane a metà campionato */
+export const isWinterWindow = (day: number) => day >= CLUB_AI.winterFrom && day < CLUB_AI.winterTo;
