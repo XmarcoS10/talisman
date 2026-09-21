@@ -31,6 +31,28 @@ La cartella dati resta `talisman` (i salvataggi di prima si ritrovano) e anche g
 | 12 | Nuova carriera | due passi: club a schede con filtri, poi dossier (bilancio, strutture, perni, modulo più adatto); **filosofia dell'allenatore** |
 | 13 | Impostazioni e salvataggi | **5 slot** con nome, peso e tempo di gioco; apri/copia cartella; esporta/importa carriera (`.tfm`); **valuta**, **formato data**, schermo intero, **pausa sulle notizie importanti**, salvataggio automatico disattivabile, volume effetti separato, silenzio fuori finestra |
 
+## Seconda passata: DESIGN.md e specifiche (22/09/2026)
+
+Marco ha mandato `docs/design/DESIGN.md` e `docs/design/tfm_27_specifiche_complete_per_claude.md` (erano nello zip
+di Stitch). Applicati:
+- **Base grafica**: Space Grotesk (titoli), Hanken Grotesk (testo), JetBrains Mono (numeri); palette `#0f131d`,
+  `#171b26`, verde `#00f59b`, ciano `#06b6d4`, ambra `#f59e0b`, rosso `#ef4444`; pannelli vetro (la sfocatura solo su
+  modali, popup e barre: su tutti i pannelli rallentava il disegno senza vedersi); bottoni con alone, campi con bordo
+  ciano al fuoco; tabelle a 36 px con righe alterne; ruoli colorati per reparto; voti a chip (8+ verde, 6,8-7,9
+  ciano, 6-6,7 grigio, sotto 6 rosso); attributi 16-20 verde, 11-15 ambra, 1-7 rosso.
+- **Scrivania**: riquadri, gara in arrivo con «Vai alla partita» e «Imposta formazione», notizie, mini classifica.
+- **Tattica**: maglie numerate con anello doppio (condizione verde, familiarità col ruolo ciano), barra della
+  familiarità col modulo, titolari e riserve con condizione e ruolo naturale.
+- **Scheda giocatore**: intestazione con avatar, sei schede, radar ottagonale (stime per i giocatori altrui).
+- **Spogliatoio** e **Allenamento**: riquadri e stile nuovo (i contenuti delle specifiche c'erano già).
+- **Report partita**: migliore in campo, barre di confronto, voti colorati.
+- **Mercato**: «Fai offerta» su ogni riga. **Salvataggi**: file `.dsa`, misura della finestra, controllo di integrità.
+- Barra laterale richiudibile a 64 px, colonne impilate sotto i 1280 px.
+
+Il nome resta **Tactic F.C. Manager**, come deciso da Marco il 21/09: le specifiche dicono ancora «Talisman
+Football Manager 27». I nomi veri delle specifiche (Serie B, Virtus Roccabianca come esempio) restano quelli del mondo
+generato; playoff e playout ancora da decidere.
+
 ## Le funzioni nuove nel motore
 
 - **Coppa nazionale** (`engine/cup.ts`, schema 18): eliminazione diretta fra tutti i 40 club, partita secca, rigori
