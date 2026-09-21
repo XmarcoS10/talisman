@@ -894,5 +894,7 @@
   "intl.noHonours": "Nessun torneo ancora giocato.",
   "intl.euro": "{season} · Europeo: {nation}",
   "intl.world": "{season} · Mondiale: {nation}",
-  "player.intl": "Nazionale: {caps} presenze, {goals} gol"
+  "player.intl": "Nazionale: {caps} presenze, {goals} gol",
+  "save.failed": "Attenzione: l'ultimo salvataggio non è riuscito. Non chiudere il gioco: esporta la carriera su file dalla schermata Salvataggi.",
+  "saves.where": "I salvataggi sono file in {dir}"
 }

@@ -33,7 +33,13 @@ type Screen =
 type Modal = { kind: 'match'; fx: Fixture; others: Fixture[] } | { kind: 'season'; summary: SeasonSummary; myPos: number } | null;
 const NAV = ['desk', 'stories', 'squad', 'tactics', 'training', 'dressing', 'youth', 'market', 'scouts', 'finance', 'board', 'tables', 'fixtures', 'saves'] as const;
 
-const autosave = (w: WorldState) => { if (!saveTo(currentSlot(), w)) console.error('Salvataggio fallito'); };
+// l'esito dell'ultimo salvataggio: se fallisce lo si dice, e non si esce perdendo la partita
+let lastSaveOk = true;
+const autosave = (w: WorldState) => {
+  lastSaveOk = saveTo(currentSlot(), w);
+  if (!lastSaveOk) console.error('Salvataggio fallito');
+  return lastSaveOk;
+};
 
 export function App() {
   const [world, setWorld] = useState<WorldState | null>(null);
@@ -102,6 +108,7 @@ export function App() {
 
   return (
     <div className="shell">
+      {!lastSaveOk && <div className="save-failed">{t('save.failed')}</div>}
       <header className="topbar">
         <div className="club"><Crest club={club} size={34} />{club.name}</div>
         <span className="muted">{world.competitions[club.compId]!.name} · {fmtSeason(world.season)}</span>
@@ -121,7 +128,7 @@ export function App() {
         {NAV.map((n) => (
           <button key={n} className={screen.name === n ? 'active' : ''} onClick={() => setScreen({ name: n })}>{t(`nav.${n}`)}</button>
         ))}
-        <button className="bottom" onClick={() => { autosave(world); setWorld(null); }}>{t('nav.saveQuit')}</button>
+        <button className="bottom" onClick={() => { if (autosave(world)) setWorld(null); else rerender(); }}>{t('nav.saveQuit')}</button>
       </nav>
 
       <main className="content">

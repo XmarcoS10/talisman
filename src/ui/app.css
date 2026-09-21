@@ -216,3 +216,6 @@ select { background: var(--surface-1); color: var(--text-1); border: 1px solid v
   background: var(--bg-0); border: 1px solid var(--border); color: inherit; cursor: pointer; }
 .answer:disabled { cursor: default; opacity: 0.55; }
 .answer.chosen { opacity: 1; border-color: var(--accent); }
+
+/* salvataggio fallito: deve vedersi (P12, debito n. 1) */
+.save-failed { grid-column: 1 / -1; padding: var(--s-2) var(--s-4); background: var(--negative); color: var(--bg-0); font-weight: 600; }

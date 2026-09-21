@@ -1,7 +1,7 @@
 import { useReducer, useRef, useState } from 'react';
 import type { WorldState } from '../../engine/model.ts';
 import { fmtDate, fmtSeason, t } from '../i18n.ts';
-import { SLOTS, currentSlot, deleteSlot, exportFile, importFile, loadFrom, saveTo, setCurrentSlot, slotInfo, type Slot } from '../storage.ts';
+import { SLOTS, currentSlot, deleteSlot, exportFile, importFile, loadFrom, saveTo, setCurrentSlot, slotInfo, type Slot, savesDir } from '../storage.ts';
 
 export function Saves({ world, onLoad }: { world: WorldState; onLoad: (w: WorldState) => void }) {
   const [, refresh] = useReducer((x: number) => x + 1, 0);
@@ -42,6 +42,7 @@ export function Saves({ world, onLoad }: { world: WorldState; onLoad: (w: WorldS
     <div className="grid" style={{ maxWidth: 760 }}>
       <div className="panel">
         <h2>{t('saves.title')}</h2>
+        {savesDir() && <div className="muted">{t('saves.where', { dir: savesDir()! })}</div>}
         <table>
           <tbody>
             {SLOTS.map((s) => {

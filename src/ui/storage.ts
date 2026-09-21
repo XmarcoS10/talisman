@@ -1,7 +1,38 @@
-// Salvataggi: 3 slot nel browser/Electron (localStorage) + esporta/importa su file .json.
-// ponytail: localStorage regge ~5 MB (un mondo ne pesa ~1-2); file veri via preload Electron quando il mondo crescerà.
+// Salvataggi: 3 slot + esporta/importa su file .json.
+// In Electron gli slot sono file veri nella cartella dati dell'app (electron/preload.cjs): il localStorage regge
+// circa 5 milioni di caratteri per tutta l'app, e tre carriere dopo qualche stagione lo superano.
+// Nel browser (pnpm dev) resta il localStorage.
 import type { WorldState } from '../engine/model.ts';
 import { deserialize, serialize } from '../engine/save.ts';
+
+interface SavesFs { read(name: string): string | null; write(name: string, data: string): boolean; remove(name: string): boolean; dir(): string }
+declare global { interface Window { talismanFs?: SavesFs } }
+
+/** dove stanno gli slot: file se siamo in Electron, altrimenti localStorage */
+const disk = typeof window !== 'undefined' ? window.talismanFs : undefined;
+
+function readSlot(k: string): string | null {
+  if (!disk) return localStorage.getItem(k);
+  const onDisk = disk.read(k);
+  if (onDisk !== null) return onDisk;
+  // prima volta con i file: si copia lo slot dal localStorage, che resta com'è come copia di riserva
+  const old = localStorage.getItem(k);
+  if (old !== null && disk.write(k, old)) return old;
+  return old;
+}
+
+function writeSlot(k: string, v: string): boolean {
+  if (!disk) { localStorage.setItem(k, v); return true; }
+  return disk.write(k, v);
+}
+
+function removeSlot(k: string) {
+  disk?.remove(k);
+  localStorage.removeItem(k); // anche la riserva, se no alla prossima lettura lo slot risorgerebbe
+}
+
+/** la cartella dei salvataggi, per dirla all'utente (null nel browser) */
+export const savesDir = () => disk?.dir() ?? null;
 
 export const SLOTS = [1, 2, 3] as const;
 export type Slot = (typeof SLOTS)[number];
@@ -36,7 +67,7 @@ export function setCurrentSlot(s: Slot) {
 export function slotInfo(s: Slot): SlotInfo | null {
   migrateLegacy();
   return safe(() => {
-    const raw = localStorage.getItem(key(s));
+    const raw = readSlot(key(s));
     if (!raw) return null;
     const { savedAt, data } = JSON.parse(raw) as { savedAt: number; data: string };
     const w = JSON.parse(data) as WorldState; // lettura leggera: solo i campi per l'elenco
@@ -46,19 +77,19 @@ export function slotInfo(s: Slot): SlotInfo | null {
 }
 
 export function saveTo(s: Slot, w: WorldState): boolean {
-  return safe(() => { localStorage.setItem(key(s), JSON.stringify({ savedAt: Date.now(), data: serialize(w) })); return true; }, false);
+  return safe(() => writeSlot(key(s), JSON.stringify({ savedAt: Date.now(), data: serialize(w) })), false);
 }
 
 export function loadFrom(s: Slot): WorldState | null {
   migrateLegacy();
   return safe(() => {
-    const raw = localStorage.getItem(key(s));
+    const raw = readSlot(key(s));
     return raw ? deserialize((JSON.parse(raw) as { data: string }).data) : null;
   }, null);
 }
 
 export function deleteSlot(s: Slot) {
-  safe(() => localStorage.removeItem(key(s)), undefined);
+  safe(() => removeSlot(key(s)), undefined);
 }
 
 /** scarica il salvataggio come file */
