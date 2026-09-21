@@ -8,7 +8,7 @@ import { clamp, pointsPerGame } from '../util.ts';
 
 
 export const emptyBooks = (season: number): Books =>
-  ({ season, gate: 0, tv: 0, sponsor: 0, merch: 0, prize: 0, transfersIn: 0, wages: 0, staff: 0, stadium: 0, transfersOut: 0 });
+  ({ season, gate: 0, tv: 0, sponsor: 0, merch: 0, prize: 0, transfersIn: 0, wages: 0, staff: 0, stadium: 0, transfersOut: 0, monthly: [] });
 
 /** il conto della stagione in corso, creato al volo la prima volta che serve */
 export function books(club: Club, season: number): Books {
@@ -55,7 +55,42 @@ export function weekCosts(world: WorldState, weeks: number) {
     b.staff += staff;
     b.stadium += stadium;
     club.balance -= wages + staff + stadium;
+    // niente buchi nell'array (il JSON li scriverebbe come null): i mesi saltati prendono l'ultimo valore noto
+    const m = Math.min(11, Math.floor(Math.max(0, world.day) / 30));
+    while (b.monthly.length < m) b.monthly.push(b.monthly.at(-1) ?? club.balance);
+    b.monthly[m] = club.balance;
   }
+}
+
+/**
+ * proiezione della stagione in corso: quello che è già entrato e uscito, più il resto stimato con le stesse
+ * regole che il motore applicherà (partite in casa che restano, tv e premi per la posizione attuale, stipendi fino a fine anno)
+ */
+export function projection(world: WorldState, club: Club, position: number, teams: number): Books {
+  const b = books(club, world.season);
+  const comp = world.competitions[club.compId];
+  const homeLeft = comp ? comp.fixtures.filter((f) => !f.result && f.home === club.id).length : 0;
+  const homePlayed = comp ? comp.fixtures.filter((f) => f.result && f.home === club.id).length : 0;
+  const level = comp?.level ?? 1;
+  // media delle partite giocate; senza incassi registrati (salvataggi vecchi, inizio stagione) lo stadio pieno a metà
+  const perGate = homePlayed && b.gate > 0 ? b.gate / homePlayed
+    : club.stadium.capacity * FIN.fillBase * FIN.ticket * (level === 1 ? 1 : FIN.ticketByLevel);
+  const n = Math.max(1, teams);
+  const i = Math.max(0, position - 1);
+  const rev = revenue(world, club);
+  const weeksLeft = Math.max(0, 52 - Math.floor(Math.max(0, world.day) / 7));
+  return {
+    ...b,
+    monthly: [...b.monthly],
+    gate: Math.round(b.gate > 0 ? b.gate + perGate * homeLeft : perGate * (homeLeft + homePlayed)),
+    tv: b.tv || Math.round(FIN.tvBase[level === 1 ? 0 : 1] * (FIN.tvLast + (1 - FIN.tvLast) * ((n - i) / n))),
+    sponsor: b.sponsor || Math.round(club.reputation * club.reputation * FIN.sponsorPerRep2),
+    merch: b.merch || Math.round(club.reputation * club.reputation * FIN.merchPerRep2),
+    prize: b.prize || (n - i) * FIN.prizePerPosition + (i === 0 ? FIN.prizeChampion : 0),
+    wages: Math.round(b.wages + wageBill(world, club) / 52 * weeksLeft),
+    staff: Math.round(b.staff + rev * FIN.staffOfRevenue / 52 * weeksLeft),
+    stadium: Math.round(b.stadium + rev * FIN.stadiumOfRevenue / 52 * weeksLeft),
+  };
 }
 
 /** incasso di una partita in casa: dipende da come vai e da chi arriva */

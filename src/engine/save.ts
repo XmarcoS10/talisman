@@ -10,7 +10,7 @@ import { assignAgents } from './transfers/agents.ts';
 import { makeScouts } from './scouting/scouts.ts';
 import { newBoard } from './board/board.ts';
 
-export const SCHEMA_VERSION = 14;
+export const SCHEMA_VERSION = 15;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -102,6 +102,10 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
     for (const p of Object.values(w.players as Obj)) p.intl = { caps: 0, goals: 0, titles: 0 };
     w.nations = {};
     w.intake = [];
+  },
+  // 14 → 15 (F10, finanze): la cassa mese per mese, per il grafico
+  (w) => {
+    for (const c of Object.values(w.clubs as Obj)) for (const b of c.books as Obj[]) b.monthly = [];
   },
 ];
 

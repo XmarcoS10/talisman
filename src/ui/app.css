@@ -297,3 +297,18 @@ tr.rivalry { background: color-mix(in srgb, var(--warning) 7%, transparent); }
 h2 svg { vertical-align: -3px; color: var(--accent); }
 .link svg { vertical-align: -2px; }
 .result > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.side-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-radius: var(--r-2); background: var(--bg-1); font: 700 15px var(--font-title); text-transform: uppercase; }
+.side-head.in b { color: var(--accent); } .side-head.out b { color: var(--negative); }
+.side-head svg { vertical-align: -3px; }
+.side-head.in svg { color: var(--accent); } .side-head.out svg { color: var(--negative); }
+.ledger-row { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); padding: 8px 12px; background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--r-2); }
+.net { display: grid; grid-template-columns: auto 1fr auto; gap: var(--s-3); align-items: center; padding: var(--s-4); background: var(--bg-1); border-radius: var(--r-3); border: 1px solid var(--border); }
+.net svg { color: var(--accent); }
+.net > b { font: 700 26px var(--font-title); }
+.cash-chart { display: grid; grid-template-columns: repeat(12, 1fr); gap: 8px; background: var(--bg-1); border-radius: var(--r-2); padding: var(--s-4); }
+.cash-col { display: flex; flex-direction: column; gap: 6px; align-items: center; }
+.cash-bar-wrap { height: 110px; width: 100%; display: flex; align-items: flex-end; background: var(--surface-2); border-radius: var(--r-1); overflow: hidden; }
+.cash-bar { width: 100%; background: var(--surface-3); }
+.cash-bar.neg { background: var(--negative); }
+.cash-col.now .cash-bar { background: var(--accent); }
+.cash-col.now .caps { color: var(--accent); }

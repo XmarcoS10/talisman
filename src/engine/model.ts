@@ -179,6 +179,7 @@ export interface Books {
   staff: number;
   stadium: number;
   transfersOut: number;
+  monthly: number[]; // cassa alla fine di ogni blocco di 30 giorni della stagione (grafico mese per mese)
 }
 
 export interface Club {

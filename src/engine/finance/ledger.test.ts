@@ -5,7 +5,7 @@ import type { Fixture } from '../model.ts';
 import { Rng } from '../rng.ts';
 import { release } from '../transfers/contracts.ts';
 import { advance, endSeason, isSeasonOver, newWorld } from '../world.ts';
-import { books, checkFFP, gate, income, profit, revenue, settleInstalments, trimWages, wageBill, weekCosts } from './ledger.ts';
+import { books, checkFFP, gate, income, profit, projection, revenue, settleInstalments, trimWages, wageBill, weekCosts } from './ledger.ts';
 
 const setup = () => {
   const world = newWorld(5);
@@ -23,6 +23,18 @@ describe('finanze (F8)', { timeout: 30000 }, () => {
     expect(b.staff).toBeGreaterThan(0);
     expect(b.stadium).toBeGreaterThan(0);
     expect(club.balance).toBe(before - b.wages - b.staff - b.stadium);
+    expect(b.monthly[0]).toBe(club.balance); // la cassa del mese per il grafico
+  });
+
+  it('la proiezione parte da quello che è già successo e stima il resto della stagione', () => {
+    const { world, club } = setup();
+    weekCosts(world, 1);
+    const now = books(club, world.season);
+    const p = projection(world, club, 1, 20);
+    expect(p.wages).toBeGreaterThan(now.wages);
+    expect(p.tv).toBeGreaterThan(0);
+    expect(p.prize).toBeGreaterThan(projection(world, club, 20, 20).prize); // chi sta in alto incassa di più
+    expect(now.tv).toBe(0); // la proiezione non tocca il conto vero
   });
 
   it('la partita in casa incassa, e incassa di più se arriva una grande', () => {
