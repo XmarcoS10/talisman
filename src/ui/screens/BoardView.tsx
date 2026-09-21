@@ -92,7 +92,7 @@ export function BoardView({ world, onChange }: { world: WorldState; onChange: ()
 
         <div className="panel">
           <h2><Clock size={18} /> {t('board.verdicts')}</h2>
-          <div className="timeline">
+          <div className="tl">
             <div className="tl-item now"><b>{t('board.inProgress', { s: fmtSeason(world.season) })}</b>
               <span className="muted small">{t('board.progressLine', { pos: position(world, club), exp: expected(world, club), v: fmtMoney(club.balance) })}</span></div>
             {[...b.verdicts].reverse().map((v) => (

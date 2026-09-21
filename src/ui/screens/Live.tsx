@@ -6,16 +6,16 @@ import { context, pick } from '../match/analyst.ts';
 import { atMinute, duration, ensure, matchMinutes, sample, SPEEDS, SPEED_LABELS } from '../match/playback.ts';
 import { lines } from '../match/commentary.ts';
 import { Camera, draw, resetTrail, type Look } from '../match/renderer.ts';
-import { Crest } from '../Crest.tsx';
+import { Pause, Play, SkipForward, SlidersHorizontal } from 'lucide-react';
 import { Hint } from '../Hint.tsx';
 import { crowdIntensity, crowdStart, crowdStop, playUi } from '../audio.ts';
 import { shortName } from '../bits.tsx';
+import { Inertia, Scoreboard, Shouts, Ticker } from './LiveParts.tsx';
 import { t } from '../i18n.ts';
 import { LiveAnalyst } from './LiveAnalyst.tsx';
 import { LiveBench } from './LiveBench.tsx';
 import { Seg } from './Tactics.tsx';
 
-const EV_ICON: Record<string, string> = { goal: '⚽', penGoal: '⚽', penMiss: '✖', chance: '◎', yellow: '🟨', red: '🟥', injury: '✚', sub: '⇄' };
 const INSTR = ['pressing', 'tempo', 'width', 'line', 'directness'] as const;
 
 export function Live({ world, live, onFinish }: { world: WorldState; live: LiveDay; onFinish: (played: Fixture[]) => void }) {
@@ -122,59 +122,55 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
 
   return (
     <div className="live">
-      <LiveBench run={run} me={me} onChange={rerender} />
-
-      <div className="grid" style={{ alignContent: 'start' }}>
-        <Hint id="live" />
-        <div className="panel live-head">
-          <span className="row"><Crest club={clubs[0]} size={28} />{clubs[0].shortName}</span>
-          <b className="num big">{score[0]} – {score[1]}</b>
-          <span className="row">{clubs[1].shortName}<Crest club={clubs[1]} size={28} /></span>
-          <span className="num muted">{over ? t('match.fullTime') : `${min}'`}</span>
-        </div>
-        <div className="pitch-wrap">
-          <canvas ref={canvas} className="pitch2d" />
-          <span className="attack-dir">{t('live.attackRight', { club: clubs[me].shortName })}</span>
-        </div>
-        <div className="panel say">
-          {lines(run.frames, st?.i ?? 0, look.names).map((l, i, a) => (
-            <div key={`${l.key}${i}`} className={`${i === a.length - 1 ? 'now' : 'muted'} ${l.big ? 'big' : ''}`}>{t(l.key, l.vars)}</div>
-          ))}
-        </div>
-        <div className="panel live-controls">
-          <button className="btn primary" onClick={() => setPlaying(!playing)} disabled={over}>{playing ? '❚❚' : '▶'}</button>
-          <Seg label={t('live.speed')} value={speed} options={[...SPEED_LABELS]} onChange={setSpeed} />
-          <span className="muted">{t('live.duration', { n: matchMinutes(speed) })}</span>
-          <button className="btn" onClick={nextEvent} disabled={over}>{t('live.nextEvent')}</button>
-          <button className="btn" onClick={() => setPause(!pause)}>{t('live.tacticalPause')}</button>
+      <div className="panel live-top">
+        <Scoreboard clubs={clubs} score={score} min={min} over={over} me={me}
+          tactics={[{ ...run.teams[0].tactic, mentality: run.teams[0].mentality }, { ...run.teams[1].tactic, mentality: run.teams[1].mentality }]} />
+        <div className="live-ctl">
+          <button className="btn primary sq" onClick={() => setPlaying(!playing)} disabled={over} aria-label={t('live.play')}>{playing ? <Pause size={16} /> : <Play size={16} />}</button>
+          <div className="seg-tabs">{SPEED_LABELS.map((l, i) => <button key={l} className={i === speed ? 'active hot' : ''} onClick={() => setSpeed(i)}>{l}</button>)}</div>
+          <button className="btn" onClick={nextEvent} disabled={over}><SkipForward size={14} /> {t('live.nextEvent')}</button>
+          <button className={`btn ${pause ? 'primary' : ''}`} onClick={() => setPause(!pause)}><SlidersHorizontal size={14} /> {t('live.tacticalPause')}</button>
           <button className="btn" onClick={() => setFollow(!follow)}>{t(follow ? 'live.wide' : 'live.follow')}</button>
           <button className="btn" onClick={toEnd} disabled={over}>{t('live.toEnd')}</button>
-          {over && <button className="btn primary" onClick={() => onFinish(finishMatchDay(world, live))}>{t('live.report')}</button>}
+          {over && <button className="btn primary big" onClick={() => onFinish(finishMatchDay(world, live))}>{t('live.report')}</button>}
+          <span className="muted small">{t('live.duration', { n: matchMinutes(speed) })}</span>
         </div>
-        <div className="panel">
-          <div className="timeline">
-            <div className="bar" style={{ width: `${Math.min(100, (min / 95) * 100)}%` }} />
-            {run.events.map((e, i) => (
-              <button key={i} className={`mark ${e.side === me ? 'me' : ''}`} style={{ left: `${Math.min(99, (e.min / 95) * 100)}%` }}
-                title={`${e.min}' ${t(`match.ev.${e.type}`)} ${shortName(world.players[e.playerId]!)}`} onClick={() => jumpTo(e.min)}>
-                {EV_ICON[e.type]}
-              </button>
+        <Inertia run={run} me={me} min={min} onJump={jumpTo} />
+      </div>
+
+      <div className="live-cols">
+        <div className="stack">
+          <Shouts run={run} me={me} min={min} onDone={() => { playUi('click'); rerender(); }} />
+          <LiveBench run={run} me={me} onChange={rerender} />
+        </div>
+
+        <div className="stack">
+          <Hint id="live" />
+          <div className="pitch-wrap">
+            <canvas ref={canvas} className="pitch2d" />
+            <span className="attack-dir">{t('live.attackRight', { club: clubs[me].shortName })}</span>
+          </div>
+          <div className="panel say">
+            {lines(run.frames, st?.i ?? 0, look.names).map((l, i, a) => (
+              <div key={`${l.key}${i}`} className={`${i === a.length - 1 ? 'now' : 'muted'} ${l.big ? 'big' : ''}`}>{t(l.key, l.vars)}</div>
             ))}
           </div>
         </div>
-        {pause && (
+
+        <div className="stack">
+          <LiveAnalyst run={run} me={me} names={look.names} phrase={phrase} ctx={ctx} />
           <div className="panel">
-            <h3>{t('live.tacticalPause')}</h3>
+            <h3>{t('live.quick')}</h3>
             <Seg label={t('tactics.mentality')} value={tac.mentality - 1} options={[1, 2, 3, 4, 5].map((m) => t(`mentality.${m}`))} onChange={(v) => setTac('mentality', v + 1)} />
             {INSTR.map((k) => (
               <Seg key={k} label={t(`instr.${k}`)} value={tac[k]} options={[0, 1, 2].map((v) => t(`instr.${k}.${v}`))} onChange={(v) => setTac(k, v)} />
             ))}
-            <div className="muted">{t('live.pauseHint')}</div>
+            <div className="muted small">{t(pause ? 'live.pauseHint' : 'live.quickHint')}</div>
           </div>
-        )}
+        </div>
       </div>
 
-      <LiveAnalyst run={run} me={me} names={look.names} phrase={phrase} ctx={ctx} />
+      <Ticker frames={run.frames} i={st?.i ?? 0} names={look.names} world={world} run={run} />
     </div>
   );
 }

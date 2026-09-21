@@ -1,7 +1,7 @@
 // Riproduzione 2D: il motore deve produrre posizioni continue che bastino a disegnare una partita credibile.
 import { describe, expect, it } from 'vitest';
 import { matchSetups } from '../../engine/match.ts';
-import { runMatch } from '../../engine/match/engine.ts';
+import { runMatch, shoutResponse } from '../../engine/match/engine.ts';
 import type { Fixture } from '../../engine/model.ts';
 import { Rng } from '../../engine/rng.ts';
 import { newWorld } from '../../engine/world.ts';
@@ -17,6 +17,19 @@ const setup = (mine: 0 | 1 = 0) => {
 };
 
 describe('partita in 2D (F6)', { timeout: 30000 }, () => {
+  it("le indicazioni dalla panchina spostano il logit secondo il carattere, e non si ripetono prima di un quarto d'ora", () => {
+    const { run } = setup();
+    const before = run.teams[0].on.map((m) => m.mod);
+    expect(run.shout(0, 'demand')).toBe(true);
+    run.teams[0].on.forEach((m, i) => {
+      const r = shoutResponse(m.p, 'demand');
+      expect(Math.sign(m.mod - before[i]!)).toBe(Math.sign(r));
+    });
+    expect(run.shout(0, 'calm')).toBe(false); // troppo presto
+    expect(run.nextShout(0)).toBeGreaterThan(run.minute());
+    expect(run.shout(1, 'calm')).toBe(true); // l'altra panchina è libera
+  });
+
   it('ogni fotogramma ha i giocatori dentro il campo e il tempo non torna indietro', () => {
     const { run } = setup();
     run.result();

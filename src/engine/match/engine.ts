@@ -119,9 +119,27 @@ export interface MatchRun {
   readonly track: PosFrame[];
   /** cambio deciso dall'allenatore: chi esce, chi entra (stesso ruolo) */
   sub(side: 0 | 1, outId: number, inId: number): boolean;
+  /** indicazione dalla panchina; false se è troppo presto per un'altra */
+  shout(side: 0 | 1, kind: Shout): boolean;
+  /** minuto da cui si può dare la prossima indicazione */
+  nextShout(side: 0 | 1): number;
   rating(m: MP): number;
   /** gioca fino alla fine e restituisce il risultato */
   result(): SimOutput;
+}
+
+export type Shout = 'encourage' | 'demand' | 'calm';
+
+/**
+ * chi risponde a un'indicazione: incoraggiare aiuta chi è giù di morale, chiedere di più spinge i professionisti
+ * e pesa su chi regge male la pressione, calmare serve alle teste calde. Restituisce il moltiplicatore di MATCH.shoutBoost
+ * (negativo = la prende male).
+ */
+export function shoutResponse(p: Player, kind: Shout): number {
+  const c = p.personality;
+  if (kind === 'encourage') return p.psych.morale < 60 ? 1 : 0.4;
+  if (kind === 'demand') return c.pressureTolerance <= 8 ? -MATCH.shoutBackfire / MATCH.shoutBoost : c.professionalism >= 12 ? 1 : 0.5;
+  return c.temperament >= 14 ? 1 : 0.3;
 }
 
 export interface SimOutput {
@@ -759,6 +777,7 @@ export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
     if (t >= length) { if (half === 1) startHalf(2); else finish(); }
   }
 
+  const shoutAt = [0, 0];
   startHalf(1);
   return {
     tick,
@@ -769,6 +788,13 @@ export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
     teams,
     frames: trace ?? [],
     track,
+    shout(side, kind) {
+      if (minute() < shoutAt[side]!) return false;
+      shoutAt[side] = minute() + MATCH.shoutEvery;
+      for (const m of teams[side].on) m.mod += MATCH.shoutBoost * shoutResponse(m.p, kind);
+      return true;
+    },
+    nextShout: (side) => shoutAt[side]!,
     sub(side, outId, inId) {
       const tm = teams[side];
       const out = tm.on.find((m) => m.p.id === outId);

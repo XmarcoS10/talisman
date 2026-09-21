@@ -231,6 +231,10 @@ export const MATCH = {
   sharpK: 0.003, // per punto di condizione partita sotto 100
   famK: 0.15, // modulo del tutto sconosciuto
   chemPass: 0.08, // peso della scelta di passaggio: ±8% tra amici/nemici (§7.3)
+  // indicazioni dalla panchina (F10): una ogni tanto, effetto diverso secondo il carattere
+  shoutEvery: 15, // minuti tra un'indicazione e la successiva
+  shoutBoost: 0.03, // logit in più per chi risponde bene (≈ 15 punti di morale)
+  shoutBackfire: 0.02, // logit in meno per chi la prende male
 
   homeBoost: 0.12, // logit in più per la squadra di casa (pubblico)
   protectLeadFrom: 55, // minuto da cui chi è in vantaggio abbassa la mentalità di 1
