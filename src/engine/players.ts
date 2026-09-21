@@ -4,6 +4,7 @@ import { ALL_ATTRS, ATTR_GROUPS, type AttrKey, type Attributes, type Personality
 import { NATIONS } from './names.ts';
 import type { Rng } from './rng.ts';
 import { value, wageFor } from './transfers/valuation.ts';
+import { clamp } from './util.ts';
 
 // Profili di ruolo: attributi chiave per posizione (GUIDA §5.2). I 25 ruoli fini arrivano con la tattica.
 export const PROFILES: Record<Position, AttrKey[]> = {
@@ -27,7 +28,6 @@ const OUTFIELD_ONLY = new Set<AttrKey>(['crossing', 'dribbling', 'finishing', 'h
 const LEFT_SIDED = new Set<Position>(['DL', 'ML', 'AML']);
 const RIGHT_SIDED = new Set<Position>(['DR', 'MR', 'AMR']);
 
-const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 const mean = (p: Player, keys: readonly AttrKey[]) => keys.reduce((s, k) => s + p.attrs[k], 0) / keys.length;
 
 /** abilità del giocatore nel ruolo (scala 1-200) senza penalità di familiarità */
@@ -50,9 +50,7 @@ export function recomputeCA(p: Player) {
   p.ca = abilityAt(p, p.position);
 }
 
-export function age(p: Player, season: number) {
-  return season - p.birthYear;
-}
+export { age } from './util.ts';
 
 
 function personality(rng: Rng): Personality {

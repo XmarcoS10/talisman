@@ -5,8 +5,8 @@ import { BOARD, YOUTH } from '../balance.ts';
 import type { Board, Club, WorldState } from '../model.ts';
 import { addNews } from '../news.ts';
 import { standings } from '../world.ts';
+import { clamp, pointsPerGame } from '../util.ts';
 
-const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
 export const newBoard = (): Board => ({
   trust: { board: BOARD.start, fans: BOARD.start, squad: BOARD.start, press: BOARD.start },
@@ -36,25 +36,13 @@ export function position(world: WorldState, club: Club): number {
   return standings(world, comp).findIndex((r) => r.clubId === club.id) + 1;
 }
 
-/** punti a partita nelle ultime cinque: i tifosi guardano quelle, non la tabella */
-function recentForm(world: WorldState, club: Club): number {
-  const comp = world.competitions[club.compId];
-  if (!comp) return 1.4;
-  const played = comp.fixtures.filter((f) => f.result && (f.home === club.id || f.away === club.id)).slice(-5);
-  if (!played.length) return 1.4;
-  return played.reduce((a, f) => {
-    const [mine, theirs] = f.home === club.id ? [f.result!.hg, f.result!.ag] : [f.result!.ag, f.result!.hg];
-    return a + (mine > theirs ? 3 : mine === theirs ? 1 : 0);
-  }, 0) / played.length;
-}
-
 /** le quattro barre si muovono piano verso il loro bersaglio: la fiducia ha memoria */
 export function weekBoard(world: WorldState) {
   const club = world.clubs[world.manager.clubId];
   if (!club) return;
   const b = world.manager.board;
   const gap = expected(world, club) - position(world, club); // positivo = meglio del previsto
-  const form = (recentForm(world, club) - 1.4) * 10;
+  const form = (pointsPerGame(world, club) - 1.4) * 10; // i tifosi guardano le ultime cinque, non la tabella
   const squad = club.playerIds.length
     ? club.playerIds.reduce((a, id) => a + world.players[id]!.psych.morale, 0) / club.playerIds.length
     : BOARD.start;

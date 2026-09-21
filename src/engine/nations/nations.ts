@@ -8,9 +8,9 @@ import { injure } from '../injuries.ts';
 import { addNews, pName } from '../news.ts';
 import { NATIONS } from '../names.ts';
 import type { Rng } from '../rng.ts';
+import { clamp } from '../util.ts';
 
 const EUROPE = new Set(['ITA', 'ESP', 'FRA', 'POR', 'NED', 'SRB', 'CRO', 'SWE']);
-const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
 export const nationOf = (world: WorldState, code: string): National =>
   (world.nations[code] ??= { callups: [], honours: [] });

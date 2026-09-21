@@ -13,8 +13,8 @@ import { acceptsRenewal } from './contracts.ts';
 import { needs, plan, sellWillingness, shortlist } from './club-ai.ts';
 import { cashNow, counterOffer, openTalk, reopen, reply, type TalkCtx } from './negotiation.ts';
 import { value } from './valuation.ts';
+import { clamp } from '../util.ts';
 
-const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
 /** esegue il trasferimento: soldi, contratto, spogliatoio */
 export function transfer(world: WorldState, rng: Rng, p: Player, buyer: Club, offer: Offer, wage: number) {

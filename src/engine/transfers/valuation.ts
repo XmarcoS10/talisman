@@ -4,9 +4,8 @@
 // è una cosa della trattativa, non del giocatore.
 import { MARKET, NATIONAL } from '../balance.ts';
 import type { Player } from '../model.ts';
+import { age } from '../util.ts';
 
-// niente import da players.ts: l'età è una sottrazione e il ciclo di import non serve a nessuno
-const age = (p: Player, season: number) => season - p.birthYear;
 
 /** media voto delle ultime partite, o 6,5 se non ha ancora giocato */
 const formAvg = (p: Player) => (p.form.length ? p.form.reduce((a, b) => a + b, 0) / p.form.length : 6.5);

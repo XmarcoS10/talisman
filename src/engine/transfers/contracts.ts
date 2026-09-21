@@ -8,8 +8,8 @@ import { dropRelations, initRelations } from '../social.ts';
 import { agentOf, renewalWage } from './agents.ts';
 import { sellWillingness, wageRoom } from './club-ai.ts';
 import { value, wageFor } from './valuation.ts';
+import { age } from '../util.ts';
 
-const age = (p: Player, season: number) => season - p.birthYear;
 export const isFree = (p: Player) => p.clubId === null;
 export const expires = (p: Player, season: number) => p.contract.until - season;
 

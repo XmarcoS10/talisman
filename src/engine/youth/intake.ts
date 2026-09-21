@@ -7,8 +7,8 @@ import { addNews, pName } from '../news.ts';
 import { makePlayer, pickNation } from '../players.ts';
 import type { Rng } from '../rng.ts';
 import { initRelations } from '../social.ts';
+import { clamp } from '../util.ts';
 
-const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 // i ruoli di un'annata: più centrocampisti e difensori, pochi portieri, come nei settori giovanili veri
 const ROLES: Position[] = ['GK', 'DC', 'DC', 'DL', 'DR', 'DM', 'MC', 'MC', 'ML', 'MR', 'AMC', 'AML', 'AMR', 'ST', 'ST'];
 

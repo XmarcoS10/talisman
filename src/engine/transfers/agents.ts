@@ -5,8 +5,8 @@ import type { Agent, ClubId, Player, PlayerId, WorldState } from '../model.ts';
 import { NATIONS } from '../names.ts';
 import type { Rng } from '../rng.ts';
 import { value } from './valuation.ts';
+import { clamp } from '../util.ts';
 
-const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
 export function makeAgent(rng: Rng, id: number): Agent {
   const n = NATIONS.ITA!;

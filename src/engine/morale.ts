@@ -6,8 +6,8 @@ import { age } from './players.ts';
 import type { Rng } from './rng.ts';
 import { bond, influence, leaders, weekSocial } from './social.ts';
 import { agentOf, remember } from './transfers/agents.ts';
+import { clamp } from './util.ts';
 
-const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 
 export type SquadStatus = 'key' | 'first' | 'rotation' | 'backup' | 'youth';
 export const EXPECTED: Record<SquadStatus, number> = { key: 0.9, first: 0.7, rotation: 0.35, backup: 0.1, youth: 0.03 };

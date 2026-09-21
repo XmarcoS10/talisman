@@ -3,8 +3,8 @@
 // stesso numero — perché altrimenti basterebbe riaprire la scheda per "tirare a indovinare" meglio.
 import { SCOUT } from '../balance.ts';
 import { ALL_ATTRS, type AttrKey, type Player, type ScoutId, type WorldState } from '../model.ts';
+import { clamp } from '../util.ts';
 
-const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
 /** rumore stabile in −1…1 da una terna di interi: nessun caso di sistema, nessuna stima che balla */
 function noise(a: number, b: number, c: number): number {

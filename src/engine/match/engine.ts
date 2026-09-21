@@ -8,6 +8,7 @@ import { choose, options, type OnPitch, type Option, type View } from './decisio
 import { inBox, len, segDist, shotGeometry } from './pitch.ts';
 import { ROLES, type RoleId } from './roles.ts';
 import type { Slot } from './tactics.ts';
+import { clamp } from '../util.ts';
 
 export interface PStats {
   passes: number; passesOk: number; keyPasses: number; shots: number; onTarget: number; goals: number; assists: number;
@@ -136,7 +137,6 @@ const PRESS_STEP = [0.35, 0.5, 0.7]; // quanto esce il pressatore verso il porta
 
 const newPStats = (from: number): PStats => ({ passes: 0, passesOk: 0, keyPasses: 0, shots: 0, onTarget: 0, goals: 0, assists: 0, tackles: 0, dribbles: 0, duelsLost: 0, saves: 0, fouls: 0, yellows: 0, red: false, injured: false, conceded: 0, injuryCtx: 'contact', from, to: 90 });
 const newSide = (): SideStats => ({ possession: 0, shots: 0, onTarget: 0, xg: 0, passes: 0, passesOk: 0, tackles: 0, fouls: 0, corners: 0, offsides: 0, yellows: 0, reds: 0 });
-const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 /** accelerazione e frenata: la palla non viaggia a velocità costante */
 const ease = (u: number) => (u < 0.5 ? 2 * u * u : 1 - (1 - u) ** 2 * 2);
 /** chi va a prendere un cross: testa, coraggio, e la punta di peso ha la precedenza */

@@ -8,9 +8,9 @@ import { addCause } from '../news.ts';
 import type { Rng } from '../rng.ts';
 import { GRAMMAR, varsFor } from '../narrative/scanner.ts';
 import { expand } from '../narrative/text.ts';
+import { clamp } from '../util.ts';
 
 const T: Record<string, string[]> = PRESS_T;
-const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
 // che tipo di domanda fa una storia: sul giocatore o sulla squadra, bella o brutta
 const PLAYER_GOOD = new Set(['redemption', 'hotStreak', 'predestined', 'talisman', 'scorerRace', 'keeper', 'comebackKid',

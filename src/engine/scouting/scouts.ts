@@ -5,8 +5,8 @@ import { NATIONS } from '../names.ts';
 import { addNews } from '../news.ts';
 import type { Rng } from '../rng.ts';
 import { knowledge, range } from './fog.ts';
+import { clamp } from '../util.ts';
 
-const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
 export function makeScout(rng: Rng, id: number, clubId: number | null): Scout {
   const nation = rng.pick(Object.keys(NATIONS));

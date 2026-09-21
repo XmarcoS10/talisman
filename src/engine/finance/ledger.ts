@@ -4,8 +4,8 @@
 import { FIN } from '../balance.ts';
 import type { Books, Club, ClubId, Competition, Fixture, WorldState } from '../model.ts';
 import { addNews } from '../news.ts';
+import { clamp, pointsPerGame } from '../util.ts';
 
-const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
 export const emptyBooks = (season: number): Books =>
   ({ season, gate: 0, tv: 0, sponsor: 0, merch: 0, prize: 0, transfersIn: 0, wages: 0, staff: 0, stadium: 0, transfersOut: 0 });
@@ -58,25 +58,12 @@ export function weekCosts(world: WorldState, weeks: number) {
   }
 }
 
-/** quanti punti a partita ha fatto ultimamente: muove il riempimento dello stadio */
-function form(world: WorldState, club: Club): number {
-  const comp = world.competitions[club.compId];
-  if (!comp) return 1.4;
-  const played = comp.fixtures.filter((f) => f.result && (f.home === club.id || f.away === club.id)).slice(-5);
-  if (!played.length) return 1.4;
-  const pts = played.reduce((a, f) => {
-    const [mine, theirs] = f.home === club.id ? [f.result!.hg, f.result!.ag] : [f.result!.ag, f.result!.hg];
-    return a + (mine > theirs ? 3 : mine === theirs ? 1 : 0);
-  }, 0);
-  return pts / played.length;
-}
-
 /** incasso di una partita in casa: dipende da come vai e da chi arriva */
 export function gate(world: WorldState, fx: Fixture) {
   const home = world.clubs[fx.home]!;
   const away = world.clubs[fx.away]!;
   const level = world.competitions[home.compId]?.level ?? 1;
-  const fill = clamp(FIN.fillBase + (form(world, home) - 1.4) * FIN.fillForm + away.reputation * FIN.fillRep, FIN.fillMin, 1);
+  const fill = clamp(FIN.fillBase + (pointsPerGame(world, home) - 1.4) * FIN.fillForm + away.reputation * FIN.fillRep, FIN.fillMin, 1);
   const price = FIN.ticket * (level === 1 ? 1 : FIN.ticketByLevel);
   const take = Math.round(home.stadium.capacity * fill * price);
   books(home, world.season).gate += take;

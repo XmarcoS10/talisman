@@ -4,11 +4,11 @@ import type { Club, Feud, Player, PlayerId, WorldState } from './model.ts';
 import { addCause, addNews, pName } from './news.ts';
 import { age } from './players.ts';
 import type { Rng } from './rng.ts';
+import { clamp } from './util.ts';
 
 const LANG: Record<string, string> = {
   ITA: 'it', ESP: 'es', ARG: 'es', FRA: 'fr', SEN: 'fr', BRA: 'pt', POR: 'pt', NED: 'nl', SRB: 'sh', CRO: 'sh', NGA: 'en', SWE: 'sv',
 };
-const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 
 export const relOf = (a: Player, b: Player) => a.rel[b.id] ?? 0;
 
