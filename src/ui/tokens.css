@@ -1,38 +1,48 @@
-/* Design system "Sala Analisi" (GUIDA §8.1-8.2). Nessun colore fuori da questi token. */
+/* Design system TFM 27 (docs/design/DESIGN.md). Nessun colore fuori da questi token. */
 :root {
-  --bg-0: #0c1117;
-  --bg-1: #10161e;
-  --surface-1: #151c25;
-  --surface-2: #1b2430;
-  --surface-3: #25303d;
-  --border: #232d39;
-  --text-1: #e6edf3;
-  --text-2: #93a1b0;
-  --text-3: #5e6b7a;
-  --accent: #1de9a0;
-  --accent-ink: #03150e;
-  --positive: #1de9a0;
-  --warning: #f2a33c;
-  --negative: #e5484d;
-  --data-1: #38bdf8;
-  --data-2: #1de9a0;
-  --data-3: #f2a33c;
-  --data-4: #e5484d;
-  --pitch-1: #16382a;
-  --pitch-2: #1a4231;
-  --pitch-line: rgb(255 255 255 / 0.18);
+  --bg-0: #0f131d;
+  --bg-1: #0a0e18;
+  --surface-1: #171b26;
+  --surface-2: #1c1f2a;
+  --surface-3: #262a35;
+  --border: rgb(255 255 255 / 0.08);
+  --border-2: rgb(255 255 255 / 0.14);
+  --text-1: #dfe2f1;
+  --text-2: #94a3b8;
+  --text-3: #5b6577;
+  --accent: #00f59b;
+  --accent-ink: #0b0f19;
+  --positive: #00f59b;
+  --warning: #f59e0b;
+  --negative: #ef4444;
+  --data-1: #06b6d4;
+  --data-2: #00f59b;
+  --data-3: #f59e0b;
+  --data-4: #ef4444;
+  --pitch-1: #143823;
+  --pitch-2: #1a452b;
+  --pitch-line: rgb(255 255 255 / 0.45);
+  --cyan-soft: #38bdf8;
+  --gold: #eab308;
+  --blue: #3b82f6;
+  --emerald: #10b981;
+  /* vetro (DESIGN.md, elevazione): livello 1 carte, livello 2 popover e modali */
+  --glass-1: rgb(23 27 38 / 0.75);
+  --glass-2: rgb(26 34 52 / 0.88);
+  --input: #111827;
 
   --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px;
-  --r-1: 6px; --r-2: 10px; --r-3: 14px;
+  --r-1: 4px; --r-2: 8px; --r-3: 16px;
   --shadow-1: 0 1px 2px rgb(0 0 0 / 0.3);
   --shadow-2: 0 4px 16px rgb(0 0 0 / 0.35);
-  --shadow-3: 0 12px 40px rgb(0 0 0 / 0.5);
+  --shadow-3: 0 8px 32px -4px rgb(0 0 0 / 0.5), 0 0 1px 1px rgb(6 182 212 / 0.15);
+  --glow: 0 0 24px rgb(0 245 155 / 0.25);
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --row-h: 30px;
+  --row-h: 36px;
 
   --font-title: 'Space Grotesk', 'Barlow Condensed', sans-serif;
   --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
-  --font-ui: 'Inter', system-ui, sans-serif;
-  --font-num: 'IBM Plex Mono', ui-monospace, monospace;
+  --font-ui: 'Hanken Grotesk', 'Inter', system-ui, sans-serif;
+  --font-num: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, monospace;
   color-scheme: dark;
 }

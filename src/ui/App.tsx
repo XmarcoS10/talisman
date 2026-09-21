@@ -157,7 +157,7 @@ export function App() {
       <main className="content">
         <Alerts items={alerts} onClose={() => setAlerts([])} />
         {(HINTS as readonly string[]).includes(screen.name) && <Hint key={screen.name} id={screen.name as (typeof HINTS)[number]} />}
-        {screen.name === 'desk' && <Desk world={world} onNav={(n) => setScreen({ name: n })} />}
+        {screen.name === 'desk' && <Desk world={world} onNav={(n) => setScreen({ name: n })} onWatch={myMatchDay ? () => setLiveDay(beginMatchDay(world)) : undefined} />}
         {screen.name === 'stories' && <Stories world={world} onChange={changed} />}
         {screen.name === 'squad' && <Squad world={world} clubId={club.id} onPlayer={openPlayer} />}
         {screen.name === 'tactics' && <Tactics world={world} onChange={changed} onPlayer={openPlayer} />}

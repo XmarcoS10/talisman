@@ -51,54 +51,64 @@ export function Tactics({ world, onChange, onPlayer }: { world: WorldState; onCh
   const warnings = lineup.map((id) => (id != null ? world.players[id] : undefined)).filter((p) => p && !canPlay(club, p));
   const selRole = selected !== null && sel ? validRole(tac.roles[selected], sel.pos) : null;
 
+  const fam = Math.round(familiarityOf(club));
+  const row = (p: (typeof players)[number], slotIdx: number) => (
+    <tr key={p.id} className={`clickable ${slotIdx >= 0 ? 'me' : ''}`} draggable onDragStart={(e) => e.dataTransfer.setData('text/plain', String(p.id))}
+      onClick={() => (selected !== null ? assign(p.id, selected) : onPlayer(p.id))}>
+      <td className="num muted">{slotIdx >= 0 ? slotIdx + 1 : ''}</td>
+      <td>{slotIdx >= 0 ? <PosBadge pos={slots[slotIdx]!.pos} /> : <span className="muted small">{t('tactics.bench')}</span>}</td>
+      <td><b>{shortName(p)}</b> <Status p={p} out={club.excluded.includes(p.id)} /></td>
+      <td><PosBadge pos={p.position} /></td>
+      <td><span className="mini-bar"><span className="meter"><i className={p.condition.fitness < 60 ? 'bad' : p.condition.fitness < 75 ? 'warn' : ''} style={{ width: `${p.condition.fitness}%` }} /></span>{p.condition.fitness}%</span></td>
+      <td>{sel ? <span className={fitClass(p.positions[sel.pos])}><Stars ca={slotRating(p, sel)} /></span> : <Stars ca={p.ca} />}</td>
+    </tr>
+  );
+  const bench = sorted.filter((p) => !lineup.includes(p.id));
+
   return (
-    <div className="grid tactics">
-      <div className="grid" style={{ alignContent: 'start' }}>
-        <div className="panel row" style={{ justifyContent: 'space-between' }}>
-          <label className="row">
-            <span className="muted">{t('tactics.formation')}</span>
-            <select value={tac.formation} onChange={(e) => changeFormation(e.target.value as FormationId)}>
-              {FORMATION_IDS.map((f) => <option key={f} value={f}>{f}</option>)}
-            </select>
-          </label>
-          <span className="muted">{t('tactics.strength')} <b className="num">{Math.round(xiStrength(current))}</b></span>
-          <span className="muted" title={t('tactics.familiarityHint')}>{t('tactics.familiarity', { v: Math.round(familiarityOf(club)) })}</span>
-          <button className="btn" onClick={() => update(autoPick)}>{t('tactics.auto')}</button>
+    <div className="stack">
+      <div className="panel tactic-head">
+        <label className="field"><span className="caps">{t('tactics.formation')}</span>
+          <select value={tac.formation} onChange={(e) => changeFormation(e.target.value as FormationId)}>
+            {FORMATION_IDS.map((f) => <option key={f} value={f}>{f}</option>)}
+          </select></label>
+        <div className="field" style={{ flex: 1, minWidth: 200 }} title={t('tactics.familiarityHint')}>
+          <span className="row" style={{ justifyContent: 'space-between' }}><span className="caps">{t('tactics.famLabel')}</span><b className="num pos-good">{fam}%</b></span>
+          <div className="meter"><i className={fam < 50 ? 'bad' : fam < 75 ? 'warn' : ''} style={{ width: `${fam}%` }} /></div>
         </div>
-        <Pitch world={world} club={club} selected={selected} onSelect={setSelected} onAssign={assign}
-          onRole={(i, r) => update(() => { tac.roles = slots.map((s, k) => (k === i ? validRole(r, s.pos) : validRole(tac.roles[k], s.pos))); })} />
-        {selRole && <div className="panel"><b>{t(`role.${selRole}`)}</b><span className="muted">{t(`role.${selRole}.desc`)}</span></div>}
-        {warnings.length > 0 && <div className="panel warn">{t('tactics.unavailable', { names: warnings.map((p) => shortName(p!)).join(', ') })}</div>}
+        <div className="field"><span className="caps">{t('tactics.strength')}</span><Stars ca={xiStrength(current)} /></div>
+        <button className="btn" onClick={() => update(autoPick)}>{t('tactics.auto')}</button>
       </div>
 
-      <div className="grid" style={{ alignContent: 'start' }}>
-        <div className="panel">
-          <h3>{t('tactics.instructions')}</h3>
-          <Seg label={t('tactics.mentality')} value={tac.mentality - 1} options={[1, 2, 3, 4, 5].map((m) => t(`mentality.${m}`))} onChange={(v) => setTactic('mentality', v + 1)} />
-          {INSTRUCTIONS.map((k) => (
-            <Seg key={k} label={t(`instr.${k}`)} value={tac[k]} options={[0, 1, 2].map((v) => t(`instr.${k}.${v}`))} onChange={(v) => setTactic(k, v)} />
-          ))}
+      <div className="grid tactics">
+        <div className="stack">
+          <Pitch world={world} club={club} selected={selected} onSelect={setSelected} onAssign={assign}
+            onRole={(i, r) => update(() => { tac.roles = slots.map((s, k) => (k === i ? validRole(r, s.pos) : validRole(tac.roles[k], s.pos))); })} />
+          <div className="row muted small"><span className="ring-key fit" /> {t('tactics.ringFit')} <span className="ring-key fam" /> {t('tactics.ringFam')}</div>
+          {selRole && <div className="panel"><b className="deal-h">{t(`role.${selRole}`)}</b><span className="muted">{t(`role.${selRole}.desc`)}</span></div>}
+          {warnings.length > 0 && <div className="panel warn">{t('tactics.unavailable', { names: warnings.map((p) => shortName(p!)).join(', ') })}</div>}
         </div>
-        <div className="panel">
-          <h3>{sel ? t('tactics.candidates', { pos: t(`pos.${sel.pos}`) }) : t('tactics.squad')}</h3>
-          <div className="muted" style={{ fontSize: 11 }}>{t('tactics.hint')}</div>
-          <table>
-            <tbody>
-              {sorted.map((p) => {
-                const slotIdx = lineup.indexOf(p.id);
-                return (
-                  <tr key={p.id} className={`clickable ${slotIdx >= 0 ? 'me' : ''}`} draggable onDragStart={(e) => e.dataTransfer.setData('text/plain', String(p.id))}
-                    onClick={() => (selected !== null ? assign(p.id, selected) : onPlayer(p.id))}>
-                    <td><PosBadge pos={p.position} /></td>
-                    <td>{shortName(p)} <Status p={p} out={club.excluded.includes(p.id)} /></td>
-                    <td className="num muted">{p.condition.fitness}%</td>
-                    <td>{sel ? <span className={fitClass(p.positions[sel.pos])}><Stars ca={slotRating(p, sel)} /></span> : <Stars ca={p.ca} />}</td>
-                    <td className="muted">{slotIdx >= 0 ? t(`pos.${slots[slotIdx]!.pos}`) : ''}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+
+        <div className="stack">
+          <div className="panel">
+            <h2>{t('tactics.instructions')}</h2>
+            <Seg label={t('tactics.mentality')} value={tac.mentality - 1} options={[1, 2, 3, 4, 5].map((m) => t(`mentality.${m}`))} onChange={(v) => setTactic('mentality', v + 1)} />
+            {INSTRUCTIONS.map((k) => (
+              <Seg key={k} label={t(`instr.${k}`)} value={tac[k]} options={[0, 1, 2].map((v) => t(`instr.${k}.${v}`))} onChange={(v) => setTactic(k, v)} />
+            ))}
+          </div>
+          <div className="panel">
+            <h2>{sel ? t('tactics.candidates', { pos: t(`pos.${sel.pos}`) }) : t('tactics.squadTitle')}</h2>
+            <div className="muted small">{t('tactics.hint')}</div>
+            <table>
+              <thead><tr><th>#</th><th>{t('tactics.slot')}</th><th>{t('col.name')}</th><th>{t('tactics.natural')}</th><th>{t('col.fitness')}</th><th>{sel ? t('tactics.inRole') : t('col.ability')}</th></tr></thead>
+              <tbody>
+                {!sel && lineup.map((id, i) => (id != null && world.players[id] ? row(world.players[id]!, i) : null))}
+                {!sel && <tr className="sep"><td colSpan={6}>{t('tactics.reserves', { n: bench.length })}</td></tr>}
+                {(sel ? sorted : bench).map((p) => row(p, lineup.indexOf(p.id)))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

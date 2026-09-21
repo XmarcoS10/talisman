@@ -19,7 +19,12 @@ export const PosBadge = ({ pos }: { pos: Position }) => <span className={`badge 
 export const team = (c: { city: string } | undefined, form: '' | 'di' | 'a' | 'da' | 'in' | 'su' | 'con' | 'contro' = '') =>
   c ? teamForms('x', c.city)[form ? `x_${form}` : 'x']! : '?';
 
-export const attrClass = (v: number) => (v <= 5 ? 'a1' : v <= 10 ? 'a2' : v <= 15 ? 'a3' : 'a4');
+// attributi 1-20 (DESIGN.md): 16-20 smeraldo, 11-15 ambra, 8-10 neutro, 1-7 rosso
+export const attrClass = (v: number) => (v <= 7 ? 'a1' : v <= 10 ? 'a2' : v <= 15 ? 'a3' : 'a4');
+
+/** voto in pagella come chip colorato: 8+ smeraldo, 6,8-7,9 ciano, 6-6,7 grigio, sotto 6 rosso */
+export const rateClass = (v: number) => (v >= 8 ? 'top' : v >= 6.8 ? 'good' : v >= 6 ? 'ok' : 'bad');
+export const Rating = ({ v }: { v: number }) => <span className={`rate ${rateClass(v)}`}>{v ? v.toFixed(1) : '–'}</span>;
 
 /** etichetta di personalità derivata dai 6 assi (GUIDA §4.4), mai salvata */
 export function personalityKey(p: Player): string {

@@ -39,15 +39,17 @@ export function Pitch({ world, club, selected, onSelect, onAssign, onRole }: Pro
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => { e.preventDefault(); const pid = Number(e.dataTransfer.getData('text/plain')); if (pid) onAssign(pid, i); }}
           >
+            <span className="slot-ring" style={{ '--fit': `${p ? p.condition.fitness / 2 : 0}%`, '--fam': `${p ? (p.positions[slot.pos] ?? 0) * 10 : 0}%` } as React.CSSProperties /* variabili CSS: il tipo non le conosce */}>
             <button
               className={`slot-dot ${p ? fitClass(p.positions[slot.pos]) : ''}`}
               draggable={!!p}
               onDragStart={(e) => p && e.dataTransfer.setData('text/plain', String(p.id))}
               onClick={() => onSelect(i)}
-              title={p ? `${shortName(p)} · ${t(`pos.${slot.pos}`)}` : t(`pos.${slot.pos}`)}
+              title={p ? t('tactics.slotTitle', { name: shortName(p), pos: t(`pos.${slot.pos}`), r: Math.round(slotRating(p, slot) / 10), fit: p.condition.fitness }) : t(`pos.${slot.pos}`)}
             >
-              {p ? Math.round(slotRating(p, slot) / 10) : '?'}
+              {i + 1}
             </button>
+            </span>
             <div className="slot-name">{p ? shortName(p) : t(`pos.${slot.pos}`)}</div>
             <select className="slot-role" value={role} onChange={(e) => onRole(i, e.target.value)} aria-label={t('tactics.role')}>
               {rolesFor(slot.pos).map((r) => <option key={r} value={r}>{t(`role.${r}`)}</option>)}

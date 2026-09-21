@@ -112,7 +112,7 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: 
       ctx.stroke();
     }
     if (r > 9) { // numero solo se c'è spazio per leggerlo
-      ctx.font = `700 ${Math.round(r)}px 'IBM Plex Mono', monospace`;
+      ctx.font = `700 ${Math.round(r)}px 'JetBrains Mono', monospace`;
       ctx.fillStyle = contrast(look.colors[side]!);
       ctx.globalAlpha = mine ? 1 : 0.7;
       ctx.fillText(String(look.numbers.get(id) ?? ''), px, py + r * 0.05);
