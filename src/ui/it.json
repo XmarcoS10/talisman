@@ -120,6 +120,7 @@
   "preset.tactical": "Tattico",
   "preset.light": "Leggero",
   "preset.intense": "Intenso",
+  "dressing.unhappy": "{n} scontenti del minutaggio",
   "dressing.graph": "Il gruppo",
   "dressing.graphHint": "Cerchio grande = più influenza. Colore = morale. Linee verdi = amicizie, rosse = rivalità. Clicca un giocatore per il profilo.",
   "dressing.leaders": "Gruppo dirigente",

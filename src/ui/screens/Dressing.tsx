@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Crown, Handshake, MessageCircleWarning, Network, Swords } from 'lucide-react';
 import { moraleParts, squadStatus } from '../../engine/morale.ts';
 import { Rng } from '../../engine/rng.ts';
 import { influence, leaders, mediate, sideWith } from '../../engine/social.ts';
@@ -27,11 +28,23 @@ export function Dressing({ world, onChange, onPlayer }: { world: WorldState; onC
     onChange();
   };
 
+  const mood = avg((p) => p.psych.morale);
   return (
+    <div className="stack">
+    <div className="kpis">
+      <div className="kpi"><span className="caps">{t('dressing.mood')}</span><div className="big num">{mood}<small>/100</small></div>
+        <div className="meter"><i className={mood < 40 ? 'bad' : mood < 60 ? 'warn' : ''} style={{ width: `${mood}%` }} /></div></div>
+      <div className="kpi"><span className="caps">{t('dressing.trust')}</span><div className="big num">{avg((p) => p.psych.trust)}<small>/100</small></div>
+        <div className="meter"><i className="cyan" style={{ width: `${avg((p) => p.psych.trust)}%` }} /></div></div>
+      <div className="kpi"><span className="caps">{t('dressing.feuds')}</span><div className={`big num ${club.feuds.length ? 'pos-bad' : 'pos-good'}`}>{club.feuds.length}</div>
+        <span className="muted small">{t('dressing.unhappy', { n: requests.length })}</span></div>
+      <div className="kpi"><span className="caps">{t('dressing.promises')}</span><div className="big num">{world.promises.length}</div>
+        <span className="muted small">{t('dressing.record', { kept: world.manager.kept, broken: world.manager.broken })}</span></div>
+    </div>
     <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1.6fr) 1fr', alignItems: 'start' }}>
       <div className="panel">
         <div className="row" style={{ justifyContent: 'space-between' }}>
-          <h2>{t('dressing.graph')}</h2>
+          <h2><Network size={18} /> {t('dressing.graph')}</h2>
           <span className="row muted">
             {t('dressing.mood')} <b className={`num m-text-${moraleClass(avg((p) => p.psych.morale))}`}>{avg((p) => p.psych.morale)}</b>
             · {t('dressing.trust')} <b className="num">{avg((p) => p.psych.trust)}</b>
@@ -43,21 +56,21 @@ export function Dressing({ world, onChange, onPlayer }: { world: WorldState; onC
 
       <div className="grid">
         <div className="panel">
-          <h3>{t('dressing.leaders')}</h3>
+          <h2><Crown size={18} /> {t('dressing.leaders')}</h2>
           <div className="muted" style={{ fontSize: 11 }}>{t('dressing.leadersHint')}</div>
           {leaders(infl).map((id) => {
             const p = world.players[id]!;
             return (
               <div key={id} className="attr clickable" onClick={() => onPlayer(id)}>
                 <span><PosBadge pos={p.position} /> {shortName(p)}</span>
-                <span className="muted">{t('people.morale')} <b className={`num m-text-${moraleClass(p.psych.morale)}`}>{Math.round(p.psych.morale)}</b></span>
+                <span className="mini-bar"><span className="meter"><i className={p.psych.morale < 40 ? 'bad' : p.psych.morale < 60 ? 'warn' : ''} style={{ width: `${p.psych.morale}%` }} /></span><b className={`num m-text-${moraleClass(p.psych.morale)}`}>{Math.round(p.psych.morale)}</b></span>
               </div>
             );
           })}
         </div>
 
         <div className="panel">
-          <h3>{t('dressing.feuds')}</h3>
+          <h2><Swords size={18} /> {t('dressing.feuds')}</h2>
           {msg && <div className="pos-mid">{msg}</div>}
           {club.feuds.length === 0 && <div className="muted">{t('dressing.noFeuds')}</div>}
           {club.feuds.map((f) => (
@@ -73,7 +86,7 @@ export function Dressing({ world, onChange, onPlayer }: { world: WorldState; onC
         </div>
 
         <div className="panel">
-          <h3>{t('dressing.requests')}</h3>
+          <h2><MessageCircleWarning size={18} /> {t('dressing.requests')}</h2>
           {requests.length === 0 && <div className="muted">{t('dressing.noRequests')}</div>}
           {requests.map((p) => (
             <div key={p.id} className="attr clickable" onClick={() => onPlayer(p.id)}>
@@ -84,7 +97,7 @@ export function Dressing({ world, onChange, onPlayer }: { world: WorldState; onC
         </div>
 
         <div className="panel">
-          <h3>{t('dressing.promises')}</h3>
+          <h2><Handshake size={18} /> {t('dressing.promises')}</h2>
           <div className="muted">{t('dressing.record', { kept: world.manager.kept, broken: world.manager.broken })}</div>
           {world.promises.length === 0 && <div className="muted">{t('dressing.noPromises')}</div>}
           {world.promises.map((pr) => (
@@ -94,6 +107,7 @@ export function Dressing({ world, onChange, onPlayer }: { world: WorldState; onC
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 }
