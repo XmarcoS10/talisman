@@ -50,6 +50,13 @@ export const STYLE = {
   youthAge: 21,
 } as const;
 
+// --- Coppa nazionale (F10) ---
+export const CUP = {
+  days: [24, 45, 59, 94, 136, 171, 206, 234] as const, // giorni infrasettimanali possibili; il tabellone usa gli ultimi che servono
+  prize: 3_000_000, // alla vincitrice (metà alla finalista)
+  seeds: 8, // le più blasonate entrano agli ottavi, come nelle coppe vere: meno partite per le grandi
+} as const;
+
 export const TRAIN = {
   load: { tactical: 0.5, physical: 1, technical: 0.6, setPieces: 0.3, match: 0.8, recovery: -0.5, rest: 0 },
   fitnessPerLoad: 4, // forma fisica spesa in allenamento per unità di carico settimanale
@@ -65,7 +72,7 @@ export const TRAIN = {
   famDecay: 0.5, // persa a settimana dai moduli non usati
   famStart: 80, // modulo iniziale
   famOther: 40,
-  injuryBase: 0.0028, // infortunio in allenamento a settimana, al carico di riferimento
+  injuryBase: 0.0024, // infortunio in allenamento a settimana, al carico di riferimento (F10: ritoccato per le gare di coppa)
   loadRef: 5.5, // carico della settimana tipo
   loadExp: 3, // oltre il riferimento il rischio esplode
   relapseWindow: 0.5, // giorni a rischio ricaduta = durata × questo (max 28)

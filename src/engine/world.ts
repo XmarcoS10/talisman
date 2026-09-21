@@ -21,6 +21,8 @@ import { weekStories } from './narrative/scanner.ts';
 import { weekPress } from './press/press.ts';
 import { internationalBreak, summerTournament } from './nations/nations.ts';
 import { yearlyIntake } from './youth/intake.ts';
+import { afterCupDay, cupFixtures, makeCup } from './cup.ts';
+import { preseason } from './friendlies.ts';
 import { checkFFP, estimate, gate, seasonIncome, settleInstalments, trimWages, weekCosts } from './finance/ledger.ts';
 import { defaultTraining, trainWeek } from './training.ts';
 
@@ -44,7 +46,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
   const world: WorldState = {
     schemaVersion: SCHEMA_VERSION, seed, rng: rng.s, season, day: 0,
     manager: { name: '', clubId: 0, kept: 0, broken: 0, board: newBoard(), h2h: {}, style: 'none' }, players: {}, clubs: {}, competitions: {}, history: [], news: [],
-    causal: [], promises: [], talks: [], arcs: [], press: null, nations: {}, intake: [], nextArcId: 1, nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
+    causal: [], promises: [], talks: [], arcs: [], press: null, nations: {}, cup: null, cupWinners: [], friendlies: null, intake: [], nextArcId: 1, nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
   };
   const cities = [...CITIES];
   let clubId = 0;
@@ -138,6 +140,7 @@ export function roundRobin(clubIds: ClubId[], rng: Rng): Fixture[] {
 function scheduleSeason(world: WorldState, rng: Rng) {
   world.day = 0;
   for (const comp of Object.values(world.competitions)) comp.fixtures = roundRobin(comp.clubIds, rng);
+  world.cup = makeCup(world, rng);
   // l'IA riadatta il modulo alla rosa ogni estate (il club dell'utente lo sceglie l'utente)
   for (const club of Object.values(world.clubs))
     if (club.id !== world.manager.clubId || world.history.length === 0) aiSetFormation(world, club);
@@ -183,10 +186,21 @@ function passDays(world: WorldState, rng: Rng, days: number, weeks: number) {
   }
 }
 
+/** tutte le partite in programma quel giorno: campionati e coppa */
+export function fixturesOn(world: WorldState, day: number): Fixture[] {
+  const out: Fixture[] = [];
+  for (const comp of Object.values(world.competitions)) for (const fx of comp.fixtures) if (fx.day === day) out.push(fx);
+  for (const fx of cupFixtures(world)) if (fx.day === day) out.push(fx);
+  return out;
+}
+
 export function nextMatchDay(world: WorldState): number | null {
   let min: number | null = null;
   for (const comp of Object.values(world.competitions))
     for (const fx of comp.fixtures) if (!fx.result && fx.day >= world.day && (min === null || fx.day < min)) min = fx.day;
+  // la coppa non allunga la stagione: finiti i campionati, non si aspetta un turno di coppa
+  if (min === null) return null;
+  for (const fx of cupFixtures(world)) if (!fx.result && fx.day >= world.day && fx.day < min) min = fx.day;
   return min;
 }
 
@@ -205,13 +219,13 @@ export function advance(world: WorldState): Fixture[] {
   passDays(world, rng, day - world.day, 0);
   world.day = day;
   const played: Fixture[] = [];
-  for (const comp of Object.values(world.competitions))
-    for (const fx of comp.fixtures)
-      if (fx.day === day) {
-        playMatch(world, rng, fx);
-        gate(world, fx);
-        played.push(fx);
-      }
+  for (const fx of fixturesOn(world, day)) {
+    if (fx.result) continue;
+    playMatch(world, rng, fx);
+    gate(world, fx);
+    played.push(fx);
+  }
+  afterCupDay(world, rng, day);
   // ogni 4 giornate un punto nel grafico di crescita
   if ((day / DAYS_BETWEEN_ROUNDS) % 4 === 0) for (const p of Object.values(world.players)) p.caLog.push(p.ca);
   const next = nextMatchDay(world);
@@ -234,9 +248,7 @@ export function beginMatchDay(world: WorldState): LiveDay | null {
   const day = nextMatchDay(world);
   if (day === null) return null;
   const me = world.manager.clubId;
-  let mine: Fixture | undefined;
-  for (const comp of Object.values(world.competitions))
-    for (const fx of comp.fixtures) if (fx.day === day && (fx.home === me || fx.away === me)) mine = fx;
+  const mine = fixturesOn(world, day).find((fx) => !fx.result && (fx.home === me || fx.away === me));
   if (!mine) return null;
   const rng = new Rng(world.rng);
   passDays(world, rng, day - world.day, 0);
@@ -250,9 +262,9 @@ export function finishMatchDay(world: WorldState, live: LiveDay): Fixture[] {
   applyMatch(world, rng, live.fx, live.run.result());
   gate(world, live.fx);
   const played: Fixture[] = [live.fx];
-  for (const comp of Object.values(world.competitions))
-    for (const fx of comp.fixtures)
-      if (fx.day === day && fx !== live.fx && !fx.result) { playMatch(world, rng, fx); gate(world, fx); played.push(fx); }
+  for (const fx of fixturesOn(world, day))
+    if (fx !== live.fx && !fx.result) { playMatch(world, rng, fx); gate(world, fx); played.push(fx); }
+  afterCupDay(world, rng, day);
   if ((day / DAYS_BETWEEN_ROUNDS) % 4 === 0) for (const p of Object.values(world.players)) p.caLog.push(p.ca);
   const next = nextMatchDay(world);
   passDays(world, rng, (next ?? day + 1) - day, next === null ? 0 : 1);
@@ -379,6 +391,7 @@ export function endSeason(world: WorldState): SeasonSummary {
   passDays(world, rng, 90, 13); // pausa estiva e preparazione
   scheduleSeason(world, rng);
   for (const p of Object.values(world.players)) p.condition.sharpness = TRAIN.sharpPreseason; // amichevoli estive
+  preseason(world); // e i risultati di quelle del club dell'utente
   world.rng = rng.s;
   return summary;
 }

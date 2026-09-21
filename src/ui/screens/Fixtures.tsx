@@ -5,7 +5,9 @@ import { DAYS_BETWEEN_ROUNDS } from '../../engine/world.ts';
 import { Crest } from '../Crest.tsx';
 import { download, ical, isRivalry, kickoff } from '../calendar.ts';
 import { fmtDate, gameDate, t } from '../i18n.ts';
+import { CupView, Preseason } from './CupView.tsx';
 import { OpponentReport } from './OpponentReport.tsx';
+import { cupFixtures } from '../../engine/cup.ts';
 
 /** esito dal punto di vista di un club: W/D/L */
 export function outcome(fx: Fixture, clubId: number): 'W' | 'D' | 'L' | null {
@@ -44,8 +46,11 @@ export function Fixtures({ world, clubId, onPlayer }: { world: WorldState; clubI
   const [round, setRound] = useState(Math.max(0, nextIdx === -1 ? mine.length - 1 : nextIdx));
   const [half, setHalf] = useState<Half>('mine');
   const [mon, setMon] = useState(-1);
+  const [tab, setTab] = useState<'league' | 'cup'>('league');
   const roundDay = round * DAYS_BETWEEN_ROUNDS;
-  const next = nextIdx >= 0 ? mine[nextIdx] : undefined;
+  const cupNext = cupFixtures(world).filter((f) => !f.result && (f.home === clubId || f.away === clubId)).sort((a, b) => a.day - b.day)[0];
+  const leagueNext = nextIdx >= 0 ? mine[nextIdx] : undefined;
+  const next = cupNext && (!leagueNext || cupNext.day < leagueNext.day) ? cupNext : leagueNext;
   const months = [...new Set(mine.map((f) => month(world, f.day)))];
   const rows = mine.map((fx, i) => ({ fx, i })).filter(({ fx, i }) =>
     (half === 'first' ? i < mine.length / 2 : half === 'second' ? i >= mine.length / 2 : true) && (mon < 0 || month(world, fx.day) === mon));
@@ -54,7 +59,10 @@ export function Fixtures({ world, clubId, onPlayer }: { world: WorldState; clubI
   return (
     <div className="stack">
       <div className="row wrap">
-        <div className="seg-tabs"><button className="active hot"><Trophy size={14} /> {comp.name} <span className="tag dim">{t('fixtures.running')}</span></button></div>
+        <div className="seg-tabs">
+          <button className={tab === 'league' ? 'active hot' : ''} onClick={() => setTab('league')}><Trophy size={14} /> {comp.name} <span className="tag dim">{t('fixtures.running')}</span></button>
+          <button className={tab === 'cup' ? 'active hot' : ''} onClick={() => setTab('cup')}><Trophy size={14} /> {t('cup.name')}</button>
+        </div>
         <div className="seg-tabs">
           {(['mine', 'first', 'second'] as Half[]).map((h) => <button key={h} className={h === half ? 'active' : ''} onClick={() => setHalf(h)}>{t(`fixtures.half.${h}`, { n: mine.length })}</button>)}
         </div>
@@ -65,6 +73,8 @@ export function Fixtures({ world, clubId, onPlayer }: { world: WorldState; clubI
       </div>
 
       {next && <Featured world={world} fx={next} clubId={clubId} round={nextIdx + 1} />}
+      <Preseason world={world} />
+      {tab === 'cup' ? <CupView world={world} clubId={clubId} /> : (
 
       <div className="cols2">
         <div className="panel">
@@ -115,7 +125,7 @@ export function Fixtures({ world, clubId, onPlayer }: { world: WorldState; clubI
           </div>
           {next && <OpponentReport world={world} oppId={next.home === clubId ? next.away : next.home} onPlayer={onPlayer} />}
         </div>
-      </div>
+      </div>)}
     </div>
   );
 }
@@ -127,7 +137,7 @@ function Featured({ world, fx, clubId, round }: { world: WorldState; fx: Fixture
     <div className="panel featured">
       <span className="featured-icon"><Crest club={world.clubs[fx.home === clubId ? fx.away : fx.home]!} size={40} /></span>
       <div className="stack" style={{ gap: 4 }}>
-        <span className="row"><span className="tag">{t('fixtures.featured')}</span><span className="caps" style={{ color: 'var(--data-1)' }}>{t('fixtures.round', { n: round })} · {world.competitions[h.compId]!.name}</span>
+        <span className="row"><span className="tag">{t('fixtures.featured')}</span><span className="caps" style={{ color: 'var(--data-1)' }}>{fx.cup ? t('cup.name') : `${t('fixtures.round', { n: round })} · ${world.competitions[h.compId]!.name}`}</span>
           {isRivalry(world, h.id, a.id) && <span className="tag warn">{t('fixtures.rivalry')}</span>}</span>
         <h1>{h.name} <span className="muted">vs</span> {a.name}</h1>
         <span className="row muted wrap">

@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, Play, Plus } from 'lucide-react';
 import type { ManagerStyle, WorldState } from '../../engine/model.ts';
 import { newWorld } from '../../engine/world.ts';
+import { preseason } from '../../engine/friendlies.ts';
 import { fmtDate, fmtMoney, fmtSeason, t } from '../i18n.ts';
 import { SLOTS, loadFrom, setCurrentSlot, slotInfo, type Slot } from '../storage.ts';
 import { ClubDossier } from './ClubDossier.tsx';
@@ -38,6 +39,7 @@ export function Start({ onLoad, onStart }: { onLoad: (w: WorldState) => void; on
   const go = () => {
     if (clubId === null || !name.trim() || slot === null) return;
     Object.assign(world.manager, { name: name.trim(), clubId, style });
+    preseason(world);
     setCurrentSlot(slot);
     onStart(world);
   };

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import type { Fixture, NewsItem, WorldState } from '../engine/model.ts';
-import { advance, beginMatchDay, endSeason, isSeasonOver, nextMatchDay, standings, type LiveDay, type SeasonSummary } from '../engine/world.ts';
+import { advance, beginMatchDay, endSeason, fixturesOn, isSeasonOver, nextMatchDay, standings, type LiveDay, type SeasonSummary } from '../engine/world.ts';
 import { Banknote, CalendarDays, Play, User } from 'lucide-react';
 import { HINTS, Hint } from './Hint.tsx';
 import { markVisited, settings } from './settings.ts';
@@ -88,7 +88,7 @@ export function App() {
       const fx = played.find((f) => f.home === me || f.away === me);
       if (fx) {
         markVisited('live');
-        const others = played.filter((f) => world.clubs[f.home]!.compId === world.clubs[me]!.compId);
+        const others = played.filter((f) => (fx.cup ? f.cup : !f.cup && world.clubs[f.home]!.compId === world.clubs[me]!.compId));
         setModal({ kind: 'match', fx, others });
       }
     }
@@ -119,7 +119,7 @@ export function App() {
       <Live world={world} live={liveDay} onFinish={(played) => {
         setLiveDay(null);
         markVisited('live'); // prima partita guidata: fatta
-        const others = played.slice(1).filter((f) => world.clubs[f.home]!.compId === world.clubs[world.manager.clubId]!.compId);
+        const others = played.slice(1).filter((f) => (played[0]!.cup ? f.cup : !f.cup && world.clubs[f.home]!.compId === world.clubs[world.manager.clubId]!.compId));
         setModal({ kind: 'match', fx: played[0]!, others });
         autosave(world);
         rerender();
@@ -133,8 +133,7 @@ export function App() {
   const changed = () => { saveSoon(world); rerender(); };
   // gioca il club dell'utente nel prossimo turno? allora si può seguire dal vivo
   const day = nextMatchDay(world);
-  const myMatchDay = day !== null && Object.values(world.competitions).some((c) =>
-    c.fixtures.some((f) => f.day === day && !f.result && (f.home === club.id || f.away === club.id)));
+  const myMatchDay = day !== null && fixturesOn(world, day).some((f) => !f.result && (f.home === club.id || f.away === club.id));
 
   return (
     <div className="shell">

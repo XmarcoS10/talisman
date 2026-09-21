@@ -429,3 +429,5 @@ td svg, .small svg { vertical-align: -2px; }
 .set-row b { display: block; font-size: 14px; } .set-row small { color: var(--text-2); font-size: 11px; }
 .big-check { width: 20px; height: 20px; accent-color: var(--accent); }
 .field { display: flex; flex-direction: column; gap: 6px; }
+.preseason { flex-direction: row; align-items: center; flex-wrap: wrap; gap: var(--s-4); padding: 10px var(--s-4); }
+.friendly { display: inline-flex; align-items: center; gap: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--r-2); padding: 6px 10px; }

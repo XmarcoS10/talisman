@@ -78,7 +78,8 @@ describe('agenti (F7)', () => {
     const a = Object.values(world.agents).find((x) => x.clientIds.length >= 4)!;
     const p = world.players[a.clientIds[0]!]! as Player;
     const to = p.clubId === c1!.id ? c0!.id : c1!.id;
-    p.psych.minutes = 0.9; // gioca sempre: nessuno lo muove
+    p.psych.minutes = 0.9; // gioca sempre, contratto lungo: nessuno lo muove
+    p.contract.until = world.season + 4;
     p.psych.wantsOut = false;
     expect(proposals(world, a, to).map((x) => x.id)).not.toContain(p.id);
     p.psych.wantsOut = true; // ha chiesto di andarsene: ora sì

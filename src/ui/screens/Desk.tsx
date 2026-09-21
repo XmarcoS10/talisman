@@ -1,5 +1,5 @@
 import type { WorldState } from '../../engine/model.ts';
-import { nextMatchDay, standings } from '../../engine/world.ts';
+import { fixturesOn, nextMatchDay, standings } from '../../engine/world.ts';
 import { Crest } from '../Crest.tsx';
 import { team } from '../bits.tsx';
 import { fmtDate, fmtSeason, t, tEvent } from '../i18n.ts';
@@ -15,7 +15,7 @@ export function Desk({ world, onNav }: { world: WorldState; onNav: (n: 'board' |
   const comp = world.competitions[club.compId]!;
   const mine = comp.fixtures.filter((f) => f.home === clubId || f.away === clubId);
   const day = nextMatchDay(world);
-  const next = mine.find((f) => f.day === day);
+  const next = day === null ? undefined : fixturesOn(world, day).find((f) => f.home === clubId || f.away === clubId);
   const played = mine.filter((f) => f.result);
   const table = standings(world, comp);
   const rankOf = (id: number) => table.findIndex((r) => r.clubId === id) + 1;
@@ -31,7 +31,7 @@ export function Desk({ world, onNav }: { world: WorldState; onNav: (n: 'board' |
             <div className="score">
               <div className="grid" style={{ justifyItems: 'center' }}><Crest club={world.clubs[next.home]!} size={64} /><b>{world.clubs[next.home]!.name}</b></div>
               <div className="grid" style={{ justifyItems: 'center', gap: 'var(--s-1)' }}>
-                <span className="muted">{comp.name}</span>
+                <span className="muted">{next.cup ? t('cup.name') : comp.name}</span>
                 <span className="num">{fmtDate(world.season, next.day)}</span>
                 <span className="muted">{t(next.home === clubId ? 'desk.home' : 'desk.away')}</span>
               </div>

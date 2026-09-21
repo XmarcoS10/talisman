@@ -302,6 +302,17 @@ export interface Fixture {
   home: ClubId;
   away: ClubId;
   result?: MatchResult;
+  cup?: true; // gara di coppa: non conta nelle statistiche di campionato
+  pens?: [number, number]; // rigori, se la gara di coppa è finita pari
+}
+
+/** Coppa nazionale (F10): turni a eliminazione diretta, sorteggiati uno alla volta */
+export interface Cup {
+  season: number;
+  rounds: { day: number; ties: Fixture[] }[];
+  byes: ClubId[]; // chi salta i primi turni ed entra più avanti
+  byesAt: number; // il turno (indice) in cui entrano
+  winner: ClubId | null;
 }
 
 export interface Competition {
@@ -436,6 +447,9 @@ export interface WorldState {
   arcs: Arc[]; // storie aperte e ricordate (§7.4)
   press: PressRoom | null; // la conferenza stampa della settimana
   nations: Record<string, National>;
+  cup: Cup | null;
+  friendlies: { season: number; games: { day: number; opp: ClubId; home: boolean; gf: number; ga: number }[] } | null; // amichevoli estive dell'utente
+  cupWinners: { season: number; clubId: ClubId }[];
   intake: { season: number; clubId: ClubId; playerIds: PlayerId[] }[]; // ultimi vivai, per la schermata
   nextArcId: number;
   nextPlayerId: number;
