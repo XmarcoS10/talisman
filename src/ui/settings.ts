@@ -12,12 +12,13 @@ export interface Settings {
   pauseNews: boolean; // dopo un avanzamento mostra le notizie importanti prima di tutto
   currency: 'EUR' | 'USD' | 'GBP'; // solo visualizzazione: il motore conta in euro
   dateFmt: 'long' | 'short';
+  rail: boolean; // barra laterale ridotta alle sole icone (64 px)
   win: string; // misura della finestra nell'app desktop, "1440x900"; vuoto = quella di partenza
 }
 
 const KEY = 'talisman-settings';
 export const DEFAULTS: Settings = { hints: true, seen: [], visited: [], guideDone: false, volume: { ui: 0.5, crowd: 0.4, fx: 0.65 },
-  muteOnBlur: true, autosave: true, pauseNews: true, currency: 'EUR', dateFmt: 'long', win: '' };
+  muteOnBlur: true, autosave: true, pauseNews: true, currency: 'EUR', dateFmt: 'long', win: '', rail: false };
 
 let cache: Settings | null = null;
 

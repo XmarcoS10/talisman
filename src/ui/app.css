@@ -476,3 +476,17 @@ h1 { letter-spacing: -0.01em; } h2, h3 { letter-spacing: 0.01em; }
 .mvp svg { color: var(--accent); }
 .rating-row { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; padding: 3px 0; border-bottom: 1px solid rgb(255 255 255 / 0.04); }
 .modal .score .big { font-family: var(--font-title); }
+/* barra laterale ridotta a sole icone (DESIGN.md: 64 px chiusa, 240 aperta) */
+html.rail .shell { grid-template-columns: 64px 1fr; }
+.sidebar.rail { padding: var(--s-3) 8px; align-items: center; }
+.sidebar.rail .lbl, .sidebar.rail .side-club div, .sidebar.rail .side-group > .caps { display: none; }
+.sidebar.rail button { justify-content: center; padding: 9px; }
+/* play in partita: pulsa piano mentre scorre */
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgb(0 245 155 / 0.45); } 50% { box-shadow: 0 0 0 8px rgb(0 245 155 / 0); } }
+.live-ctl .btn.primary.sq { animation: pulse 2s infinite; }
+.live-top { background: var(--glass-2); backdrop-filter: blur(20px); border-color: var(--border-2); }
+/* schermi più stretti (DESIGN.md, 1024-1279): le colonne si impilano */
+@media (max-width: 1279px) {
+  .cols2, .live-cols, .market-grid { grid-template-columns: 1fr !important; }
+  .tactics { grid-template-columns: 1fr; }
+}
