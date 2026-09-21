@@ -52,6 +52,8 @@ export function assign(world: WorldState, scoutId: number, task: ScoutTask | nul
 export function hire(world: WorldState, club: Club, scoutId: number): boolean {
   const s = world.scouts[scoutId];
   if (!s || s.clubId !== null) return false;
+  // lo staff dell'utente ha i posti che la società concede
+  if (club.id === world.manager.clubId && club.scoutIds.length >= world.manager.board.scoutSlots) return false;
   s.clubId = club.id;
   club.scoutIds.push(s.id);
   return true;

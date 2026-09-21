@@ -1,5 +1,5 @@
 // Salvataggi versionati (GUIDA §2.5): ogni save ha schemaVersion e passa dalla catena di migrazioni.
-import { TRAIN, YOUTH } from './balance.ts';
+import { SCOUT, TRAIN, YOUTH } from './balance.ts';
 import { defaultRoles } from './match/tactics.ts';
 import { PHILOSOPHIES, type Club, type WorldState } from './model.ts';
 import { Rng } from './rng.ts';
@@ -10,7 +10,7 @@ import { assignAgents } from './transfers/agents.ts';
 import { makeScouts } from './scouting/scouts.ts';
 import { newBoard } from './board/board.ts';
 
-export const SCHEMA_VERSION = 15;
+export const SCHEMA_VERSION = 16;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -107,6 +107,8 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
   (w) => {
     for (const c of Object.values(w.clubs as Obj)) for (const b of c.books as Obj[]) b.monthly = [];
   },
+  // 15 → 16 (F10, dirigenza): i posti nello staff osservatori
+  (w) => { w.manager.board.scoutSlots = Math.max(SCOUT.slots, (w.clubs[w.manager.clubId]?.scoutIds ?? []).length); },
 ];
 
 export function serialize(world: WorldState): string {

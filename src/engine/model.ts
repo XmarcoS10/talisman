@@ -351,6 +351,7 @@ export interface Board {
   trust: { board: number; fans: number; squad: number; press: number }; // 0-100
   deal: { seasons: number; position: number }; // obiettivo concordato: entro quante stagioni, quale piazzamento
   capital: number; // capitale politico per le richieste, 0-100
+  scoutSlots: number; // quanti osservatori la società ti lascia tenere (si allarga con una richiesta)
   verdicts: { season: number; position: number; expected: number; trust: number }[];
   sacked: boolean;
 }

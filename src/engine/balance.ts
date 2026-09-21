@@ -422,6 +422,7 @@ export const SCOUT = {
   sampleOk: 12, // sotto queste presenze i numeri per 90 minuti non dicono niente
   // osservatori
   perClub: 3,
+  slots: 4, // posti nello staff osservatori dell'utente all'inizio
   freePool: 12,
   wageBase: 40000,
   wagePerJudge: 6000,
@@ -486,6 +487,8 @@ export const BOARD = {
   costBudget: 25,
   costFacility: 35,
   costSale: 15,
+  costScouts: 20, // un posto in più nello staff osservatori
+  maxScoutSlots: 8,
   budgetGrant: 0.25, // quota di cassa sbloccata da una richiesta di budget accolta
   // esonero
   sackAt: 18, // sotto questa fiducia della dirigenza a fine stagione si è fuori

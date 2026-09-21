@@ -2,7 +2,8 @@
 import { describe, expect, it } from 'vitest';
 import { BOARD } from '../balance.ts';
 import { newWorld } from '../world.ts';
-import { endSeasonBoard, expected, fairPosition, newBoard, renegotiate, request, weekBoard } from './board.ts';
+import { hire } from '../scouting/scouts.ts';
+import { dealCost, endSeasonBoard, expected, fairPosition, newBoard, renegotiate, request, weekBoard } from './board.ts';
 
 const setup = () => {
   const world = newWorld(5);
@@ -44,6 +45,23 @@ describe('dirigenza (F8)', () => {
     world.manager.board = b2;
     expect(renegotiate(world, 3, 20)).toBe(true);
     expect(b2.trust.board).toBeLessThan(BOARD.start); // tempo e comodità si pagano
+  });
+
+  it('lo staff osservatori ha i posti concessi dalla società, e una richiesta ne aggiunge uno', () => {
+    const { world, club } = setup();
+    const free = () => Object.values(world.scouts).find((s) => s.clubId === null)!;
+    while (club.scoutIds.length < world.manager.board.scoutSlots) expect(hire(world, club, free().id)).toBe(true);
+    expect(hire(world, club, free().id)).toBe(false); // pieno
+    expect(request(world, 'scouts').ok).toBe(true);
+    expect(hire(world, club, free().id)).toBe(true);
+  });
+
+  it("il costo del contratto si vede prima di chiederlo, ed è quello che si paga", () => {
+    const { world, club } = setup();
+    const before = world.manager.board.trust.board;
+    const cost = dealCost(world, club, 1, 18);
+    expect(renegotiate(world, 1, 18)).toBe(true);
+    expect(world.manager.board.trust.board).toBeCloseTo(before - cost);
   });
 
   it('senza credito non si rinegozia', () => {

@@ -1,7 +1,7 @@
 // Dirigenza, fiducia e obiettivi (GUIDA §7.7).
 // L'idea distintiva: la fiducia non è un umore opaco, è un **contratto esplicito rinegoziabile**.
 // Puoi chiedere due stagioni di transizione in cambio di obiettivi più bassi, e paghi subito in fiducia.
-import { BOARD, YOUTH } from '../balance.ts';
+import { BOARD, SCOUT, YOUTH } from '../balance.ts';
 import type { Board, Club, WorldState } from '../model.ts';
 import { addNews } from '../news.ts';
 import { standings } from '../world.ts';
@@ -12,6 +12,7 @@ export const newBoard = (): Board => ({
   trust: { board: BOARD.start, fans: BOARD.start, squad: BOARD.start, press: BOARD.start },
   deal: { seasons: 0, position: 0 },
   capital: BOARD.capitalStart,
+  scoutSlots: SCOUT.slots,
   verdicts: [],
   sacked: false,
 });
@@ -64,9 +65,7 @@ export function renegotiate(world: WorldState, seasons: number, position: number
   const club = world.clubs[world.manager.clubId];
   if (!club || seasons < 1 || seasons > BOARD.dealMaxSeasons) return false;
   const b = world.manager.board;
-  const fair = fairPosition(world, club);
-  const easier = position - fair; // positivo = obiettivo più comodo di quello che ti spetta
-  const cost = seasons * BOARD.dealCostPerSeason + easier * BOARD.dealCostPerPlace;
+  const cost = dealCost(world, club, seasons, position);
   if (b.trust.board - cost < BOARD.sackAt) return false; // non hai il credito per chiederlo
   b.trust.board = clamp(b.trust.board - cost, 0, 100);
   b.deal = { seasons, position };
@@ -74,15 +73,24 @@ export function renegotiate(world: WorldState, seasons: number, position: number
   return true;
 }
 
-export type RequestKind = 'budget' | 'facility' | 'sale';
+/** quanta fiducia costa (positivo) o fa guadagnare (negativo) un contratto: si mostra prima di chiederlo */
+export function dealCost(world: WorldState, club: Club, seasons: number, position: number): number {
+  const easier = position - fairPosition(world, club); // positivo = obiettivo più comodo di quello che ti spetta
+  return seasons * BOARD.dealCostPerSeason + easier * BOARD.dealCostPerPlace;
+}
+
+export type RequestKind = 'budget' | 'facility' | 'sale' | 'scouts';
+export const requestCost = (kind: RequestKind) =>
+  ({ budget: BOARD.costBudget, facility: BOARD.costFacility, sale: BOARD.costSale, scouts: BOARD.costScouts })[kind];
 
 /** una richiesta alla dirigenza costa capitale politico: non puoi chiedere tutto sempre */
 export function request(world: WorldState, kind: RequestKind): { ok: boolean; amount?: number } {
   const club = world.clubs[world.manager.clubId];
   if (!club) return { ok: false };
   const b = world.manager.board;
-  const cost = kind === 'budget' ? BOARD.costBudget : kind === 'facility' ? BOARD.costFacility : BOARD.costSale;
+  const cost = requestCost(kind);
   if (b.capital < cost) return { ok: false };
+  if (kind === 'scouts' && b.scoutSlots >= BOARD.maxScoutSlots) return { ok: false };
   b.capital -= cost;
   // la dirigenza ascolta chi sta facendo bene: sotto la soglia di allarme dice di no
   if (b.trust.board < BOARD.warnAt) {
@@ -97,6 +105,11 @@ export function request(world: WorldState, kind: RequestKind): { ok: boolean; am
   if (kind === 'facility') {
     club.youth.facilities = Math.min(20, club.youth.facilities + YOUTH.facilityRequest); // strutture migliori, vivaio migliore
     addNews(world, 'news.board.facility');
+    return { ok: true };
+  }
+  if (kind === 'scouts') {
+    b.scoutSlots++;
+    addNews(world, 'news.board.scouts', { n: b.scoutSlots });
     return { ok: true };
   }
   addNews(world, 'news.board.sale');
