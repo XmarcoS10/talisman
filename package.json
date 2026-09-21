@@ -15,25 +15,6 @@
     "dist:win": "vite build && electron-builder --win nsis",
     "dist:linux": "vite build && electron-builder --linux AppImage"
   },
-  "dependencies": {},
-  "devDependencies": {
-    "@fontsource/barlow-condensed": "^5.3.0",
-    "@fontsource/ibm-plex-mono": "^5.3.0",
-    "@fontsource/inter": "^5.3.0",
-    "@types/node": "^26.6.1",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^6.1.1",
-    "electron": "^44.4.1",
-    "electron-builder": "^26.15.3",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
-    "typescript": "^7.0.2",
-    "vite": "^8.3.0",
-    "vitest": "^5.0.1"
-  },
-  "license": "GPL-3.0-only",
-  "author": "Marco",
   "build": {
     "appId": "it.talisman.game",
     "productName": "Tactic F.C. Manager",
@@ -61,5 +42,25 @@
       "target": "AppImage",
       "category": "Game"
     }
-  }
+  },
+  "devDependencies": {
+    "@fontsource/barlow-condensed": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/space-grotesk": "^5.3.0",
+    "@types/node": "^26.6.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "electron": "^44.4.1",
+    "electron-builder": "^26.15.3",
+    "lucide-react": "^1.47.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
+  },
+  "license": "GPL-3.0-only",
+  "author": "Marco"
 }

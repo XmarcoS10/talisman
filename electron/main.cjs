@@ -70,7 +70,7 @@ ipcMain.handle('diag:export', async (e, extra) => {
 app.whenReady().then(() => {
   log('info', `avvio ${app.getVersion()} · electron ${process.versions.electron} · ${process.platform}`);
   const win = new BrowserWindow({
-    width: 1440, height: 900, minWidth: 1100, minHeight: 700, backgroundColor: '#0B1014', autoHideMenuBar: true, title: 'Tactic F.C. Manager',
+    width: 1440, height: 900, minWidth: 1100, minHeight: 700, backgroundColor: '#0c1117', autoHideMenuBar: true, title: 'Tactic F.C. Manager',
     webPreferences: { preload: path.join(__dirname, 'preload.cjs') },
   });
   win.loadFile(path.join(__dirname, '../dist/index.html'));

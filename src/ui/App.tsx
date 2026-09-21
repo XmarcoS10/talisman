@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import type { Fixture, WorldState } from '../engine/model.ts';
 import { advance, beginMatchDay, endSeason, isSeasonOver, nextMatchDay, standings, type LiveDay, type SeasonSummary } from '../engine/world.ts';
-import { Crest } from './Crest.tsx';
+import { Banknote, CalendarDays, Play, User } from 'lucide-react';
 import { HINTS, Hint } from './Hint.tsx';
 import { markVisited } from './settings.ts';
 import { playUi } from './audio.ts';
-import { fmtDate, fmtMoney, fmtSeason, t } from './i18n.ts';
+import { fmtDate, fmtMoney, t } from './i18n.ts';
 import { BoardView } from './screens/BoardView.tsx';
 import { ClubView } from './screens/ClubView.tsx';
 import { Desk } from './screens/Desk.tsx';
@@ -27,14 +27,14 @@ import { Tactics } from './screens/Tactics.tsx';
 import { Training } from './screens/Training.tsx';
 import { Youth } from './screens/Youth.tsx';
 import { Search } from './Search.tsx';
+import { Sidebar, type NavName } from './Sidebar.tsx';
 import { currentSlot, saveTo } from './storage.ts';
 
 type Screen =
-  | { name: 'desk' | 'stories' | 'squad' | 'tactics' | 'training' | 'dressing' | 'youth' | 'market' | 'scouts' | 'finance' | 'board' | 'tables' | 'fixtures' | 'saves' }
+  | { name: NavName }
   | { name: 'player'; id: number; back: Screen }
   | { name: 'club'; id: number; back: Screen };
 type Modal = { kind: 'match'; fx: Fixture; others: Fixture[] } | { kind: 'season'; summary: SeasonSummary; myPos: number } | null;
-const NAV = ['desk', 'stories', 'squad', 'tactics', 'training', 'dressing', 'youth', 'market', 'scouts', 'finance', 'board', 'tables', 'fixtures', 'saves'] as const;
 
 // l'esito dell'ultimo salvataggio: se fallisce lo si dice, e non si esce perdendo la partita
 let lastSaveOk = true;
@@ -136,26 +136,20 @@ export function App() {
     <div className="shell">
       {!lastSaveOk && <div className="save-failed">{t('save.failed')}</div>}
       <header className="topbar">
-        <div className="club"><Crest club={club} size={34} />{club.name}</div>
-        <span className="muted">{world.competitions[club.compId]!.name} · {fmtSeason(world.season)}</span>
-        <div className="spacer" />
+        <div className="brand"><img src="icon-64.png" alt="" width={30} height={30} /><div>TFM <b>27</b><small>MANAGER</small></div></div>
         <Search ref={searchRef} world={world} onPlayer={openPlayer} onClub={openClub} />
-        <div className="info">
-          <span className="num">{fmtDate(world.season, world.day)}</span>
-          <span className="muted">{t('top.balance')} <span className="num">{fmtMoney(club.balance)}</span></span>
-        </div>
-        {myMatchDay && <button className="btn" onClick={() => setLiveDay(beginMatchDay(world))}>{t('top.watch')} ▶</button>}
-        <button className="btn primary" onClick={onAdvance} title={t('top.advanceHint')}>
+        <div className="spacer" />
+        <span className="pill num"><CalendarDays size={15} />{fmtDate(world.season, world.day)}</span>
+        <span className="pill num" title={t('top.balance')}><Banknote size={15} />{fmtMoney(club.balance)}</span>
+        {myMatchDay && <button className="btn" onClick={() => setLiveDay(beginMatchDay(world))}><Play size={14} /> {t('top.watch')}</button>}
+        <button className="btn primary big" onClick={onAdvance} title={t('top.advanceHint')}>
           {t(isSeasonOver(world) ? 'top.endSeason' : 'top.advance')} ▸
         </button>
+        <span className="avatar" title={world.manager.name}><User size={17} /></span>
       </header>
 
-      <nav className="sidebar">
-        {NAV.map((n) => (
-          <button key={n} className={screen.name === n ? 'active' : ''} onClick={() => setScreen({ name: n })}>{t(`nav.${n}`)}</button>
-        ))}
-        <button className="bottom" onClick={() => { if (autosave(world)) setWorld(null); else rerender(); }}>{t('nav.saveQuit')}</button>
-      </nav>
+      <Sidebar world={world} active={screen.name} onNav={(n) => setScreen({ name: n })}
+        onQuit={() => { if (autosave(world)) setWorld(null); else rerender(); }} />
 
       <main className="content">
         {(HINTS as readonly string[]).includes(screen.name) && <Hint key={screen.name} id={screen.name as (typeof HINTS)[number]} />}
