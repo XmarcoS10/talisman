@@ -159,7 +159,7 @@ export function App() {
         {screen.name === 'tactics' && <Tactics world={world} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'training' && <Training world={world} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'dressing' && <Dressing world={world} onChange={changed} onPlayer={openPlayer} />}
-        {screen.name === 'youth' && <Youth world={world} onPlayer={openPlayer} />}
+        {screen.name === 'youth' && <Youth world={world} onPlayer={openPlayer} onChange={changed} />}
         {screen.name === 'market' && <Market world={world} onPlayer={openPlayer} />}
         {screen.name === 'scouts' && <Scouts world={world} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'finance' && <Finance world={world} />}
