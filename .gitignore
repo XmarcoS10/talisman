@@ -4,3 +4,4 @@ release/
 *.log
 out.md
 .claude/settings.local.json
+tools/shots-save.json
