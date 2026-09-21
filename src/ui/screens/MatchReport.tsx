@@ -1,14 +1,19 @@
 import type { Fixture, MatchEvent, SideStats, WorldState } from '../../engine/model.ts';
 import { Crest } from '../Crest.tsx';
-import { shortName } from '../bits.tsx';
+import { Star } from 'lucide-react';
+import { PosBadge, Rating, shortName } from '../bits.tsx';
 import { t } from '../i18n.ts';
 import { ResultsList } from './Fixtures.tsx';
 
 const ICON: Record<MatchEvent['type'], string> = { goal: '⚽', penGoal: '⚽', penMiss: '✖', chance: '◎', yellow: '🟨', red: '🟥', injury: '✚', sub: '⇄' };
 
-/** righe statistiche: [chiave i18n, valore casa, valore ospiti] */
-function statRows(s: [SideStats, SideStats]): [string, string, string][] {
-  const both = (f: (x: SideStats) => string | number) => [String(f(s[0])), String(f(s[1]))] as const;
+/** righe statistiche: [chiave i18n, valore casa, valore ospiti, quota della barra di casa 0-1] */
+function statRows(s: [SideStats, SideStats]): [string, string, string, number][] {
+  const both = (f: (x: SideStats) => string | number) => {
+    const h = f(s[0]), a = f(s[1]);
+    const nh = parseFloat(String(h)) || 0, na = parseFloat(String(a)) || 0;
+    return [String(h), String(a), nh + na > 0 ? nh / (nh + na) : 0.5] as const;
+  };
   const acc = (x: SideStats) => (x.passes ? Math.round((x.passesOk / x.passes) * 100) : 0);
   return [
     ['match.stat.possession', ...both((x) => `${x.possession}%`)],
@@ -52,40 +57,41 @@ export function MatchModal({ world, fx, others, onClose }: { world: WorldState; 
   return (
     <div className="overlay" onClick={onClose}>
       <div className="modal wide" onClick={(e) => e.stopPropagation()}>
-        <div className="muted c">{t('match.fullTime')}</div>
+        <div className="row" style={{ justifyContent: 'center' }}><span className="tag">{fx.cup ? t('cup.name') : world.competitions[clubs[0]!.compId]?.name}</span><span className="caps">{t('match.fullTime')}</span></div>
         <div className="score">
           <div className="grid" style={{ justifyItems: 'center' }}><Crest club={clubs[0]!} size={72} /><b>{clubs[0]!.name}</b></div>
-          <div className="big">{r.hg} - {r.ag}</div>
+          <div className="grid" style={{ justifyItems: 'center' }}><div className="big">{r.hg} - {r.ag}</div>{fx.pens && <span className="muted">{t('cup.pens', { a: fx.pens[0], b: fx.pens[1] })}</span>}</div>
           <div className="grid" style={{ justifyItems: 'center' }}><Crest club={clubs[1]!} size={72} /><b>{clubs[1]!.name}</b></div>
         </div>
-        {motm?.p && <div className="c muted">★ {t('match.motm')}: <b>{shortName(motm.p)}</b> <span className="num">{motm.v.toFixed(1)}</span></div>}
+        {motm?.p && (
+          <div className="mvp"><Star size={18} /><span className="caps">{t('match.motm')}</span><PosBadge pos={motm.p.position} /><b className="deal-h">{shortName(motm.p)}</b>
+            <span className="muted small">{world.clubs[motm.p.clubId ?? -1]?.name}</span><Rating v={motm.v} /></div>
+        )}
 
         <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'start' }}>
           <div className="panel">
-            <h3>{t('match.timeline')}</h3>
+            <h2>{t('match.timeline')}</h2>
             {r.events.filter((e) => e.type !== 'chance').map((e, i) => <EventLine key={i} world={world} e={e} />)}
           </div>
           <div className="panel">
-            <h3>{t('match.stats')}</h3>
-            <table>
-              <tbody>
-                {statRows(r.stats).map(([k, h, a]) => (
-                  <tr key={k}><td className="num r" style={{ width: '30%' }}>{h}</td><td className="c muted">{t(k)}</td><td className="num" style={{ width: '30%' }}>{a}</td></tr>
-                ))}
-              </tbody>
-            </table>
+            <h2>{t('match.stats')}</h2>
+            {statRows(r.stats).map(([k, h, a, q]) => (
+              <div key={k} className="cmp">
+                <span className="row" style={{ justifyContent: 'space-between' }}><b className="num">{h}</b><span className="caps">{t(k)}</span><b className="num">{a}</b></span>
+                <span className="cmp-bar"><i style={{ width: `${q * 100}%` }} /></span>
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="panel">
-          <h3>{t('match.ratings')}</h3>
+          <h2>{t('match.ratings')}</h2>
           <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: 'var(--s-1) var(--s-5)' }}>
             {ratings.map((list, side) => (
               <div key={side}>
                 {list.map(({ p, v }) => (
-                  <div key={p!.id} className="row" style={{ justifyContent: 'space-between' }}>
-                    <span>{shortName(p!)}</span>
-                    <b className={`num ${v >= 7.5 ? 'pos-good' : v < 6 ? 'pos-bad' : ''}`}>{v.toFixed(1)}</b>
+                  <div key={p!.id} className="rating-row">
+                    <PosBadge pos={p!.position} /><span>{shortName(p!)}</span><Rating v={v} />
                   </div>
                 ))}
               </div>
@@ -93,9 +99,9 @@ export function MatchModal({ world, fx, others, onClose }: { world: WorldState; 
           </div>
         </div>
 
-        <h3>{t('match.otherResults')}</h3>
+        <h2>{t('match.otherResults')}</h2>
         <ResultsList world={world} fixtures={others.filter((o) => o !== fx)} />
-        <button className="btn primary" autoFocus onClick={onClose}>{t('match.continue')}</button>
+        <button className="btn primary big" autoFocus onClick={onClose}>{t('match.continue')}</button>
       </div>
     </div>
   );
