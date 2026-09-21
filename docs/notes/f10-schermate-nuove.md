@@ -31,7 +31,7 @@ La cartella dati resta `talisman` (i salvataggi di prima si ritrovano) e anche g
 | 12 | Nuova carriera | due passi: club a schede con filtri, poi dossier (bilancio, strutture, perni, modulo più adatto); **filosofia dell'allenatore** |
 | 13 | Impostazioni e salvataggi | **5 slot** con nome, peso e tempo di gioco; apri/copia cartella; esporta/importa carriera (`.tfm`); **valuta**, **formato data**, schermo intero, **pausa sulle notizie importanti**, salvataggio automatico disattivabile, volume effetti separato, silenzio fuori finestra |
 
-## Seconda passata: DESIGN.md e specifiche (22/09/2026)
+## Seconda passata: DESIGN.md e specifiche (21/09/2026)
 
 Marco ha mandato `docs/design/DESIGN.md` e `docs/design/tfm_27_specifiche_complete_per_claude.md` (erano nello zip
 di Stitch). Applicati:
