@@ -12,6 +12,10 @@ prima si ritrovano. Novità di gioco:
 - Finanze con proiezione di fine stagione e cassa mese per mese; richiesta alla dirigenza per allargare lo staff
   osservatori; classifiche casa/trasferta/forma/xG; report sull'avversario; esportazione del calendario.
 - **5 slot** con nome e tempo di gioco, valuta e formato data a scelta, pausa sulle notizie importanti.
+- **Offerte per i tuoi giocatori**: nelle finestre di mercato gli altri club ti fanno offerte, e decidi tu: accetti,
+  rifiuti o chiedi di più. Se un giocatore sognava quel club e gli dici di no, se lo ricorda.
+- Mercato dell'IA più vivo: i club grandi riescono a comprare i titolari dei piccoli, e il campionato non si appiattisce
+  dopo qualche stagione.
 
 ## 0.1.0 — prima versione di collaudo
 

@@ -10,7 +10,7 @@ import { assignAgents } from './transfers/agents.ts';
 import { makeScouts } from './scouting/scouts.ts';
 import { newBoard } from './board/board.ts';
 
-export const SCHEMA_VERSION = 19;
+export const SCHEMA_VERSION = 20;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -115,6 +115,8 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
   (w) => { w.cup = null; w.cupWinners = []; },
   // 18 → 19 (F10, amichevoli): i risultati delle amichevoli estive
   (w) => { w.friendlies = null; },
+  // 19 → 20 (dopo F10): le offerte dell'IA per i giocatori dell'utente
+  (w) => { w.offers = []; },
 ];
 
 export function serialize(world: WorldState): string {

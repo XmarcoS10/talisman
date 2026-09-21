@@ -3,7 +3,7 @@ import { BellRing, X } from 'lucide-react';
 import type { NewsItem } from '../engine/model.ts';
 import { fmtDate, t, tEvent } from './i18n.ts';
 
-const CRITICAL = /^news\.(injury|trainingInjury|intl\.injury|board\.(warning|sacked)|ffp\.|youth\.jackpot|agentPropose|agentPush|expiring|promiseBroken|feud|bustup)/;
+const CRITICAL = /^news\.(injury|trainingInjury|intl\.injury|board\.(warning|sacked)|ffp\.|youth\.jackpot|agentPropose|agentPush|expiring|promiseBroken|feud|bustup|offerIn)/;
 export const critical = (items: NewsItem[]) => items.filter((n) => CRITICAL.test(n.key));
 
 export function Alerts({ items, onClose }: { items: NewsItem[]; onClose: () => void }) {

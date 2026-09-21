@@ -16,6 +16,7 @@ import { dropRelations, initRelations } from './social.ts';
 import { assignAgents, dropClient, weekAgents } from './transfers/agents.ts';
 import { aiRenewals, loanOutYouth, movePreSigned, preContracts, release, returnLoans, signFreeAgents } from './transfers/contracts.ts';
 import { isWinterWindow, runWindow } from './transfers/market.ts';
+import { expireOffers, rebaseSummerOffers } from './transfers/offers.ts';
 import { makeScouts, weekScouting } from './scouting/scouts.ts';
 import { weekStories } from './narrative/scanner.ts';
 import { weekPress } from './press/press.ts';
@@ -46,7 +47,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
   const world: WorldState = {
     schemaVersion: SCHEMA_VERSION, seed, rng: rng.s, season, day: 0,
     manager: { name: '', clubId: 0, kept: 0, broken: 0, board: newBoard(), h2h: {}, style: 'none' }, players: {}, clubs: {}, competitions: {}, history: [], news: [],
-    causal: [], promises: [], talks: [], arcs: [], press: null, nations: {}, cup: null, cupWinners: [], friendlies: null, intake: [], nextArcId: 1, nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
+    causal: [], promises: [], talks: [], offers: [], arcs: [], press: null, nations: {}, cup: null, cupWinners: [], friendlies: null, intake: [], nextArcId: 1, nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
   };
   const cities = [...CITIES];
   let clubId = 0;
@@ -231,6 +232,7 @@ export function advance(world: WorldState): Fixture[] {
   const next = nextMatchDay(world);
   passDays(world, rng, (next ?? day + 1) - day, next === null ? 0 : 1);
   world.day = next ?? day + 1;
+  expireOffers(world); // le offerte a cui non hai risposto
   world.rng = rng.s;
   return played;
 }
@@ -269,6 +271,7 @@ export function finishMatchDay(world: WorldState, live: LiveDay): Fixture[] {
   const next = nextMatchDay(world);
   passDays(world, rng, (next ?? day + 1) - day, next === null ? 0 : 1);
   world.day = next ?? day + 1;
+  expireOffers(world); // le offerte a cui non hai risposto
   world.rng = rng.s;
   return played;
 }
@@ -390,6 +393,7 @@ export function endSeason(world: WorldState): SeasonSummary {
 
   passDays(world, rng, 90, 13); // pausa estiva e preparazione
   scheduleSeason(world, rng);
+  rebaseSummerOffers(world); // le offerte dell'estate si contano dal primo giorno
   for (const p of Object.values(world.players)) p.condition.sharpness = TRAIN.sharpPreseason; // amichevoli estive
   preseason(world); // e i risultati di quelle del club dell'utente
   world.rng = rng.s;

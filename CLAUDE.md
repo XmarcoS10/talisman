@@ -34,6 +34,8 @@ chiamate da `passDays` in `world.ts`. Decisioni in `docs/adr/0004-persone.md`.
 (nebbia e osservatori). Finestre: estiva in `endSeason`, invernale in `passDays`. Decisioni in
 `docs/adr/0006-mercato.md`, report con `pnpm sim -- --market 5` in `docs/balance/market.md`.
 **Regola §7.6: dei giocatori non dell'utente non si mostra mai un valore vero** — si passa da `scouting/fog.ts`.
+Per i giocatori dell'utente l'IA non compra: manda un'offerta (`transfers/offers.ts`, `world.offers`, schema 20) che
+l'utente decide dalla Scrivania. Le offerte hanno un generatore loro: non spostano il caso del mondo.
 
 ## F10 (schermate nuove, `docs/notes/f10-schermate-nuove.md`)
 Disegni di riferimento in `docs/design/stitch/`. Coppa nazionale in `engine/cup.ts` (le partite di un giorno si prendono

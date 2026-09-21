@@ -20,6 +20,7 @@ export function tEvent(key: string, vars: Record<string, string | number>): stri
   if (typeof v.attr === 'string') v.attr = t(`attr.${v.attr}`);
   if (typeof v.nation === 'string') v.nation = t(`nation.${v.nation}`);
   if (typeof v.why === 'string') v.why = v.why.split(',').map((w) => t(w)).join(', ');
+  for (const k of ['fee', 'wage', 'max'] as const) if (typeof v[k] === 'number') v[k] = fmtMoney(v[k]); // cifre del motore in euro
   return t(key, v);
 }
 

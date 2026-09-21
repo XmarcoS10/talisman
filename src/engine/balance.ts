@@ -396,6 +396,18 @@ export const CLUB_AI = {
   contractYears: [3, 5] as const,
 } as const;
 
+// --- offerte dell'IA per i giocatori dell'utente ---
+export const OFFERS = {
+  max: 3, // offerte aperte alla volta: di più diventa rumore
+  days: 10, // giorni per rispondere
+  open: 0.9, // prima offerta, come multiplo del valore
+  stretch: 1.15, // una controproposta fino a tanto sopra il loro massimo li fa rilanciare una volta
+  keenGap: 12, // reputazione in più del tuo club perché il giocatore sogni il trasferimento…
+  keenAmbition: 12, // …se è abbastanza ambizioso
+  blockedMorale: 12, // morale perso se dici di no a un club che sognava
+  blockedTrust: 10,
+} as const;
+
 // --- contratti (GUIDA §7.5) ---
 export const CONTRACT = {
   yearsYoung: 5, // durata offerta sotto i 24 anni

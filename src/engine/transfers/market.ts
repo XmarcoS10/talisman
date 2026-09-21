@@ -14,6 +14,7 @@ import { acceptsRenewal } from './contracts.ts';
 import { needs, plan, sellWillingness, shortlist } from './club-ai.ts';
 import { cashNow, counterOffer, openTalk, reopen, reply, type TalkCtx } from './negotiation.ts';
 import { value } from './valuation.ts';
+import { offerInstead } from './offers.ts';
 import { clamp } from '../util.ts';
 
 
@@ -106,7 +107,7 @@ export function pursue(world: WorldState, rng: Rng, buyer: Club, p: Player, budg
 
 /**
  * una finestra di mercato: ogni club IA lavora il proprio piano, i più urgenti per primi.
- * ponytail: l'IA non compra dal club dell'utente finché non c'è la schermata per accettare le offerte.
+ * Per i giocatori dell'utente il club non compra: manda un'offerta (`offers.ts`) e decide l'utente.
  */
 export function runWindow(world: WorldState, rng: Rng, winter = false): number {
   let done = 0;
@@ -122,7 +123,8 @@ export function runWindow(world: WorldState, rng: Rng, winter = false): number {
     for (const need of pl.needs) {
       if (deals >= max || budget <= 0 || room <= 0) break;
       for (const target of shortlist(world, club, need, budget)) {
-        if (target.clubId === world.manager.clubId) continue;
+        // il tuo giocatore non lo comprano da soli: ti mandano un'offerta e intanto continuano a cercare
+        if (target.clubId === world.manager.clubId) { offerInstead(world, club, target, budget, need.urgency); continue; }
         const o = pursue(world, rng, club, target, budget, room, need.urgency);
         if (!o) continue;
         budget -= cashNow(o);

@@ -14,10 +14,13 @@ import { Guide } from '../Guide.tsx';
 import type { NavName } from '../Sidebar.tsx';
 import { DeskStories } from './Stories.tsx';
 import { LeagueTable } from './Tables.tsx';
+import { Offers } from './Offers.tsx';
 
 const FL = { W: 'w', D: 'd', L: 'l' } as const;
 
-export function Desk({ world, onNav, onWatch }: { world: WorldState; onNav: (n: NavName) => void; onWatch?: () => void }) {
+type Props = { world: WorldState; onNav: (n: NavName) => void; onWatch?: () => void; onChange: () => void; onPlayer: (id: number) => void };
+
+export function Desk({ world, onNav, onWatch, onChange, onPlayer }: Props) {
   const clubId = world.manager.clubId;
   const club = world.clubs[clubId]!;
   const comp = world.competitions[club.compId]!;
@@ -74,6 +77,7 @@ export function Desk({ world, onNav, onWatch }: { world: WorldState; onNav: (n: 
             </> : <div className="muted">{t('desk.noMatch')}</div>}
           </div>
 
+          <Offers world={world} onChange={onChange} onPlayer={onPlayer} />
           <Guide onNav={onNav} />
           <DeskStories world={world} />
 

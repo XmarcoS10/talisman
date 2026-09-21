@@ -344,6 +344,17 @@ export interface Offer {
   agentFee: number; // commissione all'agente, a carico del compratore
 }
 
+/** un'offerta dell'IA per un giocatore dell'utente: la decide l'utente */
+export interface IncomingOffer {
+  playerId: PlayerId;
+  buyer: ClubId;
+  fee: number; // quanto offrono adesso
+  max: number; // quanto pagherebbero al massimo: nascosto, come il prezzo di riserva
+  wage: number; // lo stipendio che gli darebbero
+  until: number; // giorno di scadenza
+  countered: boolean; // hanno già rilanciato una volta
+}
+
 export type TalkState = 'open' | 'agreed' | 'broken' | 'closed';
 
 export interface Talk {
@@ -444,6 +455,7 @@ export interface WorldState {
   causal: CausalEvent[]; // registro delle cause per i giocatori dell'utente, i più recenti in fondo
   promises: PlayerPromise[]; // promesse attive dell'utente
   talks: Talk[]; // trattative aperte dall'utente (§7.5)
+  offers: IncomingOffer[]; // offerte dell'IA per i giocatori dell'utente
   arcs: Arc[]; // storie aperte e ricordate (§7.4)
   press: PressRoom | null; // la conferenza stampa della settimana
   nations: Record<string, National>;
