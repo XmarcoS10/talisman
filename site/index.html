@@ -3,10 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tactic F.C. Manager — il gioco manageriale di calcio dove alleni persone</title>
-  <meta name="description" content="Tactic F.C. Manager (TFM 27) è un gioco manageriale di calcio gratuito, in italiano. Spogliatoio vivo, partite in 2D, mercato con agenti che ricordano, storie che nascono dal campionato." />
-  <meta property="og:title" content="Tactic F.C. Manager" />
-  <meta property="og:description" content="Non alleni una rosa: alleni un gruppo di persone. Gratuito, in italiano." />
+  <title>Tactic F.C. Manager (TFM 27) — il gioco manageriale di calcio dove alleni persone</title>
+  <meta name="description" content="Tactic F.C. Manager è un gioco manageriale di calcio gratuito, in italiano. Spogliatoio vivo, partite in 2D, mercato con agenti che ricordano, storie che nascono dal campionato." />
+  <meta name="theme-color" content="#0f131d" />
+  <meta property="og:title" content="Tactic F.C. Manager (TFM 27) — il gioco manageriale di calcio dove alleni persone" />
+  <meta property="og:description" content="Tactic F.C. Manager è un gioco manageriale di calcio gratuito, in italiano. Spogliatoio vivo, partite in 2D, mercato con agenti che ricordano, storie che nascono dal campionato." />
   <meta property="og:image" content="img/partita.jpg" />
   <link rel="icon" href="favicon.png" type="image/png" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -15,126 +16,125 @@
 <body>
   <header class="top">
     <div class="wrap">
-      <a class="brand" href="#"><img src="favicon.png" alt="" width="30" height="30" />TFM <span class="yr">27</span></a>
-      <nav>
-        <a href="#gioco">Il gioco</a>
-        <a href="#installa">Installazione</a>
-        <a href="#domande">Domande</a>
-        <a href="https://github.com/XmarcoS10/talisman">Codice sorgente</a>
+      <a class="brand" href="index.html"><img src="favicon.png" alt="" width="32" height="32" /><span>TFM <b>27</b><small>TACTIC F.C. MANAGER</small></span></a>
+      <nav id="nav">
+        <a href="index.html" class="on" aria-current="page">Home</a>
+        <a href="caratteristiche.html">Caratteristiche</a>
+        <a href="motore.html">Motore 2D e partita</a>
+        <a href="download.html">Download e guida</a>
+        <a href="community.html">Community e note</a>
       </nav>
+      <div class="actions">
+        <a class="btn sm gh" href="https://github.com/XmarcoS10/talisman"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg> GitHub</a>
+        <a class="btn sm primary dl" href="https://github.com/XmarcoS10/talisman/releases/latest/download/TFM27-Setup.exe"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Scarica per Windows <small>113 MB</small></a>
+      </div>
+      <button class="btn sm menu" aria-controls="nav" aria-expanded="false" onclick="var n=document.getElementById('nav');this.setAttribute('aria-expanded',n.classList.toggle('open'))">Menu</button>
     </div>
   </header>
 
   <main>
     <div class="hero">
-      <div class="wrap">
+      <div class="wrap split">
         <div>
-          <img class="logo" src="img/logo.webp" alt="Tactic F.C. Manager" width="220" height="257" />
-          <h1 class="sr">Tactic F.C. Manager</h1>
-          <div class="claim">Non alleni una rosa.<br /><b>Alleni un gruppo di persone.</b></div>
-          <p>Un gioco manageriale di calcio, gratuito e in italiano. I tuoi giocatori hanno amici e rivali, un morale che
-            contagia gli altri, promesse che si ricordano — e agenti che se le ricordano per loro.</p>
-          <div class="download">
-            <a class="btn primary" href="https://github.com/XmarcoS10/talisman/releases/latest/download/TFM27-Setup.exe">
-              ⬇ Scarica per Windows <small>113 MB</small>
-            </a>
-            <a class="btn" href="#installa">Come si installa</a>
+          <img class="logo" src="img/logo.webp" alt="Tactic F.C. Manager" width="150" height="175" />
+          <span class="pill g">Versione di collaudo 0.1.0 · gratis</span>
+          <h1>Non alleni una rosa.<br /><span class="hl">Alleni un gruppo di persone.</span></h1>
+          <p class="lead">Tactic F.C. Manager è un gioco manageriale di calcio, gratuito e in italiano. I tuoi giocatori hanno amici e
+            rivali, un morale che contagia gli altri, promesse che si ricordano — e agenti che se le ricordano per loro.</p>
+          <div class="cta">
+            <a class="btn primary big" href="https://github.com/XmarcoS10/talisman/releases/latest/download/TFM27-Setup.exe"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Scarica per Windows <small>113 MB</small></a>
+            <a class="btn big" href="caratteristiche.html">Scopri il gioco</a>
           </div>
-          <div class="fine">Versione 0.1.0 di collaudo · Windows 10 e 11, 64 bit · gratis, senza pubblicità, senza account</div>
+          <div class="fine">Windows 10 e 11, 64 bit · niente pubblicità, niente account, niente internet</div>
         </div>
-        <div class="shot"><img src="img/partita.jpg" alt="Una partita dal vivo: il campo in 2D, la panchina e l'analista" width="1440" height="871" /></div>
+        <div class="shot"><div class="bar">partita dal vivo<span>2D</span></div><img src="img/partita.jpg" alt="Una partita dal vivo: il campo in 2D, la panchina e l'analista" loading="lazy" /></div>
+      </div>
+      <div class="wrap">
+        <div class="stats">
+          <div class="stat"><span>Club</span><b>40</b><p>in due campionati, con promozioni e retrocessioni</p></div>
+          <div class="stat"><span>Storie</span><b class="cy">40</b><p>tipi di storie che nascono da quello che succede</p></div>
+          <div class="stat"><span>Ruoli in campo</span><b>27</b><p>ognuno cambia davvero il modo di muoversi</p></div>
+          <div class="stat"><span>Prezzo</span><b class="cy">0 €</b><p>e il codice è pubblico, con licenza GPL-3.0</p></div>
+        </div>
       </div>
     </div>
 
-    <section id="gioco">
+    <section class="alt">
       <div class="wrap">
-        <h2>Cosa c'è dentro</h2>
-        <p class="lead">Tutto quello che ti aspetti da un gioco manageriale — tattica, allenamento, mercato, finanze — più
-          quello che di solito resta nascosto: le persone.</p>
-
-        <div class="feature">
-          <div class="text">
-            <div class="kicker">Lo spogliatoio</div>
-            <h3>Chi è amico di chi</h3>
-            <p>Ogni giocatore ha rapporti con gli altri: amicizie, rivalità, leader che il gruppo ascolta. Il morale di uno
-              si trasmette ai compagni. Una lite in allenamento può diventare una faida.</p>
-            <p>Le promesse contano: prometti spazio a un giocatore e poi non mantieni, e se ne ricorda lui — e il suo agente,
-              alla prossima trattativa.</p>
-          </div>
-          <div class="shot"><img src="img/spogliatoio.jpg" alt="Il grafo dello spogliatoio con leader e rapporti fra i giocatori" loading="lazy" /></div>
-        </div>
-
-        <div class="feature">
-          <div class="text">
-            <div class="kicker">Storie e stampa</div>
-            <h3>Il campionato racconta</h3>
-            <p>Quaranta tipi di storie nascono da quello che succede: la crisi, la serie di vittorie, il ragazzo predestinato,
-              la bestia nera che ti batte da tre anni.</p>
-            <p>I giornalisti ti fanno domande su quelle storie, e ogni risposta ti dice prima che effetto avrà — sul morale di
-              un giocatore preciso, sui tifosi, sulla dirigenza.</p>
-          </div>
-          <div class="shot"><img src="img/storie.jpg" alt="Una conferenza stampa con le risposte e i loro effetti" loading="lazy" /></div>
-        </div>
-
-        <div class="feature">
-          <div class="text">
-            <div class="kicker">Mercato e osservatori</div>
-            <h3>Non sai mai tutto</h3>
-            <p>Dei giocatori degli altri vedi solo stime. Gli osservatori le rendono più precise — ma qualcuno sbaglia sempre
-              nella stessa direzione, e un colpo di mercato può rivelarsi una bufala.</p>
-            <p>Trattative con prezzo nascosto e pazienza che si consuma, rate, bonus, percentuali di rivendita, prestiti,
-              parametro zero. Gli agenti hanno memoria.</p>
-          </div>
-          <div class="shot"><img src="img/mercato.jpg" alt="La ricerca giocatori con filtri e stime" loading="lazy" /></div>
-        </div>
-
-        <div class="feature">
-          <div class="text">
-            <div class="kicker">Tattica e partita</div>
-            <h3>Le scelte si vedono in campo</h3>
-            <p>Moduli, ruoli e istruzioni cambiano davvero il modo di giocare. Segui la partita dal vivo in 2D, con la panchina
-              per i cambi, la pausa tattica e un analista che legge i dati per te. Oppure simulala in un attimo.</p>
-          </div>
-          <div class="shot"><img src="img/tattica.jpg" alt="La schermata della tattica" loading="lazy" /></div>
-        </div>
-
-        <div class="grid3" style="margin-top: 56px">
-          <div class="card"><h3>La dirigenza</h3><p>Ti dà un obiettivo, ma è un contratto: puoi chiedere due stagioni di tempo, e lo paghi subito in fiducia.</p></div>
-          <div class="card"><h3>Il vivaio</h3><p>Ogni estate arriva un'annata di ragazzi. Ogni tanto, anche nel club più piccolo, un talento fuori dal comune.</p></div>
-          <div class="card"><h3>Conti veri</h3><p>Biglietti, diritti tv, stipendi, rate dei trasferimenti. Il fair play finanziario non perdona chi sfora.</p></div>
+        <div class="head"><div class="kicker">Cosa c'è dentro</div><h2>Tutto quello che ti aspetti. Più quello che di solito resta nascosto.</h2>
+          <p>Tattica, allenamento, mercato, finanze — e le persone: rapporti, promesse, pressione dei giornali.</p></div>
+        <div class="grid g4">
+          <a class="panel" href="caratteristiche.html#spogliatoio"><span class="icon "><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><h3>Spogliatoio vivo</h3><p>Amicizie, rivalità, leader. Il morale di uno arriva ai compagni.</p></a>
+          <a class="panel" href="motore.html"><span class="icon cy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg></span><h3>Partita in 2D</h3><p>Segui ogni azione con la panchina, la pausa tattica e l'analista.</p></a>
+          <a class="panel" href="caratteristiche.html#stampa"><span class="icon am"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg></span><h3>Storie e stampa</h3><p>La crisi, la serie positiva, il predestinato. E le domande dei giornalisti.</p></a>
+          <a class="panel" href="caratteristiche.html#mercato"><span class="icon "><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span><h3>Mercato con la nebbia</h3><p>Degli altri vedi solo stime. Gli osservatori sbagliano, gli agenti ricordano.</p></a>
         </div>
       </div>
     </section>
 
-    <section id="installa">
-      <div class="wrap">
-        <h2>Come si installa</h2>
-        <ol class="steps">
-          <li><div><b>Scarica</b> <span class="mono">TFM27-Setup.exe</span> con il pulsante in alto.</div></li>
-          <li><div><b>Aprilo.</b> Windows potrebbe dire «Windows ha protetto il PC»: l'installer non è ancora firmato. Clicca
-            <b>Ulteriori informazioni</b> e poi <b>Esegui comunque</b>.</div></li>
-          <li><div><b>Scegli la cartella</b> e installa. Non servono permessi di amministratore.</div></li>
-          <li><div><b>Gioca.</b> La prima partita ti accompagna con una guida di cinque passi; ogni schermata si spiega da sola la prima volta che la apri.</div></li>
-        </ol>
+    <section>
+      <div class="wrap split">
+        <div class="text">
+          <div class="kicker">La tua scrivania</div>
+          <h2>Ogni mattina, quello che conta.</h2>
+          <p>Posizione, forma, cassa e morale in quattro numeri. La prossima partita con il pulsante per la formazione e quello per
+            scendere in campo. Le notizie, la classifica, la guida della prima stagione.</p>
+          <ul class="checks">
+            <li><b>Una prima partita guidata</b> in cinque passi, e ogni schermata si spiega la prima volta che la apri.</li>
+            <li><b>Coppa nazionale</b>, amichevoli estive, campionato Primavera, nazionali con Europeo e Mondiale.</li>
+            <li><b>Cinque slot</b> di salvataggio, sul tuo computer.</li>
+          </ul>
+        </div>
+        <div class="shot"><div class="bar">scrivania<span></span></div><img src="img/scrivania.jpg" alt="La scrivania con classifica, prossima partita e notizie" loading="lazy" /></div>
       </div>
     </section>
 
-    <section id="domande">
+    <section class="alt">
       <div class="wrap">
-        <h2>Domande</h2>
-        <details><summary>È davvero gratis?</summary><p>Sì. Niente pubblicità, niente acquisti nel gioco, niente account. Il codice è pubblico con licenza GPL-3.0.</p></details>
-        <details><summary>Ci sono i club e i giocatori veri?</summary><p>No: il mondo è inventato, con club, città e giocatori che non esistono. Il formato del mondo è pensato perché, in futuro, chi vuole possa caricare dati propri.</p></details>
-        <details><summary>Il gioco manda i miei dati da qualche parte?</summary><p>No. I salvataggi restano sul tuo computer e il gioco non si collega a internet. Se qualcosa non va, in «Salvataggi e impostazioni» c'è «Esporta diagnostica»: crea un file che decidi tu se mandare a qualcuno.</p></details>
-        <details><summary>Funziona su Mac o Linux?</summary><p>Per ora solo Windows. La versione Linux è in preparazione.</p></details>
-        <details><summary>È una versione finita?</summary><p>È una versione di collaudo: si gioca una stagione intera e oltre, ma è il momento giusto per segnalare quello che non va. I limiti noti sono nelle <a href="https://github.com/XmarcoS10/talisman/blob/main/docs/release-notes.md">note di rilascio</a>.</p></details>
+        <div class="head c"><div class="kicker">Guarda</div><h2>Come si presenta</h2></div>
+        <div class="grid g3">
+          <div class="shot"><div class="bar">tattica<span></span></div><img src="img/tattica.jpg" alt="La tattica con modulo e ruoli" loading="lazy" /></div>
+          <div class="shot"><div class="bar">spogliatoio<span></span></div><img src="img/spogliatoio.jpg" alt="Il grafo dello spogliatoio" loading="lazy" /></div>
+          <div class="shot"><div class="bar">mercato<span></span></div><img src="img/mercato.jpg" alt="La ricerca giocatori con stime" loading="lazy" /></div>
+          <div class="shot"><div class="bar">stampa<span></span></div><img src="img/storie.jpg" alt="Una conferenza stampa" loading="lazy" /></div>
+          <div class="shot"><div class="bar">nuova carriera<span></span></div><img src="img/inizio.jpg" alt="La scelta del club a inizio carriera" loading="lazy" /></div>
+          <div class="shot"><div class="bar">partita<span></span></div><img src="img/partita.jpg" alt="La partita in 2D" loading="lazy" /></div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="wrap">
+        <div class="cta-box">
+          <div><div class="kicker">Pronto per la panchina?</div><h2>Prendi il comando della tua squadra.</h2><p>Gratis, senza pubblicità e senza account. Si installa in un minuto, senza permessi di amministratore.</p></div>
+          <div class="row"><a class="btn" href="download.html">Come si installa</a><a class="btn primary big" href="https://github.com/XmarcoS10/talisman/releases/latest/download/TFM27-Setup.exe"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Scarica TFM 27</a></div>
+        </div>
       </div>
     </section>
   </main>
 
   <footer>
     <div class="wrap">
-      <span>Tactic F.C. Manager · gioco gratuito · codice con licenza <a href="https://github.com/XmarcoS10/talisman/blob/main/LICENSE">GPL-3.0</a></span>
-      <span><a href="https://github.com/XmarcoS10/talisman">Codice sorgente</a> · <a href="https://github.com/XmarcoS10/talisman/releases">Tutte le versioni</a></span>
+      <div class="cols">
+        <div>
+          <a class="brand" href="index.html"><img src="favicon.png" alt="" width="32" height="32" /><span>Tactic F.C. Manager</span></a>
+          <p>Gioco manageriale di calcio gratuito e in italiano. Spogliatoio vivo, partite in 2D, storie che nascono dal campionato.</p>
+          <p><span class="tag">GPL-3.0</span> <span class="tag cy">v0.1.0 collaudo</span></p>
+        </div>
+        <div><h4>Il sito</h4><ul><li><a href="index.html">Home</a></li><li><a href="caratteristiche.html">Caratteristiche</a></li><li><a href="motore.html">Motore 2D e partita</a></li><li><a href="download.html">Download e guida</a></li><li><a href="community.html">Community e note</a></li></ul></div>
+        <div><h4>Documenti</h4><ul>
+          <li><a href="https://github.com/XmarcoS10/talisman/blob/main/docs/release-notes.md">Note di rilascio</a></li>
+          <li><a href="https://github.com/XmarcoS10/talisman/blob/main/docs/03-match-engine.md">Come funziona il motore</a></li>
+          <li><a href="https://github.com/XmarcoS10/talisman/blob/main/assets/LICENSES.md">Licenze</a></li>
+          <li><a href="https://github.com/XmarcoS10/talisman/blob/main/LICENSE">Licenza GPL-3.0</a></li>
+        </ul></div>
+        <div><h4>Progetto</h4><ul>
+          <li><a href="https://github.com/XmarcoS10/talisman">Codice sorgente</a></li>
+          <li><a href="https://github.com/XmarcoS10/talisman/releases">Tutte le versioni</a></li>
+          <li><a href="https://github.com/XmarcoS10/talisman/issues">Segnala un problema</a></li>
+          <li><a href="https://github.com/XmarcoS10/talisman/discussions">Discussioni</a></li>
+        </ul></div>
+      </div>
+      <div class="legal"><span>© 2026 Tactic F.C. Manager · codice sotto licenza GNU GPL v3.0</span><span>Club e giocatori inventati · nessun dato raccolto</span></div>
     </div>
   </footer>
 </body>
