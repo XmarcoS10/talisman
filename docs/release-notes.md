@@ -1,5 +1,18 @@
 # Note di rilascio
 
+## In arrivo — Tactic F.C. Manager (TFM 27)
+
+Il gioco cambia nome (prima era Talisman) e faccia: tutte le schermate rifatte sui disegni di Marco. I salvataggi di
+prima si ritrovano. Novità di gioco:
+
+- **Coppa nazionale** a eliminazione diretta, con rigori, premi e albo d'oro; **amichevoli estive**.
+- **Campionato Primavera** del vivaio e anteprima della prossima annata.
+- **Filosofia dell'allenatore** da scegliere a inizio carriera: gestore, tattico o scopritore di talenti.
+- **Indicazioni dalla panchina** in partita: incoraggia, chiedi di più, calma.
+- Finanze con proiezione di fine stagione e cassa mese per mese; richiesta alla dirigenza per allargare lo staff
+  osservatori; classifiche casa/trasferta/forma/xG; report sull'avversario; esportazione del calendario.
+- **5 slot** con nome e tempo di gioco, valuta e formato data a scelta, pausa sulle notizie importanti.
+
 ## 0.1.0 — prima versione di collaudo
 
 La prima versione da far provare a persone che non hanno scritto il gioco. Obiettivo del collaudo (GUIDA §9, F9):
