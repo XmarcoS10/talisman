@@ -418,3 +418,14 @@ td svg, .small svg { vertical-align: -2px; }
 .style-card.selected { border: 2px solid var(--accent); }
 .sign-row { display: flex; justify-content: space-between; align-items: center; gap: var(--s-4); background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--r-3); padding: var(--s-4); }
 .sign-box .field { display: flex; flex-direction: column; gap: 6px; }
+.alerts { border-color: var(--warning); margin-bottom: var(--s-4); } .alerts h3 { color: var(--warning); }
+.save-slot { flex-direction: row; align-items: center; gap: var(--s-4); }
+.save-slot > .stack:nth-child(2) { flex: 1; }
+.save-slot.active { box-shadow: inset 4px 0 0 var(--accent); }
+.save-slot.empty { background: color-mix(in srgb, var(--surface-1) 60%, transparent); border-style: dashed; }
+.save-slot.empty > span { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.slot-facts { display: flex; flex-direction: column; gap: 2px; font-size: 11px; color: var(--text-2); }
+.set-row { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); padding: 8px 0; border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent); cursor: pointer; }
+.set-row b { display: block; font-size: 14px; } .set-row small { color: var(--text-2); font-size: 11px; }
+.big-check { width: 20px; height: 20px; accent-color: var(--accent); }
+.field { display: flex; flex-direction: column; gap: 6px; }

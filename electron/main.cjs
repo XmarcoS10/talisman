@@ -1,6 +1,6 @@
 // Guscio desktop: carica la build di Vite. contextIsolation attiva e nodeIntegration spenta (default di Electron).
 // I salvataggi vivono su file nella cartella dati dell'app: il localStorage non regge più di qualche MB.
-const { app, BrowserWindow, dialog, ipcMain } = require('electron');
+const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -42,6 +42,11 @@ ipcMain.on('saves:remove', (e, name) => {
   try { fs.rmSync(fileOf(name), { force: true }); e.returnValue = true; } catch { e.returnValue = false; }
 });
 ipcMain.on('saves:dir', (e) => { e.returnValue = savesDir(); });
+ipcMain.on('saves:size', (e, name) => {
+  try { e.returnValue = fs.existsSync(fileOf(name)) ? fs.statSync(fileOf(name)).size : 0; } catch { e.returnValue = 0; }
+});
+// apre la cartella dei salvataggi in Esplora risorse (solo quella: il percorso non viene dalla pagina)
+ipcMain.handle('saves:open', () => shell.openPath(savesDir()));
 
 // registro degli errori su file (P13 punto 8): resta sul computer, non parte niente verso internet
 const logFile = () => path.join(app.getPath('userData'), 'logs', 'talisman.log');

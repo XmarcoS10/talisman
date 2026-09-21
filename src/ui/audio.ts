@@ -6,6 +6,8 @@ import { settings } from './settings.ts';
 let ctx: AudioContext | null = null;
 let uiBus: GainNode | null = null;
 let crowdBus: GainNode | null = null;
+let fxBus: GainNode | null = null;
+let muted = false;
 
 function audio(): AudioContext | null {
   if (ctx) return ctx;
@@ -13,8 +15,10 @@ function audio(): AudioContext | null {
     ctx = new AudioContext();
     uiBus = ctx.createGain();
     crowdBus = ctx.createGain();
+    fxBus = ctx.createGain();
     uiBus.connect(ctx.destination);
     crowdBus.connect(ctx.destination);
+    fxBus.connect(ctx.destination);
     applyVolumes();
   } catch {
     ctx = null; // niente audio (browser senza supporto, test): il gioco va avanti muto
@@ -24,8 +28,16 @@ function audio(): AudioContext | null {
 
 export function applyVolumes() {
   const v = settings().volume;
-  if (uiBus) uiBus.gain.value = v.ui;
-  if (crowdBus) crowdBus.gain.value = v.crowd;
+  const on = muted ? 0 : 1;
+  if (uiBus) uiBus.gain.value = v.ui * on;
+  if (crowdBus) crowdBus.gain.value = v.crowd * on;
+  if (fxBus) fxBus.gain.value = v.fx * on;
+}
+
+// finestra in secondo piano: silenzio, se il giocatore l'ha chiesto
+if (typeof window !== 'undefined') {
+  window.addEventListener('blur', () => { muted = settings().muteOnBlur; applyVolumes(); });
+  window.addEventListener('focus', () => { muted = false; applyVolumes(); });
 }
 
 /** rumore rosa approssimato: il materiale di cui è fatta una folla */
@@ -60,12 +72,12 @@ export type UiSound = 'click' | 'whistle' | 'goal' | 'error';
 
 export function playUi(kind: UiSound) {
   const a = audio();
-  if (!a || !uiBus || !crowdBus) return;
+  if (!a || !uiBus || !crowdBus || !fxBus) return;
   if (kind === 'click') tone(880, 0.05, 0.08, 'triangle');
   else if (kind === 'error') tone(180, 0.2, 0.15, 'square');
   else if (kind === 'whistle') {
     // fischio dell'arbitro: una nota acuta con un trillo veloce
-    const o = tone(2900, 0.45, 0.12, 'sine', crowdBus);
+    const o = tone(2900, 0.45, 0.12, 'sine', fxBus);
     if (o) {
       const lfo = a.createOscillator();
       const depth = a.createGain();
@@ -87,7 +99,7 @@ export function playUi(kind: UiSound) {
     g.gain.setValueAtTime(0.0001, a.currentTime);
     g.gain.exponentialRampToValueAtTime(1.2, a.currentTime + 0.35);
     g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + 3.4);
-    src.connect(f).connect(g).connect(crowdBus);
+    src.connect(f).connect(g).connect(fxBus);
     src.start();
   }
 }

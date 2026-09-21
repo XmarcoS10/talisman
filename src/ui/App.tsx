@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
-import type { Fixture, WorldState } from '../engine/model.ts';
+import type { Fixture, NewsItem, WorldState } from '../engine/model.ts';
 import { advance, beginMatchDay, endSeason, isSeasonOver, nextMatchDay, standings, type LiveDay, type SeasonSummary } from '../engine/world.ts';
 import { Banknote, CalendarDays, Play, User } from 'lucide-react';
 import { HINTS, Hint } from './Hint.tsx';
-import { markVisited } from './settings.ts';
+import { markVisited, settings } from './settings.ts';
+import { Alerts, critical } from './Alerts.tsx';
 import { playUi } from './audio.ts';
 import { fmtDate, fmtMoney, t } from './i18n.ts';
 import { BoardView } from './screens/BoardView.tsx';
@@ -28,7 +29,7 @@ import { Training } from './screens/Training.tsx';
 import { Youth } from './screens/Youth.tsx';
 import { Search } from './Search.tsx';
 import { Sidebar, type NavName } from './Sidebar.tsx';
-import { currentSlot, saveTo } from './storage.ts';
+import { currentSlot, saveTo, startClock } from './storage.ts';
 
 type Screen =
   | { name: NavName }
@@ -70,12 +71,14 @@ export function App() {
   }, []);
   const [modal, setModal] = useState<Modal>(null);
   const [liveDay, setLiveDay] = useState<LiveDay | null>(null);
+  const [alerts, setAlerts] = useState<NewsItem[]>([]);
   const [, rerender] = useReducer((x: number) => x + 1, 0); // il motore muta il mondo sul posto
   const searchRef = useRef<HTMLInputElement>(null);
 
   const onAdvance = useCallback(() => {
     if (!world || modal) return;
     const me = world.manager.clubId;
+    const seen = world.news.length;
     if (isSeasonOver(world)) {
       const comp = world.competitions[world.clubs[me]!.compId]!;
       const myPos = standings(world, comp).findIndex((r) => r.clubId === me) + 1;
@@ -89,7 +92,8 @@ export function App() {
         setModal({ kind: 'match', fx, others });
       }
     }
-    autosave(world);
+    if (settings().pauseNews) setAlerts(critical(world.news.slice(seen)));
+    if (settings().autosave) autosave(world);
     rerender();
   }, [world, modal]);
 
@@ -109,7 +113,7 @@ export function App() {
   }, [onAdvance, modal, world, liveDay]);
 
   const open = (w: WorldState) => { setWorld(w); setScreen({ name: 'desk' }); setModal(null); setLiveDay(null); };
-  if (!world) return <Start onLoad={open} onStart={(w) => { autosave(w); open(w); }} />;
+  if (!world) return <Start onLoad={open} onStart={(w) => { startClock(); autosave(w); open(w); }} />;
   if (liveDay) {
     return (
       <Live world={world} live={liveDay} onFinish={(played) => {
@@ -152,6 +156,7 @@ export function App() {
         onQuit={() => { if (autosave(world)) setWorld(null); else rerender(); }} />
 
       <main className="content">
+        <Alerts items={alerts} onClose={() => setAlerts([])} />
         {(HINTS as readonly string[]).includes(screen.name) && <Hint key={screen.name} id={screen.name as (typeof HINTS)[number]} />}
         {screen.name === 'desk' && <Desk world={world} onNav={(n) => setScreen({ name: n })} />}
         {screen.name === 'stories' && <Stories world={world} onChange={changed} />}

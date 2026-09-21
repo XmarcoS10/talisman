@@ -6,11 +6,17 @@ export interface Settings {
   seen: string[]; // suggerimenti già letti
   visited: string[]; // schermate aperte almeno una volta (per la prima partita guidata)
   guideDone: boolean; // la prima partita guidata è finita o è stata chiusa
-  volume: { ui: number; crowd: number }; // 0-1, separati come chiede P13
+  volume: { ui: number; crowd: number; fx: number }; // 0-1: interfaccia, pubblico, effetti partita (fischio, gol)
+  muteOnBlur: boolean; // silenzio quando la finestra non è in primo piano
+  autosave: boolean; // salva da solo a ogni avanzamento
+  pauseNews: boolean; // dopo un avanzamento mostra le notizie importanti prima di tutto
+  currency: 'EUR' | 'USD' | 'GBP'; // solo visualizzazione: il motore conta in euro
+  dateFmt: 'long' | 'short';
 }
 
 const KEY = 'talisman-settings';
-const DEFAULTS: Settings = { hints: true, seen: [], visited: [], guideDone: false, volume: { ui: 0.5, crowd: 0.4 } };
+export const DEFAULTS: Settings = { hints: true, seen: [], visited: [], guideDone: false, volume: { ui: 0.5, crowd: 0.4, fx: 0.65 },
+  muteOnBlur: true, autosave: true, pauseNews: true, currency: 'EUR', dateFmt: 'long' };
 
 let cache: Settings | null = null;
 
@@ -18,7 +24,8 @@ export function settings(): Settings {
   if (cache) return cache;
   try {
     const raw = localStorage.getItem(KEY);
-    cache = raw ? { ...DEFAULTS, ...(JSON.parse(raw) as Partial<Settings>) } : { ...DEFAULTS };
+    const got = raw ? (JSON.parse(raw) as Partial<Settings>) : {};
+    cache = { ...DEFAULTS, ...got, volume: { ...DEFAULTS.volume, ...got.volume } }; // i volumi aggiunti dopo prendono il default
   } catch {
     cache = { ...DEFAULTS };
   }
