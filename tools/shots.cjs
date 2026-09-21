@@ -6,11 +6,12 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
+require('../electron/main.cjs');
+// DOPO main.cjs, che fissa la cartella dati vera: qui va sostituita con una temporanea, o si toccano i dati di chi gioca
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'talisman-shots-'));
 app.setPath('userData', tmp);
 fs.mkdirSync(path.join(tmp, 'saves'));
 fs.copyFileSync(path.join(__dirname, 'shots-save.json'), path.join(tmp, 'saves', 'talisman-save-1.json'));
-require('../electron/main.cjs');
 
 const out = path.join(__dirname, '..', 'site', 'img');
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -35,7 +36,7 @@ app.on('browser-window-created', async (_e, win) => {
     win.show();
     win.focus();
     // niente suggerimenti né guida nelle foto, audio spento
-    await js(`localStorage.setItem('talisman-settings', JSON.stringify({ hints: false, seen: [], visited: ['board', 'squad', 'tactics', 'training', 'live'], guideDone: true, volume: { ui: 0, crowd: 0 } })); location.reload();`);
+    await js(`localStorage.setItem('talisman-settings', JSON.stringify({ hints: false, seen: [], visited: ['board', 'squad', 'tactics', 'training', 'live'], guideDone: true, volume: { ui: 0, crowd: 0, fx: 0 } })); location.reload();`);
     await loaded();
     await wait(800);
     await shot('inizio', 300);
