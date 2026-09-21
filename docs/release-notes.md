@@ -7,6 +7,9 @@ tre tester esterni completano una stagione senza chiedere aiuto.
 
 ### Cosa c'è
 
+- Installer per Windows (`Talisman Setup 0.1.0.exe`, 113 MB): si installa nella cartella dell'utente, senza
+  permessi di amministratore; aggiornamento automatico spento. Funziona senza internet: i caratteri sono nel gioco.
+
 - Due campionati inventati, Serie A e Serie B, venti squadre ciascuno, promozioni e retrocessioni.
 - Partita dal vivo in 2D con panchina, pausa tattica, analista; oppure simulata all'istante.
 - Tattica con cinque moduli e i ruoli per ogni posizione; allenamento a dodici sedute settimanali.
@@ -20,8 +23,9 @@ tre tester esterni completano una stagione senza chiedere aiuto.
 
 ### Limiti noti
 
-- **Serve internet all'avvio per i caratteri tipografici** finché non vengono impacchettati nel gioco: senza rete
-  l'aspetto cambia, ma il gioco funziona.
+- **L'installer non è firmato**: Windows mostrerà l'avviso «editore sconosciuto» (SmartScreen). Firmarlo richiede un
+  certificato di firma del codice, che si compra; per il collaudo basta cliccare «Ulteriori informazioni → Esegui comunque».
+- **La versione Linux (AppImage)** è configurata ma va costruita su Linux (`pnpm dist:linux`): da Windows non si può.
 - Le partite delle nazionali non si guardano: si calcolano con un modello semplificato.
 - L'intelligenza artificiale non fa offerte per i giocatori dell'utente (manca la schermata per accettarle).
 - Il mercato dell'IA è prudente: i club accumulano cassa e le bancarotte, possibili come regola, non succedono.

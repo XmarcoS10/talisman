@@ -51,4 +51,6 @@ bilanciamento in `docs/balance/`.
 
 ## Licenza
 
-Licenza del codice: **da decidere** (vedi `LICENSE`). Licenze di caratteri e librerie in `assets/LICENSES.md`.
+Il codice è distribuito con la **GNU General Public License, versione 3** (`LICENSE`): puoi usarlo, studiarlo,
+modificarlo e ridistribuirlo, ma chi distribuisce una versione modificata deve farlo con la stessa licenza e con il
+codice. Il gioco resta gratuito. Licenze di caratteri e librerie in `assets/LICENSES.md`.

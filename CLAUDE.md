@@ -21,6 +21,7 @@ Marco non programma: fa collaudo, playtest e decisioni. Il codice lo scrive Clau
 
 ## Comandi
 `pnpm dev` (browser) · `pnpm app` (Electron) · `pnpm test` · `pnpm typecheck`
+`pnpm dist:win` (installer Windows in `release/`; ferma prima `pnpm dev`, che tiene aperta la cartella) · `pnpm dist:linux` (solo su Linux)
 `pnpm sim -- --seasons 10 --seed 42` · `pnpm sim -- --matches 3000` (bilanciamento motore partita)
 `pnpm sim -- --dev 10` (curve di sviluppo) · `pnpm sim -- --psych 20` (A/B della psicologia, ~5 min)
 
@@ -40,6 +41,11 @@ Le decisioni restano per azione; col registro acceso (partita seguita dal vivo) 
 il campo ogni 0,25 s. Le posizioni di fine intervallo sono quelle del motore: i passi intermedi non spostano il
 bilanciamento e il sim-cli non li calcola. Il ciclo più caldo è `options()` in
 `match/decision.ts`: niente allocazioni dentro i loop, niente `Math.hypot` (usa `len`).
+
+## Salvataggi e diagnostica
+In Electron gli slot sono file in `%APPDATA%/talisman/saves` (preload `electron/preload.cjs`), con intestazione davanti
+al mondo; il registro degli errori è in `%APPDATA%/talisman/logs`. Nel browser resta il localStorage.
+Impostazioni del giocatore (suggerimenti, guida, volumi) in `src/ui/settings.ts`.
 
 ## Fatto =
 test verdi + typecheck pulito + report sim nei target.

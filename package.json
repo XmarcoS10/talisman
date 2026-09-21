@@ -11,20 +11,54 @@
     "app": "vite build && electron .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "sim": "node src/sim-cli/sim.ts"
+    "sim": "node src/sim-cli/sim.ts",
+    "dist:win": "vite build && electron-builder --win nsis",
+    "dist:linux": "vite build && electron-builder --linux AppImage"
   },
-  "dependencies": {
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@fontsource/barlow-condensed": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
     "@types/node": "^26.6.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
     "electron": "^44.4.1",
+    "electron-builder": "^26.15.3",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "typescript": "^7.0.2",
     "vite": "^8.3.0",
     "vitest": "^5.0.1"
+  },
+  "license": "GPL-3.0-only",
+  "author": "Marco",
+  "build": {
+    "appId": "it.talisman.game",
+    "productName": "Talisman",
+    "copyright": "Marco, con licenza GPL-3.0",
+    "files": [
+      "dist/**",
+      "electron/**",
+      "package.json",
+      "LICENSE"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "publish": null,
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Game"
+    }
   }
 }
