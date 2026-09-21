@@ -60,7 +60,7 @@ function personality(rng: Rng): Personality {
   return { ambition: axis(), professionalism: axis(), loyalty: axis(), temperament: axis(), sociability: axis(), pressureTolerance: axis() };
 }
 
-function pickNation(rng: Rng) {
+export function pickNation(rng: Rng) {
   const keys = Object.keys(NATIONS);
   return keys[rng.weighted(keys.map((k) => NATIONS[k]!.w))]!;
 }
@@ -83,8 +83,8 @@ function distribute(rng: Rng, pos: Position, targetCA: number): Attributes {
   return attrs;
 }
 
-export function makePlayer(rng: Rng, id: number, pos: Position, meanCA: number, season: number, ageRange?: [number, number]): Player {
-  const nation = pickNation(rng);
+export function makePlayer(rng: Rng, id: number, pos: Position, meanCA: number, season: number, ageRange?: [number, number], nationOf?: string): Player {
+  const nation = nationOf ?? pickNation(rng);
   const names = NATIONS[nation]!;
   const a = ageRange ? rng.int(ageRange[0], ageRange[1]) : Math.round(clamp(rng.gauss(BALANCE.ageMean, BALANCE.ageSigma), 17, 36));
   let ca = meanCA + rng.gauss(0, BALANCE.caSpread) - Math.max(0, 22 - a) * BALANCE.youthPenaltyPerYear;
@@ -114,7 +114,7 @@ export function makePlayer(rng: Rng, id: number, pos: Position, meanCA: number, 
     hidden: { injuryProneness: Math.round(clamp(rng.gauss(10, 4), 1, 20)) },
     psych: { morale: 68, trust: 50, minutes: 0.5, wantsOut: false },
     rel: {},
-    mentorId: null, agentId: null,
+    mentorId: null, agentId: null, intl: { caps: 0, goals: 0, titles: 0 },
     condition: { fitness: 100, injuryDays: 0, sharpness: 70, fatigue: 0, injury: null, relapse: 0 },
     discipline: { yellows: 0, ban: 0 },
     form: [],

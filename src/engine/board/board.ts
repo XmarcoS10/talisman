@@ -1,7 +1,7 @@
 // Dirigenza, fiducia e obiettivi (GUIDA §7.7).
 // L'idea distintiva: la fiducia non è un umore opaco, è un **contratto esplicito rinegoziabile**.
 // Puoi chiedere due stagioni di transizione in cambio di obiettivi più bassi, e paghi subito in fiducia.
-import { BOARD } from '../balance.ts';
+import { BOARD, YOUTH } from '../balance.ts';
 import type { Board, Club, WorldState } from '../model.ts';
 import { addNews } from '../news.ts';
 import { standings } from '../world.ts';
@@ -107,7 +107,7 @@ export function request(world: WorldState, kind: RequestKind): { ok: boolean; am
     return { ok: true, amount };
   }
   if (kind === 'facility') {
-    club.reputation = Math.min(100, club.reputation + 1); // strutture migliori: il club conta di più
+    club.youth.facilities = Math.min(20, club.youth.facilities + YOUTH.facilityRequest); // strutture migliori, vivaio migliore
     addNews(world, 'news.board.facility');
     return { ok: true };
   }

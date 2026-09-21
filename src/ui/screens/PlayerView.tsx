@@ -69,6 +69,7 @@ export function PlayerView({ world, playerId, onBack, onClub, onChange, onPlayer
             <h3>{t('player.value')}</h3>
             <div className="num" style={{ fontSize: 22 }}>{fmtMoney(value(p, world.season, { clubRep: world.clubs[p.clubId ?? 0]?.reputation }))}</div>
             <div className="muted">{t('player.contract', { year: p.contract.until })} · {t('player.wage', { wage: fmtMoney(p.contract.wage) })}</div>
+            {p.intl.caps > 0 && <div className="muted">{t('player.intl', { caps: p.intl.caps, goals: p.intl.goals })}</div>}
           </div>
           <div className="panel">
             <h3>{t('player.personality')}</h3>

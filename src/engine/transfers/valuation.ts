@@ -2,7 +2,7 @@
 // I fattori sono quelli della specifica: CA, potenziale, età, contratto residuo, ruolo, nazionalità,
 // reputazione del club, forma, inflazione di mercato. Il "premio di necessità" dell'acquirente NON sta qui:
 // è una cosa della trattativa, non del giocatore.
-import { MARKET } from '../balance.ts';
+import { MARKET, NATIONAL } from '../balance.ts';
 import type { Player } from '../model.ts';
 
 // niente import da players.ts: l'età è una sottrazione e il ciclo di import non serve a nessuno
@@ -42,6 +42,8 @@ export function value(p: Player, season: number, opts: { inflation?: number; clu
   if (nation && p.nation === nation) v *= MARKET.homeNation;
   v *= 1 + Math.max(-MARKET.formMax, Math.min(MARKET.formMax, (formAvg(p) - 6.5) * MARKET.formK));
   if (p.psych.wantsOut) v *= MARKET.wantsOut;
+  // la nazionale fa curriculum: presenze e titoli si pagano (§7.8)
+  v *= 1 + Math.min(NATIONAL.capsValueMax, p.intl.caps * NATIONAL.capsValue) + p.intl.titles * NATIONAL.titleValue;
   v *= inflation;
   const mag = Math.pow(10, Math.floor(Math.log10(Math.max(1, v))) - 1);
   return Math.round(v / mag) * mag;

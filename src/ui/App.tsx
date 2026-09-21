@@ -22,15 +22,16 @@ import { Start } from './screens/Start.tsx';
 import { Tables } from './screens/Tables.tsx';
 import { Tactics } from './screens/Tactics.tsx';
 import { Training } from './screens/Training.tsx';
+import { Youth } from './screens/Youth.tsx';
 import { Search } from './Search.tsx';
 import { currentSlot, saveTo } from './storage.ts';
 
 type Screen =
-  | { name: 'desk' | 'stories' | 'squad' | 'tactics' | 'training' | 'dressing' | 'market' | 'scouts' | 'finance' | 'board' | 'tables' | 'fixtures' | 'saves' }
+  | { name: 'desk' | 'stories' | 'squad' | 'tactics' | 'training' | 'dressing' | 'youth' | 'market' | 'scouts' | 'finance' | 'board' | 'tables' | 'fixtures' | 'saves' }
   | { name: 'player'; id: number; back: Screen }
   | { name: 'club'; id: number; back: Screen };
 type Modal = { kind: 'match'; fx: Fixture; others: Fixture[] } | { kind: 'season'; summary: SeasonSummary; myPos: number } | null;
-const NAV = ['desk', 'stories', 'squad', 'tactics', 'training', 'dressing', 'market', 'scouts', 'finance', 'board', 'tables', 'fixtures', 'saves'] as const;
+const NAV = ['desk', 'stories', 'squad', 'tactics', 'training', 'dressing', 'youth', 'market', 'scouts', 'finance', 'board', 'tables', 'fixtures', 'saves'] as const;
 
 const autosave = (w: WorldState) => { if (!saveTo(currentSlot(), w)) console.error('Salvataggio fallito'); };
 
@@ -130,6 +131,7 @@ export function App() {
         {screen.name === 'tactics' && <Tactics world={world} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'training' && <Training world={world} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'dressing' && <Dressing world={world} onChange={changed} onPlayer={openPlayer} />}
+        {screen.name === 'youth' && <Youth world={world} onPlayer={openPlayer} />}
         {screen.name === 'market' && <Market world={world} onPlayer={openPlayer} />}
         {screen.name === 'scouts' && <Scouts world={world} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'finance' && <Finance world={world} />}

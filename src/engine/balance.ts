@@ -490,3 +490,41 @@ export const PRESS = {
   bar: 4, // fiducia di dirigenza, tifosi o stampa mossa da una risposta
   noComment: -3, // la stampa non ama i "no comment"
 } as const;
+
+// --- settore giovanile (GUIDA §7.8) ---
+export const YOUTH = {
+  facilitiesFromRep: [4, 7] as const, // strutture iniziali = a + reputazione / b (niente caso: la generazione del mondo non cambia)
+  recruitmentFromRep: [3, 8] as const,
+  base: 3, // ragazzi per annata…
+  perRecruitment: 1 / 7, // …più uno ogni tanti punti di reclutamento
+  extraP: 0.3, // ogni tanto un ragazzo in più
+  age: [15, 16] as const,
+  paBase: 70, // potenziale medio = base + strutture·k + reputazione·r: ≈138 in una grande, ≈98 in una piccola
+  paFacilities: 2.2,
+  paRep: 0.35,
+  paSigma: 16,
+  jackpotP: 0.012, // il colpo di fortuna: un potenziale da campione in qualunque club, anche piccolo
+  jackpotPa: [172, 192] as const,
+  foreignPerRecruitment: 0.025, // quota di stranieri per punto di reclutamento
+  facilityRequest: 2, // strutture guadagnate con una richiesta accolta dalla dirigenza
+  trimTo: 27, // dopo l'estate le rose tornano qui, lasciando andare i ragazzi meno promettenti
+} as const;
+
+// --- nazionali (GUIDA §7.8) ---
+export const NATIONAL = {
+  squad: 23,
+  windows: [56, 98, 168, 224] as const, // pause per le nazionali, in giorni dall'inizio stagione
+  matchesPerWindow: 2,
+  fatigue: 4, // affaticamento per chi risponde alla convocazione
+  injuryP: 0.012, // rischio di infortunio per convocato a finestra
+  morale: 3, // essere convocati fa piacere
+  goalP: 0.12, // gol a partita per un attaccante titolare (le altre posizioni meno)
+  tournamentFatigue: 9, // l'estate con un torneo si paga in preparazione
+  // valore: presenze e titoli contano sul mercato
+  capsValue: 0.002, // per presenza, fino a capsValueMax
+  capsValueMax: 0.15,
+  titleValue: 0.05,
+  // simulazione dei tornei: gol di Poisson dalla differenza di forza (media CA dei migliori undici)
+  goalsBase: 1.25,
+  strengthScale: 38,
+} as const;

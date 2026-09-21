@@ -32,7 +32,10 @@ export function marketReport(seed: number, seasons: number): string[] {
   const lines: string[] = [];
   let overCap = 0; // club oltre l'85% di monte ingaggi per più di due stagioni
   const over = new Map<number, number>();
-  const start = avg(Object.values(world.players).map((p) => value(p, world.season, { clubRep: 50 })));
+  // l'inflazione si misura su un paniere stabile, i 300 giocatori più forti: la media di tutti cambia
+  // significato quando entrano le annate del vivaio (tanti ragazzi che valgono poco)
+  const basket = () => avg(Object.values(world.players).sort((a, b) => b.ca - a.ca).slice(0, 300).map((p) => value(p, world.season, { clubRep: 50 })));
+  const start = basket();
 
   for (let s = 0; s < seasons; s++) {
     while (!isSeasonOver(world)) advance(world);
@@ -51,9 +54,9 @@ export function marketReport(seed: number, seasons: number): string[] {
     const free = Object.values(world.players).filter((p) => p.clubId === null).length;
     loaned.push(loans);
     freeLeft.push(free);
-    const v = avg(Object.values(world.players).map((p) => value(p, world.season, { clubRep: 50 })));
+    const v = basket();
     values.push(v);
-    lines.push(`- ${world.season - 1}/${String(world.season).slice(2)}: ${sum.signings} acquisti · valore medio ${money(v)} · ingaggi/fatturato ${pct(avg(r))} (max ${pct(Math.max(...r))}) · età ${ages[ages.length - 1]!.toFixed(1)} · ${loans} in prestito · ${free} svincolati`);
+    lines.push(`- ${world.season - 1}/${String(world.season).slice(2)}: ${sum.signings} acquisti · valore dei 300 migliori ${money(v)} · ingaggi/fatturato ${pct(avg(r))} (max ${pct(Math.max(...r))}) · età ${ages[ages.length - 1]!.toFixed(1)} · ${loans} in prestito · ${free} svincolati`);
   }
   const inflation = values[values.length - 1]! / start;
   const red = clubs().filter((c) => c.balance < 0).length;

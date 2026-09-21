@@ -1,5 +1,5 @@
 // Salvataggi versionati (GUIDA §2.5): ogni save ha schemaVersion e passa dalla catena di migrazioni.
-import { TRAIN } from './balance.ts';
+import { TRAIN, YOUTH } from './balance.ts';
 import { defaultRoles } from './match/tactics.ts';
 import { PHILOSOPHIES, type Club, type WorldState } from './model.ts';
 import { Rng } from './rng.ts';
@@ -10,7 +10,7 @@ import { assignAgents } from './transfers/agents.ts';
 import { makeScouts } from './scouting/scouts.ts';
 import { newBoard } from './board/board.ts';
 
-export const SCHEMA_VERSION = 13;
+export const SCHEMA_VERSION = 14;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -95,6 +95,14 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
   (w) => { w.arcs = []; w.nextArcId = 1; w.manager.h2h = {}; },
   // 12 → 13 (F8, stampa): la conferenza della settimana
   (w) => { w.press = null; },
+  // 13 → 14 (F8, giovanili e nazionali): strutture del vivaio, carriera in nazionale
+  (w) => {
+    for (const c of Object.values(w.clubs as Obj))
+      c.youth = { facilities: Math.round(YOUTH.facilitiesFromRep[0] + c.reputation / YOUTH.facilitiesFromRep[1]), recruitment: Math.round(YOUTH.recruitmentFromRep[0] + c.reputation / YOUTH.recruitmentFromRep[1]) };
+    for (const p of Object.values(w.players as Obj)) p.intl = { caps: 0, goals: 0, titles: 0 };
+    w.nations = {};
+    w.intake = [];
+  },
 ];
 
 export function serialize(world: WorldState): string {

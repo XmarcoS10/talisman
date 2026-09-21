@@ -54,6 +54,7 @@ export interface Player {
   rel: Record<PlayerId, number>; // grafo sociale (§7.3): forza −100…100 verso i compagni, solo archi non neutri, simmetrico
   mentorId: PlayerId | null; // veterano che gli fa da mentore (§7.1)
   agentId: AgentId | null; // chi cura i suoi interessi (§7.5)
+  intl: { caps: number; goals: number; titles: number }; // carriera in nazionale (§7.8)
   condition: Condition;
   discipline: { yellows: number; ban: number }; // gialli stagionali, giornate di squalifica residue
   form: number[]; // voti delle ultime 5 partite
@@ -204,6 +205,7 @@ export interface Club {
   familiarity: Partial<Record<FormationId, number>>; // quanto la squadra conosce ogni modulo 0-100
   excluded: PlayerId[]; // fuori rosa
   scoutIds: ScoutId[];
+  youth: { facilities: number; recruitment: number }; // settore giovanile 1-20 (§7.8)
   feuds: Feud[]; // faide aperte nello spogliatoio
 }
 
@@ -401,6 +403,12 @@ export interface PressRoom {
   questions: PressQuestion[];
 }
 
+/** nazionale (§7.8): gli ultimi convocati e l'albo dei tornei */
+export interface National {
+  callups: PlayerId[];
+  honours: { season: number; tournament: 'world' | 'euro'; place: 'winner' | 'final' | 'semi' | 'quarter' | 'group' }[];
+}
+
 export interface WorldState {
   schemaVersion: number;
   seed: number;
@@ -421,6 +429,8 @@ export interface WorldState {
   talks: Talk[]; // trattative aperte dall'utente (§7.5)
   arcs: Arc[]; // storie aperte e ricordate (§7.4)
   press: PressRoom | null; // la conferenza stampa della settimana
+  nations: Record<string, National>;
+  intake: { season: number; clubId: ClubId; playerIds: PlayerId[] }[]; // ultimi vivai, per la schermata
   nextArcId: number;
   nextPlayerId: number;
   nextAgentId: number;

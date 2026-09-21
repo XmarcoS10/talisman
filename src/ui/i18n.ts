@@ -17,6 +17,7 @@ export function tEvent(key: string, vars: Record<string, string | number>): stri
   const v = { ...vars };
   if (typeof v.injury === 'string') v.injury = t(`injury.${v.injury}`).toLowerCase();
   if (typeof v.attr === 'string') v.attr = t(`attr.${v.attr}`);
+  if (typeof v.nation === 'string') v.nation = t(`nation.${v.nation}`);
   if (typeof v.why === 'string') v.why = v.why.split(',').map((w) => t(w)).join(', ');
   return t(key, v);
 }

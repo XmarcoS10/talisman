@@ -1,5 +1,5 @@
 // Mondo: generazione, calendario, avanzamento, classifiche, cambio stagione.
-import { BALANCE, FIN, MARKET, MATCH, SQUAD_TEMPLATE, TRAIN } from './balance.ts';
+import { BALANCE, FIN, MARKET, MATCH, NATIONAL, SQUAD_TEMPLATE, TRAIN, YOUTH } from './balance.ts';
 import { heal } from './injuries.ts';
 import { aiSetFormation, applyMatch, matchSetups, playMatch } from './match.ts';
 import { runMatch, type MatchRun } from './match/engine.ts';
@@ -19,6 +19,8 @@ import { isWinterWindow, runWindow } from './transfers/market.ts';
 import { makeScouts, weekScouting } from './scouting/scouts.ts';
 import { weekStories } from './narrative/scanner.ts';
 import { weekPress } from './press/press.ts';
+import { internationalBreak, summerTournament } from './nations/nations.ts';
+import { yearlyIntake } from './youth/intake.ts';
 import { checkFFP, estimate, gate, seasonIncome, settleInstalments, trimWages, weekCosts } from './finance/ledger.ts';
 import { defaultTraining, trainWeek } from './training.ts';
 
@@ -42,7 +44,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
   const world: WorldState = {
     schemaVersion: SCHEMA_VERSION, seed, rng: rng.s, season, day: 0,
     manager: { name: '', clubId: 0, kept: 0, broken: 0, board: newBoard(), h2h: {} }, players: {}, clubs: {}, competitions: {}, history: [], news: [],
-    causal: [], promises: [], talks: [], arcs: [], press: null, nextArcId: 1, nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
+    causal: [], promises: [], talks: [], arcs: [], press: null, nations: {}, intake: [], nextArcId: 1, nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
   };
   const cities = [...CITIES];
   let clubId = 0;
@@ -59,6 +61,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
         balance: Math.round((rep * rep * 9000) / 100000) * 100000, books: [], debts: [], credits: [],
         sanction: { kind: 'none', seasons: 0, points: 0 }, compId: comp.id, playerIds: [],
         tactic: defaultTactic(), training: defaultTraining(), familiarity: {}, excluded: [], feuds: [], scoutIds: [],
+        youth: { facilities: Math.round(YOUTH.facilitiesFromRep[0] + rep / YOUTH.facilitiesFromRep[1]), recruitment: Math.round(YOUTH.recruitmentFromRep[0] + rep / YOUTH.recruitmentFromRep[1]) },
       };
       for (const [pos, n] of Object.entries(SQUAD_TEMPLATE) as [Position, number][])
         for (let k = 0; k < n; k++) addPlayer(world, rng, club, pos);
@@ -84,6 +87,33 @@ export function newWorld(seed: number, season = 2026): WorldState {
   makeScouts(world, rng);
   world.rng = rng.s;
   return world;
+}
+
+/**
+ * rose oltre il massimo: i ragazzi meno promettenti non vengono confermati e lasciano il calcio professionistico
+ * (finiscono nei dilettanti, fuori dal mondo di gioco). Chi gioca non si tocca.
+ */
+function trimSquads(world: WorldState) {
+  for (const club of Object.values(world.clubs)) {
+    while (club.playerIds.length > YOUTH.trimTo) {
+      const kid = club.playerIds.map((id) => world.players[id]!)
+        .filter((p) => world.season - p.birthYear <= 19 && !p.contract.loan)
+        .sort((a, b) => a.pa - b.pa)[0];
+      if (!kid) break;
+      release(world, club, kid);
+      retire(world, kid);
+    }
+  }
+  // gli svincolati che nessuno ha voluto per un'estate intera appendono gli scarpini
+  for (const p of Object.values(world.players))
+    if (p.clubId === null && (world.season - p.birthYear >= 30 || world.season - p.birthYear <= 21)) retire(world, p);
+}
+
+/** esce dal mondo di gioco: niente più rapporti, niente più agente */
+function retire(world: WorldState, p: Player) {
+  dropRelations(world, p);
+  dropClient(world, p);
+  delete world.players[p.id];
 }
 
 /** girone all'italiana, metodo del cerchio: ogni coppia si incontra due volte a campi invertiti */
@@ -118,7 +148,8 @@ function scheduleSeason(world: WorldState, rng: Rng) {
  * stagionale è alto) e guarigioni
  */
 function passDays(world: WorldState, rng: Rng, days: number, weeks: number) {
-  // mercato di gennaio: si apre una volta, quando il calendario ci passa sopra
+  // pause per le nazionali e mercato di gennaio: scattano quando il calendario ci passa sopra
+  for (const w of NATIONAL.windows) if (days > 0 && world.day < w && world.day + days >= w) internationalBreak(world, rng);
   if (days > 0 && !isWinterWindow(world.day) && isWinterWindow(world.day + days)) {
     runWindow(world, rng, true);
     preContracts(world, rng); // da gennaio si firma a parametro zero per la stagione dopo
@@ -324,13 +355,15 @@ export function endSeason(world: WorldState): SeasonSummary {
   returnLoans(world, rng);
   movePreSigned(world, rng);
   aiRenewals(world, rng);
+  yearlyIntake(world, rng); // arriva l'annata del vivaio (§7.8)
+  summerTournament(world, rng); // e, negli anni pari, l'Europeo o il Mondiale
   trimWages(world, (club, id) => release(world, club, world.players[id]!)); // chi sfora taglia gli ingaggi
   summary.signings = runWindow(world, rng); // mercato estivo: prima si compra…
   signFreeAgents(world, rng); // …poi si guarda chi è rimasto senza contratto
   loanOutYouth(world, rng); // e i ragazzi che non giocherebbero vanno a farsi le ossa
   trimWages(world, (club, id) => release(world, club, world.players[id]!)); // ricontrollo dopo il mercato
   for (const club of Object.values(world.clubs)) {
-    // …poi il vivaio riempie i ruoli rimasti scoperti (stub dello youth intake §7.8)
+    // rete di sicurezza: se dopo mercato e vivaio un ruolo è ancora scoperto, si pesca dalla primavera
     club.excluded = club.excluded.filter((id) => club.playerIds.includes(id));
     const youth: Player[] = [];
     for (const [pos, n] of Object.entries(SQUAD_TEMPLATE) as [Position, number][]) {
@@ -339,6 +372,7 @@ export function endSeason(world: WorldState): SeasonSummary {
     }
     initRelations(world, club, rng, youth);
   }
+  trimSquads(world); // rose troppo lunghe: i ragazzi meno promettenti vengono lasciati andare
   assignAgents(world, rng); // i ragazzi del vivaio trovano chi li cura
   world.promises = world.promises.filter((pr) => world.players[pr.playerId]);
 
