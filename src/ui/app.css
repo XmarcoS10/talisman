@@ -269,3 +269,16 @@ select { background: var(--surface-1); color: var(--text-1); border: 1px solid v
 .cols2 { display: grid; grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr); gap: var(--s-4); align-items: start; }
 .stack { display: flex; flex-direction: column; gap: var(--s-4); }
 .panel > h2 .tag, .panel h2 + .tag { vertical-align: middle; }
+.small { font-size: 11px; }
+.code { font: 600 10px var(--font-num); color: var(--text-2); background: var(--surface-3); border-radius: var(--r-1); padding: 1px 5px; min-width: 32px; text-align: center; }
+.form-row { display: inline-flex; gap: 3px; }
+.form-row .form { width: 18px; height: 18px; font-size: 10px; }
+td.zone-up { box-shadow: inset 3px 0 0 var(--positive); } td.zone-down { box-shadow: inset 3px 0 0 var(--negative); }
+.leader { display: grid; grid-template-columns: 20px 1fr auto auto; gap: var(--s-2); align-items: center; background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--r-2); padding: 8px 10px; text-align: left; }
+.leader:hover, .leader-card:hover { border-color: var(--accent); }
+.leader b, .leader-card b { display: block; font: 700 14px var(--font-title); }
+.leader small, .leader-card small { display: block; color: var(--text-2); font-size: 11px; }
+.big-num { font: 700 24px var(--font-title); color: var(--accent); }
+.leader-card { display: flex; flex-direction: column; align-items: center; gap: 2px; background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--r-2); padding: 10px 6px; text-align: center; }
+.leader-card .big-num { font-size: 32px; color: var(--text-1); }
+.mini-card { background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--r-2); padding: 10px; display: flex; flex-direction: column; gap: 2px; }
