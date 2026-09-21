@@ -35,6 +35,13 @@ chiamate da `passDays` in `world.ts`. Decisioni in `docs/adr/0004-persone.md`.
 `docs/adr/0006-mercato.md`, report con `pnpm sim -- --market 5` in `docs/balance/market.md`.
 **Regola §7.6: dei giocatori non dell'utente non si mostra mai un valore vero** — si passa da `scouting/fog.ts`.
 
+## F10 (schermate nuove, `docs/notes/f10-schermate-nuove.md`)
+Disegni di riferimento in `docs/design/stitch/`. Coppa nazionale in `engine/cup.ts` (le partite di un giorno si prendono
+con `fixturesOn`, mai solo dai campionati), amichevoli estive in `engine/friendlies.ts`, Primavera derivata in
+`engine/youth/primavera.ts`, filosofia dell'allenatore in `STYLE`. Componenti comuni in `app.css` (sezione F10):
+`kpis/kpi`, `seg-tabs`, `chips`, `tag`, `meter`, `mini-card`, `section-h`. Attenzione ai nomi di classe già usati
+(`.slot` è della tattica, `.timeline` non esiste più). Il test `src/ui/i18n.test.ts` controlla le chiavi scritte per intero.
+
 ## Motore partita
 Spiegato in `docs/03-match-engine.md`, decisioni in `docs/adr/0002-motore-l2.md` e `docs/adr/0005-partita-2d.md`.
 Le decisioni restano per azione; col registro acceso (partita seguita dal vivo) il motore emette anche `run.track`,
