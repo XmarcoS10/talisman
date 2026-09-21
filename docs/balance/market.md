@@ -1,25 +1,25 @@
-# Report mercato â€” 5 stagioni, seed 42
+# Report mercato — 5 stagioni, seed 42
 
 | Metrica | Valore | Target | |
 |---|---|---|---|
-| Acquisti per finestra estiva | 60 | 20 â€“ 90 | âœ… |
-| Inflazione dei prezzi sull'intero periodo | 1.01Ã— | 0.70Ã— â€“ 1.40Ã— | âœ… |
-| Monte ingaggi su fatturato (media) | 49% | 15% â€“ 75% | âœ… |
-| Monte ingaggi su fatturato (massimo) | 84% | 0% â€“ 85% | âœ… |
-| Club sopra l'85% per piÃ¹ di due stagioni | 0 | 0 â€“ 0 | âœ… |
-| EtÃ  media delle rose | 24.7 | 24.0 â€“ 28.0 | âœ… |
-| Top 50 nei dieci club piÃ¹ blasonati | 72% | 40% â€“ 95% | âœ… |
-| Giocatori in prestito | 18 | 5 â€“ 120 | âœ… |
-| Svincolati rimasti senza squadra | 23 | 0 â€“ 60 | âœ… |
+| Acquisti per finestra estiva | 60 | 20 – 90 | ✅ |
+| Inflazione dei prezzi sull'intero periodo | 1.01× | 0.70× – 1.40× | ✅ |
+| Monte ingaggi su fatturato (media) | 49% | 15% – 75% | ✅ |
+| Monte ingaggi su fatturato (massimo) | 84% | 0% – 85% | ✅ |
+| Club sopra l'85% per più di due stagioni | 0 | 0 – 0 | ✅ |
+| Età media delle rose | 24.7 | 24.0 – 28.0 | ✅ |
+| Top 50 nei dieci club più blasonati | 72% | 40% – 95% | ✅ |
+| Giocatori in prestito | 18 | 5 – 120 | ✅ |
+| Svincolati rimasti senza squadra | 23 | 0 – 60 | ✅ |
 | Club col bilancio in rosso | 0 | raro | |
 | Cassa media dei club | 102.5M |  | |
 
 ## Stagione per stagione
-- 2026/27: 83 acquisti Â· valore dei 300 migliori 24.0M Â· ingaggi/fatturato 53% (max 69%) Â· etÃ  25.3 Â· 25 in prestito Â· 0 svincolati
-- 2027/28: 53 acquisti Â· valore dei 300 migliori 24.3M Â· ingaggi/fatturato 52% (max 78%) Â· etÃ  24.8 Â· 28 in prestito Â· 39 svincolati
-- 2028/29: 42 acquisti Â· valore dei 300 migliori 22.6M Â· ingaggi/fatturato 49% (max 70%) Â· etÃ  24.8 Â· 7 in prestito Â· 31 svincolati
-- 2029/30: 58 acquisti Â· valore dei 300 migliori 22.7M Â· ingaggi/fatturato 46% (max 70%) Â· etÃ  24.5 Â· 14 in prestito Â· 27 svincolati
-- 2030/31: 63 acquisti Â· valore dei 300 migliori 23.9M Â· ingaggi/fatturato 47% (max 84%) Â· etÃ  24.2 Â· 17 in prestito Â· 17 svincolati
+- 2026/27: 83 acquisti · valore dei 300 migliori 24.0M · ingaggi/fatturato 53% (max 69%) · età 25.3 · 25 in prestito · 0 svincolati
+- 2027/28: 53 acquisti · valore dei 300 migliori 24.3M · ingaggi/fatturato 52% (max 78%) · età 24.8 · 28 in prestito · 39 svincolati
+- 2028/29: 42 acquisti · valore dei 300 migliori 22.6M · ingaggi/fatturato 49% (max 70%) · età 24.8 · 7 in prestito · 31 svincolati
+- 2029/30: 58 acquisti · valore dei 300 migliori 22.7M · ingaggi/fatturato 46% (max 70%) · età 24.5 · 14 in prestito · 27 svincolati
+- 2030/31: 63 acquisti · valore dei 300 migliori 23.9M · ingaggi/fatturato 47% (max 84%) · età 24.2 · 17 in prestito · 17 svincolati
 
 ## Note oneste su questo report
 
