@@ -3,9 +3,9 @@
 // circa 5 milioni di caratteri per tutta l'app, e tre carriere dopo qualche stagione lo superano.
 // Nel browser (pnpm dev) resta il localStorage.
 import type { WorldState } from '../engine/model.ts';
-import { deserialize, serialize } from '../engine/save.ts';
+import { deserialize, migrate, serialize, type Raw } from '../engine/save.ts';
 
-interface SavesFs { read(name: string): string | null; write(name: string, data: string): boolean; remove(name: string): boolean; dir(): string }
+interface SavesFs { read(name: string): string | null; head(name: string): string | null; write(name: string, data: string): boolean; remove(name: string): boolean; dir(): string }
 declare global { interface Window { talismanFs?: SavesFs } }
 
 /** dove stanno gli slot: file se siamo in Electron, altrimenti localStorage */
@@ -64,27 +64,51 @@ export function setCurrentSlot(s: Slot) {
   safe(() => localStorage.setItem(CURRENT, String(s)), undefined);
 }
 
+type Meta = Omit<SlotInfo, 'slot' | 'savedAt'>;
+const SPLIT = ',"data":';
+
+/**
+ * formato dello slot (dalla versione 2): {"v":2,"savedAt":…,"meta":{…},"data":<il mondo>}.
+ * L'intestazione sta prima del mondo, così l'elenco degli slot legge pochi byte invece di 100 MB;
+ * il mondo è JSON vero dentro JSON, non un testo da rileggere una seconda volta.
+ * Gli slot vecchi ({savedAt, data: "<testo>"}) si leggono ancora.
+ */
+function header(raw: string): { savedAt: number; meta: Meta } | null {
+  const cut = raw.indexOf(SPLIT);
+  if (!raw.startsWith('{"v":2') || cut < 0) return null;
+  return JSON.parse(`${raw.slice(0, cut)}}`) as { savedAt: number; meta: Meta };
+}
+
 export function slotInfo(s: Slot): SlotInfo | null {
   migrateLegacy();
   return safe(() => {
+    const head = disk?.head(key(s)) ?? null;
+    const h = head !== null ? header(head) : null;
+    if (h) return { slot: s, savedAt: h.savedAt, ...h.meta };
+    // slot vecchio (o non ancora copiato su file): si legge tutto, come prima
     const raw = readSlot(key(s));
     if (!raw) return null;
+    const h2 = header(raw);
+    if (h2) return { slot: s, savedAt: h2.savedAt, ...h2.meta };
     const { savedAt, data } = JSON.parse(raw) as { savedAt: number; data: string };
-    const w = JSON.parse(data) as WorldState; // lettura leggera: solo i campi per l'elenco
+    const w = JSON.parse(data) as WorldState;
     const club = w.clubs[w.manager.clubId];
     return { slot: s, manager: w.manager.name, clubId: w.manager.clubId, clubName: club?.name ?? '?', season: w.season, day: w.day, savedAt };
   }, null);
 }
 
 export function saveTo(s: Slot, w: WorldState): boolean {
-  return safe(() => writeSlot(key(s), JSON.stringify({ savedAt: Date.now(), data: serialize(w) })), false);
+  const meta: Meta = { manager: w.manager.name, clubId: w.manager.clubId, clubName: w.clubs[w.manager.clubId]?.name ?? '?', season: w.season, day: w.day };
+  return safe(() => writeSlot(key(s), `{"v":2,"savedAt":${Date.now()},"meta":${JSON.stringify(meta)}${SPLIT}${serialize(w)}}`), false);
 }
 
 export function loadFrom(s: Slot): WorldState | null {
   migrateLegacy();
   return safe(() => {
     const raw = readSlot(key(s));
-    return raw ? deserialize((JSON.parse(raw) as { data: string }).data) : null;
+    if (!raw) return null;
+    const slot = JSON.parse(raw) as { data: string | Raw };
+    return typeof slot.data === 'string' ? deserialize(slot.data) : migrate(slot.data);
   }, null);
 }
 

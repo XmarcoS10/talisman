@@ -4,6 +4,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('talismanFs', {
   read: (name) => ipcRenderer.sendSync('saves:read', name),
+  head: (name) => ipcRenderer.sendSync('saves:head', name),
   write: (name, data) => ipcRenderer.sendSync('saves:write', name, data),
   remove: (name) => ipcRenderer.sendSync('saves:remove', name),
   dir: () => ipcRenderer.sendSync('saves:dir'),

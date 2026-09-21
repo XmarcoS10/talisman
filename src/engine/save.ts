@@ -15,7 +15,7 @@ export const SCHEMA_VERSION = 14;
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
 type Obj = Record<string, any>; // any giustificato: forma dei dati di versioni precedenti, non tipizzabile
-type Raw = Obj & { schemaVersion: number };
+export type Raw = Obj & { schemaVersion: number };
 const emptySide = () => ({ possession: 50, shots: 0, onTarget: 0, xg: 0, passes: 0, passesOk: 0, tackles: 0, fouls: 0, corners: 0, offsides: 0, yellows: 0, reds: 0 });
 const MIGRATIONS: ((w: Raw) => void)[] = [
   // 1 → 2 (F3, motore L2): condizione, disciplina, forma, statistiche estese, tattica di club
@@ -110,7 +110,11 @@ export function serialize(world: WorldState): string {
 }
 
 export function deserialize(json: string): WorldState {
-  const raw = JSON.parse(json) as Raw;
+  return migrate(JSON.parse(json) as Raw);
+}
+
+/** porta un mondo già letto (oggetto, non testo) alla versione corrente: evita di rileggere 100 MB due volte */
+export function migrate(raw: Raw): WorldState {
   if (typeof raw.schemaVersion !== 'number') throw new Error('Salvataggio non valido');
   if (raw.schemaVersion > SCHEMA_VERSION) throw new Error('Salvataggio creato da una versione più recente del gioco');
   while (raw.schemaVersion < SCHEMA_VERSION) {

@@ -38,11 +38,25 @@ const NAV = ['desk', 'stories', 'squad', 'tactics', 'training', 'dressing', 'you
 
 // l'esito dell'ultimo salvataggio: se fallisce lo si dice, e non si esce perdendo la partita
 let lastSaveOk = true;
+let pending: ReturnType<typeof setTimeout> | null = null;
 const autosave = (w: WorldState) => {
+  if (pending) { clearTimeout(pending); pending = null; }
   lastSaveOk = saveTo(currentSlot(), w);
   if (!lastSaveOk) console.error('Salvataggio fallito');
   return lastSaveOk;
 };
+/**
+ * le piccole modifiche (un titolare, una seduta, un incarico) non salvano subito: con un mondo grande ogni salvataggio
+ * costa più di un secondo. Si salva un attimo dopo l'ultima modifica, e comunque subito a ogni avanzamento e all'uscita.
+ */
+let pendingWorld: WorldState | null = null;
+const saveSoon = (w: WorldState) => {
+  if (pending) clearTimeout(pending);
+  pendingWorld = w;
+  pending = setTimeout(() => { pending = null; autosave(w); }, 1500);
+};
+// se la finestra si chiude prima del salvataggio differito, si salva adesso
+window.addEventListener('beforeunload', () => { if (pending && pendingWorld) autosave(pendingWorld); });
 
 export function App() {
   const [world, setWorld] = useState<WorldState | null>(null);
@@ -112,7 +126,7 @@ export function App() {
   const club = world.clubs[world.manager.clubId]!;
   const openPlayer = (id: number) => setScreen({ name: 'player', id, back: screen });
   const openClub = (id: number) => setScreen(id === club.id ? { name: 'squad' } : { name: 'club', id, back: screen });
-  const changed = () => { autosave(world); rerender(); };
+  const changed = () => { saveSoon(world); rerender(); };
   // gioca il club dell'utente nel prossimo turno? allora si può seguire dal vivo
   const day = nextMatchDay(world);
   const myMatchDay = day !== null && Object.values(world.competitions).some((c) =>

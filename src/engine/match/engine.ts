@@ -555,12 +555,19 @@ export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
     }
   }
 
+  // la difesa vista da chi attacca: tre liste riusate a ogni azione invece di crearne tre nuove (≈320.000 a stagione)
+  const defX: number[] = [], defY: number[] = [], defAnt: number[] = [];
   function step() {
     const att = teams[s], def = teams[1 - s]!;
     settle();
-    const defX = def.on.map((m) => 12 - m.x), defY = def.on.map((m) => 8 - m.y);
     const cv = cover(def);
-    const defAnt = def.on.map((m) => (0.6 + 0.03 * m.p.attrs.anticipation) * cv);
+    defX.length = defY.length = defAnt.length = def.on.length;
+    for (let i = 0; i < def.on.length; i++) {
+      const m = def.on[i]!;
+      defX[i] = 12 - m.x;
+      defY[i] = 8 - m.y;
+      defAnt[i] = (0.6 + 0.03 * m.p.attrs.anticipation) * cv;
+    }
     let pressure = 0, line = 6, closest: MP | undefined, cd: number = MATCH.pressRadius;
     for (let i = 0; i < def.on.length; i++) {
       const m = def.on[i]!;

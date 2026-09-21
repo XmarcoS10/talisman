@@ -16,13 +16,15 @@ export function boardGoal(world: WorldState, clubId: number): string {
 }
 
 export function Start({ onLoad, onStart }: { onLoad: (w: WorldState) => void; onStart: (w: WorldState) => void }) {
-  const saves = SLOTS.map(slotInfo).filter((s) => s !== null);
+  // una lettura sola degli slot per tutta la schermata (prima: sei a ogni ridisegno)
+  const infos = useMemo(() => SLOTS.map(slotInfo), []);
+  const saves = infos.filter((s) => s !== null);
   // il seed viene dall'orologio solo qui, nella UI: il motore resta deterministico
   const world = useMemo(() => newWorld(Date.now() >>> 0), []);
   const [name, setName] = useState('');
   const [clubId, setClubId] = useState<number | null>(null);
   // la nuova carriera va nel primo slot libero; se sono tutti pieni lo scegli tu, e sai che cosa sovrascrivi
-  const free = SLOTS.find((s) => !slotInfo(s)) ?? null;
+  const free = SLOTS.find((_, i) => !infos[i]) ?? null;
   const [slot, setSlot] = useState<Slot | null>(free);
 
   const go = () => {

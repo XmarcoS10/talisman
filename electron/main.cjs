@@ -14,6 +14,17 @@ const fileOf = (name) => {
 ipcMain.on('saves:read', (e, name) => {
   try { e.returnValue = fs.existsSync(fileOf(name)) ? fs.readFileSync(fileOf(name), 'utf8') : null; } catch { e.returnValue = null; }
 });
+// solo l'inizio del file: basta per l'intestazione dello slot, senza leggere 100 MB
+ipcMain.on('saves:head', (e, name) => {
+  try {
+    if (!fs.existsSync(fileOf(name))) { e.returnValue = null; return; }
+    const fd = fs.openSync(fileOf(name), 'r');
+    const buf = Buffer.alloc(8192);
+    const n = fs.readSync(fd, buf, 0, buf.length, 0);
+    fs.closeSync(fd);
+    e.returnValue = buf.subarray(0, n).toString('utf8');
+  } catch { e.returnValue = null; }
+});
 ipcMain.on('saves:write', (e, name, data) => {
   try {
     fs.mkdirSync(savesDir(), { recursive: true });
