@@ -4,10 +4,11 @@ import { Crest } from '../Crest.tsx';
 import { fmtDate, fmtSeason, t, tEvent } from '../i18n.ts';
 import { outcome } from './Fixtures.tsx';
 import { boardGoal } from './Start.tsx';
+import { Guide } from '../Guide.tsx';
 import { DeskStories } from './Stories.tsx';
 import { LeagueTable } from './Tables.tsx';
 
-export function Desk({ world }: { world: WorldState }) {
+export function Desk({ world, onNav }: { world: WorldState; onNav: (n: 'board' | 'squad' | 'tactics' | 'training' | 'stories') => void }) {
   const clubId = world.manager.clubId;
   const club = world.clubs[clubId]!;
   const comp = world.competitions[club.compId]!;
@@ -21,6 +22,7 @@ export function Desk({ world }: { world: WorldState }) {
   return (
     <div className="grid" style={{ gridTemplateColumns: '1.3fr 1fr', alignItems: 'start' }}>
       <div className="grid">
+        <Guide onNav={onNav} />
         <DeskStories world={world} />
         <div className="panel">
           <h3>{t('desk.nextMatch')}</h3>

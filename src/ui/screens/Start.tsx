@@ -3,7 +3,8 @@ import type { WorldState } from '../../engine/model.ts';
 import { newWorld } from '../../engine/world.ts';
 import { Crest } from '../Crest.tsx';
 import { fmtDate, fmtSeason, t } from '../i18n.ts';
-import { SLOTS, currentSlot, loadFrom, setCurrentSlot, slotInfo, type Slot } from '../storage.ts';
+import { SLOTS, loadFrom, setCurrentSlot, slotInfo, type Slot } from '../storage.ts';
+import { ClubPicker } from './ClubPicker.tsx';
 
 /** obiettivo stagionale della dirigenza in base alla reputazione nel proprio campionato */
 export function boardGoal(world: WorldState, clubId: number): string {
@@ -20,13 +21,14 @@ export function Start({ onLoad, onStart }: { onLoad: (w: WorldState) => void; on
   const world = useMemo(() => newWorld(Date.now() >>> 0), []);
   const [name, setName] = useState('');
   const [clubId, setClubId] = useState<number | null>(null);
-  const comps = Object.values(world.competitions).sort((a, b) => a.level - b.level);
+  // la nuova carriera va nel primo slot libero; se sono tutti pieni lo scegli tu, e sai che cosa sovrascrivi
+  const free = SLOTS.find((s) => !slotInfo(s)) ?? null;
+  const [slot, setSlot] = useState<Slot | null>(free);
 
   const go = () => {
-    if (clubId === null || !name.trim()) return;
+    if (clubId === null || !name.trim() || slot === null) return;
     Object.assign(world.manager, { name: name.trim(), clubId });
-    // la nuova carriera va nel primo slot libero (se sono pieni, in quello in uso)
-    setCurrentSlot(SLOTS.find((s) => !slotInfo(s)) ?? currentSlot());
+    setCurrentSlot(slot);
     onStart(world);
   };
   const load = (s: Slot) => {
@@ -63,28 +65,24 @@ export function Start({ onLoad, onStart }: { onLoad: (w: WorldState) => void; on
         </label>
       </div>
 
-      {comps.map((comp) => (
-        <div key={comp.id} className="panel">
-          <h2>{t('start.chooseClub')} · {comp.name}</h2>
-          <div className="clubs">
-            {[...comp.clubIds].sort((a, b) => world.clubs[b]!.reputation - world.clubs[a]!.reputation).map((id) => {
-              const c = world.clubs[id]!;
-              return (
-                <button key={id} className={`club-card ${clubId === id ? 'selected' : ''}`} onClick={() => setClubId(id)}>
-                  <Crest club={c} size={36} />
-                  <div>
-                    <div><b>{c.name}</b></div>
-                    <div className="muted">{t('start.reputation')} {c.reputation} · {boardGoal(world, id)}</div>
-                  </div>
-                </button>
-              );
-            })}
+      <ClubPicker world={world} selected={clubId} onPick={setClubId} />
+
+      {free === null && (
+        <div className="panel">
+          <h3>{t('start.slotFull')}</h3>
+          <div className="row wrap">
+            {saves.map((sv) => (
+              <button key={sv.slot} className={`btn ${slot === sv.slot ? 'primary' : ''}`} onClick={() => setSlot(sv.slot)}>
+                {t('start.overwrite', { slot: sv.slot, club: sv.clubName })}
+              </button>
+            ))}
           </div>
+          <div className="muted">{t('start.slotHint')}</div>
         </div>
-      ))}
+      )}
 
       <div className="row" style={{ position: 'sticky', bottom: 0, padding: 'var(--s-3) 0', background: 'var(--bg-0)' }}>
-        <button className="btn primary" disabled={clubId === null || !name.trim()} onClick={go}>{t('start.go')}</button>
+        <button className="btn primary" disabled={clubId === null || !name.trim() || slot === null} onClick={go}>{t('start.go')}</button>
         {clubId !== null && <span className="muted">{world.clubs[clubId]!.name}</span>}
       </div>
     </div>

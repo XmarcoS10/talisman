@@ -2,6 +2,8 @@ import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import type { Fixture, WorldState } from '../engine/model.ts';
 import { advance, beginMatchDay, endSeason, isSeasonOver, nextMatchDay, standings, type LiveDay, type SeasonSummary } from '../engine/world.ts';
 import { Crest } from './Crest.tsx';
+import { HINTS, Hint } from './Hint.tsx';
+import { markVisited } from './settings.ts';
 import { fmtDate, fmtMoney, fmtSeason, t } from './i18n.ts';
 import { BoardView } from './screens/BoardView.tsx';
 import { ClubView } from './screens/ClubView.tsx';
@@ -44,6 +46,7 @@ const autosave = (w: WorldState) => {
 export function App() {
   const [world, setWorld] = useState<WorldState | null>(null);
   const [screen, setScreen] = useState<Screen>({ name: 'desk' });
+  useEffect(() => { markVisited(screen.name); }, [screen.name]);
   const [modal, setModal] = useState<Modal>(null);
   const [liveDay, setLiveDay] = useState<LiveDay | null>(null);
   const [, rerender] = useReducer((x: number) => x + 1, 0); // il motore muta il mondo sul posto
@@ -60,6 +63,7 @@ export function App() {
       const played = advance(world);
       const fx = played.find((f) => f.home === me || f.away === me);
       if (fx) {
+        markVisited('live');
         const others = played.filter((f) => world.clubs[f.home]!.compId === world.clubs[me]!.compId);
         setModal({ kind: 'match', fx, others });
       }
@@ -89,6 +93,7 @@ export function App() {
     return (
       <Live world={world} live={liveDay} onFinish={(played) => {
         setLiveDay(null);
+        markVisited('live'); // prima partita guidata: fatta
         const others = played.slice(1).filter((f) => world.clubs[f.home]!.compId === world.clubs[world.manager.clubId]!.compId);
         setModal({ kind: 'match', fx: played[0]!, others });
         autosave(world);
@@ -132,7 +137,8 @@ export function App() {
       </nav>
 
       <main className="content">
-        {screen.name === 'desk' && <Desk world={world} />}
+        {(HINTS as readonly string[]).includes(screen.name) && <Hint key={screen.name} id={screen.name as (typeof HINTS)[number]} />}
+        {screen.name === 'desk' && <Desk world={world} onNav={(n) => setScreen({ name: n })} />}
         {screen.name === 'stories' && <Stories world={world} onChange={changed} />}
         {screen.name === 'squad' && <Squad world={world} clubId={club.id} onPlayer={openPlayer} />}
         {screen.name === 'tactics' && <Tactics world={world} onChange={changed} onPlayer={openPlayer} />}

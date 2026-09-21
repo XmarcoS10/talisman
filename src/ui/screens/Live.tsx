@@ -7,6 +7,7 @@ import { atMinute, duration, ensure, matchMinutes, sample, SPEEDS, SPEED_LABELS 
 import { lines } from '../match/commentary.ts';
 import { Camera, draw, resetTrail, type Look } from '../match/renderer.ts';
 import { Crest } from '../Crest.tsx';
+import { Hint } from '../Hint.tsx';
 import { shortName } from '../bits.tsx';
 import { t } from '../i18n.ts';
 import { LiveAnalyst } from './LiveAnalyst.tsx';
@@ -114,6 +115,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
       <LiveBench run={run} me={me} onChange={rerender} />
 
       <div className="grid" style={{ alignContent: 'start' }}>
+        <Hint id="live" />
         <div className="panel live-head">
           <span className="row"><Crest club={clubs[0]} size={28} />{clubs[0].shortName}</span>
           <b className="num big">{score[0]} – {score[1]}</b>
