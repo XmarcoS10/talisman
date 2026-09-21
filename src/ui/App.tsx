@@ -165,7 +165,7 @@ export function App() {
         {screen.name === 'finance' && <Finance world={world} />}
         {screen.name === 'board' && <BoardView world={world} onChange={changed} />}
         {screen.name === 'tables' && <Tables world={world} clubId={club.id} onPlayer={openPlayer} onClub={openClub} />}
-        {screen.name === 'fixtures' && <Fixtures world={world} clubId={club.id} />}
+        {screen.name === 'fixtures' && <Fixtures world={world} clubId={club.id} onPlayer={openPlayer} />}
         {screen.name === 'saves' && <Saves world={world} onLoad={open} />}
         {screen.name === 'player' && <PlayerView world={world} playerId={screen.id} onBack={() => setScreen(screen.back)} onClub={openClub} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'club' && <ClubView world={world} clubId={screen.id} onPlayer={openPlayer} onBack={() => setScreen(screen.back)} />}
