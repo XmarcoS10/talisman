@@ -15,7 +15,7 @@ Report completi in questa cartella (`f5-*.md`, `development.md`, `psychology.md`
 | Falli · gialli · rossi per partita | 22-30 · 3,5-5,5 · 0,1-0,3 | ✅ 23 · 3,7 · 0,15 |
 | Corner per squadra | 4 – 6 | ✅ 4,9 |
 | Più forte contro più debole (vittorie) | 65 – 80% | ⚠️ 80-83% (in F4 era 64-71%: il mondo generato conta ±5%) |
-| Correlazione forza rosa ↔ punti | 0,75 – 0,85 | ✅ 0,83 |
+| Correlazione forza rosa ↔ punti | 0,75 – 0,85 | ✅ 0,81 su 10 stagioni · ⚠️ 0,61-0,70 su 25 (talento che si gonfia, `docs/balance/2026-09-22.md`) |
 | Scudetti diversi in 10 stagioni | ≥ 4 | ✅ 5 |
 | Punti del campione | 70 – 100 | ✅ max 96 |
 | Equilibrio dei moduli (punti/partita, stessa rosa) | ±0,3 dalla media | ✅ 1,26-1,66 (F4) |

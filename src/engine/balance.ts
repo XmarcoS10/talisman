@@ -367,7 +367,7 @@ export const CLUB_AI = {
   needCount: 0.6, // urgenza per ogni uomo mancante rispetto alla rosa tipo
   needQuality: 0.05, // urgenza per punto di CA mancante
   buyFrom: 0.35, // urgenza minima per aprire una trattativa
-  dealsPerWindow: 3, // tentativi di acquisto per club in una finestra
+  dealsPerWindow: 5, // acquisti per club in una finestra (era 3: i club con molti buchi non riuscivano a rinnovarsi, P11 22/09/2026)
   shortlist: 6,
   upgrade: 4, // punti di CA in più perché valga la pena comprarlo
   // gusto: moltiplicatore di appetito secondo la filosofia
@@ -388,6 +388,11 @@ export const CLUB_AI = {
   sellStripped: 0.05, // rosa già ridotta all'osso
   sellBroke: 0.9, // cassa a picco: si vende per fare cassa
   sellBackup: 0.32,
+  // chiama un club più grande (P11, 22/09/2026: senza questo i titolari dei club piccoli non si muovevano mai e in
+  // 10 stagioni la Serie A si appiattiva, correlazione forza↔punti da 0,8 a 0,6)
+  pullFrom: 8, // punti di reputazione in più del venditore da cui il richiamo comincia a contare
+  pullPerRep: 0.02, // disponibilità in più per ogni punto oltre, con ambizione 10
+  pullMax: 0.6,
   contractYears: [3, 5] as const,
 } as const;
 

@@ -52,8 +52,19 @@ export function taste(club: Club, p: Player, season: number): number {
   }
 }
 
-/** quanto il club proprietario è disposto a cederlo, 0…1 */
-export function sellWillingness(world: WorldState, club: Club, p: Player): number {
+/**
+ * quanto il club proprietario è disposto a cederlo, 0…1. Se chiama un club molto più grande, il giocatore
+ * spinge per andare (tanto più quanto è ambizioso) e anche il titolare di un club piccolo diventa trattabile:
+ * è così che i talenti salgono verso le grandi e la gerarchia del campionato non si appiattisce.
+ */
+export function sellWillingness(world: WorldState, club: Club, p: Player, buyer?: Club): number {
+  const base = baseWillingness(world, club, p);
+  const gap = buyer ? buyer.reputation - club.reputation - CLUB_AI.pullFrom : 0;
+  if (gap <= 0 || base <= CLUB_AI.sellStripped) return base;
+  return Math.max(base, Math.min(CLUB_AI.pullMax, base + gap * CLUB_AI.pullPerRep * (p.personality.ambition / 10)));
+}
+
+function baseWillingness(world: WorldState, club: Club, p: Player): number {
   if (club.playerIds.length <= CLUB_AI.squadMin) return CLUB_AI.sellStripped; // con la rosa all'osso non si cede
   if (mustSell(world, club)) return CLUB_AI.sellBroke; // con la cassa a picco si vende e basta
   if (club.excluded.includes(p.id)) return CLUB_AI.sellExcluded;
@@ -78,7 +89,7 @@ export function shortlist(world: WorldState, club: Club, need: Need, budget: num
     const owner = world.clubs[p.clubId]!;
     const v = value(p, season, { clubRep: owner.reputation });
     if (v > budget) continue;
-    const will = sellWillingness(world, owner, p);
+    const will = sellWillingness(world, owner, p, club);
     if (will < CLUB_AI.shortlistMinWill) continue;
     scored.push({ p, score: abilityAt(p, need.pos) * taste(club, p, season) * (CLUB_AI.shortlistWill + will) });
   }

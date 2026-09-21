@@ -7,6 +7,8 @@ Quello che manca o che si vuole fare, in ordine di priorità. Le idee nuove vann
 ## Prima della 1.0 (limiti noti della 0.1.0)
 
 - **Offerte dell'IA per i giocatori dell'utente**: oggi gli altri club non ne fanno.
+- **Carriere lunghe**: dopo 10-15 stagioni il talento si gonfia e le squadre si somigliano (correlazione forza↔punti
+  sotto 0,75). Analisi in `docs/balance/2026-09-22.md`.
 - **Bancarotte**: sono una regola del gioco ma non succedono, perché il mercato dell'IA è troppo prudente.
 - **Playoff e playout** in Serie B: scelta di regolamento ancora da fare.
 - **Versione Linux** (AppImage): va costruita su un computer Linux.

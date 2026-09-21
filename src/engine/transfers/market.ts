@@ -83,7 +83,7 @@ export function pursue(world: WorldState, rng: Rng, buyer: Club, p: Player, budg
   if (wage > room) return null; // lo stipendio non sta nel monte ingaggi
   const ctx: TalkCtx = {
     value: value(p, world.season, { clubRep: seller.reputation }),
-    willing: sellWillingness(world, seller, p),
+    willing: sellWillingness(world, seller, p, buyer),
     need: urgency,
     sellerRep: seller.reputation,
     release: null,
@@ -147,7 +147,7 @@ export function talkCtx(world: WorldState, p: Player, buyer: Club): TalkCtx {
   const urgency = needs(world, buyer).find((n) => (p.positions[n.pos] ?? 0) >= 4)?.urgency ?? CLUB_AI.defaultUrgency;
   return {
     value: value(p, world.season, { clubRep: seller.reputation }),
-    willing: sellWillingness(world, seller, p),
+    willing: sellWillingness(world, seller, p, buyer),
     need: urgency,
     sellerRep: seller.reputation,
     release: p.contract.release,
