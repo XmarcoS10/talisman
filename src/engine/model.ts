@@ -352,13 +352,36 @@ export interface Board {
   sacked: boolean;
 }
 
+/** chi è protagonista di una storia: un club, un avversario, un giocatore (§7.4) */
+export interface StorySubject {
+  club?: ClubId;
+  rival?: ClubId;
+  player?: PlayerId;
+}
+
+/**
+ * arco narrativo: nasce da una regola, attraversa tappe, si chiude con un esito o sfuma.
+ * Resta nel mondo dopo la chiusura: è la memoria che sopravvive alle stagioni.
+ */
+export interface Arc {
+  id: number;
+  rule: string;
+  subject: StorySubject;
+  stage: number; // tappe raccontate dopo l'apertura
+  state: 'open' | 'won' | 'lost' | 'faded';
+  opened: number; // giorno assoluto (stagione × 1000 + giorno)
+  until: number; // scade qui se nessuno lo chiude prima
+  data: Record<string, string | number>; // dati catturati al rilevamento e lungo la strada
+  lines: { season: number; day: number; text: string }[];
+}
+
 export interface WorldState {
   schemaVersion: number;
   seed: number;
   rng: RngState;
   season: number; // anno di inizio stagione (2026 = 2026/27)
   day: number; // prossimo giorno da giocare
-  manager: { name: string; clubId: ClubId; kept: number; broken: number; board: Board }; // promesse mantenute/rotte: memoria pluriennale
+  manager: { name: string; clubId: ClubId; kept: number; broken: number; board: Board; h2h: Record<ClubId, string> }; // promesse mantenute/rotte e testa a testa: memoria pluriennale
   players: Record<PlayerId, Player>;
   clubs: Record<ClubId, Club>;
   agents: Record<AgentId, Agent>;
@@ -370,6 +393,8 @@ export interface WorldState {
   causal: CausalEvent[]; // registro delle cause per i giocatori dell'utente, i più recenti in fondo
   promises: PlayerPromise[]; // promesse attive dell'utente
   talks: Talk[]; // trattative aperte dall'utente (§7.5)
+  arcs: Arc[]; // storie aperte e ricordate (§7.4)
+  nextArcId: number;
   nextPlayerId: number;
   nextAgentId: number;
   nextScoutId: number;

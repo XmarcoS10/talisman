@@ -1,0 +1,125 @@
+{
+  "stampa": [
+    "i giornali",
+    "le radio cittadine",
+    "i commentatori",
+    "gli opinionisti",
+    "i cronisti al seguito",
+    "gli addetti ai lavori"
+  ],
+  "tifosi": [
+    "i tifosi",
+    "gli abbonati",
+    "i sostenitori",
+    "gli ultrà",
+    "i supporter"
+  ],
+  "ambiente": [
+    "l'ambiente",
+    "la piazza",
+    "la città",
+    "lo spogliatoio",
+    "il gruppo"
+  ],
+  "ormai": [
+    "ormai",
+    "a questo punto",
+    "adesso",
+    "arrivati qui"
+  ],
+  "dicono": [
+    "si dice",
+    "si mormora",
+    "si sussurra",
+    "circola voce"
+  ],
+  "davvero": [
+    "davvero",
+    "sul serio",
+    "senza discussioni",
+    "senza se e senza ma"
+  ],
+  "domenica": [
+    "domenica",
+    "nel prossimo turno",
+    "alla prossima",
+    "nel weekend"
+  ],
+  "pesante": [
+    "pesante",
+    "difficile da digerire",
+    "che lascia il segno",
+    "amara",
+    "dura"
+  ],
+  "bella": [
+    "bella",
+    "importante",
+    "preziosa",
+    "pesante",
+    "meritata"
+  ],
+  "vittoria": [
+    "vittoria",
+    "affermazione",
+    "successo",
+    "tre punti"
+  ],
+  "sconfitta": [
+    "sconfitta",
+    "caduta",
+    "battuta d'arresto",
+    "passo falso"
+  ],
+  "gol": [
+    "gol",
+    "rete",
+    "centro"
+  ],
+  "gioco": [
+    "il gioco",
+    "la manovra",
+    "le idee",
+    "la squadra"
+  ],
+  "sorpresa": [
+    "a sorpresa",
+    "contro ogni pronostico",
+    "tra lo stupore generale",
+    "quasi senza che nessuno se ne accorgesse"
+  ],
+  "chiaro": [
+    "è chiaro",
+    "è evidente",
+    "non ci sono dubbi",
+    "lo dicono i numeri"
+  ],
+  "silenzio": [
+    "silenzio stampa non ufficiale",
+    "bocche cucite",
+    "nessuna dichiarazione",
+    "poche parole"
+  ],
+  "mister_dice": [
+    "{mister} [prova a rassicurare|getta acqua sul fuoco|non si nasconde|chiede calma]",
+    "dalla panchina [arriva un messaggio chiaro|chiedono pazienza|non cercano alibi]"
+  ],
+  "presto": [
+    "presto",
+    "nelle prossime settimane",
+    "da qui a fine mese",
+    "a breve"
+  ],
+  "numeri": [
+    "i numeri",
+    "le statistiche",
+    "i dati",
+    "le cifre"
+  ],
+  "leggenda": [
+    "un posto nella storia del club",
+    "un pezzo di storia",
+    "qualcosa che si ricorderà a lungo",
+    "un capitolo da raccontare"
+  ]
+}

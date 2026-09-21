@@ -1,0 +1,221 @@
+{
+  "crisis.open": [
+    "{n_w} partite senza vittoria: per {club} è [crisi|crisi vera|crisi aperta]. #stampa# [cominciano a fare i conti|iniziano a porsi domande|parlano di momento delicato].",
+    "[Il vento è cambiato|Qualcosa si è rotto|L'aria si è fatta pesante] dalle parti {club_di}: {n_w} gare senza i tre punti e #tifosi# [cominciano a rumoreggiare|chiedono spiegazioni|non nascondono la preoccupazione].",
+    "[Allarme|Campanello d'allarme|Segnali preoccupanti] per {club}, a secco di vittorie da {n_w} partite. #mister_dice#.",
+    "{club} non vince da {n_w} giornate e #ambiente# [si interroga|comincia a innervosirsi|chiede una scossa]. [Serve una reazione|Serve un segnale] #domenica#.",
+    "[È crisi|Si parla già di crisi] per {club}: {n_w} partite di fila senza vittoria, e il calendario non aiuta."
+  ],
+  "crisis.next": [
+    "Il conto sale a {n_w} partite senza vittoria e [la situazione si fa seria|la pazienza comincia a finire|nessuno parla più di sfortuna]. #dicono# che la società stia [riflettendo|valutando ogni opzione|perdendo la calma].",
+    "{n_w} gare senza vincere: per {club} [il tunnel si allunga|il buio continua|la crisi diventa un caso]. #tifosi# [contestano|fischiano all'uscita|disertano gli spalti].",
+    "[Il momento peggiore della stagione|Un digiuno che pesa come un macigno]: {club} è ferm{club_o} da {n_w} turni. #stampa# [chiedono una svolta|parlano di panchina in bilico|non fanno più sconti]."
+  ],
+  "crisis.won": [
+    "[Finalmente|Era ora|Liberazione]: {club} torna a vincere dopo {n_w} partite e #ambiente# [respira|tira un sospiro di sollievo|ritrova il sorriso].",
+    "La crisi è alle spalle: [una vittoria che vale più dei tre punti|tre punti che sanno di liberazione|un successo che scaccia i fantasmi] per {club}.",
+    "{club} rompe il digiuno. [Adesso bisogna dare continuità|Il difficile, ora, è ripetersi|Si riparte da qui], ma intanto #ambiente# [festeggia|ritrova fiducia]."
+  ],
+  "crisis.lost": [
+    "{n_w} partite senza vittoria: per {club} la stagione [rischia di prendere una piega irreparabile|è diventata un incubo|si è fatta durissima]. #stampa# [non usano più giri di parole|parlano apertamente di fallimento].",
+    "[Il tunnel non finisce|Nessuna luce in fondo al tunnel]: {club} arriva a {n_w} gare senza vincere e #tifosi# [chiedono teste|hanno perso la pazienza]."
+  ],
+  "crisis.faded": [
+    "Della crisi {club_di} si parla sempre meno: [i risultati non sono ancora brillanti|non è ancora la squadra di inizio stagione], ma l'emergenza sembra rientrata."
+  ],
+
+  "winStreak.open": [
+    "{n_w} vittorie di fila: {club} [non si ferma più|vola|ha trovato la marcia giusta]. #stampa# [cominciano a sognare|parlano di squadra da battere|la indicano come la più in forma del campionato].",
+    "[Serie aperta|Filotto] per {club}: {n_w} successi consecutivi e [un gioco che convince|una solidità impressionante|la sensazione di non poter perdere].",
+    "{club} infila la {n_a} vittoria di fila. #tifosi# [cantano|riempiono lo stadio|si godono il momento], {mister} [predica calma|non vuole sentire parlare di sogni]."
+  ],
+  "winStreak.next": [
+    "{n_w} vittorie consecutive: la corsa {club_di} [è ormai una marcia trionfale|non è più una sorpresa|è una serie da ricordare]. #chiaro#: chi vuole andare lontano deve fare i conti con loro.",
+    "Arriva la {n_a} vittoria di fila, e {club} [entra nella storia del club|riscrive i propri record|mette paura a tutti]."
+  ],
+  "winStreak.lost": [
+    "[Si ferma|Si interrompe] a {n_w} la serie di vittorie {club_di}. [Resta una striscia da ricordare|Nessun dramma, ma il sogno si incrina|Il campionato è ancora lungo].",
+    "Dopo {n_w} successi di fila {club} [torna a non vincere|si inceppa|conosce di nuovo il gusto amaro della battuta d'arresto]."
+  ],
+
+  "unbeaten.open": [
+    "{n_w} risultati utili consecutivi: {club} [non perde più|è diventat{club_o} imbattibile|ha costruito un muro]. #numeri# raccontano una squadra [solida|compatta|che sa soffrire].",
+    "[Imbattibili|Nessuno li batte]: {club} arriva a {n_w} partite senza sconfitte, e #stampa# [cominciano a farci caso|la citano come esempio di continuità]."
+  ],
+  "unbeaten.next": [
+    "{n_w} partite senza perdere: {club} [ha superato ogni previsione|non è più una sorpresa, è una certezza|scrive una pagina importante]."
+  ],
+  "unbeaten.lost": [
+    "Cade dopo {n_w} partite l'imbattibilità {club_di}. [Resta un percorso straordinario|Una sconfitta che non cancella quanto fatto|Si riparte, con qualche certezza in più]."
+  ],
+
+  "titleRace.open": [
+    "Corsa a due per lo scudetto: {club} e {rival}, {distacco}, {fine}. [Da qui in avanti ogni partita è una finale|Non si può più sbagliare|Il campionato entra nel vivo].",
+    "{fine} lo scudetto è una questione tra {club} e {rival}, {distacco}. #stampa# [fanno già i conti|si dividono sui favori del pronostico|contano le giornate].",
+    "[Volata scudetto|Testa a testa in vetta]: {club} davanti, {rival} a inseguire, {distacco}. [Chi cederà per primo?|Vincerà chi avrà più nervi|Sarà deciso dai dettagli]."
+  ],
+  "titleRace.won": [
+    "{club} è campione! [Al termine di un duello durato fino all'ultimo|Dopo una volata tiratissima] con {rival}, lo scudetto [è loro|prende la strada di {club_nome}].",
+    "[Festa grande|Si fa festa] a {club_nome}: lo scudetto è {club_di}. {rival} [si arrende solo alla fine|esce a testa alta]."
+  ],
+  "titleRace.lost": [
+    "[Sorpasso finale|Beffa all'ultima curva]: lo scudetto va {rival_a}, e {club} [resta con un pugno di mosche|deve accontentarsi del secondo posto|mastica amaro]."
+  ],
+
+  "relegation.open": [
+    "{club} è al {pos_o} posto e [la zona retrocessione fa paura|il rischio di scendere è concreto|la classifica preoccupa sul serio]. {fine}, [serve cambiare passo|non c'è più tempo da perdere].",
+    "[Lotta per la salvezza|Corsa a non retrocedere]: {club} occupa il {pos_o} posto e #ambiente# [comincia a tremare|chiede un cambio di marcia]."
+  ],
+  "relegation.next": [
+    "[Boccata d'ossigeno|Passo avanti importante]: {club} esce dalla zona rossa ed è ora al {pos_o} posto. [Ma la strada è ancora lunga|Guai a rilassarsi|Il più è ancora da fare]."
+  ],
+  "relegation.won": [
+    "[Salvezza!|È salvezza.|Missione compiuta.] {club} chiude al {pos_o} posto e resta nella categoria. [Una stagione di sofferenza, ma con il lieto fine|Si può tirare il fiato]."
+  ],
+  "relegation.lost": [
+    "[È retrocessione.|Il verdetto è amaro:] {club} [scende di categoria|lascia la categoria] dopo aver chiuso al {pos_o} posto. #tifosi# [piangono|chiedono di ripartire subito]."
+  ],
+
+  "surprise.open": [
+    "[La favola del campionato|La sorpresa della stagione] si chiama {club_nome}: {pos_o} posto, #sorpresa#. #stampa# [si chiedono fin dove può arrivare|parlano di miracolo sportivo].",
+    "Nessuno ci avrebbe scommesso, e invece {club} è al {pos_o} posto. [Idee chiare|Un gruppo unito|Un'identità precisa] e [tanto entusiasmo|nessuna paura]."
+  ],
+  "surprise.won": [
+    "{club} chiude al {pos_o} posto: [la favola è diventata realtà|una stagione da incorniciare|un risultato che resterà negli annali del club]."
+  ],
+  "surprise.lost": [
+    "[La favola si interrompe|Torna sulla terra]: {club} scivola al {pos_o} posto. [Resta comunque un girone d'andata da ricordare|Il sogno è durato poco]."
+  ],
+
+  "giant.open": [
+    "[Il gigante è in ginocchio|Crisi di una grande]: {club} è al {pos_o} posto, nella metà bassa della classifica. #stampa# [non ci credono|parlano di stagione nata storta|cercano i colpevoli].",
+    "Chi l'avrebbe detto: {club} al {pos_o} posto. [Il blasone non basta|I nomi non vincono le partite], e #tifosi# [sono furiosi|chiedono spiegazioni]."
+  ],
+  "giant.won": [
+    "[La grande è tornata|Rimonta completata]: {club} risale fino al {pos_o} posto e [rimette le cose al loro posto|zittisce i critici]."
+  ],
+  "giant.lost": [
+    "Stagione da dimenticare per {club}, che chiude al {pos_o} posto. [In estate sarà rivoluzione|Serviranno scelte forti]."
+  ],
+
+  "fortress.open": [
+    "[Fortino inespugnabile|In casa non passa nessuno]: {n_w} vittorie di fila davanti ai propri tifosi per {club}.",
+    "Lo stadio {club_di} è diventato un campo proibito: {club} ha vinto le ultime {n_w} partite in casa."
+  ],
+  "fortress.lost": [
+    "Cade il fortino: dopo {n_w} vittorie casalinghe consecutive, {club} [non riesce a vincere davanti al suo pubblico|si fa sorprendere in casa]."
+  ],
+
+  "awayCurse.open": [
+    "[Lontano da casa è un altro sport|Trasferta, che maledizione]: {club} non vince fuori da {n_w} partite.",
+    "{n_w} trasferte senza vittoria: {club} [soffre ogni volta che lascia il proprio stadio|in viaggio perde le certezze]."
+  ],
+  "awayCurse.won": [
+    "[Sfatato il tabù|Maledizione spezzata]: {club} torna a vincere in trasferta dopo {n_w} tentativi a vuoto."
+  ],
+
+  "drought.open": [
+    "[Attacco spuntato|Le polveri sono bagnate]: {club} non segna da {n_w} partite. [Serve un gol per sbloccarsi|Il problema è sotto porta].",
+    "{n_w} gare senza segnare per {club}: [un digiuno che comincia a pesare|la porta sembra stregata]."
+  ],
+  "drought.won": [
+    "[Sbloccati!|Finalmente il gol.] {club} torna a segnare dopo un lungo digiuno, e [si toglie un peso|ritrova il sorriso]."
+  ],
+
+  "leaky.open": [
+    "[Difesa colabrodo|Retroguardia in affanno]: {club} ha incassato {ga_w} gol nelle ultime quattro partite. #stampa# [puntano il dito contro la linea difensiva|chiedono correttivi].",
+    "{ga_w} reti subite in quattro gare: dietro, {club} [fa acqua|non trova equilibrio|balla pericolosamente]."
+  ],
+  "leaky.won": [
+    "[Porta chiusa, finalmente|Arriva il clean sheet]: {club} non subisce gol e [ritrova solidità|mette una pezza alla difesa]."
+  ],
+
+  "cleanRun.open": [
+    "{n_w} partite senza subire gol: la difesa {club_di} [è un muro|non concede niente|è la migliore del momento].",
+    "[Porta blindata|Muro invalicabile]: {club} non prende gol da {n_w} partite."
+  ],
+  "cleanRun.lost": [
+    "Dopo {n_w} partite di imbattibilità, la porta {club_di} [cede di nuovo|torna a essere violata]."
+  ],
+
+  "nemesis.open": [
+    "[Ancora loro|Sempre loro]: {rival} batte {club} per la {n_a} volta di fila. [È diventata una bestia nera|Un avversario che fa paura solo a nominarlo].",
+    "{n_w} sconfitte consecutive contro {rival}: per {club} è [una maledizione|un conto aperto|un tabù da sfatare]."
+  ],
+  "nemesis.next": [
+    "[E sono {n_w}|Il conto sale a {n_w}]: {rival} si conferma la bestia nera {club_di}."
+  ],
+  "nemesis.won": [
+    "[Tabù sfatato!|Finalmente.] {club} batte {rival} e chiude [un conto aperto da tempo|una serie che durava da troppo]. #ambiente# [si toglie un peso enorme|festeggia due volte]."
+  ],
+
+  "revenge.open": [
+    "[Voglia di rivincita|Conto da saldare]: all'andata {rival} aveva vinto {ga}-{gf}. {club} non ha dimenticato.",
+    "{domenica} arriva {rival}, [la squadra che all'andata aveva rifilato un pesante {ga}-{gf}|che all'andata aveva umiliato {club} per {ga}-{gf}]. [Stavolta sarà diverso?|Occasione di riscatto]."
+  ],
+  "revenge.won": [
+    "[Rivincita servita|Conto saldato]: {club} batte {rival} {gf}-{ga} e cancella il ricordo dell'andata."
+  ],
+  "revenge.lost": [
+    "[Niente rivincita|Il riscatto non arriva]: {rival} si impone ancora, {ga}-{gf}. [Per {club} è una lezione|Doppia beffa]."
+  ],
+
+  "comeback.open": [
+    "[Rimonta da applausi|Che rimonta!]: sotto di due gol, {club} ribalta tutto e batte {rival} {gf}-{ga}.",
+    "{club} va sotto di due reti contro {rival}, poi [cambia la partita|ha la forza di reagire] e vince {gf}-{ga}. [Carattere da vendere|Una squadra che non muore mai].",
+    "[Dalla paura alla festa|Dal baratro al trionfo]: {club} rimonta due gol {rival_a} e chiude {gf}-{ga}."
+  ],
+
+  "showdown.open": [
+    "[Scontro diretto|Partita da dentro o fuori]: {club} contro {rival}, {distacco}, {fine}. [Chi vince fa un passo decisivo|Vietato sbagliare].",
+    "{domenica} c'è {club_nome}-{rival_nome}: {distacco}, ed è la partita che [può cambiare la stagione|vale doppio|tutti aspettano]."
+  ],
+  "showdown.won": [
+    "{club} vince lo scontro diretto con {rival}, {gf}-{ga}: [passo forse decisivo|tre punti che valgono doppio|una vittoria che pesa]."
+  ],
+  "showdown.lost": [
+    "{rival} si prende lo scontro diretto: {ga}-{gf} {club_a}. [Un colpo pesantissimo|Adesso la situazione si complica]."
+  ],
+  "showdown.next": [
+    "Pareggio {gf}-{ga} tra {club} e {rival}: [nessuno si fa male|tutto resta com'era|il verdetto è rinviato]."
+  ],
+
+  "thrashing.open": [
+    "[Serata da dimenticare|Notte fonda]: {club} travolt{club_o} {ga}-{gf} {rival_da}. #stampa# [parlano di disfatta|non trovano attenuanti].",
+    "{rival} [umilia|travolge|schianta] {club}: finisce {ga}-{gf}. [Serve una reazione immediata|Una sconfitta che fa male]."
+  ],
+  "thrashing.won": [
+    "[Reazione immediata|Subito in piedi]: dopo la batosta con {rival}, {club} torna a vincere."
+  ],
+  "thrashing.lost": [
+    "[Non c'è reazione|Piove sul bagnato]: dopo la pesante sconfitta con {rival}, {club} perde ancora."
+  ],
+
+  "ffp.open": [
+    "[Conti sotto la lente|Guai finanziari]: {club} è finit{club_o} nel mirino del fair play finanziario. [La società dovrà intervenire|Il mercato ne risentirà]."
+  ],
+  "ffp.next": [
+    "[Le sanzioni si inaspriscono|Scatta il provvedimento]: {club} [ha il mercato bloccato|viene penalizzat{club_o} in classifica]. [Il bilancio condiziona il campo|Una situazione seria]."
+  ],
+  "ffp.won": [
+    "[Conti in regola|Bilancio risanato]: {club} esce dalle sanzioni del fair play finanziario."
+  ],
+
+  "boardUnrest.open": [
+    "[Panchina traballante|Aria di esonero]: la fiducia della società in {mister} è ai minimi. #dicono# che [i dirigenti abbiano già sondato alternative|servano risultati subito].",
+    "La dirigenza {club_di} [non è soddisfatta|comincia a perdere la pazienza]: {mister} [è sotto esame|deve invertire la rotta], e #stampa# [lo scrivono chiaramente|ne parlano apertamente]."
+  ],
+  "boardUnrest.next": [
+    "[Ultima spiaggia|Ultimatum] per {mister}: #dicono# che la società [abbia già deciso|stia preparando il cambio|aspetti solo il prossimo passo falso]."
+  ],
+  "boardUnrest.won": [
+    "[Fiducia ritrovata|Panchina salda]: i risultati hanno riportato il sereno tra {mister} e la società."
+  ],
+
+  "fans.open": [
+    "[La curva si è girata|Il rapporto con i tifosi si è incrinato]: striscioni di protesta e fischi per {club}. #tifosi# [chiedono rispetto per la maglia|vogliono vedere un'altra squadra]."
+  ],
+  "fans.won": [
+    "[Pace fatta|Il pubblico torna a sostenere la squadra]: tra {club} e i suoi tifosi è tornato il sereno."
+  ]
+}

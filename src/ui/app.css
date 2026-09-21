@@ -202,3 +202,9 @@ select { background: var(--surface-1); color: var(--text-1); border: 1px solid v
 .meter .fill { height: 100%; background: var(--accent); }
 .meter .fill.bad { background: var(--negative); }
 .meter .fill.good { background: var(--positive); }
+
+/* storie (F8) */
+.arc { display: grid; gap: var(--s-1); padding: var(--s-2) 0; border-bottom: 1px solid var(--border); }
+.arc:last-child { border-bottom: 0; }
+.arc.won b { color: var(--positive); }
+.arc.lost b { color: var(--negative); }

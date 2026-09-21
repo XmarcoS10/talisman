@@ -1,0 +1,159 @@
+{
+  "redemption.open": [
+    "[Dal buio alla luce|La rinascita|Il riscatto] di {nome}: dopo settimane difficili, [una doppietta che cambia tutto|due gol che valgono molto più dei punti|la risposta arriva sul campo].",
+    "Lo davano per finito, e invece {cognome} [risponde con una doppietta|si prende la scena con due reti|zittisce tutti segnando due volte]. #stampa# [parlano di rinascita|lo riscoprono].",
+    "{nome} [era finito nel mirino della critica|sembrava smarrito] da settimane. Ora [firma una doppietta|segna due gol] e [si toglie un peso|ritrova il sorriso]."
+  ],
+  "redemption.won": [
+    "Non era un fuoco di paglia: {cognome} [segna ancora|si conferma|non si ferma più]. [La rinascita è completa|Il momento nero è davvero alle spalle]."
+  ],
+  "redemption.faded": [
+    "Dopo la doppietta del riscatto, {cognome} [è tornato nell'ombra|non ha trovato continuità]. [Resta un giocatore da ritrovare|Il talento c'è, la costanza ancora no]."
+  ],
+
+  "hotStreak.open": [
+    "{nome} [non si ferma più|è in stato di grazia|vede la porta come nessun altro]: a segno in {n_w} partite di fila.",
+    "[Chi lo ferma?|Momento magico:] {cognome} segna da {n_w} giornate consecutive, e {club} [se lo coccola|ringrazia]. #stampa# [lo mettono in copertina|lo indicano come l'uomo del momento].",
+    "{n_w} partite, {n_w} volte a segno: {cognome} [sta vivendo il suo momento migliore|trascina {club}|non sbaglia un colpo]."
+  ],
+  "hotStreak.next": [
+    "[È una serie da record|Numeri impressionanti]: {cognome} segna per la {n_a} partita consecutiva. [Qualcuno comincia a parlare di Nazionale|Il suo nome è sulla bocca di tutti]."
+  ],
+  "hotStreak.lost": [
+    "Si ferma a {n_w} partite la striscia di {cognome}. [Resta un periodo da incorniciare|Anche i migliori, ogni tanto, restano a secco]."
+  ],
+
+  "predestined.open": [
+    "[Ricordatevi questo nome:|Nasce una stella?] {nome}, {age_w} anni, esordisce con {club}. Chi lo ha visto crescere [giura che è speciale|parla di un talento raro].",
+    "Esordio per {nome}, {age_w} anni: #dicono# che a {club_nome} non si vedesse un ragazzo così da [anni|decenni|tempo immemorabile].",
+    "{club} lancia {nome}, appena {age_w} anni. [Il futuro è già qui|Un predestinato?|Il settore giovanile sforna un gioiello]."
+  ],
+  "predestined.next": [
+    "[Primo sigillo|Il primo gol] per {nome}: il ragazzo [mantiene le promesse|cresce a vista d'occhio|non sente la pressione].",
+    "{cognome} non è più solo una promessa: [gli osservatori delle grandi|i club più ricchi] [hanno cominciato a seguirlo|prendono appunti]. #dicono# che le prime offerte siano già arrivate."
+  ],
+  "predestined.won": [
+    "[La profezia si è avverata|Il predestinato è diventato un campione]: {nome} è ormai [uno dei migliori del campionato|un giocatore fatto e finito|un titolare inamovibile {club_di}]."
+  ],
+  "predestined.lost": [
+    "[Talento perduto|Promessa mancata]: {nome} non è diventato il campione che tutti aspettavano. [Il calcio, a volte, è crudele|Succede più spesso di quanto si pensi]."
+  ],
+
+  "talisman.open": [
+    "{nome} ha segnato {g_w} dei {team_w} gol {club_di}: [senza di lui|togliete lui e] {club} [sarebbe un'altra squadra|faticherebbe a vincere].",
+    "[Uomo squadra|Il trascinatore]: {cognome} firma quasi metà delle reti {club_di}, {g_w} su {team_w}. #chiaro#: tutto passa da lui."
+  ],
+
+  "scorerRace.open": [
+    "[Corsa al titolo di capocannoniere|Caccia al trono dei bomber]: {cognome} è a quota {g}, il primo è a {top}. [Si fa sul serio|Ogni gol pesa doppio].",
+    "{nome} [insegue|punta] il titolo di capocannoniere: {g_w} reti, a un passo dalla vetta."
+  ],
+  "scorerRace.won": [
+    "{nome} è il capocannoniere del campionato con {g_w} gol. [Una stagione da incorniciare|Il premio a un'annata straordinaria|Il suo nome entra nell'albo d'oro]."
+  ],
+  "scorerRace.lost": [
+    "Sfuma il titolo di capocannoniere per {cognome}, [battuto sul filo di lana|superato nel finale]. [Resta una stagione da ricordare|Ci riproverà]."
+  ],
+
+  "keeper.open": [
+    "[Saracinesca|Muro] {cognome}: {club} non subisce gol da quattro partite, e buona parte del merito è sua.",
+    "[Para tutto|Imbattibile]: {nome} tiene la porta inviolata per la quarta partita di fila."
+  ],
+  "keeper.lost": [
+    "Dopo settimane di imbattibilità, {cognome} [deve raccogliere di nuovo il pallone in fondo alla rete|capitola]."
+  ],
+
+  "comebackKid.open": [
+    "[Il ritorno|Bentornato]: {nome} rientra dopo {days_w} giorni di infortunio e [segna subito|trova il gol al rientro]. [Una storia di pazienza e lavoro|Le lacrime dopo il gol dicono tutto].",
+    "{days_w} giorni ai box, poi il rientro e il gol: {cognome} [non poteva immaginare un ritorno migliore|si prende la sua rivincita sulla sfortuna]."
+  ],
+
+  "slump.open": [
+    "[Momento no|Crisi di rendimento] per {nome}: cinque partite sotto la sufficienza, e #stampa# [si chiedono cosa gli stia succedendo|cominciano a criticarlo].",
+    "Dov'è finito il miglior {cognome}? [Cinque prestazioni opache|Un mese da dimenticare] e {club} [ne risente|lo aspetta]."
+  ],
+  "slump.won": [
+    "[È tornato|Rieccolo]: {cognome} gioca una partita da protagonista e si scrolla di dosso settimane difficili."
+  ],
+  "slump.faded": [
+    "Il momento no di {cognome} [si è trascinato a lungo|non è ancora del tutto alle spalle], ma se ne parla sempre meno."
+  ],
+
+  "wantsOut.open": [
+    "[Separato in casa|Rottura]: {nome} ha chiesto di essere ceduto. #dicono# che [il rapporto con la società sia ai minimi|non si senta più considerato].",
+    "{cognome} [vuole andare via|ha chiesto la cessione], e la notizia [agita lo spogliatoio|non passa inosservata]. {mister} [dovrà gestire la situazione|è chiamato a ricucire]."
+  ],
+  "wantsOut.won": [
+    "[Pace fatta|Il caso è chiuso]: {cognome} [ha ritrovato serenità|ha deciso di restare|non chiede più di andare via]."
+  ],
+  "wantsOut.lost": [
+    "[Addio|Separazione consumata]: {nome} lascia {club}. [Si chiude un capitolo|Una storia finita male]."
+  ],
+
+  "feud.open": [
+    "[Tensione nello spogliatoio|Gelo in squadra]: {nome} e {other} non si parlano più. #dicono# che [la lite sia nata in allenamento|la frattura sia profonda].",
+    "{cognome} e {other}: [una faida che rischia di dividere il gruppo|due compagni diventati rivali|il caso che agita lo spogliatoio]."
+  ],
+  "feud.won": [
+    "[Stretta di mano|Chiarimento]: {cognome} e {other} [hanno fatto pace|si sono lasciati alle spalle le tensioni]. #ambiente# [ringrazia|respira]."
+  ],
+
+  "mentor.open": [
+    "[Il maestro e l'allievo|Scuola di calcio]: {nome} segna, e il primo ad abbracciarlo è {mentor}, che da mesi lo segue [come un fratello maggiore|passo dopo passo].",
+    "Gol di {cognome}, dedica a {mentor}: [il veterano che gli sta insegnando il mestiere|il compagno che lo ha preso sotto la sua ala]."
+  ],
+
+  "debut.open": [
+    "[Esordio|Prima volta] per {nome}, {age_w} anni: [un giorno che non dimenticherà|la realizzazione di un sogno].",
+    "{club} fa esordire {nome}, {age_w} anni. [Il settore giovanile continua a lavorare bene|Un altro ragazzo di casa in prima squadra]."
+  ],
+
+  "veteran.open": [
+    "[L'età è solo un numero|Eterno]: a {age_w} anni {nome} segna ancora, e [lo fa con la voglia di un ragazzino|dimostra di avere ancora molto da dare].",
+    "{age_w} anni e non sentirli: {cognome} [va ancora in gol|firma ancora il tabellino|è ancora decisivo]."
+  ],
+
+  "newSigning.open": [
+    "[Impatto immediato|Subito a segno]: {nome}, appena arrivato {rival_da}, [segna nelle sue prime partite con {club}|si presenta con un gol].",
+    "{cognome} [ci ha messo poco|non ha bisogno di ambientarsi]: [pochi giorni|poche partite] con la nuova maglia ed è già in gol."
+  ],
+
+  "flop.open": [
+    "[Oggetto misterioso|Delusione]: {nome}, arrivato in estate, non ha ancora convinto dopo {apps_w} partite. #stampa# [cominciano a parlare di flop|si chiedono se valesse l'investimento].",
+    "{cognome} [fatica ad ambientarsi|non riesce a incidere]: {apps_w} presenze e [nessuna prestazione all'altezza|la sensazione di un acquisto sbagliato]."
+  ],
+  "flop.won": [
+    "[Finalmente il vero {cognome}|Ecco perché l'avevano preso]: una prestazione da protagonista zittisce i critici."
+  ],
+  "flop.lost": [
+    "[Esperienza chiusa|Storia mai decollata]: {nome} lascia {club} senza aver mai convinto."
+  ],
+
+  "formerClub.open": [
+    "[La legge dell'ex|Il gol dell'ex]: {nome} segna contro {rival}, la sua vecchia squadra. [Niente esultanza, per rispetto|Esulta senza freni|Un gol che ha un sapore speciale].",
+    "{cognome} [punisce il suo passato|non fa sconti al passato]: gol {rival_a}, che [lo aveva lasciato partire|non aveva creduto in lui]."
+  ],
+
+  "hatTrick.open": [
+    "[Tripletta|Tre gol, pallone a casa]: {nome} [trascina {club}|si prende la scena] contro {rival}.",
+    "{cognome} [ne fa tre|firma una tripletta|è imprendibile] contro {rival}. [Pomeriggio perfetto|Una prestazione da incorniciare].",
+    "[Show di|Serata magica per] {nome}: tre gol contro {rival}, e il pallone della partita [se lo porta a casa lui|è suo]."
+  ],
+
+  "hothead.open": [
+    "[Testa calda|Nervi tesi]: {nome} rimedia il {n_o} cartellino rosso della stagione. {mister} [non la prende bene|chiede più autocontrollo]."
+  ],
+
+  "preSigned.open": [
+    "[È ufficiale|Addio annunciato]: {nome} ha firmato con {rival} e a fine stagione lascerà {club} a parametro zero.",
+    "{cognome} [ha già scelto il suo futuro|se ne andrà a giugno]: [accordo raggiunto|firma già depositata] con {rival}. #tifosi# [non la prendono bene|si sentono traditi]."
+  ],
+  "preSigned.lost": [
+    "{nome} [saluta|lascia] {club} e [raggiunge|va a vestire la maglia {rival_di}], come previsto."
+  ],
+
+  "lateWinner.open": [
+    "[All'ultimo respiro|Allo scadere|In pieno recupero]: {nome} segna al {min}' e regala {club_a} la vittoria contro {rival}.",
+    "{cognome}, minuto {min}: [il gol che vale tre punti|la zampata che decide la partita|l'esplosione dello stadio]. {club} batte {rival} [sul filo di lana|all'ultimo]."
+  ]
+}

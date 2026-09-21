@@ -4,6 +4,7 @@ import { Crest } from '../Crest.tsx';
 import { fmtDate, fmtSeason, t, tEvent } from '../i18n.ts';
 import { outcome } from './Fixtures.tsx';
 import { boardGoal } from './Start.tsx';
+import { DeskStories } from './Stories.tsx';
 import { LeagueTable } from './Tables.tsx';
 
 export function Desk({ world }: { world: WorldState }) {
@@ -20,6 +21,7 @@ export function Desk({ world }: { world: WorldState }) {
   return (
     <div className="grid" style={{ gridTemplateColumns: '1.3fr 1fr', alignItems: 'start' }}>
       <div className="grid">
+        <DeskStories world={world} />
         <div className="panel">
           <h3>{t('desk.nextMatch')}</h3>
           {next ? (

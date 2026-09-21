@@ -126,6 +126,12 @@ export function applyMatch(world: WorldState, rng: Rng, fx: Fixture, out: SimOut
   const clubs = [world.clubs[fx.home]!, world.clubs[fx.away]!] as const;
   const { result, played } = out;
   fx.result = result;
+  // testa a testa dell'utente, che sopravvive alle stagioni: serve alle storie di nemesi (§7.4)
+  if (fx.home === me || fx.away === me) {
+    const opp = fx.home === me ? fx.away : fx.home;
+    const [mine, theirs] = fx.home === me ? [result.hg, result.ag] : [result.ag, result.hg];
+    world.manager.h2h[opp] = ((world.manager.h2h[opp] ?? '') + (mine > theirs ? 'W' : mine < theirs ? 'L' : 'D')).slice(-6);
+  }
 
   played.forEach((list, side) => {
     const club = clubs[side]!;

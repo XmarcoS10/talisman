@@ -17,6 +17,7 @@ import { Market } from './screens/Market.tsx';
 import { Saves } from './screens/Saves.tsx';
 import { Scouts } from './screens/Scouts.tsx';
 import { Squad } from './screens/Squad.tsx';
+import { Stories } from './screens/Stories.tsx';
 import { Start } from './screens/Start.tsx';
 import { Tables } from './screens/Tables.tsx';
 import { Tactics } from './screens/Tactics.tsx';
@@ -25,11 +26,11 @@ import { Search } from './Search.tsx';
 import { currentSlot, saveTo } from './storage.ts';
 
 type Screen =
-  | { name: 'desk' | 'squad' | 'tactics' | 'training' | 'dressing' | 'market' | 'scouts' | 'finance' | 'board' | 'tables' | 'fixtures' | 'saves' }
+  | { name: 'desk' | 'stories' | 'squad' | 'tactics' | 'training' | 'dressing' | 'market' | 'scouts' | 'finance' | 'board' | 'tables' | 'fixtures' | 'saves' }
   | { name: 'player'; id: number; back: Screen }
   | { name: 'club'; id: number; back: Screen };
 type Modal = { kind: 'match'; fx: Fixture; others: Fixture[] } | { kind: 'season'; summary: SeasonSummary; myPos: number } | null;
-const NAV = ['desk', 'squad', 'tactics', 'training', 'dressing', 'market', 'scouts', 'finance', 'board', 'tables', 'fixtures', 'saves'] as const;
+const NAV = ['desk', 'stories', 'squad', 'tactics', 'training', 'dressing', 'market', 'scouts', 'finance', 'board', 'tables', 'fixtures', 'saves'] as const;
 
 const autosave = (w: WorldState) => { if (!saveTo(currentSlot(), w)) console.error('Salvataggio fallito'); };
 
@@ -124,6 +125,7 @@ export function App() {
 
       <main className="content">
         {screen.name === 'desk' && <Desk world={world} />}
+        {screen.name === 'stories' && <Stories world={world} />}
         {screen.name === 'squad' && <Squad world={world} clubId={club.id} onPlayer={openPlayer} />}
         {screen.name === 'tactics' && <Tactics world={world} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'training' && <Training world={world} onChange={changed} onPlayer={openPlayer} />}

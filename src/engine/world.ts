@@ -17,6 +17,7 @@ import { assignAgents, dropClient, weekAgents } from './transfers/agents.ts';
 import { aiRenewals, loanOutYouth, movePreSigned, preContracts, release, returnLoans, signFreeAgents } from './transfers/contracts.ts';
 import { isWinterWindow, runWindow } from './transfers/market.ts';
 import { makeScouts, weekScouting } from './scouting/scouts.ts';
+import { weekStories } from './narrative/scanner.ts';
 import { checkFFP, estimate, gate, seasonIncome, settleInstalments, trimWages, weekCosts } from './finance/ledger.ts';
 import { defaultTraining, trainWeek } from './training.ts';
 
@@ -39,8 +40,8 @@ export function newWorld(seed: number, season = 2026): WorldState {
   const rng = new Rng(seed);
   const world: WorldState = {
     schemaVersion: SCHEMA_VERSION, seed, rng: rng.s, season, day: 0,
-    manager: { name: '', clubId: 0, kept: 0, broken: 0, board: newBoard() }, players: {}, clubs: {}, competitions: {}, history: [], news: [],
-    causal: [], promises: [], talks: [], nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
+    manager: { name: '', clubId: 0, kept: 0, broken: 0, board: newBoard(), h2h: {} }, players: {}, clubs: {}, competitions: {}, history: [], news: [],
+    causal: [], promises: [], talks: [], arcs: [], nextArcId: 1, nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
   };
   const cities = [...CITIES];
   let clubId = 0;
@@ -129,6 +130,7 @@ function passDays(world: WorldState, rng: Rng, days: number, weeks: number) {
     weekCosts(world, 1); // stipendi, staff, stadio
     weekBoard(world); // le quattro barre della fiducia
     weekScouting(world, rng); // gli osservatori diradano la nebbia
+    weekStories(world, rng); // le storie della settimana (§7.4)
     // gli agenti si muovono: quello che riguarda il club dell'utente diventa notizia
     for (const mv of weekAgents(world, rng)) {
       const mine = world.manager.clubId;
