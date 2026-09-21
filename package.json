@@ -36,7 +36,7 @@
   "author": "Marco",
   "build": {
     "appId": "it.talisman.game",
-    "productName": "Talisman",
+    "productName": "Tactic F.C. Manager",
     "copyright": "Marco, con licenza GPL-3.0",
     "files": [
       "dist/**",
@@ -55,7 +55,7 @@
       "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
-      "artifactName": "Talisman-Setup.${ext}"
+      "artifactName": "TFM27-Setup.${ext}"
     },
     "linux": {
       "target": "AppImage",

@@ -1,4 +1,4 @@
-# TALISMAN — regole per l'agente
+# TACTIC F.C. MANAGER (TFM 27, nome in codice Talisman) — regole per l'agente
 
 Gioco manageriale di calcio stile Football Manager, gratuito. Specifica completa in `GUIDA.md` (Blocco B = specifiche, §13 = prompt per fase).
 Marco non programma: fa collaudo, playtest e decisioni. Il codice lo scrive Claude, fase per fase (roadmap GUIDA §9).

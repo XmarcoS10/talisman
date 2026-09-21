@@ -1,11 +1,11 @@
-# Talisman
+# Tactic F.C. Manager (TFM 27)
 
 **Un gioco manageriale di calcio, gratuito, in italiano.**
 *A free football management game. The game is in Italian.*
 
-> In FM alleni una rosa. Qui alleni un gruppo di persone.
+> Non alleni una rosa: alleni un gruppo di persone.
 
-Talisman è un gioco alla Football Manager con un'idea diversa al centro: i giocatori sono persone. Hanno amici e
+Tactic F.C. Manager è un gioco manageriale con un'idea diversa al centro: i giocatori sono persone. Hanno amici e
 rivali nello spogliatoio, un morale che si trasmette agli altri, promesse che si ricordano — e agenti che se le
 ricordano per loro. La società ti dà un obiettivo, ma è un contratto che puoi rinegoziare.
 

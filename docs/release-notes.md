@@ -7,7 +7,7 @@ tre tester esterni completano una stagione senza chiedere aiuto.
 
 ### Cosa c'è
 
-- Installer per Windows (`Talisman Setup 0.1.0.exe`, 113 MB): si installa nella cartella dell'utente, senza
+- Installer per Windows (`TFM27-Setup.exe`, 113 MB): si installa nella cartella dell'utente, senza
   permessi di amministratore; aggiornamento automatico spento. Funziona senza internet: i caratteri sono nel gioco.
 
 - Due campionati inventati, Serie A e Serie B, venti squadre ciascuno, promozioni e retrocessioni.

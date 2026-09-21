@@ -40,7 +40,8 @@ export function Start({ onLoad, onStart }: { onLoad: (w: WorldState) => void; on
 
   return (
     <div className="start">
-      <div className="row" style={{ justifyContent: 'space-between' }}>
+      <div className="row" style={{ gap: 'var(--s-5)' }}>
+        <img src="logo.webp" alt="" width={120} height={140} />
         <div>
           <h1>{t('app.title')}</h1>
           <div className="muted">{t('app.tagline')}</div>
