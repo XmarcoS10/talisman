@@ -3,7 +3,7 @@
 Pronto per essere copiato nella pagina del gioco su itch.io. La pubblicazione la fa Marco dal suo account.
 
 ## Titolo
-Talisman
+Tactic F.C. Manager (TFM 27)
 
 ## Sottotitolo (breve)
 In FM alleni una rosa. Qui alleni un gruppo di persone.
@@ -13,7 +13,7 @@ Genere: Simulazione · Etichette: football, soccer, management, sports, singlepl
 
 ## Descrizione
 
-**Talisman** è un gioco manageriale di calcio, gratuito, in italiano.
+**Tactic F.C. Manager** è un gioco manageriale di calcio, gratuito, in italiano.
 
 I tuoi giocatori non sono numeri: hanno amici e rivali nello spogliatoio, un morale che si trasmette agli altri,
 promesse che ricordano — e agenti che se le ricordano per loro. Rompi una promessa a un giocatore, e alla prossima
@@ -36,6 +36,10 @@ Il mondo è inventato: club, città e giocatori non esistono.
   «Ulteriori informazioni» e poi «Esegui comunque».
 - I salvataggi restano sul tuo computer. Il gioco non manda niente da nessuna parte.
 - Versione di collaudo 0.1.0: segnalazioni benvenute. In «Salvataggi e impostazioni» c'è «Esporta diagnostica».
+
+## Link
+Sito: https://xmarcos10.github.io/talisman/ · Codice: https://github.com/XmarcoS10/talisman ·
+Segnalazioni: https://github.com/XmarcoS10/talisman/issues
 
 ## Licenza
 Codice GPL-3.0. Caratteri con licenza SIL Open Font License.

@@ -1,0 +1,11 @@
+name: Qualcosa non va
+description: Un errore, un blocco, un numero che non torna, una schermata che non si capisce.
+labels: [collaudo]
+body:
+  - type: textarea
+    attributes: { label: Cosa è successo, description: "Cosa stavi facendo, cosa ti aspettavi, cosa è successo invece." }
+    validations: { required: true }
+  - type: input
+    attributes: { label: Versione, description: "La trovi in Salvataggi e impostazioni.", placeholder: "0.1.0" }
+  - type: textarea
+    attributes: { label: Diagnostica, description: "Se puoi, in Salvataggi e impostazioni premi «Esporta diagnostica» e trascina qui il file. Contiene versioni ed errori recenti, niente altro." }
