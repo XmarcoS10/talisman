@@ -475,3 +475,18 @@ export const BOARD = {
   sackAt: 18, // sotto questa fiducia della dirigenza a fine stagione si è fuori
   warnAt: 32,
 } as const;
+
+// --- conferenze stampa (GUIDA §7.4) ---
+// Ogni risposta ha effetti dichiarati prima di scegliere: niente sorprese nascoste.
+export const PRESS = {
+  questions: 3, // domande a conferenza
+  defend: 6, // morale in più per chi difendi in pubblico
+  praise: 5,
+  challengeUp: 4, // chi regge la pressione si carica se lo pungoli…
+  challengeDown: -8, // …chi non la regge si abbatte
+  challengeTolerance: 13, // Tolleranza alla pressione da cui la critica diventa uno stimolo
+  squadSmall: 2, // morale di tutta la rosa per le risposte sul gruppo
+  squadBlame: -4,
+  bar: 4, // fiducia di dirigenza, tifosi o stampa mossa da una risposta
+  noComment: -3, // la stampa non ama i "no comment"
+} as const;

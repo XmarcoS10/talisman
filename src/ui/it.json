@@ -844,5 +844,16 @@
   "stories.open": "Storie in corso",
   "stories.closed": "Storie concluse",
   "stories.none": "Niente da raccontare, per ora.",
-  "stories.desk": "Se ne parla"
+  "stories.desk": "Se ne parla",
+  "cause.pressUp": "In conferenza stampa: «{text}» Gli ha fatto piacere.",
+  "cause.pressDown": "In conferenza stampa: «{text}» Non l’ha presa bene.",
+  "press.title": "Conferenza stampa",
+  "press.none": "Nessuna domanda questa settimana: non ci sono storie che ti riguardano.",
+  "press.answered": "Risposta data",
+  "press.effect.player": "{name} {d}",
+  "press.effect.squad": "squadra {d}",
+  "press.effect.board": "dirigenza {d}",
+  "press.effect.fans": "tifosi {d}",
+  "press.effect.press": "stampa {d}",
+  "press.hint": "Gli effetti sono quelli indicati: morale per giocatori e squadra, fiducia per dirigenza, tifosi e stampa."
 }

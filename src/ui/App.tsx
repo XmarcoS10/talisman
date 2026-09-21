@@ -125,7 +125,7 @@ export function App() {
 
       <main className="content">
         {screen.name === 'desk' && <Desk world={world} />}
-        {screen.name === 'stories' && <Stories world={world} />}
+        {screen.name === 'stories' && <Stories world={world} onChange={changed} />}
         {screen.name === 'squad' && <Squad world={world} clubId={club.id} onPlayer={openPlayer} />}
         {screen.name === 'tactics' && <Tactics world={world} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'training' && <Training world={world} onChange={changed} onPlayer={openPlayer} />}

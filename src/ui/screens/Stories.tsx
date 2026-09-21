@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import type { Arc, WorldState } from '../../engine/model.ts';
 import { fmtDate, t } from '../i18n.ts';
+import { PressRoom } from './PressRoom.tsx';
 
 const involves = (world: WorldState, a: Arc) => a.subject.club === world.manager.clubId || a.subject.rival === world.manager.clubId;
 
@@ -25,7 +26,7 @@ export function ArcCard({ world, a, full = true }: { world: WorldState; a: Arc; 
   );
 }
 
-export function Stories({ world }: { world: WorldState }) {
+export function Stories({ world, onChange }: { world: WorldState; onChange: () => void }) {
   const [scope, setScope] = useState<'mine' | 'all'>('mine');
   const arcs = world.arcs.filter((a) => a.lines.length > 0 && (scope === 'all' || involves(world, a)));
   const open = arcs.filter((a) => a.state === 'open').reverse();
@@ -33,6 +34,7 @@ export function Stories({ world }: { world: WorldState }) {
 
   return (
     <div className="grid">
+      <PressRoom world={world} onChange={onChange} />
       <div className="row">
         {(['mine', 'all'] as const).map((k) => (
           <button key={k} className={`btn small ${scope === k ? 'primary' : ''}`} onClick={() => setScope(k)}>{t(`stories.${k}`)}</button>

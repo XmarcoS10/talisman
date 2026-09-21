@@ -10,7 +10,7 @@ import { assignAgents } from './transfers/agents.ts';
 import { makeScouts } from './scouting/scouts.ts';
 import { newBoard } from './board/board.ts';
 
-export const SCHEMA_VERSION = 12;
+export const SCHEMA_VERSION = 13;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -93,6 +93,8 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
   (w) => { w.manager.board = newBoard(); },
   // 11 → 12 (F8, narrativa): archi narrativi
   (w) => { w.arcs = []; w.nextArcId = 1; w.manager.h2h = {}; },
+  // 12 → 13 (F8, stampa): la conferenza della settimana
+  (w) => { w.press = null; },
 ];
 
 export function serialize(world: WorldState): string {

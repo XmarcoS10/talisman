@@ -208,3 +208,11 @@ select { background: var(--surface-1); color: var(--text-1); border: 1px solid v
 .arc:last-child { border-bottom: 0; }
 .arc.won b { color: var(--positive); }
 .arc.lost b { color: var(--negative); }
+
+/* sala stampa (F8) */
+.question { display: grid; gap: var(--s-2); padding: var(--s-2) 0; border-bottom: 1px solid var(--border); }
+.answers { display: grid; gap: var(--s-1); }
+.answer { display: grid; gap: var(--s-1); text-align: left; padding: var(--s-2); border-radius: var(--r-1);
+  background: var(--bg-0); border: 1px solid var(--border); color: inherit; cursor: pointer; }
+.answer:disabled { cursor: default; opacity: 0.55; }
+.answer.chosen { opacity: 1; border-color: var(--accent); }

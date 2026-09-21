@@ -1,0 +1,111 @@
+{
+  "askers": [
+    "Il Corriere di {club_nome}",
+    "La Gazzetta {club_di}",
+    "Radio {club_nome} Sport",
+    "Il Quotidiano Sportivo",
+    "TeleCittà",
+    "La Voce dello Sport",
+    "Il Giornale di {club_nome}"
+  ],
+  "q.playerGood": [
+    "Mister, {cognome} sta vivendo un momento straordinario. [Quanto conta per questa squadra?|Se lo aspettava?|Dove può arrivare?]",
+    "[Si parla solo di|Tutti parlano di] {nome}: [è il suo miglior momento da quando è qui?|teme che tanta attenzione possa distrarlo?]",
+    "Che cosa [ha detto|dirà] a {cognome} dopo una partita così?"
+  ],
+  "q.playerBad": [
+    "Mister, {cognome} [non sembra più lui|è in difficoltà da settimane|fa discutere]. [Che cosa sta succedendo?|Continuerà a puntare su di lui?|C'è un caso?]",
+    "[Le chiedo di|Vorrei che ci parlasse di] {nome}: [è un problema tecnico o di testa?|la situazione è sotto controllo?]",
+    "Il nome di {cognome} [è sulla bocca di tutti, e non in positivo|divide la piazza]. [Qual è la sua posizione?|Lo difende?]"
+  ],
+  "q.clubGood": [
+    "Mister, [il momento è ottimo|va tutto a gonfie vele|la squadra vola]. [Dove può arrivare {club}?|Qual è il segreto?|Adesso è lecito sognare?]",
+    "[I numeri dicono che|Dopo questo periodo si può dire che] {club} è una delle squadre più in forma. [Si sente favorito?|Cambiano gli obiettivi?]"
+  ],
+  "q.clubBad": [
+    "Mister, [il momento è difficile|i risultati non arrivano|la squadra sembra in difficoltà]. [Di chi sono le responsabilità?|Come se ne esce?|Si sente in discussione?]",
+    "[I tifosi sono preoccupati: che cosa si sente di dire loro?|La piazza è inquieta: che cosa si sente di dire ai tifosi?|L'ambiente è teso: come pensa di invertire la rotta?]",
+    "[C'è chi parla già di crisi|Qualcuno mette in discussione il suo lavoro]. [Come risponde?|È un giudizio ingeneroso?]"
+  ],
+  "q.titleRace": [
+    "Mister, [{fine}|a questo punto della stagione], {club} e {rival} sono {distacco}. [Chi è favorito?|Ci crede davvero?|Quanto pesa la pressione?]"
+  ],
+  "q.relegation": [
+    "Mister, {club} è in zona retrocessione. [Ha paura di scendere di categoria?|Che cosa serve per salvarsi?|La squadra ha il carattere per uscirne?]"
+  ],
+  "q.nemesis": [
+    "Mister, {rival} vi ha battuto [per l'ennesima volta|ancora una volta|di nuovo]. [È diventata una bestia nera?|Come si spiega?]"
+  ],
+  "q.boardUnrest": [
+    "Mister, [si parla di|circolano voci su] un suo possibile esonero. [Si sente ancora l'uomo giusto?|Ha parlato con la società?|Teme per la sua panchina?]"
+  ],
+  "q.wantsOut": [
+    "Mister, {cognome} ha chiesto di essere ceduto. [Resterà?|Come si gestisce un caso così?|Ha provato a convincerlo?]"
+  ],
+  "q.feud": [
+    "Mister, [si parla di tensioni|circola voce di una lite] tra {cognome} e {other}. [Conferma?|Come intende intervenire?]"
+  ],
+  "q.predestined": [
+    "Mister, tutti parlano di {nome}. [È davvero il talento che dicono?|Come si protegge un ragazzo di {age_w} anni da tanta attenzione?]"
+  ],
+  "a.praise": [
+    "{cognome} [se lo merita|sta raccogliendo quello che ha seminato|è un esempio per tutti]. [Sono orgoglioso di lui|Lo dico senza problemi: è fondamentale per noi].",
+    "[Parliamo di un giocatore speciale|Pochi hanno la sua qualità]: {cognome} [sta dimostrando il suo valore|ci trascina]."
+  ],
+  "a.keepCalm": [
+    "[Piano con gli elogi|Lasciamolo lavorare tranquillo]: {cognome} [ha ancora tanto da migliorare|deve restare con i piedi per terra].",
+    "Non voglio mettere pressione a {cognome}. [Parlerà il campo|Pensiamo alla prossima]."
+  ],
+  "a.group": [
+    "[Il merito è di tutto il gruppo|Nessuno vince da solo]: {cognome} è bravo, ma dietro c'è una squadra che lavora per lui.",
+    "[Preferisco parlare della squadra|Qui conta il collettivo]. I gol di uno sono il lavoro di tutti."
+  ],
+  "a.demand": [
+    "[Da {cognome} mi aspetto ancora di più|{cognome} può fare meglio di così]. [Glielo dico sempre|Lo sa anche lui].",
+    "Bene, ma non basta: {cognome} [deve essere decisivo ogni domenica|ha i mezzi per fare molto di più]."
+  ],
+  "a.defend": [
+    "{cognome} [ha tutta la mia fiducia|resta un punto fermo|non si discute]. [Chi lo critica non vede il lavoro che fa|Uscirà da questo momento].",
+    "[Lo difendo senza esitazioni|Sono con lui]: {cognome} è un professionista e [tornerà quello di sempre|merita rispetto]."
+  ],
+  "a.challenge": [
+    "[{cognome} deve dare di più|Così non va], e lo sa. [Nessuno ha il posto garantito|Mi aspetto una reazione].",
+    "Sono stato chiaro con {cognome}: [serve un cambio di passo|le prestazioni devono migliorare subito]."
+  ],
+  "a.internal": [
+    "[Sono questioni che risolviamo dentro lo spogliatoio|Queste cose restano tra noi]. Non aggiungo altro.",
+    "[Ne parlerò direttamente con lui|Le cose si chiariscono in privato, non in sala stampa]."
+  ],
+  "a.humble": [
+    "[Restiamo con i piedi per terra|Non montiamoci la testa]: [il campionato è lungo|non abbiamo ancora fatto niente].",
+    "[Una partita alla volta|Pensiamo alla prossima]. Gli obiettivi non cambiano."
+  ],
+  "a.ambition": [
+    "[Perché non sognare?|Non abbiamo paura di nessuno.] [Questa squadra può arrivare lontano|Vogliamo giocarcela fino in fondo].",
+    "[Sì, ci crediamo|Lo dico chiaramente]: [possiamo puntare in alto|non ci accontentiamo]."
+  ],
+  "a.credit": [
+    "[Il merito è dei ragazzi|Tutto il merito va alla squadra]: [stanno facendo qualcosa di straordinario|meritano gli applausi].",
+    "[Ho un gruppo fantastico|Lavorano come pochi]: questi risultati sono loro."
+  ],
+  "a.responsibility": [
+    "[La responsabilità è mia|Mi prendo io le colpe]: [i ragazzi stanno dando tutto|devo trovare io le soluzioni].",
+    "[Se le cose non vanno la colpa è dell'allenatore|Metto la faccia io], non dei giocatori."
+  ],
+  "a.blame": [
+    "[Qualcuno non sta dando il massimo|Non tutti sono all'altezza], e [lo sanno|ne parleremo]. [Mi aspetto di più|Così non basta].",
+    "[Sono deluso da alcune prestazioni|Serve più impegno da parte di tutti]: [chi non se la sente può farsi da parte|farò delle scelte]."
+  ],
+  "a.reaction": [
+    "[Vi prometto una reazione|Ne usciremo]: [questa squadra ha carattere|i tifosi vedranno un'altra squadra].",
+    "[Chiedo ai tifosi di starci vicino|Abbiamo bisogno della nostra gente]: [la risposta arriverà sul campo|ci rialzeremo]."
+  ],
+  "a.luck": [
+    "[Ci sta girando tutto storto|La fortuna non ci aiuta], e [qualche decisione arbitrale ci ha penalizzato|gli episodi sono stati contro di noi].",
+    "[Non meritavamo questi risultati|Abbiamo giocato meglio di quanto dicano i numeri]: [la ruota girerà|è questione di episodi]."
+  ],
+  "a.noComment": [
+    "[Non ho nulla da aggiungere|Preferisco non rispondere|Nessun commento].",
+    "[Passiamo alla prossima domanda|Su questo non parlo]."
+  ]
+}

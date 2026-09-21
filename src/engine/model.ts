@@ -375,6 +375,32 @@ export interface Arc {
   lines: { season: number; day: number; text: string }[];
 }
 
+/** effetto dichiarato di una risposta in conferenza stampa: si vede prima di scegliere (§7.4) */
+export interface PressEffect {
+  target: 'player' | 'squad' | 'board' | 'fans' | 'press';
+  playerId?: PlayerId;
+  delta: number; // punti di morale (giocatore, squadra) o di fiducia (dirigenza, tifosi, stampa)
+}
+
+export interface PressOption {
+  text: string;
+  effects: PressEffect[];
+}
+
+export interface PressQuestion {
+  arcId: number | null; // la storia da cui nasce la domanda
+  asker: string; // la testata
+  text: string;
+  options: PressOption[];
+  answered: number | null;
+}
+
+export interface PressRoom {
+  season: number;
+  day: number;
+  questions: PressQuestion[];
+}
+
 export interface WorldState {
   schemaVersion: number;
   seed: number;
@@ -394,6 +420,7 @@ export interface WorldState {
   promises: PlayerPromise[]; // promesse attive dell'utente
   talks: Talk[]; // trattative aperte dall'utente (§7.5)
   arcs: Arc[]; // storie aperte e ricordate (§7.4)
+  press: PressRoom | null; // la conferenza stampa della settimana
   nextArcId: number;
   nextPlayerId: number;
   nextAgentId: number;
