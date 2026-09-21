@@ -8,6 +8,7 @@ import { dropRelations, initRelations } from '../social.ts';
 import { agentOf, renewalWage } from './agents.ts';
 import { sellWillingness, wageRoom } from './club-ai.ts';
 import { value, wageFor } from './valuation.ts';
+import { teamForms } from '../narrative/italian.ts';
 import { age } from '../util.ts';
 
 export const isFree = (p: Player) => p.clubId === null;
@@ -179,7 +180,7 @@ export function preContracts(world: WorldState, rng: Rng): number {
     if (acceptsRenewal(world, p, to, wage).ok) {
       p.contract.preSigned = to.id;
       n++;
-      if (owner.id === world.manager.clubId) addNews(world, 'news.preSigned', { name: pName(p), club: to.shortName });
+      if (owner.id === world.manager.clubId) addNews(world, 'news.preSigned', { name: pName(p), club: teamForms('x', to.city).x! });
     }
   }
   return n;

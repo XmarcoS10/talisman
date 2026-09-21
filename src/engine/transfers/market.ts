@@ -8,6 +8,7 @@ import { abilityAt } from '../players.ts';
 import type { Rng } from '../rng.ts';
 import { dropRelations, initRelations } from '../social.ts';
 import { books } from '../finance/ledger.ts';
+import { teamForms } from '../narrative/italian.ts';
 import { agentOf, commission, remember, renewalWage } from './agents.ts';
 import { acceptsRenewal } from './contracts.ts';
 import { needs, plan, sellWillingness, shortlist } from './club-ai.ts';
@@ -28,7 +29,7 @@ export function transfer(world: WorldState, rng: Rng, p: Player, buyer: Club, of
   books(seller, world.season).transfersIn += share;
   if (offer.years > 1) {
     buyer.debts.push({ to: seller.id, amount: share, seasons: offer.years - 1 });
-    seller.credits.push({ to: seller.id, amount: share, seasons: offer.years - 1 });
+    seller.credits.push({ to: buyer.id, amount: share, seasons: offer.years - 1 }); // per un credito, la controparte è chi paga
   }
   // percentuale di rivendita dovuta al club precedente (§7.5)
   const owed = p.contract.sellOnTo !== null && p.contract.sellOnTo !== seller.id ? world.clubs[p.contract.sellOnTo] : undefined;
@@ -69,9 +70,9 @@ export function transfer(world: WorldState, rng: Rng, p: Player, buyer: Club, of
   const a = agentOf(world, p);
   if (a) { remember(a, buyer.id, AGENT.soldWell); remember(a, seller.id, Math.round(AGENT.soldWell / 2)); }
   const me = world.manager.clubId;
-  if (buyer.id === me) addNews(world, 'news.signed', { name: pName(p), club: seller.shortName, fee: offer.fee });
-  else if (seller.id === me) addNews(world, 'news.sold', { name: pName(p), club: buyer.shortName, fee: offer.fee });
-  else if (p.ca >= CLUB_AI.newsCa) addNews(world, 'news.transfer', { name: pName(p), from: seller.shortName, to: buyer.shortName, fee: offer.fee });
+  if (buyer.id === me) addNews(world, 'news.signed', { name: pName(p), from: teamForms('x', seller.city).x_da!, fee: offer.fee });
+  else if (seller.id === me) addNews(world, 'news.sold', { name: pName(p), to: teamForms('x', buyer.city).x_a!, fee: offer.fee });
+  else if (p.ca >= CLUB_AI.newsCa) addNews(world, 'news.transfer', { name: pName(p), from: teamForms('x', seller.city).x_da!, to: teamForms('x', buyer.city).x_a!, fee: offer.fee });
 }
 
 /** prova a comprare `p`: trattativa completa, dal primo contatto all'accordo o alla rottura */

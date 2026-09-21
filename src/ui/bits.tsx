@@ -1,6 +1,7 @@
 // Piccole primitive condivise tra le schermate.
 import type { Player, Position } from '../engine/model.ts';
 import { t } from './i18n.ts';
+import { teamForms } from '../engine/narrative/italian.ts';
 
 /** abilità in stelle, scala FM: 0.5-5 (CA 40 → ½, CA 170+ → 5) */
 export function Stars({ ca }: { ca: number }) {
@@ -13,6 +14,10 @@ export function Stars({ ca }: { ca: number }) {
 }
 
 export const PosBadge = ({ pos }: { pos: Position }) => <span className={`badge ${pos}`}>{t(`pos.${pos}`)}</span>;
+
+/** una squadra col suo articolo o preposizione: team(club, 'di') → "della Vignarola" */
+export const team = (c: { city: string } | undefined, form: '' | 'di' | 'a' | 'da' | 'in' | 'su' | 'con' | 'contro' = '') =>
+  c ? teamForms('x', c.city)[form ? `x_${form}` : 'x']! : '?';
 
 export const attrClass = (v: number) => (v <= 5 ? 'a1' : v <= 10 ? 'a2' : v <= 15 ? 'a3' : 'a4');
 

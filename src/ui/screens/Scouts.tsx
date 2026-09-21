@@ -3,13 +3,13 @@ import { useState } from 'react';
 import type { ScoutTask, WorldState } from '../../engine/model.ts';
 import { knowledge } from '../../engine/scouting/fog.ts';
 import { assign, fire, hire, scoutsOf, watched } from '../../engine/scouting/scouts.ts';
-import { fullName } from '../bits.tsx';
+import { fullName, team } from '../bits.tsx';
 import { fmtMoney, t } from '../i18n.ts';
 
 const taskKey = (task: ScoutTask | null, world: WorldState) =>
   !task ? t('scout.idle')
-    : task.kind === 'nation' ? t('scout.onNation', { nation: task.nation })
-    : task.kind === 'club' ? t('scout.onClub', { club: world.clubs[task.clubId]?.shortName ?? '?' })
+    : task.kind === 'nation' ? t('scout.onNation', { nation: t(`nation.${task.nation}`) })
+    : task.kind === 'club' ? t('scout.onClub', { club: team(world.clubs[task.clubId], 'su') })
     : t('scout.onPlayer', { name: world.players[task.playerId] ? fullName(world.players[task.playerId]!) : '?' });
 
 export function Scouts({ world, onChange, onPlayer }: { world: WorldState; onChange: () => void; onPlayer: (id: number) => void }) {
@@ -34,7 +34,7 @@ export function Scouts({ world, onChange, onPlayer }: { world: WorldState; onCha
             {mine.map((s) => (
               <tr key={s.id}>
                 <td>{s.name}</td>
-                <td className="muted">{s.nation}</td>
+                <td className="muted">{t(`nation.${s.nation}`)}</td>
                 <td className="num">{s.judgeAbility}</td>
                 <td className="num">{s.judgePotential}</td>
                 <td className="muted">{t(s.analyst ? 'scout.analyst' : 'scout.field')}</td>
@@ -47,10 +47,10 @@ export function Scouts({ world, onChange, onPlayer }: { world: WorldState; onCha
                     }}>
                     <option value="">{t('scout.idle')}</option>
                     <optgroup label={t('scout.byNation')}>
-                      {nations.map((n) => <option key={n} value={n}>{n}{s.contacts[n]! >= 50 ? ' ★' : ''}</option>)}
+                      {nations.map((n) => <option key={n} value={n}>{t(`nation.${n}`)}{s.contacts[n]! >= 50 ? ' ★' : ''}</option>)}
                     </optgroup>
                     <optgroup label={t('scout.byClub')}>
-                      {Object.values(world.clubs).filter((c) => c.id !== club.id).map((c) => <option key={c.id} value={`c${c.id}`}>{c.shortName}</option>)}
+                      {Object.values(world.clubs).filter((c) => c.id !== club.id).map((c) => <option key={c.id} value={`c${c.id}`}>{c.city}</option>)}
                     </optgroup>
                   </select>
                 </td>
@@ -98,7 +98,7 @@ export function Scouts({ world, onChange, onPlayer }: { world: WorldState; onCha
             {free.map((s) => (
               <tr key={s.id}>
                 <td>{s.name}</td>
-                <td className="muted">{s.nation}</td>
+                <td className="muted">{t(`nation.${s.nation}`)}</td>
                 <td className="num">{s.judgeAbility}</td>
                 <td className="num">{s.judgePotential}</td>
                 <td className="muted">{t(s.analyst ? 'scout.analyst' : 'scout.field')}</td>

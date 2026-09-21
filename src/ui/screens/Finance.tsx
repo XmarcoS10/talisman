@@ -1,6 +1,7 @@
 // Finanze del club (GUIDA §7.7): conto economico per cassa, rate, fair play finanziario.
 import type { Books, WorldState } from '../../engine/model.ts';
 import { costs, income, profit, revenue, wageBill, books } from '../../engine/finance/ledger.ts';
+import { team } from '../bits.tsx';
 import { fmtMoney, t } from '../i18n.ts';
 
 const IN: (keyof Books)[] = ['gate', 'tv', 'sponsor', 'merch', 'prize', 'transfersIn'];
@@ -57,10 +58,10 @@ export function Finance({ world }: { world: WorldState }) {
       <div className="panel">
         <h3>{t('fin.debts')}</h3>
         {club.debts.length === 0 && <div className="muted">{t('fin.none')}</div>}
-        {club.debts.map((d, i) => <div key={i}>{t('fin.instalment', { v: fmtMoney(d.amount), n: d.seasons, club: world.clubs[d.to]?.shortName ?? '?' })}</div>)}
+        {club.debts.map((d, i) => <div key={i}>{t('fin.debtTo', { v: fmtMoney(d.amount), n: d.seasons, club: team(world.clubs[d.to], 'a') })}</div>)}
         <h3>{t('fin.credits')}</h3>
         {club.credits.length === 0 && <div className="muted">{t('fin.none')}</div>}
-        {club.credits.map((c, i) => <div key={i}>{t('fin.instalment', { v: fmtMoney(c.amount), n: c.seasons, club: world.clubs[c.to]?.shortName ?? '?' })}</div>)}
+        {club.credits.map((c, i) => <div key={i}>{t('fin.creditFrom', { v: fmtMoney(c.amount), n: c.seasons, club: team(world.clubs[c.to], 'da') })}</div>)}
       </div>
     </div>
   );

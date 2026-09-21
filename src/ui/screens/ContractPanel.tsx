@@ -4,6 +4,7 @@ import type { Player, WorldState } from '../../engine/model.ts';
 import { Rng } from '../../engine/rng.ts';
 import { agentOf } from '../../engine/transfers/agents.ts';
 import { acceptsRenewal, askingWage, release, renew, years } from '../../engine/transfers/contracts.ts';
+import { team } from '../bits.tsx';
 import { fmtMoney, t } from '../i18n.ts';
 
 export function ContractPanel({ world, p, onChange }: { world: WorldState; p: Player; onChange: () => void }) {
@@ -31,9 +32,9 @@ export function ContractPanel({ world, p, onChange }: { world: WorldState; p: Pl
         <span className={`chip ${left <= 0 ? 'warn' : ''}`}>{t('contract.until', { year: p.contract.until })}</span>
         <span className="chip">{t('contract.wage', { v: fmtMoney(p.contract.wage) })}</span>
         {p.contract.release !== null && <span className="chip">{t('contract.release', { v: fmtMoney(p.contract.release) })}</span>}
-        {p.contract.sellOn > 0 && <span className="chip">{t('contract.sellOn', { n: Math.round(p.contract.sellOn * 100), club: world.clubs[p.contract.sellOnTo ?? -1]?.shortName ?? '?' })}</span>}
-        {p.contract.loan && <span className="chip warn">{t('contract.loan', { club: world.clubs[p.contract.loan.from]?.shortName ?? '?' })}</span>}
-        {p.contract.preSigned !== null && <span className="chip warn">{t('contract.preSigned', { club: world.clubs[p.contract.preSigned]?.shortName ?? '?' })}</span>}
+        {p.contract.sellOn > 0 && <span className="chip">{t('contract.sellOn', { n: Math.round(p.contract.sellOn * 100), club: team(world.clubs[p.contract.sellOnTo ?? -1], 'a') })}</span>}
+        {p.contract.loan && <span className="chip warn">{t('contract.loan', { club: team(world.clubs[p.contract.loan.from], 'da') })}</span>}
+        {p.contract.preSigned !== null && <span className="chip warn">{t('contract.preSigned', { club: team(world.clubs[p.contract.preSigned]) })}</span>}
       </div>
       {left <= 1 && !p.contract.loan && (
         <>

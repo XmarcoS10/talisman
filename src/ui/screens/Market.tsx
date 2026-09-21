@@ -65,7 +65,7 @@ export function Market({ world, onPlayer }: { world: WorldState; onPlayer: (id: 
         <label>{t('market.nation')}
           <select value={f.nation} onChange={(e) => set('nation', e.target.value)}>
             <option value="">{t('market.any')}</option>
-            {nations.map((n) => <option key={n} value={n}>{n}</option>)}
+            {nations.map((n) => <option key={n} value={n}>{t(`nation.${n}`)}</option>)}
           </select>
         </label>
         <label className="check"><input type="checkbox" checked={f.expiring} onChange={(e) => set('expiring', e.target.checked)} /> {t('market.expiring')}</label>
@@ -99,7 +99,7 @@ export function Market({ world, onPlayer }: { world: WorldState; onPlayer: (id: 
                 <tr key={p.id} onClick={() => onPlayer(p.id)}>
                   <td><PosBadge pos={p.position} /></td>
                   <td>{fullName(p)}</td>
-                  <td className="muted">{p.nation}</td>
+                  <td className="muted">{t(`nation.${p.nation}`)}</td>
                   <td className="num">{world.season - p.birthYear}</td>
                   <td><Ability world={world} p={p} which="ca" /></td>
                   <td><Ability world={world} p={p} which="pa" /></td>

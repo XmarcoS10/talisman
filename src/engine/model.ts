@@ -161,7 +161,7 @@ export interface ScoutReport {
 
 /** rata di un trasferimento ancora da incassare o da pagare (§7.7) */
 export interface Instalment {
-  to: ClubId; // chi deve incassare
+  to: ClubId; // la controparte: per un debito chi incassa, per un credito chi paga
   amount: number; // quota per stagione
   seasons: number; // quante ne restano
 }

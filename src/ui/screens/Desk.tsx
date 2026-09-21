@@ -1,6 +1,7 @@
 import type { WorldState } from '../../engine/model.ts';
 import { nextMatchDay, standings } from '../../engine/world.ts';
 import { Crest } from '../Crest.tsx';
+import { team } from '../bits.tsx';
 import { fmtDate, fmtSeason, t, tEvent } from '../i18n.ts';
 import { outcome } from './Fixtures.tsx';
 import { boardGoal } from './Start.tsx';
@@ -57,7 +58,7 @@ export function Desk({ world, onNav }: { world: WorldState; onNav: (n: 'board' |
               <span>{t('desk.resultNews', { home: world.clubs[fx.home]!.name, away: world.clubs[fx.away]!.name, hg: fx.result!.hg, ag: fx.result!.ag })}</span>
             </div>
           ))}
-          <div className="muted">{t('desk.welcome', { manager: world.manager.name, club: club.name, goal: boardGoal(world, clubId).toLowerCase() })}</div>
+          <div className="muted">{t('desk.welcome', { manager: world.manager.name, club: team(club, 'di'), goal: boardGoal(world, clubId).toLowerCase() })}</div>
         </div>
       </div>
 
