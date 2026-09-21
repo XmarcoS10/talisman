@@ -1,7 +1,7 @@
 // Salvataggi versionati (GUIDA §2.5): ogni save ha schemaVersion e passa dalla catena di migrazioni.
 import { SCOUT, TRAIN, YOUTH } from './balance.ts';
 import { defaultRoles } from './match/tactics.ts';
-import { PHILOSOPHIES, type Club, type WorldState } from './model.ts';
+import { ALL_ATTRS, PHILOSOPHIES, type Club, type WorldState } from './model.ts';
 import { Rng } from './rng.ts';
 import { seedMinutes } from './morale.ts';
 import { initRelations } from './social.ts';
@@ -134,4 +134,28 @@ export function migrate(raw: Raw): WorldState {
     raw.schemaVersion++;
   }
   return raw as unknown as WorldState; // struttura garantita dalla catena di migrazioni
+}
+
+/**
+ * controllo di integrità del mondo (Impostazioni → diagnostica): ogni riferimento deve puntare a qualcosa che esiste
+ * ed essere reciproco (il club elenca il giocatore e il giocatore dice di essere di quel club). Restituisce quanti
+ * controlli ha fatto e i problemi trovati, in chiaro.
+ */
+export function integrity(world: WorldState): { checks: number; problems: string[] } {
+  const problems: string[] = [];
+  let checks = 0;
+  const check = (ok: boolean, what: string) => { checks++; if (!ok) problems.push(what); };
+  for (const c of Object.values(world.clubs)) {
+    check(!!world.competitions[c.compId], `club ${c.id}: campionato ${c.compId} inesistente`);
+    for (const id of c.playerIds) check(world.players[id]?.clubId === c.id, `club ${c.id}: giocatore ${id} non suo`);
+    for (const id of c.scoutIds) check(world.scouts[id]?.clubId === c.id, `club ${c.id}: osservatore ${id} non suo`);
+  }
+  for (const p of Object.values(world.players)) {
+    if (p.clubId !== null) check(world.clubs[p.clubId]?.playerIds.includes(p.id) === true, `giocatore ${p.id}: club ${p.clubId} non lo elenca`);
+    check(ALL_ATTRS.every((k) => p.attrs[k] >= 1 && p.attrs[k] <= 20), `giocatore ${p.id}: attributo fuori scala`);
+  }
+  for (const a of Object.values(world.agents)) for (const id of a.clientIds) check(!!world.players[id], `agente ${a.id}: assistito ${id} inesistente`);
+  for (const comp of Object.values(world.competitions)) for (const id of comp.clubIds) check(world.clubs[id]?.compId === comp.id, `campionato ${comp.id}: club ${id} non suo`);
+  check(world.clubs[world.manager.clubId] !== undefined, `il club dell'allenatore non esiste`);
+  return { checks, problems };
 }

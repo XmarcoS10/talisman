@@ -54,3 +54,18 @@ describe('amichevoli estive (F10)', () => {
     expect(Object.values(world.players).every((p) => p.stats.apps === 0)).toBe(true);
   });
 });
+
+describe('integrità del mondo (F10)', () => {
+  it('un mondo nuovo e uno giocato sono integri; un riferimento rotto si vede', async () => {
+    const { integrity } = await import('./save.ts');
+    const world = newWorld(36);
+    world.manager.clubId = world.competitions.ITA1!.clubIds[0]!;
+    for (let i = 0; i < 4; i++) advance(world);
+    const ok = integrity(world);
+    expect(ok.problems).toEqual([]);
+    expect(ok.checks).toBeGreaterThan(1000);
+    const p = Object.values(world.players).find((x) => x.clubId !== null)!;
+    p.clubId = 999;
+    expect(integrity(world).problems.length).toBeGreaterThan(0);
+  });
+});

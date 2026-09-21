@@ -12,11 +12,12 @@ export interface Settings {
   pauseNews: boolean; // dopo un avanzamento mostra le notizie importanti prima di tutto
   currency: 'EUR' | 'USD' | 'GBP'; // solo visualizzazione: il motore conta in euro
   dateFmt: 'long' | 'short';
+  win: string; // misura della finestra nell'app desktop, "1440x900"; vuoto = quella di partenza
 }
 
 const KEY = 'talisman-settings';
 export const DEFAULTS: Settings = { hints: true, seen: [], visited: [], guideDone: false, volume: { ui: 0.5, crowd: 0.4, fx: 0.65 },
-  muteOnBlur: true, autosave: true, pauseNews: true, currency: 'EUR', dateFmt: 'long' };
+  muteOnBlur: true, autosave: true, pauseNews: true, currency: 'EUR', dateFmt: 'long', win: '' };
 
 let cache: Settings | null = null;
 
@@ -36,6 +37,11 @@ export function updateSettings(patch: Partial<Settings>) {
   cache = { ...settings(), ...patch };
   try { localStorage.setItem(KEY, JSON.stringify(cache)); } catch { /* senza memoria si ricomincia da capo: non è grave */ }
 }
+
+declare global { interface Window { talismanWin?: { size(w: number, h: number): void } } }
+/** misure della finestra offerte nelle impostazioni (solo app desktop) */
+export const WIN_SIZES = ['1280x800', '1440x900', '1600x1000', '1920x1080', '2560x1440'];
+export const applyWin = (v: string) => { const [w, h] = v.split('x').map(Number); if (w && h) window.talismanWin?.size(w, h); };
 
 export const markSeen = (id: string) => { if (!settings().seen.includes(id)) updateSettings({ seen: [...settings().seen, id] }); };
 export const markVisited = (id: string) => { if (!settings().visited.includes(id)) updateSettings({ visited: [...settings().visited, id] }); };

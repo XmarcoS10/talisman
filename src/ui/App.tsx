@@ -3,7 +3,7 @@ import type { Fixture, NewsItem, WorldState } from '../engine/model.ts';
 import { advance, beginMatchDay, endSeason, fixturesOn, isSeasonOver, nextMatchDay, standings, type LiveDay, type SeasonSummary } from '../engine/world.ts';
 import { Banknote, CalendarDays, Play, User } from 'lucide-react';
 import { HINTS, Hint } from './Hint.tsx';
-import { markVisited, settings } from './settings.ts';
+import { applyWin, markVisited, settings } from './settings.ts';
 import { Alerts, critical } from './Alerts.tsx';
 import { playUi } from './audio.ts';
 import { fmtDate, fmtMoney, t } from './i18n.ts';
@@ -33,7 +33,7 @@ import { currentSlot, saveTo, startClock } from './storage.ts';
 
 type Screen =
   | { name: NavName }
-  | { name: 'player'; id: number; back: Screen }
+  | { name: 'player'; id: number; back: Screen; deal?: boolean }
   | { name: 'club'; id: number; back: Screen };
 type Modal = { kind: 'match'; fx: Fixture; others: Fixture[] } | { kind: 'season'; summary: SeasonSummary; myPos: number } | null;
 
@@ -63,6 +63,7 @@ export function App() {
   const [world, setWorld] = useState<WorldState | null>(null);
   const [screen, setScreen] = useState<Screen>({ name: 'desk' });
   useEffect(() => { markVisited(screen.name); }, [screen.name]);
+  useEffect(() => { applyWin(settings().win); }, []); // la misura della finestra scelta l'ultima volta
   // un clic leggero sui pulsanti, col volume dell'interfaccia
   useEffect(() => {
     const onClick = (e: MouseEvent) => { if ((e.target as HTMLElement).closest('button')) playUi('click'); }; // target è sempre un elemento nei clic
@@ -128,7 +129,7 @@ export function App() {
   }
 
   const club = world.clubs[world.manager.clubId]!;
-  const openPlayer = (id: number) => setScreen({ name: 'player', id, back: screen });
+  const openPlayer = (id: number, deal = false) => setScreen({ name: 'player', id, back: screen, deal });
   const openClub = (id: number) => setScreen(id === club.id ? { name: 'squad' } : { name: 'club', id, back: screen });
   const changed = () => { saveSoon(world); rerender(); };
   // gioca il club dell'utente nel prossimo turno? allora si può seguire dal vivo
@@ -164,14 +165,14 @@ export function App() {
         {screen.name === 'training' && <Training world={world} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'dressing' && <Dressing world={world} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'youth' && <Youth world={world} onPlayer={openPlayer} onChange={changed} />}
-        {screen.name === 'market' && <Market world={world} onPlayer={openPlayer} />}
+        {screen.name === 'market' && <Market world={world} onPlayer={openPlayer} onOffer={(id) => openPlayer(id, true)} />}
         {screen.name === 'scouts' && <Scouts world={world} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'finance' && <Finance world={world} />}
         {screen.name === 'board' && <BoardView world={world} onChange={changed} />}
         {screen.name === 'tables' && <Tables world={world} clubId={club.id} onPlayer={openPlayer} onClub={openClub} />}
         {screen.name === 'fixtures' && <Fixtures world={world} clubId={club.id} onPlayer={openPlayer} />}
         {screen.name === 'saves' && <Saves world={world} onLoad={open} />}
-        {screen.name === 'player' && <PlayerView world={world} playerId={screen.id} onBack={() => setScreen(screen.back)} onClub={openClub} onChange={changed} onPlayer={openPlayer} />}
+        {screen.name === 'player' && <PlayerView key={screen.id} startDeal={screen.deal} world={world} playerId={screen.id} onBack={() => setScreen(screen.back)} onClub={openClub} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'club' && <ClubView world={world} clubId={screen.id} onPlayer={openPlayer} onBack={() => setScreen(screen.back)} />}
       </main>
 

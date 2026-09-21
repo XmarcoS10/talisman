@@ -12,6 +12,10 @@ contextBridge.exposeInMainWorld('talismanFs', {
   open: () => ipcRenderer.invoke('saves:open'),
 });
 
+contextBridge.exposeInMainWorld('talismanWin', {
+  size: (w, h) => ipcRenderer.send('win:size', w, h),
+});
+
 contextBridge.exposeInMainWorld('talismanDiag', {
   exportReport: (extra) => ipcRenderer.invoke('diag:export', extra),
 });

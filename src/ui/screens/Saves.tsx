@@ -119,11 +119,11 @@ export function Saves({ world, onLoad }: { world: WorldState; onLoad: (w: WorldS
             <h2><Upload size={18} /> {t('saves.importTitle')}</h2>
             <span className="muted">{t('saves.importHint')}</span>
             <button className="btn big" onClick={() => fileRef.current?.click()}><Upload size={15} /> {t('saves.import')}</button>
-            <input ref={fileRef} type="file" accept=".tfm,.json,application/json" hidden onChange={(e) => void onImport(e.target.files?.[0])} />
+            <input ref={fileRef} type="file" accept=".dsa,.tfm,.json,application/json" hidden onChange={(e) => void onImport(e.target.files?.[0])} />
           </div>
         </div>
       </div>
-      <SettingsPanel onChange={refresh} />
+      <SettingsPanel world={world} onChange={refresh} />
     </div>
   );
 }

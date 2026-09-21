@@ -33,7 +33,7 @@ function Toggle({ on, set, icon, title, sub }: { on: boolean; set: (v: boolean) 
   );
 }
 
-export function Market({ world, onPlayer }: { world: WorldState; onPlayer: (id: number) => void }) {
+export function Market({ world, onPlayer, onOffer }: { world: WorldState; onPlayer: (id: number) => void; onOffer: (id: number) => void }) {
   const [f, setF] = useState<F>(EMPTY);
   const [sort, setSort] = useState<Sort>('ca');
   const [q, setQ] = useState('');
@@ -119,7 +119,7 @@ export function Market({ world, onPlayer }: { world: WorldState; onPlayer: (id: 
             <tr>
               <th>{t('col.pos')}</th><th>{t('col.name')}</th><th>{t('col.nat')}</th><th className="r">{t('col.age')}</th>
               <th>{t('col.ability')}</th><th>{t('col.potential')}</th><th>{t('market.club')}</th>
-              <th className="r">{t('col.value')}</th><th className="r">{t('col.wage')}</th><th className="r">{t('col.contract')}</th><th className="r">{t('market.per90')}</th>
+              <th className="r">{t('col.value')}</th><th className="r">{t('col.wage')}</th><th className="r">{t('col.contract')}</th><th className="r">{t('market.per90')}</th><th />
             </tr>
           </thead>
           <tbody>
@@ -141,6 +141,7 @@ export function Market({ world, onPlayer }: { world: WorldState; onPlayer: (id: 
                   <td className={`r num ${m.small ? 'muted' : ''}`} title={t(m.small ? 'market.smallSample' : 'market.sample', { n: m.apps })}>
                     {m.apps ? `${m.rating.toFixed(2)}${m.small ? ' ⚠' : ''}` : '–'}
                   </td>
+                  <td className="r">{club && <button className="btn small primary" onClick={(e) => { e.stopPropagation(); onOffer(p.id); }}>{t('market.offer')}</button>}</td>
                 </tr>
               );
             })}

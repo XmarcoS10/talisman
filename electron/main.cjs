@@ -47,6 +47,12 @@ ipcMain.on('saves:size', (e, name) => {
 });
 // apre la cartella dei salvataggi in Esplora risorse (solo quella: il percorso non viene dalla pagina)
 ipcMain.handle('saves:open', () => shell.openPath(savesDir()));
+// dimensione della finestra scelta nelle impostazioni: solo misure ragionevoli, niente dalla pagina oltre due numeri
+ipcMain.on('win:size', (e, w, h) => {
+  const win = BrowserWindow.fromWebContents(e.sender);
+  const W = Math.round(Number(w)), H = Math.round(Number(h));
+  if (win && W >= 1100 && W <= 7680 && H >= 700 && H <= 4320) { win.setFullScreen(false); win.setSize(W, H); win.center(); }
+});
 
 // registro degli errori su file (P13 punto 8): resta sul computer, non parte niente verso internet
 const logFile = () => path.join(app.getPath('userData'), 'logs', 'talisman.log');

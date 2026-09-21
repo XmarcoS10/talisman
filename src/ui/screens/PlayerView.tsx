@@ -16,13 +16,13 @@ import { Deal } from './Deal.tsx';
 import { DevPanel, PeoplePanel } from './PlayerPeople.tsx';
 import { Status } from './Squad.tsx';
 
-type Props = { world: WorldState; playerId: number; onBack: () => void; onClub: (id: number) => void; onChange: () => void; onPlayer: (id: number) => void };
+type Props = { startDeal?: boolean; world: WorldState; playerId: number; onBack: () => void; onClub: (id: number) => void; onChange: () => void; onPlayer: (id: number) => void };
 type Tab = 'profile' | 'attrs' | 'stats' | 'form' | 'contract' | 'people';
 
-export function PlayerView({ world, playerId, onBack, onClub, onChange, onPlayer }: Props) {
+export function PlayerView({ startDeal = false, world, playerId, onBack, onClub, onChange, onPlayer }: Props) {
   const p = world.players[playerId];
-  const [tab, setTab] = useState<Tab>('profile');
-  const [deal, setDeal] = useState(false);
+  const [tab, setTab] = useState<Tab>(startDeal ? 'contract' : 'profile');
+  const [deal, setDeal] = useState(startDeal);
   if (!p) return <button className="btn" onClick={onBack}>{t('player.back')}</button>;
   const club = p.clubId !== null ? world.clubs[p.clubId] : undefined;
   const own = p.clubId === world.manager.clubId;

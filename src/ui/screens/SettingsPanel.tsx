@@ -2,11 +2,12 @@
 import { useReducer, useState } from 'react';
 import { Bug, Maximize, SlidersHorizontal, Users, Volume2, Whistle, Wrench, MousePointerClick } from 'lucide-react';
 import { version } from '../../../package.json';
-import { SCHEMA_VERSION } from '../../engine/save.ts';
+import { SCHEMA_VERSION, integrity } from '../../engine/save.ts';
 import { applyVolumes, playUi } from '../audio.ts';
 import { exportDiagnostics } from '../diag.ts';
 import { t } from '../i18n.ts';
-import { DEFAULTS, settings, updateSettings, type Settings } from '../settings.ts';
+import { DEFAULTS, WIN_SIZES, applyWin, settings, updateSettings, type Settings } from '../settings.ts';
+import type { WorldState } from '../../engine/model.ts';
 
 function Check({ on, set, title, sub }: { on: boolean; set: (v: boolean) => void; title: string; sub: string }) {
   return (
@@ -17,7 +18,7 @@ function Check({ on, set, title, sub }: { on: boolean; set: (v: boolean) => void
   );
 }
 
-export function SettingsPanel({ onChange }: { onChange?: () => void }) {
+export function SettingsPanel({ world, onChange }: { world: WorldState; onChange?: () => void }) {
   const [, rerender] = useReducer((x: number) => x + 1, 0);
   const refresh = () => { rerender(); onChange?.(); };
   const [msg, setMsg] = useState<string | null>(null);
@@ -30,6 +31,7 @@ export function SettingsPanel({ onChange }: { onChange?: () => void }) {
     refresh();
   };
   const full = typeof document !== 'undefined' && !!document.fullscreenElement;
+  const [check, setCheck] = useState<{ checks: number; problems: string[] } | null>(null);
 
   return (
     <div className="stack">
@@ -51,6 +53,12 @@ export function SettingsPanel({ onChange }: { onChange?: () => void }) {
             <button className="btn" onClick={() => { void (full ? document.exitFullscreen() : document.documentElement.requestFullscreen()).then(refresh); }}>
               <Maximize size={14} /> {t(full ? 'settings.windowed' : 'settings.fullscreen')}</button></label>
         </div>
+        {window.talismanWin && (
+          <label className="field"><span className="caps">{t('settings.resolution')}</span>
+            <select value={s.win} onChange={(e) => { set({ win: e.target.value }); applyWin(e.target.value); }}>
+              <option value="">—</option>{WIN_SIZES.map((v) => <option key={v} value={v}>{v.replace('x', ' × ')}</option>)}
+            </select></label>
+        )}
         <div className="row wrap">
           <button className="btn small" onClick={() => set({ hints: true, seen: [] })}>{t('settings.hintsAgain')}</button>
           <button className="btn small" onClick={() => set({ guideDone: false, visited: [] })}>{t('settings.guideAgain')}</button>
@@ -71,6 +79,12 @@ export function SettingsPanel({ onChange }: { onChange?: () => void }) {
       <div className="panel">
         <h2><Wrench size={18} /> {t('settings.maint')}</h2>
         <div className="mini-card row" style={{ justifyContent: 'space-between' }}><span className="caps">{t('settings.version')}</span><b className="num small">TFM 27 v{version} · {t('settings.schema', { n: SCHEMA_VERSION })}</b></div>
+        <button className="mini-card row" style={{ justifyContent: 'space-between', textAlign: 'left' }} onClick={() => setCheck(integrity(world))}>
+          <span className="caps">{t('settings.integrity')}</span>
+          {check ? <b className={`num small ${check.problems.length ? 'pos-bad' : 'pos-good'}`}>{check.problems.length
+            ? t('settings.integrityBad', { n: check.problems.length })
+            : t('settings.integrityOk', { pct: 100, n: check.checks.toLocaleString('it-IT') })}</b> : <span className="small pos-good">{t('settings.integrityRun')}</span>}
+        </button>
         <span className="muted small">{t('settings.diagHint')}</span>
         <div className="grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
           <button className="btn" onClick={async () => { const f = await exportDiagnostics(); setMsg(f ? t('settings.diagSaved', { file: f }) : null); }}><Bug size={14} /> {t('settings.diag')}</button>

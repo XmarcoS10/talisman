@@ -151,7 +151,7 @@ export function exportFile(w: WorldState, clubName: string) {
   const blob = new Blob([serialize(w)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `carriera-${clubName.replace(/[^\w]+/g, '-').toLowerCase()}-${w.season}.tfm`;
+  a.download = `carriera-${clubName.replace(/[^\w]+/g, '-').toLowerCase()}-${w.season}.dsa`;
   a.click();
   URL.revokeObjectURL(a.href);
 }
