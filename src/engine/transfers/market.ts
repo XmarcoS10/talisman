@@ -60,10 +60,10 @@ export function transfer(world: WorldState, rng: Rng, p: Player, buyer: Club, of
     if (q.id === p.id || (q.positions[p.position] ?? 0) < 4) continue;
     const worse = abilityAt(p, p.position) - abilityAt(q, p.position);
     if (worse <= 0) continue;
-    q.psych.morale = clamp(q.psych.morale - Math.min(12, worse * 0.4), 0, 100);
-    q.psych.minutes = Math.max(0, q.psych.minutes - 0.05);
+    q.psych.morale = clamp(q.psych.morale - Math.min(CLUB_AI.rivalMoraleMax, worse * CLUB_AI.rivalMoralePerCa), 0, 100);
+    q.psych.minutes = Math.max(0, q.psych.minutes - CLUB_AI.rivalMinutes);
     addCause(world, q, 'cause.newRival', { name: pName(p) });
-    if (worse > 20 && q.personality.ambition > 13 && rng.next() < 0.3) q.psych.wantsOut = true;
+    if (worse > CLUB_AI.rivalWantsOutGap && q.personality.ambition > CLUB_AI.rivalAmbition && rng.next() < CLUB_AI.rivalWantsOutP) q.psych.wantsOut = true;
   }
 
   const a = agentOf(world, p);
@@ -71,7 +71,7 @@ export function transfer(world: WorldState, rng: Rng, p: Player, buyer: Club, of
   const me = world.manager.clubId;
   if (buyer.id === me) addNews(world, 'news.signed', { name: pName(p), club: seller.shortName, fee: offer.fee });
   else if (seller.id === me) addNews(world, 'news.sold', { name: pName(p), club: buyer.shortName, fee: offer.fee });
-  else if (p.ca >= 150) addNews(world, 'news.transfer', { name: pName(p), from: seller.shortName, to: buyer.shortName, fee: offer.fee });
+  else if (p.ca >= CLUB_AI.newsCa) addNews(world, 'news.transfer', { name: pName(p), from: seller.shortName, to: buyer.shortName, fee: offer.fee });
 }
 
 /** prova a comprare `p`: trattativa completa, dal primo contatto all'accordo o alla rottura */
@@ -143,7 +143,7 @@ export const isWinterWindow = (day: number) => day >= CLUB_AI.winterFrom && day 
 /** il contesto di una trattativa, ricalcolato ogni volta: niente valori derivati salvati */
 export function talkCtx(world: WorldState, p: Player, buyer: Club): TalkCtx {
   const seller = world.clubs[p.clubId!]!;
-  const urgency = needs(world, buyer).find((n) => (p.positions[n.pos] ?? 0) >= 4)?.urgency ?? 0.3;
+  const urgency = needs(world, buyer).find((n) => (p.positions[n.pos] ?? 0) >= 4)?.urgency ?? CLUB_AI.defaultUrgency;
   return {
     value: value(p, world.season, { clubRep: seller.reputation }),
     willing: sellWillingness(world, seller, p),

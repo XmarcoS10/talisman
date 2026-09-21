@@ -36,7 +36,7 @@ export function acceptsRenewal(world: WorldState, p: Player, club: Club, wage: n
   const discount = 1 - Math.max(0, p.personality.loyalty - 10) * CONTRACT.loyalty;
   if (wage < ask * CONTRACT.acceptWage * discount) return { ok: false, why: 'wage' };
   // ambizione: il club deve essere all'altezza di quanto è forte
-  const deserved = Math.min(95, p.ca / 2);
+  const deserved = Math.min(CONTRACT.deservedMax, p.ca * CONTRACT.deservedPerCa);
   const gap = Math.max(0, deserved - club.reputation);
   if (gap * CONTRACT.ambitionLevel * Math.max(0, p.personality.ambition - 10) > 1) return { ok: false, why: 'ambition' };
   return { ok: true };
@@ -51,7 +51,7 @@ export function renew(world: WorldState, rng: Rng, p: Player, club: Club, wage: 
     release: withRelease ? Math.round(value(p, world.season, { clubRep: club.reputation }) * CONTRACT.releaseMul) : null,
     preSigned: null,
   };
-  p.psych.trust = Math.min(100, p.psych.trust + 6);
+  p.psych.trust = Math.min(100, p.psych.trust + CONTRACT.renewTrust);
   addCause(world, p, 'cause.renewed', { wage });
 }
 
@@ -74,7 +74,7 @@ export function aiRenewals(world: WorldState, rng: Rng) {
       // il rinnovo deve stare nel monte ingaggi: chi è già sforato perde i giocatori a scadenza,
       // a meno che la rosa non sia ridotta all'osso e una squadra vada comunque schierata
       const fits = wageRoom(world, club) + p.contract.wage >= wage || club.playerIds.length <= CLUB_AI.squadMin;
-      const keep = fits && wantsToKeep(world, club, p) && wage <= p.contract.wage * 3;
+      const keep = fits && wantsToKeep(world, club, p) && wage <= p.contract.wage * CONTRACT.maxRaise;
       if (keep && acceptsRenewal(world, p, club, wage).ok) {
         renew(world, rng, p, club, wage);
         if (club.id === world.manager.clubId) addNews(world, 'news.renewed', { name: pName(p), wage, until: p.contract.until });
@@ -173,7 +173,7 @@ export function preContracts(world: WorldState, rng: Rng): number {
     const owner = world.clubs[p.clubId]!;
     const suitors = Object.values(world.clubs).filter((c) => c.id !== owner.id && c.id !== world.manager.clubId
       && c.reputation > owner.reputation && c.playerIds.length < CLUB_AI.squadMax);
-    if (!suitors.length || rng.next() > 0.3) continue;
+    if (!suitors.length || rng.next() > CONTRACT.preContractP) continue;
     const to = suitors[rng.int(0, suitors.length - 1)]!;
     const wage = Math.round(askingWage(world, p, to) * CONTRACT.freeWageMul);
     if (acceptsRenewal(world, p, to, wage).ok) {

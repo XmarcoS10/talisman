@@ -79,8 +79,8 @@ export function shortlist(world: WorldState, club: Club, need: Need, budget: num
     const v = value(p, season, { clubRep: owner.reputation });
     if (v > budget) continue;
     const will = sellWillingness(world, owner, p);
-    if (will < 0.2) continue;
-    scored.push({ p, score: abilityAt(p, need.pos) * taste(club, p, season) * (0.6 + will) });
+    if (will < CLUB_AI.shortlistMinWill) continue;
+    scored.push({ p, score: abilityAt(p, need.pos) * taste(club, p, season) * (CLUB_AI.shortlistWill + will) });
   }
   return scored.sort((a, b) => b.score - a.score).slice(0, CLUB_AI.shortlist).map((x) => x.p);
 }

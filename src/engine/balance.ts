@@ -319,6 +319,8 @@ export const AGENT = {
   renewFrom: 1, // anni di contratto residuo sotto i quali l'agente chiede il rinnovo
   renewAsk: 1.25, // stipendio chiesto al rinnovo, come multiplo di quello coerente col valore
   renewGreed: 0.02, // in più per punto di avidità sopra 10
+  renewP: 0.2, // probabilità settimanale che l'agente chieda il rinnovo di un assistito in scadenza
+  benchMinutes: 0.25, // sotto questa quota di minuti l'agente propone l'assistito in giro
   proposeP: 0.1, // probabilità settimanale che un agente proponga un assistito a un club
   threatFrom: -50, // sotto questa memoria l'agente comincia a spingere per l'uscita
   threatMorale: 45, // ...e serve anche un assistito scontento
@@ -329,10 +331,19 @@ export const AGENT = {
 export const CLUB_AI = {
   budgetShare: 0.45, // quota di cassa che un club è disposto a spendere in una finestra
   wageCapOfRevenue: 0.7, // monte ingaggi sostenibile: oltre si vende e non si compra
-  revenuePerSeat: 1100, // ponytail: fatturato stimato da stadio e blasone finché non ci sono le finanze (§7.7, F8)
-  revenuePerRep2: 9700, // per reputazione al quadrato: i diritti tv e gli sponsor non sono lineari
   squadMax: 30, // oltre questa rosa non si compra
   squadMin: 22,
+  // effetto spogliatoio di un acquisto su chi gioca nello stesso ruolo
+  rivalMoralePerCa: 0.4, // morale perso per punto di CA in meno del nuovo arrivato…
+  rivalMoraleMax: 12, // …fino a questo tetto
+  rivalMinutes: 0.05, // aspettativa di minuti che scende
+  rivalWantsOutGap: 20, // se il nuovo è più forte di tanto…
+  rivalAmbition: 13, // …e lui è ambizioso…
+  rivalWantsOutP: 0.3, // …può chiedere la cessione
+  newsCa: 150, // i trasferimenti fra altri club fanno notizia da questa abilità in su
+  defaultUrgency: 0.3, // bisogno di un ruolo che non figura fra i buchi della rosa
+  shortlistWill: 0.6, // peso della disponibilità a vendere nella lista dei nomi
+  shortlistMinWill: 0.2, // sotto questa disponibilità non ci si prova nemmeno
   starterBonus: 15, // il titolare di un club sta sopra la media della sua rosa: è quello il livello da tenere
   needCount: 0.6, // urgenza per ogni uomo mancante rispetto alla rosa tipo
   needQuality: 0.05, // urgenza per punto di CA mancante
@@ -379,6 +390,11 @@ export const CONTRACT = {
   keepGap: -18, // se è sotto il livello del club di così tanto, si lascia andare
   preContractFrom: 175, // da gennaio (stesso giorno della finestra invernale) si firma a parametro zero
   freeWageMul: 1.15, // chi arriva gratis chiede più stipendio: non c'è cartellino da pagare
+  deservedPerCa: 0.5, // la reputazione di club che un giocatore pensa di meritare, per punto di CA…
+  deservedMax: 95, // …fino a questo tetto
+  renewTrust: 6, // fiducia nell'allenatore guadagnata col rinnovo
+  maxRaise: 3, // un club IA non rinnova chi chiede più di tante volte lo stipendio attuale
+  preContractP: 0.3, // probabilità che un pretendente si faccia avanti per un giocatore in scadenza
   loanMaxAge: 21, // oltre questa età non è più un prestito formativo
   loanRank: 2, // quanti gli stanno davanti nel ruolo perché convenga mandarlo a giocare
   loanRepGap: 8, // il club ospite deve essere di un gradino sotto
@@ -520,6 +536,10 @@ export const NATIONAL = {
   morale: 3, // essere convocati fa piacere
   goalP: 0.12, // gol a partita per un attaccante titolare (le altre posizioni meno)
   tournamentFatigue: 9, // l'estate con un torneo si paga in preparazione
+  goalShare: { ST: 1, AM: 0.6, other: 0.2 }, // chi segna in nazionale: punte, trequartisti, il resto
+  tournamentCaps: { group: 3, quarter: 4, semi: 5, final: 6, winner: 6 }, // presenze a seconda di dove si arriva
+  emptyStrength: 60, // forza di una nazionale senza giocatori
+  penaltyScale: 200, // ai rigori la forza conta poco: differenza / questo
   // valore: presenze e titoli contano sul mercato
   capsValue: 0.002, // per presenza, fino a capsValueMax
   capsValueMax: 0.15,

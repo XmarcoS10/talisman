@@ -41,7 +41,24 @@ blocca gli import proibiti.
 | 7 | **Nessun test sull'interfaccia.** I percorsi critici del motore (salvataggio, migrazioni, mercato, finanze) sono coperti; le schermate no, e gli errori di interfaccia li trova solo il collaudo a mano. | 2 | 2 | 4 | 5 h |
 | 8 | **`options()` in `decision.ts` ha complessità 52** su 102 righe: è il ciclo più caldo, commentato, e toccarlo senza benchmark è rischioso. | 2 | 1 | 2 | 3 h |
 
-## Cosa risolvo adesso
+## Risolte in questa revisione
 
-Come chiede P12, **solo le prime tre voci**, ognuna in un commit separato, senza cambiare il comportamento del gioco e
-senza toccare i test esistenti.
+Come chiede P12, **solo le prime tre voci**, ognuna in un commit separato, senza toccare i test esistenti. Dopo ogni
+commit: stessi test verdi, e gli stessi numeri nei report di stagione e di mercato (2,61 gol, correlazione 0,76,
+4 campioni; 60 acquisti, inflazione 1,01×).
+
+1. **Salvataggi** — in Electron gli slot sono file nella cartella dati dell'app, scritti in modo atomico; alla prima
+   lettura si copiano dal localStorage, che resta come riserva. Un salvataggio fallito mostra un avviso e "Salva ed
+   esci" non esce. Provato aprendo il gioco vero: lo slot esistente è stato copiato su file e si legge.
+   Nel browser di sviluppo (`pnpm dev`) resta il localStorage, col limite: lì l'avviso è l'unica difesa.
+2. **Funzioni condivise** in `engine/util.ts`: `clamp`, `age`, `pointsPerGame`.
+3. **Costanti in `balance.ts`**, con gli stessi valori; tolte le due morte.
+
+Restano aperte le voci 4-8, da riprendere alla prossima revisione.
+
+## Controlli di P12, punto 5
+
+- Il motore gira in Node puro: `pnpm sim` lo esegue senza bundler, compresi i JSON dei testi (importati con
+  `with { type: 'json' }`).
+- `engine.test.ts` controlla ogni file del motore: nessun import di React, DOM, Electron o `node:*`, nessun caso nativo,
+  nessuna data reale. Il file nuovo `util.ts` è coperto dallo stesso test.

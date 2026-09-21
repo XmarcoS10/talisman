@@ -77,7 +77,7 @@ export function proposals(world: WorldState, a: Agent, clubId: ClubId): Player[]
     const p = world.players[id];
     if (!p || p.clubId === null || p.clubId === clubId) continue;
     const stuck = p.psych.wantsOut || p.contract.until <= world.season + AGENT.renewFrom
-      || world.clubs[p.clubId]!.excluded.includes(p.id) || p.psych.minutes < 0.25;
+      || world.clubs[p.clubId]!.excluded.includes(p.id) || p.psych.minutes < AGENT.benchMinutes;
     if (stuck) out.push(p);
   }
   return out.sort((x, y) => y.ca - x.ca);
@@ -105,7 +105,7 @@ export function weekAgents(world: WorldState, rng: Rng): AgentMove[] {
       if (!p || p.clubId === null) continue;
       const club = world.clubs[p.clubId]!;
       const mem = a.memory[club.id] ?? 0;
-      if (p.contract.until <= world.season + AGENT.renewFrom && rng.next() < 0.2)
+      if (p.contract.until <= world.season + AGENT.renewFrom && rng.next() < AGENT.renewP)
         moves.push({ kind: 'renew', agent: a, player: p, wage: renewalWage(a, p, world.season, club.reputation) });
       else if (mem <= AGENT.threatFrom && p.psych.morale < AGENT.threatMorale && rng.next() < AGENT.threatP) {
         p.psych.wantsOut = true;

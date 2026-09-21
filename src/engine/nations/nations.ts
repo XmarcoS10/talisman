@@ -26,7 +26,7 @@ export function callUp(world: WorldState, code: string): Player[] {
 /** forza di una nazionale: media dei migliori undici convocati */
 export function strength(world: WorldState, code: string): number {
   const xi = callUp(world, code).slice(0, 11);
-  return xi.length ? xi.reduce((a, p) => a + p.ca, 0) / xi.length : 60;
+  return xi.length ? xi.reduce((a, p) => a + p.ca, 0) / xi.length : NATIONAL.emptyStrength;
 }
 
 /** gol di Poisson (algoritmo di Knuth): niente caso nativo, solo l'Rng del mondo */
@@ -56,7 +56,7 @@ export function internationalBreak(world: WorldState, rng: Rng) {
       const starter = i < 11;
       p.intl.caps += starter ? NATIONAL.matchesPerWindow : 1;
       for (let m = 0; m < NATIONAL.matchesPerWindow; m++)
-        if (starter && rng.next() < NATIONAL.goalP * (p.position === 'ST' ? 1 : p.position.startsWith('AM') ? 0.6 : 0.2)) p.intl.goals++;
+        if (starter && rng.next() < NATIONAL.goalP * (p.position === 'ST' ? NATIONAL.goalShare.ST : p.position.startsWith('AM') ? NATIONAL.goalShare.AM : NATIONAL.goalShare.other)) p.intl.goals++;
       p.condition.fatigue = clamp(p.condition.fatigue + NATIONAL.fatigue, 0, 100);
       p.psych.morale = clamp(p.psych.morale + NATIONAL.morale, 0, 100);
       if (rng.next() < NATIONAL.injuryP) {
@@ -79,7 +79,7 @@ export function tournament(world: WorldState, rng: Rng, kind: 'world' | 'euro'):
   const ko = (a: string, b: string) => {
     const [ga, gb] = playIntl(rng, str.get(a)!, str.get(b)!);
     if (ga !== gb) return ga > gb ? a : b;
-    return rng.next() < 0.5 + (str.get(a)! - str.get(b)!) / 200 ? a : b; // rigori
+    return rng.next() < 0.5 + (str.get(a)! - str.get(b)!) / NATIONAL.penaltyScale ? a : b; // rigori
   };
   // gironi: a quattro, passano le prime due (per il Mondiale a 12 passano anche le due migliori terze)
   const shuffled = rng.shuffle(codes);
@@ -125,7 +125,7 @@ export function summerTournament(world: WorldState, rng: Rng) {
     nationOf(world, code).honours.push({ season: year, tournament: kind, place });
     for (const p of callUp(world, code)) {
       p.condition.fatigue = clamp(p.condition.fatigue + NATIONAL.tournamentFatigue, 0, 100);
-      p.intl.caps += place === 'group' ? 3 : place === 'quarter' ? 4 : place === 'semi' ? 5 : 6;
+      p.intl.caps += NATIONAL.tournamentCaps[place];
       if (place === 'winner') p.intl.titles++;
     }
   }
