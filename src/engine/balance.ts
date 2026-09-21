@@ -42,6 +42,14 @@ export const DEV = {
 } as const;
 
 // --- allenamento, condizione, infortuni (§7.1-7.2) ---
+// --- filosofia dell'allenatore (F10): un vantaggio piccolo e dichiarato, solo per il club dell'utente ---
+export const STYLE = {
+  morale: 4, // gestore: il bersaglio del morale di tutti sale di tanto
+  famGain: 1.3, // tattico: il modulo si impara più in fretta
+  youthGrowth: 1.15, // scopritore: i giovani fino a 21 anni crescono di più
+  youthAge: 21,
+} as const;
+
 export const TRAIN = {
   load: { tactical: 0.5, physical: 1, technical: 0.6, setPieces: 0.3, match: 0.8, recovery: -0.5, rest: 0 },
   fitnessPerLoad: 4, // forma fisica spesa in allenamento per unità di carico settimanale

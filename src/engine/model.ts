@@ -116,6 +116,10 @@ export interface Agent {
 }
 
 /** filosofia del club (§7.9): decide il gusto sul mercato, non la forza */
+/** filosofia dell'allenatore scelta a inizio carriera (F10): gestore, tattico, scopritore di talenti */
+export const MANAGER_STYLES = ['none', 'motivator', 'tactician', 'developer'] as const;
+export type ManagerStyle = (typeof MANAGER_STYLES)[number];
+
 export const PHILOSOPHIES = ['youth', 'veterans', 'physical', 'technical', 'balanced'] as const;
 export type Philosophy = (typeof PHILOSOPHIES)[number];
 
@@ -417,7 +421,7 @@ export interface WorldState {
   rng: RngState;
   season: number; // anno di inizio stagione (2026 = 2026/27)
   day: number; // prossimo giorno da giocare
-  manager: { name: string; clubId: ClubId; kept: number; broken: number; board: Board; h2h: Record<ClubId, string> }; // promesse mantenute/rotte e testa a testa: memoria pluriennale
+  manager: { name: string; clubId: ClubId; kept: number; broken: number; board: Board; h2h: Record<ClubId, string>; style: ManagerStyle }; // promesse mantenute/rotte e testa a testa: memoria pluriennale
   players: Record<PlayerId, Player>;
   clubs: Record<ClubId, Club>;
   agents: Record<AgentId, Agent>;

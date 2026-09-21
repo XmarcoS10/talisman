@@ -17,6 +17,7 @@ export interface DevContext {
   season: number;
   focus: Record<Area | 'setPieces', number>;
   mentor: Player | null;
+  boost?: number; // moltiplicatore della crescita (filosofia dell'allenatore), 1 se assente
 }
 
 /** una variazione di attributo con le sue cause (chiavi i18n why.*) */
@@ -37,7 +38,7 @@ export function developPlayer(p: Player, ctx: DevContext, rng: Rng): DevChange[]
   const injured = p.condition.injuryDays > 0;
   const gap = Math.max(0, p.pa - p.ca) / 10;
   const minutesF = 0.5 + 0.9 * p.psych.minutes; // chi non gioca cresce poco
-  const common = gap * (0.4 + (1.2 * pers.professionalism) / 20) * minutesF * (0.85 + (0.3 * p.psych.morale) / 100) * (injured ? DEV.injuredGrowth : 1);
+  const common = gap * (0.4 + (1.2 * pers.professionalism) / 20) * minutesF * (0.85 + (0.3 * p.psych.morale) / 100) * (injured ? DEV.injuredGrowth : 1) * (ctx.boost ?? 1);
   const declineF = 1.4 - (0.8 * pers.professionalism) / 20;
   const core = new Set(PROFILES[p.position]);
   const general = new Set(GENERAL);

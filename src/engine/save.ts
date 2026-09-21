@@ -10,7 +10,7 @@ import { assignAgents } from './transfers/agents.ts';
 import { makeScouts } from './scouting/scouts.ts';
 import { newBoard } from './board/board.ts';
 
-export const SCHEMA_VERSION = 16;
+export const SCHEMA_VERSION = 17;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -109,6 +109,8 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
   },
   // 15 → 16 (F10, dirigenza): i posti nello staff osservatori
   (w) => { w.manager.board.scoutSlots = Math.max(SCOUT.slots, (w.clubs[w.manager.clubId]?.scoutIds ?? []).length); },
+  // 16 → 17 (F10, nuova carriera): la filosofia dell'allenatore
+  (w) => { w.manager.style = 'none'; },
 ];
 
 export function serialize(world: WorldState): string {

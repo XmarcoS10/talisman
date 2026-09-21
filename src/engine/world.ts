@@ -43,7 +43,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
   const rng = new Rng(seed);
   const world: WorldState = {
     schemaVersion: SCHEMA_VERSION, seed, rng: rng.s, season, day: 0,
-    manager: { name: '', clubId: 0, kept: 0, broken: 0, board: newBoard(), h2h: {} }, players: {}, clubs: {}, competitions: {}, history: [], news: [],
+    manager: { name: '', clubId: 0, kept: 0, broken: 0, board: newBoard(), h2h: {}, style: 'none' }, players: {}, clubs: {}, competitions: {}, history: [], news: [],
     causal: [], promises: [], talks: [], arcs: [], press: null, nations: {}, intake: [], nextArcId: 1, nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
   };
   const cities = [...CITIES];

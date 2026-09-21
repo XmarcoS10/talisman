@@ -1,5 +1,5 @@
 // Allenamento settimanale (GUIDA §7.1-7.2): carico, condizione, infortuni, sviluppo, mentori, familiarità col modulo.
-import { DEV, TRAIN } from './balance.ts';
+import { DEV, STYLE, TRAIN } from './balance.ts';
 import { developPlayer, type DevContext } from './development.ts';
 import { injure, injuryRisk, relapseRisk } from './injuries.ts';
 import { FORMATION_IDS, type Club, type Player, type TrainingCat, type WorldState } from './model.ts';
@@ -76,13 +76,15 @@ export function trainWeek(world: WorldState, club: Club, rng: Rng) {
     if (!mentor) p.mentorId = null;
     else bond(p, mentor, 1);
     const f = trains === 1 ? focus : { technical: 0.5, physical: 0.5, mental: 0.5, goalkeeping: 0.5, setPieces: 0.5 };
-    const changes = developPlayer(p, { season: world.season, focus: f, mentor }, rng);
+    const boost = me && world.manager.style === 'developer' && world.season - p.birthYear <= STYLE.youthAge ? STYLE.youthGrowth : 1;
+    const changes = developPlayer(p, { season: world.season, focus: f, mentor, boost }, rng);
     if (me) for (const ch of changes) addCause(world, p, ch.delta > 0 ? 'cause.up' : 'cause.down', { attr: ch.attr, v: p.attrs[ch.attr], why: ch.why.join(',') });
   }
   // familiarità: si impara il modulo che si usa, si dimenticano piano gli altri
   const players = club.playerIds.map((id) => world.players[id]!);
   const adapt = players.reduce((s, p) => s + p.attrs.tacticalAdaptability, 0) / players.length / 11;
-  const gain = TRAIN.famGain * (count(plan, 'tactical') + 0.5 * count(plan, 'match') + 1) * adapt;
+  const gain = TRAIN.famGain * (count(plan, 'tactical') + 0.5 * count(plan, 'match') + 1) * adapt
+    * (me && world.manager.style === 'tactician' ? STYLE.famGain : 1);
   for (const f of FORMATION_IDS) {
     const v = club.familiarity[f] ?? TRAIN.famOther;
     club.familiarity[f] = Math.round(Math.max(TRAIN.famOther / 2, Math.min(100, f === club.tactic.formation ? v + gain : v - TRAIN.famDecay)) * 10) / 10;

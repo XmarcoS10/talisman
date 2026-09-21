@@ -1,5 +1,5 @@
 // Morale multi-componente, contagio emotivo, promesse ed esclusioni (GUIDA §7.3).
-import { AGENT, PSYCH } from './balance.ts';
+import { AGENT, PSYCH, STYLE } from './balance.ts';
 import type { Club, Player, PlayerId, PlayerPromise, WorldState } from './model.ts';
 import { addCause, addNews, pName } from './news.ts';
 import { age } from './players.ts';
@@ -73,7 +73,8 @@ export function weekPsych(world: WorldState, club: Club, rng: Rng) {
   const players = club.playerIds.map((id) => world.players[id]!);
   const trustBase = club.id === world.manager.clubId ? 50 + clamp((world.manager.kept - world.manager.broken) * 3, -20, 20) : 50;
   for (const p of players) {
-    const target = moraleTarget(moraleParts(world, club, p, status.get(p.id)!, res));
+    const target = moraleTarget(moraleParts(world, club, p, status.get(p.id)!, res))
+      + (club.id === world.manager.clubId && world.manager.style === 'motivator' ? STYLE.morale : 0);
     const r = p.attrs.resilience / 20;
     const rate = target > p.psych.morale ? PSYCH.moraleUp + 0.2 * r : PSYCH.moraleDown - 0.12 * r;
     p.psych.morale += (target - p.psych.morale) * rate;
