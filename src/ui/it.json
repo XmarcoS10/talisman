@@ -19,7 +19,7 @@
   "nav.tables": "Classifiche",
   "nav.fixtures": "Calendario",
   "nav.tactics": "Tattica",
-  "nav.saves": "Salvataggi",
+  "nav.saves": "Salvataggi e impostazioni",
   "top.advanceHint": "Avanza (barra spaziatrice) · Cerca (/)",
   "search.placeholder": "Cerca giocatori e club  ( / )",
   "news.injury": "{name} si è infortunato ({injury}): starà fuori circa {days} giorni.",
@@ -967,5 +967,14 @@
   "challenge.style.technical": "Un club che ama il bel gioco e la tecnica.",
   "challenge.style.balanced": "Un club senza dogmi: lo stile lo porti tu.",
   "fin.debtTo": "{v} a stagione per {n} stagioni {club}",
-  "fin.creditFrom": "{v} a stagione per {n} stagioni {club}"
+  "fin.creditFrom": "{v} a stagione per {n} stagioni {club}",
+  "settings.title": "Impostazioni",
+  "settings.hints": "Mostra i suggerimenti alla prima apertura delle schermate",
+  "settings.hintsAgain": "Rivedi tutti i suggerimenti",
+  "settings.guideAgain": "Rifai la prima partita guidata",
+  "settings.volume.ui": "Volume dell’interfaccia",
+  "settings.volume.crowd": "Volume dello stadio",
+  "settings.diag": "Esporta diagnostica",
+  "settings.diagSaved": "Salvata: {file}",
+  "settings.diagHint": "Se qualcosa non va, esporta la diagnostica e mandala a chi ti aiuta: contiene versioni, errori recenti ed elenco dei salvataggi, non la carriera. Nessun dato parte da solo."
 }

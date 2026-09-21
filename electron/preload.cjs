@@ -8,3 +8,7 @@ contextBridge.exposeInMainWorld('talismanFs', {
   remove: (name) => ipcRenderer.sendSync('saves:remove', name),
   dir: () => ipcRenderer.sendSync('saves:dir'),
 });
+
+contextBridge.exposeInMainWorld('talismanDiag', {
+  exportReport: (extra) => ipcRenderer.invoke('diag:export', extra),
+});

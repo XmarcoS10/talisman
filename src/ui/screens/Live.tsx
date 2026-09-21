@@ -8,6 +8,7 @@ import { lines } from '../match/commentary.ts';
 import { Camera, draw, resetTrail, type Look } from '../match/renderer.ts';
 import { Crest } from '../Crest.tsx';
 import { Hint } from '../Hint.tsx';
+import { crowdIntensity, crowdStart, crowdStop, playUi } from '../audio.ts';
 import { shortName } from '../bits.tsx';
 import { t } from '../i18n.ts';
 import { LiveAnalyst } from './LiveAnalyst.tsx';
@@ -77,6 +78,13 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   const st = sample(run, T.current, mirror);
   const min = st?.min ?? 0;
   const score = st?.score ?? [0, 0];
+
+  // suoni: fischio d'inizio, boato ai gol (quando la riproduzione ci arriva, non quando il motore li calcola)
+  const goals = useRef(0);
+  useEffect(() => { crowdStart(); playUi('whistle'); return () => crowdStop(); }, []);
+  const total = score[0] + score[1];
+  if (total > goals.current) { goals.current = total; playUi('goal'); }
+  crowdIntensity((st?.frame?.mom ?? 0) * (me === 0 ? 1 : -1) / 100 + 0.4);
   const ctx = context(run, me, run.frames, world.clubs[world.manager.clubId]!.playerIds
     .reduce((s, id) => s + world.players[id]!.psych.morale, 0) / world.clubs[world.manager.clubId]!.playerIds.length);
 
@@ -89,6 +97,8 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   }
 
   const over = run.done && T.current >= duration(run);
+  const whistled = useRef(false);
+  if (over && !whistled.current) { whistled.current = true; playUi('whistle'); }
   const jumpTo = (minute: number) => {
     const a = atMinute(run.track, minute);
     if (a !== null) { T.current = a; resetTrail(); }

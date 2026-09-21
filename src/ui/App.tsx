@@ -4,6 +4,7 @@ import { advance, beginMatchDay, endSeason, isSeasonOver, nextMatchDay, standing
 import { Crest } from './Crest.tsx';
 import { HINTS, Hint } from './Hint.tsx';
 import { markVisited } from './settings.ts';
+import { playUi } from './audio.ts';
 import { fmtDate, fmtMoney, fmtSeason, t } from './i18n.ts';
 import { BoardView } from './screens/BoardView.tsx';
 import { ClubView } from './screens/ClubView.tsx';
@@ -47,6 +48,12 @@ export function App() {
   const [world, setWorld] = useState<WorldState | null>(null);
   const [screen, setScreen] = useState<Screen>({ name: 'desk' });
   useEffect(() => { markVisited(screen.name); }, [screen.name]);
+  // un clic leggero sui pulsanti, col volume dell'interfaccia
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => { if ((e.target as HTMLElement).closest('button')) playUi('click'); }; // target è sempre un elemento nei clic
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
+  }, []);
   const [modal, setModal] = useState<Modal>(null);
   const [liveDay, setLiveDay] = useState<LiveDay | null>(null);
   const [, rerender] = useReducer((x: number) => x + 1, 0); // il motore muta il mondo sul posto

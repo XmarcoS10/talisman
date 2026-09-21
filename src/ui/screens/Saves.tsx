@@ -1,6 +1,7 @@
 import { useReducer, useRef, useState } from 'react';
 import type { WorldState } from '../../engine/model.ts';
 import { fmtDate, fmtSeason, t } from '../i18n.ts';
+import { SettingsPanel } from './SettingsPanel.tsx';
 import { SLOTS, currentSlot, deleteSlot, exportFile, importFile, loadFrom, saveTo, setCurrentSlot, slotInfo, type Slot, savesDir } from '../storage.ts';
 
 export function Saves({ world, onLoad }: { world: WorldState; onLoad: (w: WorldState) => void }) {
@@ -76,6 +77,7 @@ export function Saves({ world, onLoad }: { world: WorldState; onLoad: (w: WorldS
         <div className="muted">{t('saves.fileHint')}</div>
       </div>
       {msg && <div className="panel">{msg}</div>}
+      <SettingsPanel />
     </div>
   );
 }
