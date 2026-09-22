@@ -28,6 +28,7 @@ import { Tactics } from './screens/Tactics.tsx';
 import { Training } from './screens/Training.tsx';
 import { Youth } from './screens/Youth.tsx';
 import { Search } from './Search.tsx';
+import { screenArt } from './art.ts';
 import { Sidebar, type NavName } from './Sidebar.tsx';
 import { currentSlot, saveTo, startClock } from './storage.ts';
 
@@ -155,7 +156,7 @@ export function App() {
       <Sidebar world={world} active={screen.name} onNav={(n) => setScreen({ name: n })}
         onQuit={() => { if (autosave(world)) setWorld(null); else rerender(); }} />
 
-      <main className="content">
+      <main {...screenArt(screen.name)}>
         <Alerts items={alerts} onClose={() => setAlerts([])} />
         {(HINTS as readonly string[]).includes(screen.name) && <Hint key={screen.name} id={screen.name as (typeof HINTS)[number]} />}
         {screen.name === 'desk' && <Desk world={world} onNav={(n) => setScreen({ name: n })} onWatch={myMatchDay ? () => setLiveDay(beginMatchDay(world)) : undefined} onChange={changed} onPlayer={openPlayer} />}

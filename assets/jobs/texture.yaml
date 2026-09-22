@@ -1,0 +1,24 @@
+# texture: vedi GUIDA Blocco C §4. Rilancia con «pnpm assets generate assets/jobs/texture.yaml»: salta le immagini già fatte.
+id: texture
+workflow: base-sdxl.json   # cambialo col tuo workflow esportato (Export API), e aggiorna i nodeBindings
+output: texture
+kind: texture
+variants: 3
+seedBase: 5301
+size: [1024, 1024]
+styleSuffix: >-
+  seamless tileable, top-down, flat lighting, low contrast, no shadows, no lines, no text
+negativePrompt: >-
+  text, watermark, signature, logo, brand, jersey sponsor, blurry, jpeg artifacts, extra limbs, deformed hands, oversaturated, neon, cartoon 3d, faces
+nodeBindings:
+  positive: 6.inputs.text
+  negative: 7.inputs.text
+  seed: 3.inputs.seed
+  width: 5.inputs.width
+  height: 5.inputs.height
+process: { width: 512, height: 512, palette: 0.2 }
+items:
+  - name: erba
+    prompt: grass texture for a top-down 2D football pitch, mown stripe pattern, subtle, desaturated dark green
+  - name: carta
+    prompt: dark paper texture with faint fibres, for UI panels, very subtle

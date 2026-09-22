@@ -20,7 +20,7 @@ Marco non programma: fa collaudo, playtest e decisioni. Il codice lo scrive Clau
 7. Commenti in italiano, identificatori in inglese. Componenti React sotto le 200 righe.
 
 ## Comandi
-`pnpm dev` (browser) · `pnpm app` (Electron) · `pnpm test` · `pnpm typecheck`
+`pnpm dev` (browser) · `pnpm app` (Electron) · `pnpm test` · `pnpm typecheck` · `pnpm assets` (pipeline grafica)
 `pnpm dist:win` (installer Windows in `release/`; ferma prima `pnpm dev`, che tiene aperta la cartella) · `pnpm dist:linux` (solo su Linux)
 `pnpm sim -- --seasons 10 --seed 42` · `pnpm sim -- --matches 3000` (bilanciamento motore partita)
 `pnpm sim -- --dev 10` (curve di sviluppo) · `pnpm sim -- --psych 20` (A/B della psicologia, ~5 min)
@@ -43,6 +43,11 @@ con `fixturesOn`, mai solo dai campionati), amichevoli estive in `engine/friendl
 `engine/youth/primavera.ts`, filosofia dell'allenatore in `STYLE`. Componenti comuni in `app.css` (sezione F10):
 `kpis/kpi`, `seg-tabs`, `chips`, `tag`, `meter`, `mini-card`, `section-h`. Attenzione ai nomi di classe già usati
 (`.slot` è della tattica, `.timeline` non esiste più). Il test `src/ui/i18n.test.ts` controlla le chiavi scritte per intero.
+
+## Grafica (`docs/notes/grafica.md`)
+Stemmi, maglie e volti sono procedurali in `src/ui/procgen/` (GP1-GP3), deterministici dall'id: niente immagini da
+distribuire. Le immagini generate con ComfyUI passano da `pnpm assets` (`tools/assets/`, Blocco C §4) e arrivano al
+gioco dal manifest generato `src/ui/assets-manifest.ts` (non si modifica a mano); `src/ui/art.ts` le usa se esistono.
 
 ## Motore partita
 Spiegato in `docs/03-match-engine.md`, decisioni in `docs/adr/0002-motore-l2.md` e `docs/adr/0005-partita-2d.md`.

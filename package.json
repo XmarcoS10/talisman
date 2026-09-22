@@ -13,7 +13,8 @@
     "test": "vitest run",
     "sim": "node src/sim-cli/sim.ts",
     "dist:win": "vite build && electron-builder --win nsis",
-    "dist:linux": "vite build && electron-builder --linux AppImage"
+    "dist:linux": "vite build && electron-builder --linux AppImage",
+    "assets": "node tools/assets/cli.ts"
   },
   "build": {
     "appId": "it.talisman.game",
@@ -57,9 +58,11 @@
     "lucide-react": "^1.47.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "sharp": "^0.35.4",
     "typescript": "^7.0.2",
     "vite": "^8.3.0",
-    "vitest": "^5.0.1"
+    "vitest": "^5.0.1",
+    "yaml": "^2.9.1"
   },
   "license": "GPL-3.0-only",
   "author": "Marco",

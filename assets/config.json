@@ -1,0 +1,21 @@
+{
+  "comfyUrl": "http://127.0.0.1:8188",
+  "workflows": "assets/comfy-workflows",
+  "raw": "assets/raw",
+  "approved": "assets/approved",
+  "archive": "assets/archive",
+  "out": "public/art",
+  "manifest": "src/ui/assets-manifest.ts",
+  "licenses": "assets/LICENSES.md",
+  "limitsKb": {
+    "sfondo": 400,
+    "illustrazione": 80,
+    "icona": 8,
+    "texture": 200
+  },
+  "models": {
+    "flux1-dev.safetensors": "FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito",
+    "flux1-schnell.safetensors": "Apache 2.0",
+    "sd_xl_base_1.0.safetensors": "CreativeML Open RAIL++-M"
+  }
+}

@@ -1,0 +1,102 @@
+# illustrazioni: vedi GUIDA Blocco C §4. Rilancia con «pnpm assets generate assets/jobs/illustrazioni.yaml»: salta le immagini già fatte.
+id: illustrazioni
+workflow: base-sdxl.json   # cambialo col tuo workflow esportato (Export API), e aggiorna i nodeBindings
+output: illustrazioni
+kind: illustrazione
+variants: 3
+seedBase: 4101
+size: [1024, 1024]
+styleSuffix: >-
+  flat vector illustration, thick geometric shapes, no outlines, limited palette of obsidian navy, emerald green, cyan and amber, generous negative space, centered composition, editorial sports magazine style, no text
+negativePrompt: >-
+  text, watermark, signature, logo, brand, jersey sponsor, blurry, jpeg artifacts, extra limbs, deformed hands, oversaturated, neon, cartoon 3d, faces
+nodeBindings:
+  positive: 6.inputs.text
+  negative: 7.inputs.text
+  seed: 3.inputs.seed
+  width: 5.inputs.width
+  height: 5.inputs.height
+process: { width: 512, height: 512, palette: 0.5, thumb: true }
+# per la coerenza (Blocco C §2, W2): quando hai lo style-anchor, esporta il workflow con l'IP-Adapter, aggiungi
+# «styleRef: <nodo>.inputs.image» ai nodeBindings e «styleRef: style-anchor.png» agli elementi (il file sta in assets/)
+items:
+  - name: crisis
+    prompt: a cracked football lying in the rain under a dark cloud
+  - name: winStreak
+    prompt: a row of five rising green arrows made of football pitch stripes
+  - name: unbeaten
+    prompt: a sturdy shield with a football at its centre, untouched by arrows
+  - name: titleRace
+    prompt: two runners neck and neck towards a trophy on a podium
+  - name: relegation
+    prompt: a football rolling down a staircase into shadow
+  - name: surprise
+    prompt: a tiny paper boat overtaking a big ship on a green sea
+  - name: giant
+    prompt: a small figure standing before a giant boot
+  - name: fortress
+    prompt: a stadium drawn as a castle with floodlights as towers
+  - name: awayCurse
+    prompt: a suitcase with a black cat sitting on it at a bus stop
+  - name: drought
+    prompt: an empty goal net in a desert with a lone cactus
+  - name: leaky
+    prompt: a goal net with a big hole, footballs pouring through
+  - name: cleanRun
+    prompt: a goalkeeper glove holding a spotless white sheet
+  - name: nemesis
+    prompt: two chess pieces shaped like football shirts facing off, one casting a long shadow
+  - name: revenge
+    prompt: a boomerang made of a football scarf flying back
+  - name: comeback
+    prompt: a phoenix rising from a scoreboard
+  - name: showdown
+    prompt: two footballs facing each other like duelists at noon
+  - name: thrashing
+    prompt: a scoreboard overflowing with numbers bursting out
+  - name: ffp
+    prompt: a pair of scales weighing coins against a football
+  - name: boardUnrest
+    prompt: an empty director chair with a crack in the table
+  - name: fans
+    prompt: a sea of raised scarves in a stadium curve
+  - name: redemption
+    prompt: a football boot lifted from dark water into sunlight
+  - name: hotStreak
+    prompt: a football on fire leaving a trail across the pitch
+  - name: predestined
+    prompt: a young player silhouette with a star shining above
+  - name: talisman
+    prompt: a glowing amulet shaped like a football
+  - name: scorerRace
+    prompt: a golden boot on a winners podium with two smaller boots behind
+  - name: keeper
+    prompt: a goalkeeper diving to stop a football, frozen in mid air
+  - name: comebackKid
+    prompt: crutches left leaning against a goalpost, the player running away
+  - name: slump
+    prompt: a deflated football under a single spotlight
+  - name: wantsOut
+    prompt: a football shirt hanging on an open door, suitcase beside it
+  - name: feud
+    prompt: two lockers with a lightning bolt between them
+  - name: mentor
+    prompt: an older hand guiding a younger hand holding a football
+  - name: debut
+    prompt: a pair of brand new boots at the edge of a bright pitch
+  - name: veteran
+    prompt: a worn captain armband on a bench under stadium lights
+  - name: newSigning
+    prompt: a pen signing a contract next to a new shirt
+  - name: flop
+    prompt: a golden trophy that turns out to be made of cardboard
+  - name: formerClub
+    prompt: a player walking through a tunnel towards an old home stadium
+  - name: hatTrick
+    prompt: three footballs in the back of a net, a match ball held high
+  - name: hothead
+    prompt: a red card with a small cloud of steam
+  - name: preSigned
+    prompt: an envelope with a contract sealed with a club wax seal
+  - name: lateWinner
+    prompt: a stadium clock at 90 minutes and a ball crossing the line

@@ -1,0 +1,44 @@
+# sfondi: vedi GUIDA Blocco C §4. Rilancia con «pnpm assets generate assets/jobs/sfondi.yaml»: salta le immagini già fatte.
+id: sfondi
+workflow: base-sdxl.json   # cambialo col tuo workflow esportato (Export API), e aggiorna i nodeBindings
+output: sfondi
+kind: sfondo
+variants: 3
+seedBase: 2701
+size: [1344, 768]
+styleSuffix: >-
+  obsidian navy and midnight blue color grading, single emerald green accent light, cinematic low key lighting, shallow depth of field, subtle film grain, no text, no logos, no watermark, no faces
+negativePrompt: >-
+  text, watermark, signature, logo, brand, jersey sponsor, blurry, jpeg artifacts, extra limbs, deformed hands, oversaturated, neon, cartoon 3d, faces
+nodeBindings:
+  positive: 6.inputs.text
+  negative: 7.inputs.text
+  seed: 3.inputs.seed
+  width: 5.inputs.width
+  height: 5.inputs.height
+process: { width: 1280, height: 720, palette: 0.35, vignette: true }
+items:
+  - name: desk
+    prompt: manager office at a football club at night, big window overlooking an empty floodlit stadium, dark desk with tactical papers
+  - name: stories
+    prompt: empty press conference room at a football stadium, microphones on a long table, blurred backdrop, spotlights
+  - name: squad
+    prompt: empty football training ground at dusk, row of plain kits hanging on a fence, cones on the grass
+  - name: tactics
+    prompt: dark tactical analysis room, large screen with an abstract football pitch diagram glowing green, chairs in the shadow
+  - name: training
+    prompt: empty training pitch at dawn, mist, mannequins and cones, goal nets, long shadows
+  - name: dressing
+    prompt: modern football dressing room interior, empty, warm low key lighting, wooden lockers, hanging plain kits without any logo or text, space on the left for UI panels
+  - name: youth
+    prompt: youth academy small stadium with a tiny stand, footballs in a net bag, evening light
+  - name: market
+    prompt: airport arrivals hall at night seen through glass, blurred silhouettes with suitcases, departure board glow
+  - name: scouts
+    prompt: empty stand of a small provincial stadium, a notebook and binoculars on a plastic seat, match under floodlights far away
+  - name: finance
+    prompt: boardroom of a football club, long dark table, city lights through the window, documents and a calculator
+  - name: board
+    prompt: executive lounge overlooking an empty stadium at night, leather armchairs, glass and steel
+  - name: fixtures
+    prompt: empty modern stadium at night seen from the tunnel, volumetric floodlight haze, heavily darkened lower third for text overlay

@@ -1,5 +1,7 @@
 // Storie e sala stampa (GUIDA §13 P8 punto 6): conferenza, giornale, clima mediatico, cronaca di lega, le trame in corso.
 import { useState } from 'react';
+import { Face } from '../Face.tsx';
+import { storyArt } from '../art.ts';
 import { Layers, Newspaper, Rss, Search, ShieldCheck, TrendingUp } from 'lucide-react';
 import type { Arc, WorldState } from '../../engine/model.ts';
 import { age } from '../../engine/players.ts';
@@ -29,7 +31,7 @@ export function ArcCard({ world, a, full = true }: { world: WorldState; a: Arc; 
     <div className={`arc ${a.state}`}>
       <div className="row" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <span className="row">
-          {p ? <span className="initials">{p.firstName[0]}{p.lastName[0]}</span> : c ? <Crest club={c} size={30} /> : null}
+          {p ? <span className="initials face-mini"><Face world={world} p={p} width={34} /></span> : c ? <Crest club={c} size={30} /> : null}
           <span><b className="deal-h">{p ? fullName(p) : c?.name ?? t(`arc.${a.rule}`)}</b>
             {p && <div className="muted small row">{t('stories.ageRole', { age: age(p, world.season) })} <PosBadge pos={p.position} /></div>}</span>
         </span>
@@ -99,6 +101,7 @@ export function Stories({ world, onChange }: { world: WorldState; onChange: () =
               <span className="stack" style={{ alignItems: 'flex-end', gap: 2 }}><span className="tag cyan">{t('stories.edition')}</span><span className="caps">{fmtDate(world.season, world.day)}</span></span>
             </div>
             {lead[0] ? <>
+              {storyArt(lead[0].a.rule) && <img className="story-art" src={storyArt(lead[0].a.rule)!.src} alt="" />}
               <span className="caps pos-good">{t(`arc.${lead[0].a.rule}`)}</span>
               <h1 className="headline">{lead[0].l.text}</h1>
               {lead.slice(1, 3).map((x, i) => <p key={i} className="muted serif">«{x.l.text}»</p>)}

@@ -5,3 +5,6 @@ release/
 out.md
 .claude/settings.local.json
 tools/shots-save.json
+# pipeline degli asset: generate e scarti restano sul disco di chi le fa; si versionano le approvate e i file pronti
+assets/raw/
+assets/archive/
