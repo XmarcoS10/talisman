@@ -462,7 +462,9 @@ h1 { letter-spacing: -0.01em; } h2, h3 { letter-spacing: 0.01em; }
 .match-hero .vs { font: 700 26px var(--font-title); color: var(--text-3); }
 .small svg, .muted svg { vertical-align: -2px; }
 .player-head { flex-direction: row; align-items: center; gap: var(--s-5); padding: var(--s-5); background: linear-gradient(120deg, rgb(0 245 155 / 0.07), transparent 50%), var(--glass-1); }
-.avatar-big { width: 96px; height: 96px; border-radius: 50%; border: 3px solid; display: grid; place-items: center; background: var(--bg-1); font: 700 34px var(--font-title); flex: none; box-shadow: var(--glow); }
+.avatar-big { width: 96px; height: 96px; border-radius: 50%; border: 3px solid; display: grid; place-items: center; background: var(--bg-1); font: 700 34px var(--font-title); flex: none; box-shadow: var(--glow); overflow: hidden; }
+.avatar-big { position: relative; }
+.avatar-big .face { position: absolute; top: -4px; left: 6px; } /* il volto è 2:3: si inquadra testa e spalle */
 .radar-ring { fill: none; stroke: rgb(255 255 255 / 0.1); }
 .radar-shape { fill: rgb(0 245 155 / 0.2); stroke: var(--accent); stroke-width: 2; }
 .radar-label { fill: var(--text-2); font: 600 9px var(--font-num); text-transform: uppercase; }

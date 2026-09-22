@@ -355,6 +355,8 @@
   "saves.importError": "File non valido: {err}",
   "saves.fileHint": "Esporta per fare un backup o passare la carriera a un altro PC. L'importazione la carica nello slot in uso.",
   "club.info": "{city} · fondato nel {founded} · {stadium} ({cap} posti)",
+  "club.kitHome": "Prima maglia",
+  "club.kitAway": "Seconda maglia",
   "club.titles": "Scudetti",
   "club.squad": "Rosa",
   "col.fitness": "Forma",

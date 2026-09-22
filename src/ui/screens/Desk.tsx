@@ -5,6 +5,8 @@ import { expected } from '../../engine/board/board.ts';
 import type { WorldState } from '../../engine/model.ts';
 import { fixturesOn, nextMatchDay, standings } from '../../engine/world.ts';
 import { Crest } from '../Crest.tsx';
+import { Kit } from '../Kit.tsx';
+import { awayWearsAlt } from '../procgen/kit.ts';
 import { team } from '../bits.tsx';
 import { kickoff } from '../calendar.ts';
 import { fmtDate, fmtMoney, fmtSeason, t, tEvent } from '../i18n.ts';
@@ -58,14 +60,14 @@ export function Desk({ world, onNav, onWatch, onChange, onPlayer }: Props) {
             </div>
             {next ? <>
               <div className="score">
-                <div className="grid" style={{ justifyItems: 'center', gap: 6 }}><Crest club={world.clubs[next.home]!} size={72} /><b className="deal-h">{world.clubs[next.home]!.name}</b></div>
+                <div className="grid" style={{ justifyItems: 'center', gap: 6 }}><Crest club={world.clubs[next.home]!} size={72} /><b className="deal-h">{world.clubs[next.home]!.name}</b><Kit club={world.clubs[next.home]!} size={36} /></div>
                 <div className="grid" style={{ justifyItems: 'center', gap: 6 }}>
                   <span className="vs">VS</span>
                   <span className="num small"><CalendarDays size={12} /> {fmtDate(world.season, next.day)}</span>
                   <span className="num small"><Clock size={12} /> {kickoff(world, next)}</span>
                   <span className="tag dim">{t(next.home === clubId ? 'desk.home' : 'desk.away')}</span>
                 </div>
-                <div className="grid" style={{ justifyItems: 'center', gap: 6 }}><Crest club={world.clubs[next.away]!} size={72} /><b className="deal-h">{world.clubs[next.away]!.name}</b></div>
+                <div className="grid" style={{ justifyItems: 'center', gap: 6 }}><Crest club={world.clubs[next.away]!} size={72} /><b className="deal-h">{world.clubs[next.away]!.name}</b><Kit club={world.clubs[next.away]!} away={awayWearsAlt(world.clubs[next.home]!, world.clubs[next.away]!)} size={36} /></div>
               </div>
               <div className="row wrap" style={{ justifyContent: 'space-between' }}>
                 <span className="muted small"><Landmark size={12} /> {world.clubs[next.home]!.stadium.name}{played.length > 0 && ` · ${t('desk.opponentPos', { pos: rankOf(next.home === clubId ? next.away : next.home) })}`}</span>

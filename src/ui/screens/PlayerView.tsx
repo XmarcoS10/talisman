@@ -7,6 +7,7 @@ import { age } from '../../engine/players.ts';
 import { estimate, personalityKnown } from '../../engine/scouting/fog.ts';
 import { value } from '../../engine/transfers/valuation.ts';
 import { Crest } from '../Crest.tsx';
+import { Face } from '../Face.tsx';
 import { Radar } from '../Radar.tsx';
 import { PosBadge, Rating, Stars, attrClass, fullName, personalityKey } from '../bits.tsx';
 import { Ability, Est, Known } from '../fog.tsx';
@@ -49,7 +50,7 @@ export function PlayerView({ startDeal = false, world, playerId, onBack, onClub,
       <button className="link" style={{ alignSelf: 'flex-start' }} onClick={onBack}><ArrowLeft size={14} /> {t('player.back')}</button>
 
       <div className="panel player-head">
-        <span className="avatar-big" style={{ borderColor: club?.colors[0] ?? 'var(--border)' }}>{p.firstName[0]}{p.lastName[0]}</span>
+        <span className="avatar-big" style={{ borderColor: club?.colors[0] ?? 'var(--border)' }}><Face world={world} p={p} width={84} /></span>
         <div className="stack" style={{ gap: 6, flex: 1 }}>
           <span className="row wrap"><PosBadge pos={p.position} />{club && <><Crest club={club} size={20} /><button className="link" onClick={() => onClub(club.id)}>{club.name}</button></>}<Status p={p} /></span>
           <h1 className="dossier-name" style={{ fontSize: 40 }}>{fullName(p)}</h1>
