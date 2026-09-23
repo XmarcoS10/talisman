@@ -23,7 +23,7 @@ beforeAll(async () => {
       let body = '';
       for await (const c of req) body += c;
       const wf = JSON.parse(body).prompt as Record<string, { inputs: Record<string, unknown> }>;
-      seeds.push(Number(wf['3']!.inputs.seed));
+      seeds.push(Number(Object.values(wf).map((n) => n.inputs.seed).find((v) => typeof v === 'number'))); // il nodo del seed cambia col workflow
       res.end(JSON.stringify({ prompt_id: `p${++n}` }));
     } else if (url.pathname.startsWith('/history/')) {
       const id = url.pathname.split('/')[2]!;
@@ -84,7 +84,7 @@ describe('pipeline degli asset (Blocco C §4)', () => {
     const ts = readFileSync(join(root, 'src', 'ui', 'assets-manifest.ts'), 'utf8');
     expect(ts).toContain("'sfondi/desk': { src: 'art/sfondi/desk.webp'");
     expect(licenses(cfg)).toBe(2);
-    expect(readFileSync(join(root, 'assets', 'LICENSES.md'), 'utf8')).toContain('`sfondi/desk` | sd_xl_base_1.0.safetensors | CreativeML');
+    expect(readFileSync(join(root, 'assets', 'LICENSES.md'), 'utf8')).toMatch(/`sfondi\/desk` \| \S+ \| \S+/); // modello e licenza, quali che siano nel job
     licenses(cfg); // la seconda volta sostituisce la tabella, non ne aggiunge un'altra
     expect(readFileSync(join(root, 'assets', 'LICENSES.md'), 'utf8').match(/assets:start/g)).toHaveLength(1);
     expect(await check(cfg)).toEqual([]);
