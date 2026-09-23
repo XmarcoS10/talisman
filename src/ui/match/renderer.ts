@@ -2,6 +2,7 @@
 // (12 × 8 zone ≈ 105 × 68 m) convertite in pixel dalla telecamera. Il campo arriva già specchiato dal playback:
 // qui la squadra dell'utente attacca sempre verso destra.
 import type { Live } from './playback.ts';
+import { art } from '../assets-manifest.ts';
 
 export const PITCH_X = 12, PITCH_Y = 8;
 const FOLLOW_ZOOM = 1.2;
@@ -33,6 +34,21 @@ export class Camera {
 
 const trail: { x: number; y: number }[] = [];
 
+// erba: la texture generata con la pipeline (tools/assets). Si carica una volta sola; senza, il campo resta a fasce piatte.
+let grassImg: HTMLImageElement | null = null;
+let grassPat: CanvasPattern | null = null;
+function grassPattern(ctx: CanvasRenderingContext2D): CanvasPattern | null {
+  const a = art('texture/erba');
+  if (!a) return null;
+  if (!grassImg) { grassImg = new Image(); grassImg.src = a.src; }
+  if (!grassImg.complete || !grassImg.naturalWidth) return null;
+  if (!grassPat) {
+    grassPat = ctx.createPattern(grassImg, 'repeat');
+    grassPat?.setTransform(new DOMMatrix().scale(0.35));
+  }
+  return grassPat;
+}
+
 export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: Live | null, look: Look, cam: Camera, css: (v: string) => string) {
   const scale = Math.min(w / PITCH_X, h / PITCH_Y) * cam.zoom;
   const ox = w / 2 - cam.cx * scale;
@@ -44,6 +60,14 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: 
   for (let i = 0; i < 12; i++) {
     ctx.fillStyle = css(i % 2 ? '--pitch-1' : '--pitch-2');
     ctx.fillRect(X(i), Y(0), scale + 1, PITCH_Y * scale);
+  }
+  const grass = grassPattern(ctx);
+  if (grass) { // la texture della pipeline, se c'è: solo grana, le fasce restano quelle dei colori
+    ctx.save();
+    ctx.globalAlpha = 0.2;
+    ctx.fillStyle = grass;
+    ctx.fillRect(X(0), Y(0), PITCH_X * scale, PITCH_Y * scale);
+    ctx.restore();
   }
   ctx.fillStyle = css('--bg-0');
   if (X(0) > 0) ctx.fillRect(0, 0, X(0), h);

@@ -1,6 +1,6 @@
 # texture: vedi GUIDA Blocco C §4. Rilancia con «pnpm assets generate assets/jobs/texture.yaml»: salta le immagini già fatte.
 id: texture
-workflow: base-sdxl.json   # cambialo col tuo workflow esportato (Export API), e aggiorna i nodeBindings
+workflow: flux-dev.json   # FLUX.1-dev anche per le texture: più pulite
 output: texture
 kind: texture
 variants: 3
@@ -12,8 +12,7 @@ negativePrompt: >-
   text, watermark, signature, logo, brand, jersey sponsor, blurry, jpeg artifacts, extra limbs, deformed hands, oversaturated, neon, cartoon 3d, faces
 nodeBindings:
   positive: 6.inputs.text
-  negative: 7.inputs.text
-  seed: 3.inputs.seed
+  seed: 10.inputs.seed
   width: 5.inputs.width
   height: 5.inputs.height
 process: { width: 512, height: 512, palette: 0.2 }

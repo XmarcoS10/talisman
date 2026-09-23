@@ -18,7 +18,20 @@ Il gioco usa già le immagini appena esistono: sfondo di ogni schermata (`sfondi
 illustrazione della storia in prima pagina del giornale (`illustrazioni/<tipo di storia>`). Senza immagini non cambia
 niente.
 
-## Tocca a Marco (serve la scheda video e ComfyUI)
+## La produzione, fatta il 22-23/09/2026
+
+ComfyUI (0.37.0 portable NVIDIA) è installato in `D:\AI\ComfyUI_windows_portable`, i modelli in `D:\AI\models`
+(`extra_model_paths.yaml` li collega, così un aggiornamento del programma non li tocca). `run_nvidia_gpu.bat` apre già
+la porta 8188 per `pnpm assets`. Generati con **FLUX.1-dev Q6_K** su RTX 3060: 36 sfondi, 120 illustrazioni, 6 texture;
+tenute 12 + 40 + 2, il resto è in `assets/archive/`. Parametri congelati in `assets/style-bible.json`.
+
+**Lezione:** FLUX disegna «football» come pallone da football americano. Nei prompt va scritto
+«round soccer ball with black and white hexagonal panels» (otto soggetti sono stati rifatti per questo).
+
+Nel repository vanno solo i file pronti (`public/art`, ~10 MB): le immagini grandi si rifanno identiche, perché i seed
+stanno nei job e nei `.meta.json`.
+
+## Restava a Marco (ora fatto da Claude, salvo il gusto)
 
 1. **Installa ComfyUI** e i modelli (Blocco C §1). Avvialo con `--listen 127.0.0.1 --port 8188`.
 2. **Trova lo stile prima di automatizzare** (Blocco C §5): 20 varianti dello sfondo della Scrivania, scegline uno;

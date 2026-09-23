@@ -10,5 +10,29 @@
     "#808080"
   ],
   "notes": "Colori di docs/design/DESIGN.md. Il grigio neutro (#808080) tiene neutri i pixel già neutri: senza, il bianco virerebbe al verde. Stili e suffissi nei job (styleSuffix); modello, seed e guidance che funzionano vanno annotati qui sotto quando si trovano (Blocco C §3: poi si congelano).",
-  "frozen": {}
+  "frozen": {
+    "sfondi": {
+      "modello": "flux1-dev-Q6_K.gguf",
+      "passi": 22,
+      "guidance": 3.2,
+      "sampler": "euler/simple",
+      "misura": "1536x864",
+      "tempo": "~3 min 20 s a immagine su RTX 3060"
+    },
+    "illustrazioni": {
+      "modello": "flux1-dev-Q6_K.gguf",
+      "passi": 20,
+      "guidance": 3.0,
+      "sampler": "euler/simple",
+      "misura": "1024x1024",
+      "tempo": "~2 min a immagine"
+    },
+    "texture": {
+      "modello": "flux1-dev-Q6_K.gguf",
+      "passi": 22,
+      "guidance": 3.2,
+      "misura": "1024x1024"
+    },
+    "nota": "FLUX capisce «football» come pallone da football americano: nei prompt va scritto «round soccer ball with black and white hexagonal panels». I suffissi di stile stanno nei job (assets/jobs/*.yaml)."
+  }
 }

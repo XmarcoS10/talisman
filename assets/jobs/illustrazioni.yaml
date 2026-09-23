@@ -1,19 +1,20 @@
 # illustrazioni: vedi GUIDA Blocco C §4. Rilancia con «pnpm assets generate assets/jobs/illustrazioni.yaml»: salta le immagini già fatte.
 id: illustrazioni
-workflow: base-sdxl.json   # cambialo col tuo workflow esportato (Export API), e aggiorna i nodeBindings
+workflow: flux-illustrazioni.json   # FLUX.1-dev: le illustrazioni piatte gli riescono meglio che a SDXL
 output: illustrazioni
 kind: illustrazione
 variants: 3
 seedBase: 4101
 size: [1024, 1024]
 styleSuffix: >-
-  flat vector illustration, thick geometric shapes, no outlines, limited palette of obsidian navy, emerald green, cyan and amber, generous negative space, centered composition, editorial sports magazine style, no text
+  drawn as a flat vector poster illustration with bold geometric shapes and no outlines, on a dark obsidian navy background,
+  limited palette of obsidian navy, emerald green, cyan and warm amber, generous negative space, centred composition,
+  editorial sports magazine style, clean and readable even at small size, no text, no lettering, no numbers
 negativePrompt: >-
   text, watermark, signature, logo, brand, jersey sponsor, blurry, jpeg artifacts, extra limbs, deformed hands, oversaturated, neon, cartoon 3d, faces
 nodeBindings:
   positive: 6.inputs.text
-  negative: 7.inputs.text
-  seed: 3.inputs.seed
+  seed: 10.inputs.seed
   width: 5.inputs.width
   height: 5.inputs.height
 process: { width: 512, height: 512, palette: 0.5, thumb: true }
@@ -21,15 +22,15 @@ process: { width: 512, height: 512, palette: 0.5, thumb: true }
 # «styleRef: <nodo>.inputs.image» ai nodeBindings e «styleRef: style-anchor.png» agli elementi (il file sta in assets/)
 items:
   - name: crisis
-    prompt: a cracked football lying in the rain under a dark cloud
+    prompt: a round soccer ball with black and white hexagonal panels, cracked and split open, lying in a puddle in the rain under a dark cloud
   - name: winStreak
-    prompt: a row of five rising green arrows made of football pitch stripes
+    prompt: five round soccer balls with black and white hexagonal panels in a rising row, each one higher than the previous, like an ascending staircase
   - name: unbeaten
     prompt: a sturdy shield with a football at its centre, untouched by arrows
   - name: titleRace
     prompt: two runners neck and neck towards a trophy on a podium
   - name: relegation
-    prompt: a football rolling down a staircase into shadow
+    prompt: a round soccer ball with black and white hexagonal panels rolling down a long staircase into shadow
   - name: surprise
     prompt: a tiny paper boat overtaking a big ship on a green sea
   - name: giant
@@ -47,19 +48,19 @@ items:
   - name: nemesis
     prompt: two chess pieces shaped like football shirts facing off, one casting a long shadow
   - name: revenge
-    prompt: a boomerang made of a football scarf flying back
+    prompt: a football scarf shaped like a boomerang flying back towards a hand that throws it
   - name: comeback
     prompt: a phoenix rising from a scoreboard
   - name: showdown
-    prompt: two footballs facing each other like duelists at noon
+    prompt: two round soccer balls with black and white hexagonal panels facing each other on a pitch like duellists at noon, long shadows
   - name: thrashing
-    prompt: a scoreboard overflowing with numbers bursting out
+    prompt: a stadium scoreboard showing a huge score, the numbers bursting out of the panel
   - name: ffp
-    prompt: a pair of scales weighing coins against a football
+    prompt: a pair of golden scales weighing stacks of coins on one side against a round soccer ball with black and white hexagonal panels on the other
   - name: boardUnrest
     prompt: an empty director chair with a crack in the table
   - name: fans
-    prompt: a sea of raised scarves in a stadium curve
+    prompt: a crowd of raised football scarves in a stadium stand, seen from behind, the scarves held high in many hands
   - name: redemption
     prompt: a football boot lifted from dark water into sunlight
   - name: hotStreak
@@ -67,7 +68,7 @@ items:
   - name: predestined
     prompt: a young player silhouette with a star shining above
   - name: talisman
-    prompt: a glowing amulet shaped like a football
+    prompt: a glowing amulet hanging on a chain, shaped like a round soccer ball with black and white hexagonal panels
   - name: scorerRace
     prompt: a golden boot on a winners podium with two smaller boots behind
   - name: keeper
@@ -75,13 +76,13 @@ items:
   - name: comebackKid
     prompt: crutches left leaning against a goalpost, the player running away
   - name: slump
-    prompt: a deflated football under a single spotlight
+    prompt: a deflated a round soccer ball with black and white hexagonal panels, sagging and flat, under a single spotlight
   - name: wantsOut
     prompt: a football shirt hanging on an open door, suitcase beside it
   - name: feud
     prompt: two lockers with a lightning bolt between them
   - name: mentor
-    prompt: an older hand guiding a younger hand holding a football
+    prompt: an older football player in a tracksuit showing a round soccer ball to a young player beside him on a training pitch, both standing on the ground
   - name: debut
     prompt: a pair of brand new boots at the edge of a bright pitch
   - name: veteran

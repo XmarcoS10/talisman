@@ -28,3 +28,66 @@ Verificato il 21/09/2026 (P13 punto 9), aggiornato il 22/09/2026 (volti, maglie,
 | Electron (e il Chromium che contiene) | MIT; Chromium con le sue licenze, elencate nel file `LICENSES.chromium.html` che Electron mette nella build |
 
 Solo per lo sviluppo, non incluse nel gioco: TypeScript (Apache 2.0), Vite (MIT), Vitest (MIT), @vitejs/plugin-react (MIT).
+
+## Immagini generate (`pnpm assets licenses`)
+
+<!-- assets:start -->
+
+| Asset | Modello | Licenza | Seed | Data |
+|---|---|---|---|---|
+| `illustrazioni/awayCurse` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 926854234 | 2026-09-22 |
+| `illustrazioni/boardUnrest` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 2537753023 | 2026-09-23 |
+| `illustrazioni/cleanRun` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 56520098 | 2026-09-22 |
+| `illustrazioni/comeback` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 907200944 | 2026-09-23 |
+| `illustrazioni/comebackKid` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 3921095215 | 2026-09-23 |
+| `illustrazioni/crisis` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 4009364198 | 2026-09-23 |
+| `illustrazioni/debut` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 3480615439 | 2026-09-23 |
+| `illustrazioni/drought` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 3897394054 | 2026-09-22 |
+| `illustrazioni/fans` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 3582215623 | 2026-09-23 |
+| `illustrazioni/feud` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 830771023 | 2026-09-23 |
+| `illustrazioni/ffp` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 3882418702 | 2026-09-23 |
+| `illustrazioni/flop` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 178636166 | 2026-09-23 |
+| `illustrazioni/formerClub` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 1902488641 | 2026-09-23 |
+| `illustrazioni/fortress` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 1788963846 | 2026-09-22 |
+| `illustrazioni/giant` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 1709623851 | 2026-09-22 |
+| `illustrazioni/hatTrick` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 951540387 | 2026-09-23 |
+| `illustrazioni/hotStreak` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 314177483 | 2026-09-23 |
+| `illustrazioni/hothead` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 571824874 | 2026-09-23 |
+| `illustrazioni/keeper` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 3702230125 | 2026-09-23 |
+| `illustrazioni/lateWinner` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 648625619 | 2026-09-23 |
+| `illustrazioni/leaky` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 1500244120 | 2026-09-22 |
+| `illustrazioni/mentor` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 3908608158 | 2026-09-23 |
+| `illustrazioni/nemesis` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 726700322 | 2026-09-22 |
+| `illustrazioni/newSigning` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 3471493946 | 2026-09-23 |
+| `illustrazioni/preSigned` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 56768764 | 2026-09-23 |
+| `illustrazioni/predestined` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 301023086 | 2026-09-23 |
+| `illustrazioni/redemption` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 189978765 | 2026-09-23 |
+| `illustrazioni/relegation` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 1293336023 | 2026-09-23 |
+| `illustrazioni/revenge` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 4104582015 | 2026-09-22 |
+| `illustrazioni/scorerRace` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 1518272149 | 2026-09-23 |
+| `illustrazioni/showdown` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 390678025 | 2026-09-23 |
+| `illustrazioni/slump` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 1338681113 | 2026-09-23 |
+| `illustrazioni/surprise` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 611668438 | 2026-09-22 |
+| `illustrazioni/talisman` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 372201799 | 2026-09-23 |
+| `illustrazioni/thrashing` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 155041309 | 2026-09-23 |
+| `illustrazioni/titleRace` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 1565595616 | 2026-09-22 |
+| `illustrazioni/unbeaten` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 337875267 | 2026-09-22 |
+| `illustrazioni/veteran` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 2938520469 | 2026-09-23 |
+| `illustrazioni/wantsOut` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 3304874809 | 2026-09-23 |
+| `illustrazioni/winStreak` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 2847569109 | 2026-09-23 |
+| `sfondi/board` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 3034572969 | 2026-09-22 |
+| `sfondi/desk` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 690051518 | 2026-09-22 |
+| `sfondi/dressing` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 539231490 | 2026-09-22 |
+| `sfondi/finance` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 3239320663 | 2026-09-22 |
+| `sfondi/fixtures` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 3889846821 | 2026-09-22 |
+| `sfondi/market` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 1461753717 | 2026-09-22 |
+| `sfondi/scouts` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 1551531640 | 2026-09-22 |
+| `sfondi/squad` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 2964546175 | 2026-09-22 |
+| `sfondi/stories` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 3982160282 | 2026-09-22 |
+| `sfondi/tactics` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 2811259572 | 2026-09-22 |
+| `sfondi/training` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 683616354 | 2026-09-22 |
+| `sfondi/youth` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 3673181638 | 2026-09-22 |
+| `texture/carta` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 2700603112 | 2026-09-23 |
+| `texture/erba` | flux1-dev-Q6_K.gguf | FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito | 1913483108 | 2026-09-23 |
+
+<!-- assets:end -->

@@ -5,6 +5,8 @@ release/
 out.md
 .claude/settings.local.json
 tools/shots-save.json
-# pipeline degli asset: generate e scarti restano sul disco di chi le fa; si versionano le approvate e i file pronti
+# pipeline degli asset: le immagini grandi restano sul disco di chi le genera (si rifanno uguali: i seed sono nei job
+# e nei .meta.json). Nel repository vanno solo i file pronti per il gioco, in public/art.
 assets/raw/
 assets/archive/
+assets/approved/

@@ -1,0 +1,23 @@
+{
+  "job": "illustrazioni",
+  "kind": "illustrazione",
+  "name": "keeper",
+  "variant": 1,
+  "prompt": "a goalkeeper diving to stop a football, frozen in mid air, drawn as a flat vector poster illustration with bold geometric shapes and no outlines, on a dark obsidian navy background, limited palette of obsidian navy, emerald green, cyan and warm amber, generous negative space, centred composition, editorial sports magazine style, clean and readable even at small size, no text, no lettering, no numbers",
+  "negative": "text, watermark, signature, logo, brand, jersey sponsor, blurry, jpeg artifacts, extra limbs, deformed hands, oversaturated, neon, cartoon 3d, faces",
+  "seed": 3702230125,
+  "workflow": "flux-illustrazioni.json",
+  "model": "flux1-dev-Q6_K.gguf",
+  "license": "FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito",
+  "date": "2026-09-23",
+  "process": {
+    "width": 512,
+    "height": 512,
+    "palette": 0.5,
+    "thumb": true
+  },
+  "width": 512,
+  "height": 512,
+  "thumb": true,
+  "phash": "4db2b3c70e198616"
+}

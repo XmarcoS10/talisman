@@ -1,19 +1,18 @@
 # sfondi: vedi GUIDA Blocco C §4. Rilancia con «pnpm assets generate assets/jobs/sfondi.yaml»: salta le immagini già fatte.
 id: sfondi
-workflow: base-sdxl.json   # cambialo col tuo workflow esportato (Export API), e aggiorna i nodeBindings
+workflow: flux-dev.json   # FLUX GGUF (Blocco C §2, W1)
 output: sfondi
 kind: sfondo
 variants: 3
 seedBase: 2701
-size: [1344, 768]
+size: [1536, 864]
 styleSuffix: >-
   obsidian navy and midnight blue color grading, single emerald green accent light, cinematic low key lighting, shallow depth of field, subtle film grain, no text, no logos, no watermark, no faces
 negativePrompt: >-
   text, watermark, signature, logo, brand, jersey sponsor, blurry, jpeg artifacts, extra limbs, deformed hands, oversaturated, neon, cartoon 3d, faces
 nodeBindings:
   positive: 6.inputs.text
-  negative: 7.inputs.text
-  seed: 3.inputs.seed
+  seed: 10.inputs.seed
   width: 5.inputs.width
   height: 5.inputs.height
 process: { width: 1280, height: 720, palette: 0.35, vignette: true }

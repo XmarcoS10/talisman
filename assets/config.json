@@ -16,6 +16,8 @@
   "models": {
     "flux1-dev.safetensors": "FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito",
     "flux1-schnell.safetensors": "Apache 2.0",
-    "sd_xl_base_1.0.safetensors": "CreativeML Open RAIL++-M"
+    "sd_xl_base_1.0.safetensors": "CreativeML Open RAIL++-M",
+    "flux1-dev-Q6_K.gguf": "FLUX.1 [dev] Non-Commercial License: le immagini generate si possono usare, anche in un gioco distribuito",
+    "flux1-schnell-Q4_K_S.gguf": "Apache 2.0"
   }
 }
