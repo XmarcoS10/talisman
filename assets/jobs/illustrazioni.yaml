@@ -1,4 +1,5 @@
-# illustrazioni: vedi GUIDA Blocco C §4. Rilancia con «pnpm assets generate assets/jobs/illustrazioni.yaml»: salta le immagini già fatte.
+# illustrazioni: vedi GUIDA Blocco C §4. Rifatte il 24/09/2026 (tabellone con scritte, logo, firme): comeback, thrashing,
+# wantsOut, ffp, flop, mentor. Rilancia con «pnpm assets generate assets/jobs/illustrazioni.yaml»: salta le immagini già fatte.
 id: illustrazioni
 workflow: flux-illustrazioni.json   # FLUX.1-dev: le illustrazioni piatte gli riescono meglio che a SDXL
 output: illustrazioni
@@ -50,13 +51,13 @@ items:
   - name: revenge
     prompt: a football scarf shaped like a boomerang flying back towards a hand that throws it
   - name: comeback
-    prompt: a phoenix rising from a scoreboard
+    prompt: a phoenix with emerald and amber wings rising from glowing embers on a football pitch
   - name: showdown
     prompt: two round soccer balls with black and white hexagonal panels facing each other on a pitch like duellists at noon, long shadows
   - name: thrashing
-    prompt: a stadium scoreboard showing a huge score, the numbers bursting out of the panel
+    prompt: a goal net bursting open under a flood of round soccer balls with black and white hexagonal panels pouring into it
   - name: ffp
-    prompt: a pair of golden scales weighing stacks of coins on one side against a round soccer ball with black and white hexagonal panels on the other
+    prompt: a pair of golden scales weighing stacks of coins on one side against a round soccer ball with black and white hexagonal panels on the other, unsigned artwork with clean empty corners
   - name: boardUnrest
     prompt: an empty director chair with a crack in the table
   - name: fans
@@ -78,11 +79,11 @@ items:
   - name: slump
     prompt: a deflated a round soccer ball with black and white hexagonal panels, sagging and flat, under a single spotlight
   - name: wantsOut
-    prompt: a football shirt hanging on an open door, suitcase beside it
+    prompt: a plain football shirt without any logo or badge hanging on an open door, suitcase beside it
   - name: feud
     prompt: two lockers with a lightning bolt between them
   - name: mentor
-    prompt: an older football player in a tracksuit showing a round soccer ball to a young player beside him on a training pitch, both standing on the ground
+    prompt: an older football player in a tracksuit showing a round soccer ball to a young player beside him on a training pitch, both standing on the ground, unsigned artwork with clean empty corners
   - name: debut
     prompt: a pair of brand new boots at the edge of a bright pitch
   - name: veteran
@@ -90,7 +91,7 @@ items:
   - name: newSigning
     prompt: a pen signing a contract next to a new shirt
   - name: flop
-    prompt: a golden trophy that turns out to be made of cardboard
+    prompt: a golden trophy that turns out to be made of cardboard, unsigned artwork with clean empty corners
   - name: formerClub
     prompt: a player walking through a tunnel towards an old home stadium
   - name: hatTrick
