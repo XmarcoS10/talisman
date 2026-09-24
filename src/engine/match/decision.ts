@@ -47,27 +47,31 @@ const NO_REL: Record<number, number> = {};
 /** moltiplicatore del peso di scelta di un passaggio dalla relazione tra i due (−100…100): ±8% al massimo */
 export const chem = (s: number | undefined) => (s === undefined ? 1 : 1 + (Math.max(-100, Math.min(100, s)) / 100) * MATCH.chemPass);
 
-export function options(v: View): Option[] {
-  const { carrier: c, bx, by, tactic, pressure } = v;
+/** quello che serve a tutte le opzioni: quanto vale tenere palla, quanto costa perderla, la voglia di verticalizzare */
+interface Ctx { keep: number; loss: number; direct: number; vision: number; rel: Record<number, number> }
+
+function context(v: View): Ctx {
+  const { carrier: c, bx, by, tactic } = v;
   const mm = v.mentality - 3; // −2 … +2
   const riskW = 1 - MATCH.mentalityRisk * mm; // mentalità offensiva = meno paura di perdere palla
   // perdere palla costa il valore regalato all'avversario + il valore del possesso stesso (K)
   const keep = MATCH.possessionValue * riskW;
   const loss = lossCost(bx, by) * riskW + keep;
   // verticalità: istruzione tattica + impazienza dopo una lunga serie di passaggi
-  const rl = c.role;
-  const direct = MATCH.directnessK * tactic.directness + MATCH.patience * Math.max(0, v.chain - 5) + rl.direct;
-  const tempoMod = (1 - tactic.tempo) * 0.15; // ritmo alto = più errori
-  const out: Option[] = [];
+  const direct = MATCH.directnessK * tactic.directness + MATCH.patience * Math.max(0, v.chain - 5) + c.role.direct;
+  // spogliatoio in campo (§7.3): tra amici ci si cerca un po' di più, tra nemici un po' di meno
+  return { keep, loss, direct, vision: MATCH.passVision * a(c, 'vision'), rel: FLAGS.psychology ? c.p.rel : NO_REL };
+}
 
-  // 1) PASSAGGI a ogni compagno (è il ciclo più caldo del gioco: niente allocazioni qui dentro)
+/** 1) PASSAGGI a ogni compagno (è il ciclo più caldo del gioco: niente allocazioni qui dentro) */
+function passes(v: View, x: Ctx, out: Option[]) {
+  const { carrier: c, bx, by, tactic, pressure } = v;
+  const { keep, loss, direct, vision, rel } = x;
+  const tempoMod = (1 - tactic.tempo) * 0.15; // ritmo alto = più errori
   const nd = v.defX.length;
   const lr = MATCH.laneRadius, mr = MATCH.markRadius;
   // parte del logit che dipende solo dal portatore
   const passLogit0 = MATCH.passBase - MATCH.passPress * pressure + MATCH.passSkill * a(c, 'passing') + tempoMod + v.bonus;
-  const vision = MATCH.passVision * a(c, 'vision');
-  // spogliatoio in campo (§7.3): tra amici ci si cerca un po' di più, tra nemici un po' di meno
-  const rel = FLAGS.psychology ? c.p.rel : NO_REL;
   for (const m of v.mates) {
     if (m === c) continue;
     const dx = m.x - bx, dy = m.y - by;
@@ -96,26 +100,32 @@ export function options(v: View): Option[] {
     const pe = p * (1 - off);
     out.push({ kind: 'pass', to: m, tx: m.x, ty: m.y, p, off, u: pe * (xT(m.x, m.y) + keep) - (1 - pe) * loss + direct * dx, w: chem(rel[m.p.id]) });
   }
-  // 1b) PALLA IN PROFONDITÀ nello spazio tra la linea difensiva e il portiere: punisce le linee alte
-  const space = MATCH.gkLineX - v.offsideLine;
-  if (space > 1 && bx < v.offsideLine - 0.5) {
-    const tx = v.offsideLine + Math.min(space, MATCH.throughDepth);
-    let defPace = 0; // il difensore più veloce vicino alla linea
-    for (let i = 0; i < nd; i++) if (v.defX[i]! > v.offsideLine - 1.5) defPace = Math.max(defPace, v.defs[i]!.p.attrs.pace);
-    for (const m of v.mates) {
-      if (m === c || m.x < v.offsideLine - 1.5 || m.x <= bx) continue; // solo chi è già vicino alla linea
-      const dist = len(tx - bx, m.y - by);
-      const race = (m.p.attrs.pace + m.p.attrs.acceleration) / 2 - defPace; // corsa uomo contro uomo
-      const p = sigmoid(MATCH.throughBase + MATCH.throughRace * race - MATCH.passDist * 0.6 * dist - MATCH.passPress * pressure
-        + MATCH.passSkill * a(c, 'passing') + 2 * vision + v.bonus);
-      const off = MATCH.throughOffside * (1 - (m.p.attrs.offTheBall - 11) * 0.04);
-      const pe = p * (1 - off);
-      out.push({ kind: 'pass', to: m, tx, ty: m.y, p, off, u: pe * (xT(tx, m.y) + keep) - (1 - pe) * loss + direct * (tx - bx), w: chem(rel[m.p.id]) });
-    }
-  }
-  if (v.isGK) return out; // il portiere si limita a giocarla
+}
 
-  // 2) DRIBBLING: puntare l'uomo, portando palla verso il centro negli ultimi metri
+/** 1b) PALLA IN PROFONDITÀ nello spazio tra la linea difensiva e il portiere: punisce le linee alte */
+function throughBalls(v: View, x: Ctx, out: Option[]) {
+  const { carrier: c, bx, by, pressure } = v;
+  const { keep, loss, direct, vision, rel } = x;
+  const space = MATCH.gkLineX - v.offsideLine;
+  if (!(space > 1 && bx < v.offsideLine - 0.5)) return;
+  const tx = v.offsideLine + Math.min(space, MATCH.throughDepth);
+  let defPace = 0; // il difensore più veloce vicino alla linea
+  for (let i = 0; i < v.defX.length; i++) if (v.defX[i]! > v.offsideLine - 1.5) defPace = Math.max(defPace, v.defs[i]!.p.attrs.pace);
+  for (const m of v.mates) {
+    if (m === c || m.x < v.offsideLine - 1.5 || m.x <= bx) continue; // solo chi è già vicino alla linea
+    const dist = len(tx - bx, m.y - by);
+    const race = (m.p.attrs.pace + m.p.attrs.acceleration) / 2 - defPace; // corsa uomo contro uomo
+    const p = sigmoid(MATCH.throughBase + MATCH.throughRace * race - MATCH.passDist * 0.6 * dist - MATCH.passPress * pressure
+      + MATCH.passSkill * a(c, 'passing') + 2 * vision + v.bonus);
+    const off = MATCH.throughOffside * (1 - (m.p.attrs.offTheBall - 11) * 0.04);
+    const pe = p * (1 - off);
+    out.push({ kind: 'pass', to: m, tx, ty: m.y, p, off, u: pe * (xT(tx, m.y) + keep) - (1 - pe) * loss + direct * (tx - bx), w: chem(rel[m.p.id]) });
+  }
+}
+
+/** 2) DRIBBLING: puntare l'uomo, portando palla verso il centro negli ultimi metri */
+function dribble(v: View, x: Ctx): Option {
+  const { carrier: c, bx, by, pressure } = v;
   let tackler: OnPitch | undefined, best = Infinity;
   for (let i = 0; i < v.defX.length; i++) {
     const d = len(v.defX[i]! - bx, v.defY[i]! - by);
@@ -128,26 +138,42 @@ export function options(v: View): Option[] {
   const ty = by + (bx > 7 ? (4 - by) * 0.25 : 0);
   const pd = sigmoid(MATCH.dribBase + MATCH.dribSkill * dribSkill - close * MATCH.dribDef * tackSkill - MATCH.dribPress * pressure
     + (tackler ? (100 - tackler.energy) * MATCH.energySkill : 0) + v.bonus);
-  out.push({ kind: 'dribble', tx, ty, p: pd, tackler: close > 0 ? tackler : undefined, u: pd * (xT(tx, ty) + keep) - (1 - pd) * loss + 0.0008 * a(c, 'flair') + rl.dribble });
+  return { kind: 'dribble', tx, ty, p: pd, tackler: close > 0 ? tackler : undefined, u: pd * (xT(tx, ty) + x.keep) - (1 - pd) * x.loss + 0.0008 * a(c, 'flair') + c.role.dribble };
+}
 
-  // 3) TIRO dalla trequarti in su
-  if (bx >= MATCH.shotMinX) {
-    const xg = xG(bx, by, pressure);
-    if (xg > 0.015) {
-      const skill = bx < 10 ? a(c, 'longShots') : a(c, 'finishing');
-      // tirare chiude quasi sempre l'azione: si rinuncia a metà del valore del possesso
-      out.push({ kind: 'shot', xg, u: xg * (1 + MATCH.shotSkill * skill) * MATCH.shotBias * rl.shoot * (1 + MATCH.mentalityShot * mm) - (1 - xg) * keep * 0.5 });
-    }
-  }
+/** 3) TIRO dalla trequarti in su */
+function shot(v: View, x: Ctx, out: Option[]) {
+  const { carrier: c, bx, by, pressure } = v;
+  if (bx < MATCH.shotMinX) return;
+  const xg = xG(bx, by, pressure);
+  if (!(xg > 0.015)) return;
+  const skill = bx < 10 ? a(c, 'longShots') : a(c, 'finishing');
+  const mm = v.mentality - 3;
+  // tirare chiude quasi sempre l'azione: si rinuncia a metà del valore del possesso
+  out.push({ kind: 'shot', xg, u: xg * (1 + MATCH.shotSkill * skill) * MATCH.shotBias * c.role.shoot * (1 + MATCH.mentalityShot * mm) - (1 - xg) * x.keep * 0.5 });
+}
 
-  // 4) CROSS dal fondo
-  if (bx >= MATCH.crossMinX && (by < 2 || by > 6)) {
-    let attBox = 0, defBox = 0;
-    for (const m of v.mates) if (m !== c && m.x >= 9.8 && m.y > 2 && m.y < 6) attBox++;
-    for (let i = 0; i < v.defX.length; i++) if (v.defX[i]! >= 9.8 && v.defY[i]! > 2 && v.defY[i]! < 6) defBox++;
-    const p = sigmoid(MATCH.crossBase + MATCH.crossSkill * a(c, 'crossing') + MATCH.crossAtt * attBox - MATCH.crossDef * defBox - MATCH.crossPress * pressure + v.bonus);
-    out.push({ kind: 'cross', p, u: p * MATCH.headerXg * 1.1 * rl.cross - (1 - p) * loss });
-  }
+/** 4) CROSS dal fondo */
+function cross(v: View, x: Ctx, out: Option[]) {
+  const { carrier: c, bx, by, pressure } = v;
+  if (!(bx >= MATCH.crossMinX && (by < 2 || by > 6))) return;
+  let attBox = 0, defBox = 0;
+  for (const m of v.mates) if (m !== c && m.x >= 9.8 && m.y > 2 && m.y < 6) attBox++;
+  for (let i = 0; i < v.defX.length; i++) if (v.defX[i]! >= 9.8 && v.defY[i]! > 2 && v.defY[i]! < 6) defBox++;
+  const p = sigmoid(MATCH.crossBase + MATCH.crossSkill * a(c, 'crossing') + MATCH.crossAtt * attBox - MATCH.crossDef * defBox - MATCH.crossPress * pressure + v.bonus);
+  out.push({ kind: 'cross', p, u: p * MATCH.headerXg * 1.1 * c.role.cross - (1 - p) * x.loss });
+}
+
+/** le opzioni del portatore, nell'ordine in cui le valuta: passaggi, profondità, dribbling, tiro, cross */
+export function options(v: View): Option[] {
+  const x = context(v);
+  const out: Option[] = [];
+  passes(v, x, out);
+  throughBalls(v, x, out);
+  if (v.isGK) return out; // il portiere si limita a giocarla
+  out.push(dribble(v, x));
+  shot(v, x, out);
+  cross(v, x, out);
   return out;
 }
 
