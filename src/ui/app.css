@@ -500,3 +500,6 @@ html.rail .shell { grid-template-columns: 64px 1fr; }
   .cols2, .live-cols, .market-grid { grid-template-columns: 1fr !important; }
   .tactics { grid-template-columns: 1fr; }
 }
+
+/* il motore sta lavorando nel worker: niente clic su un mondo che sta per essere sostituito (Blocco 2a) */
+.busy { position: fixed; inset: 0; z-index: 50; cursor: progress; }

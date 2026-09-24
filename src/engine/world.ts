@@ -2,7 +2,7 @@
 import { BALANCE, FIN, MARKET, MATCH, NATIONAL, SQUAD_TEMPLATE, TRAIN, YOUTH } from './balance.ts';
 import { heal } from './injuries.ts';
 import { aiSetFormation, applyMatch, matchSetups, playMatch } from './match.ts';
-import { runMatch, type MatchRun } from './match/engine.ts';
+import { runMatch, type MatchRun, type SimOutput } from './match/engine.ts';
 import { defaultTactic } from './match/tactics.ts';
 import { PHILOSOPHIES, type Club, type ClubId, type Competition, type Fixture, type Player, type Position, type WorldState } from './model.ts';
 import { CITIES, CLUB_PREFIX, KIT_COLORS, NATIONS } from './names.ts';
@@ -10,7 +10,7 @@ import { seedMinutes, weekPsych } from './morale.ts';
 import { newBoard, endSeasonBoard, weekBoard } from './board/board.ts';
 import { addNews, pName } from './news.ts';
 import { age, emptyStats, makePlayer } from './players.ts';
-import { Rng } from './rng.ts';
+import { Rng, type RngState } from './rng.ts';
 import { SCHEMA_VERSION } from './save.ts';
 import { dropRelations, initRelations } from './social.ts';
 import { assignAgents, dropClient, weekAgents } from './transfers/agents.ts';
@@ -245,8 +245,14 @@ export interface LiveDay {
   rng: Rng;
 }
 
-/** apre la giornata: se gioca il club dell'utente restituisce la partita da seguire, altrimenti null (usa advance) */
-export function beginMatchDay(world: WorldState): LiveDay | null {
+/** la giornata dell'utente preparata: il calendario è al giorno della partita, `rng` è il caso da cui ripartire */
+export interface OpenDay { day: number; fx: Fixture; rng: RngState }
+
+/**
+ * prepara la giornata dell'utente (i giorni che mancano passano), senza ancora giocare: la partita la costruisce chi la
+ * guarda. Separata da `beginMatchDay` perché nell'interfaccia questa parte gira nel worker e la partita no.
+ */
+export function openMatchDay(world: WorldState): OpenDay | null {
   const day = nextMatchDay(world);
   if (day === null) return null;
   const me = world.manager.clubId;
@@ -255,17 +261,24 @@ export function beginMatchDay(world: WorldState): LiveDay | null {
   const rng = new Rng(world.rng);
   passDays(world, rng, day - world.day, 0);
   world.day = day;
-  return { day, fx: mine, run: runMatch(rng, matchSetups(world, mine, true), []), rng };
+  return { day, fx: mine, rng: rng.s };
 }
 
-/** chiude la giornata: applica la partita seguita, gioca le altre e porta il calendario alla prossima */
-export function finishMatchDay(world: WorldState, live: LiveDay): Fixture[] {
-  const { day, rng } = live;
-  applyMatch(world, rng, live.fx, live.run.result());
-  gate(world, live.fx);
-  const played: Fixture[] = [live.fx];
-  for (const fx of fixturesOn(world, day))
-    if (fx !== live.fx && !fx.result) { playMatch(world, rng, fx); gate(world, fx); played.push(fx); }
+/** apre la giornata: se gioca il club dell'utente restituisce la partita da seguire, altrimenti null (usa advance) */
+export function beginMatchDay(world: WorldState): LiveDay | null {
+  const open = openMatchDay(world);
+  if (!open) return null;
+  const rng = new Rng(open.rng);
+  return { day: open.day, fx: open.fx, run: runMatch(rng, matchSetups(world, open.fx, true), []), rng };
+}
+
+/** chiude una giornata già giocata dall'utente: applica la sua partita, gioca le altre e porta il calendario alla prossima */
+export function closeMatchDay(world: WorldState, day: number, fx: Fixture, rng: Rng, out: SimOutput): Fixture[] {
+  applyMatch(world, rng, fx, out);
+  gate(world, fx);
+  const played: Fixture[] = [fx];
+  for (const f of fixturesOn(world, day))
+    if (f !== fx && !f.result) { playMatch(world, rng, f); gate(world, f); played.push(f); }
   afterCupDay(world, rng, day);
   if ((day / DAYS_BETWEEN_ROUNDS) % 4 === 0) for (const p of Object.values(world.players)) p.caLog.push(p.ca);
   const next = nextMatchDay(world);
@@ -275,6 +288,10 @@ export function finishMatchDay(world: WorldState, live: LiveDay): Fixture[] {
   world.rng = rng.s;
   return played;
 }
+
+/** chiude la giornata seguita dal vivo */
+export const finishMatchDay = (world: WorldState, live: LiveDay): Fixture[] =>
+  closeMatchDay(world, live.day, live.fx, live.rng, live.run.result());
 
 export type TableRow ={ clubId: ClubId; p: number; w: number; d: number; l: number; gf: number; ga: number; pts: number };
 

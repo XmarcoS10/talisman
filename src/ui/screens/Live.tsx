@@ -1,8 +1,8 @@
 // Partita in diretta (GUIDA §8.4): campo 2D, panchina, pannello analista, controlli.
 import { useEffect, useReducer, useRef, useState } from 'react';
 import { awayWearsAlt, kitBase } from '../procgen/kit.ts';
-import type { Fixture, Tactic, WorldState } from '../../engine/model.ts';
-import { finishMatchDay, type LiveDay } from '../../engine/world.ts';
+import type { Tactic, WorldState } from '../../engine/model.ts';
+import type { LiveDay } from '../../engine/world.ts';
 import { context, pick } from '../match/analyst.ts';
 import { atMinute, duration, ensure, matchMinutes, sample, SPEEDS, SPEED_LABELS } from '../match/playback.ts';
 import { lines } from '../match/commentary.ts';
@@ -19,7 +19,7 @@ import { Seg } from './Tactics.tsx';
 
 const INSTR = ['pressing', 'tempo', 'width', 'line', 'directness'] as const;
 
-export function Live({ world, live, onFinish }: { world: WorldState; live: LiveDay; onFinish: (played: Fixture[]) => void }) {
+export function Live({ world, live, onFinish }: { world: WorldState; live: LiveDay; onFinish: () => void }) {
   const { run, fx } = live;
   const me: 0 | 1 = fx.home === world.manager.clubId ? 0 : 1;
   const clubs = [world.clubs[fx.home]!, world.clubs[fx.away]!] as const;
@@ -133,7 +133,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
           <button className={`btn ${pause ? 'primary' : ''}`} onClick={() => setPause(!pause)}><SlidersHorizontal size={14} /> {t('live.tacticalPause')}</button>
           <button className="btn" onClick={() => setFollow(!follow)}>{t(follow ? 'live.wide' : 'live.follow')}</button>
           <button className="btn" onClick={toEnd} disabled={over}>{t('live.toEnd')}</button>
-          {over && <button className="btn primary big" onClick={() => onFinish(finishMatchDay(world, live))}>{t('live.report')}</button>}
+          {over && <button className="btn primary big" onClick={onFinish}>{t('live.report')}</button>}
           <span className="muted small">{t('live.duration', { n: matchMinutes(speed) })}</span>
         </div>
         <Inertia run={run} me={me} min={min} onJump={jumpTo} />

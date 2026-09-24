@@ -105,10 +105,11 @@ let play = { base: 0, since: Date.now(), label: '' };
 export const startClock = (base = 0, label = '') => { play = { base, since: Date.now(), label }; };
 export const playTime = () => play.base + Date.now() - play.since;
 
-export function saveTo(s: Slot, w: WorldState): boolean {
+/** `json`: il mondo già serializzato, se lo si ha (torna dal worker del motore): risparmia una serializzazione */
+export function saveTo(s: Slot, w: WorldState, json = serialize(w)): boolean {
   const meta: Meta = { manager: w.manager.name, clubId: w.manager.clubId, clubName: w.clubs[w.manager.clubId]?.name ?? '?', season: w.season, day: w.day,
     playMs: playTime(), ...(play.label ? { label: play.label } : {}) };
-  return safe(() => writeSlot(key(s), `{"v":2,"savedAt":${Date.now()},"meta":${JSON.stringify(meta)}${SPLIT}${serialize(w)}}`), false);
+  return safe(() => writeSlot(key(s), `{"v":2,"savedAt":${Date.now()},"meta":${JSON.stringify(meta)}${SPLIT}${json}}`), false);
 }
 
 export function loadFrom(s: Slot): WorldState | null {

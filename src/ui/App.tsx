@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import type { Fixture, NewsItem, WorldState } from '../engine/model.ts';
-import { advance, beginMatchDay, endSeason, fixturesOn, isSeasonOver, nextMatchDay, standings, type LiveDay, type SeasonSummary } from '../engine/world.ts';
+import { fixturesOn, isSeasonOver, nextMatchDay, standings, type LiveDay, type SeasonSummary } from '../engine/world.ts';
+import { advanceWorld, closeDay, endSeasonWorld, openDay } from './engine-client.ts';
 import { Banknote, CalendarDays, Play, User } from 'lucide-react';
 import { HINTS, Hint } from './Hint.tsx';
 import { applyWin, markVisited, settings } from './settings.ts';
@@ -41,9 +42,9 @@ type Modal = { kind: 'match'; fx: Fixture; others: Fixture[] } | { kind: 'season
 // l'esito dell'ultimo salvataggio: se fallisce lo si dice, e non si esce perdendo la partita
 let lastSaveOk = true;
 let pending: ReturnType<typeof setTimeout> | null = null;
-const autosave = (w: WorldState) => {
+const autosave = (w: WorldState, json?: string) => {
   if (pending) { clearTimeout(pending); pending = null; }
-  lastSaveOk = saveTo(currentSlot(), w);
+  lastSaveOk = saveTo(currentSlot(), w, json);
   if (!lastSaveOk) console.error('Salvataggio fallito');
   return lastSaveOk;
 };
@@ -77,27 +78,39 @@ export function App() {
   const [, rerender] = useReducer((x: number) => x + 1, 0); // il motore muta il mondo sul posto
   const searchRef = useRef<HTMLInputElement>(null);
 
-  const onAdvance = useCallback(() => {
-    if (!world || modal) return;
-    const me = world.manager.clubId;
-    const seen = world.news.length;
-    if (isSeasonOver(world)) {
-      const comp = world.competitions[world.clubs[me]!.compId]!;
-      const myPos = standings(world, comp).findIndex((r) => r.clubId === me) + 1;
-      setModal({ kind: 'season', summary: endSeason(world), myPos });
-    } else {
-      const played = advance(world);
-      const fx = played.find((f) => f.home === me || f.away === me);
-      if (fx) {
-        markVisited('live');
-        const others = played.filter((f) => (fx.cup ? f.cup : !f.cup && world.clubs[f.home]!.compId === world.clubs[me]!.compId));
-        setModal({ kind: 'match', fx, others });
+  // il motore gira nel worker: intanto l'interfaccia resta viva, ma non si tocca il mondo che sta per essere sostituito
+  const [busy, setBusy] = useState(false);
+  const onAdvance = useCallback(async () => {
+    if (!world || modal || busy) return;
+    setBusy(true);
+    try {
+      const me = world.manager.clubId;
+      const seen = world.news.length;
+      let next: WorldState, json: string;
+      if (isSeasonOver(world)) {
+        const comp = world.competitions[world.clubs[me]!.compId]!;
+        const myPos = standings(world, comp).findIndex((r) => r.clubId === me) + 1;
+        const r = await endSeasonWorld(world); ({ world: next, json } = r);
+        setModal({ kind: 'season', summary: r.summary, myPos });
+      } else {
+        const r = await advanceWorld(world); ({ world: next, json } = r);
+        const fx = r.played.find((f) => f.home === me || f.away === me);
+        if (fx) {
+          markVisited('live');
+          const others = r.played.filter((f) => (fx.cup ? f.cup : !f.cup && next.clubs[f.home]!.compId === next.clubs[me]!.compId));
+          setModal({ kind: 'match', fx, others });
+        }
       }
-    }
-    if (settings().pauseNews) setAlerts(critical(world.news.slice(seen)));
-    if (settings().autosave) autosave(world);
-    rerender();
-  }, [world, modal]);
+      if (settings().pauseNews) setAlerts(critical(next.news.slice(seen)));
+      setWorld(next);
+      if (settings().autosave) autosave(next, json);
+    } finally { setBusy(false); }
+  }, [world, modal, busy]);
+  const watch = async () => {
+    if (!world || busy) return;
+    setBusy(true);
+    openDay(world).then((r) => { setWorld(r.world); setLiveDay(r.live); }).finally(() => setBusy(false));
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -118,13 +131,14 @@ export function App() {
   if (!world) return <Start onLoad={open} onStart={(w) => { startClock(); autosave(w); open(w); }} />;
   if (liveDay) {
     return (
-      <Live world={world} live={liveDay} onFinish={(played) => {
+      <Live world={world} live={liveDay} onFinish={async () => {
+        const { world: w, json, played } = await closeDay(world, liveDay);
         setLiveDay(null);
         markVisited('live'); // prima partita guidata: fatta
-        const others = played.slice(1).filter((f) => (played[0]!.cup ? f.cup : !f.cup && world.clubs[f.home]!.compId === world.clubs[world.manager.clubId]!.compId));
+        const others = played.slice(1).filter((f) => (played[0]!.cup ? f.cup : !f.cup && w.clubs[f.home]!.compId === w.clubs[w.manager.clubId]!.compId));
         setModal({ kind: 'match', fx: played[0]!, others });
-        autosave(world);
-        rerender();
+        setWorld(w);
+        autosave(w, json);
       }} />
     );
   }
@@ -140,13 +154,14 @@ export function App() {
   return (
     <div className="shell">
       {!lastSaveOk && <div className="save-failed">{t('save.failed')}</div>}
+      {busy && <div className="busy" aria-busy="true" />}
       <header className="topbar">
         <div className="brand"><img src="icon-64.png" alt="" width={30} height={30} /><div>TFM <b>27</b><small>MANAGER</small></div></div>
         <Search ref={searchRef} world={world} onPlayer={openPlayer} onClub={openClub} />
         <div className="spacer" />
         <span className="pill num"><CalendarDays size={15} />{fmtDate(world.season, world.day)}</span>
         <span className="pill num" title={t('top.balance')}><Banknote size={15} />{fmtMoney(club.balance)}</span>
-        {myMatchDay && <button className="btn" onClick={() => setLiveDay(beginMatchDay(world))}><Play size={14} /> {t('top.watch')}</button>}
+        {myMatchDay && <button className="btn" onClick={watch}><Play size={14} /> {t('top.watch')}</button>}
         <button className="btn primary big" onClick={onAdvance} title={t('top.advanceHint')}>
           {t(isSeasonOver(world) ? 'top.endSeason' : 'top.advance')} ▸
         </button>
@@ -159,7 +174,7 @@ export function App() {
       <main {...screenArt(screen.name)}>
         <Alerts items={alerts} onClose={() => setAlerts([])} />
         {(HINTS as readonly string[]).includes(screen.name) && <Hint key={screen.name} id={screen.name as (typeof HINTS)[number]} />}
-        {screen.name === 'desk' && <Desk world={world} onNav={(n) => setScreen({ name: n })} onWatch={myMatchDay ? () => setLiveDay(beginMatchDay(world)) : undefined} onChange={changed} onPlayer={openPlayer} />}
+        {screen.name === 'desk' && <Desk world={world} onNav={(n) => setScreen({ name: n })} onWatch={myMatchDay ? watch : undefined} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'stories' && <Stories world={world} onChange={changed} />}
         {screen.name === 'squad' && <Squad world={world} clubId={club.id} onPlayer={openPlayer} />}
         {screen.name === 'tactics' && <Tactics world={world} onChange={changed} onPlayer={openPlayer} />}

@@ -59,6 +59,12 @@ il campo ogni 0,25 s. Le posizioni di fine intervallo sono quelle del motore: i 
 bilanciamento e il sim-cli non li calcola. Il ciclo più caldo è `options()` in
 `match/decision.ts`: niente allocazioni dentro i loop, niente `Math.hypot` (usa `len`).
 
+## Motore nel Web Worker (Blocco 2a)
+Giornata, fine stagione, apertura e chiusura della giornata seguita girano in `ui/engine.worker.ts` (`engine-ops.ts`,
+chiamato da `engine-client.ts`): il mondo va e torna come testo serializzato e si sostituisce (`setWorld`), le partite
+tornano come chiavi. La partita guardata si gioca nel thread dell'interfaccia (costa ~0,07 ms ad azione). Se il worker
+non c'è, `handle` gira sul posto. Prova nell'app vera: `pnpm build && npx electron tools/worker-check.cjs`.
+
 ## Salvataggi e diagnostica
 In Electron gli slot sono file in `%APPDATA%/talisman/saves` (preload `electron/preload.cjs`), con intestazione davanti
 al mondo; il registro degli errori è in `%APPDATA%/talisman/logs`. Nel browser resta il localStorage.
