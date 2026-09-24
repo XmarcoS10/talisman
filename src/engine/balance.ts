@@ -383,8 +383,8 @@ export const CLUB_AI = {
   tastePhysical: 0.02, // per punto di fisico sopra la media
   tasteTechnical: 0.02,
   // finestra invernale, in giorni dall'inizio stagione
-  winterFrom: 175,
-  winterTo: 189,
+  winterFrom: 133, // 2 gennaio (il giorno 0 è il 22 agosto; era 175, cioè il 13 febbraio)
+  winterTo: 147, // 16 gennaio
   winterDeals: 1,
   // quanto è disposto a cedere il venditore
   sellExcluded: 0.95,
@@ -431,7 +431,7 @@ export const CONTRACT = {
   renewFrom: 1, // si rinnova quando mancano al massimo tot stagioni
   keepBelowAge: 33, // oltre questa età un club IA non rinnova quasi mai
   keepGap: -18, // se è sotto il livello del club di così tanto, si lascia andare
-  preContractFrom: 175, // da gennaio (stesso giorno della finestra invernale) si firma a parametro zero
+  preContractFrom: 133, // da gennaio (stesso giorno della finestra invernale) si firma a parametro zero
   freeWageMul: 1.15, // chi arriva gratis chiede più stipendio: non c'è cartellino da pagare
   deservedPerCa: 0.5, // la reputazione di club che un giocatore pensa di meritare, per punto di CA…
   deservedMax: 95, // …fino a questo tetto
