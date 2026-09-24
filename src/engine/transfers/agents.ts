@@ -4,7 +4,7 @@ import { AGENT, DEAL, MARKET } from '../balance.ts';
 import type { Agent, ClubId, Player, PlayerId, WorldState } from '../model.ts';
 import { NATIONS } from '../names.ts';
 import type { Rng } from '../rng.ts';
-import { value } from './valuation.ts';
+import { fairWage, value } from './valuation.ts';
 import { clamp } from '../util.ts';
 
 
@@ -64,7 +64,7 @@ export function commission(a: Agent | null, fee: number, clubId: ClubId): number
 
 /** stipendio chiesto per rinnovare: sopra quello coerente col valore, tanto più quanto è avido */
 export function renewalWage(a: Agent | null, p: Player, season: number, clubRep: number): number {
-  const fair = value(p, season, { clubRep }) * MARKET.wageOfValue;
+  const fair = fairWage(value(p, season, { clubRep }));
   const greed = a ? AGENT.renewAsk + Math.max(0, a.greed - 10) * AGENT.renewGreed : AGENT.renewAsk;
   return Math.max(MARKET.wageMin, Math.round((fair * greed) / 10000) * 10000);
 }

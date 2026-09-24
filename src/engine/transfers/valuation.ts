@@ -48,5 +48,8 @@ export function value(p: Player, season: number, opts: { inflation?: number; clu
   return Math.round(v / mag) * mag;
 }
 
+/** stipendio annuo coerente con un valore di mercato, senza arrotondare */
+export const fairWage = (v: number) => MARKET.wageRef * Math.pow(Math.max(0, v) / MARKET.wageRefValue, MARKET.wageExp);
+
 /** stipendio annuo coerente con un valore di mercato */
-export const wageFor = (v: number) => Math.max(MARKET.wageMin, Math.round((v * MARKET.wageOfValue) / 10000) * 10000);
+export const wageFor = (v: number) => Math.max(MARKET.wageMin, Math.round(fairWage(v) / 10000) * 10000);

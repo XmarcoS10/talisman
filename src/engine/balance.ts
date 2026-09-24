@@ -293,7 +293,12 @@ export const MARKET = {
   formK: 0.04, // per punto di media voto sopra o sotto il 6,5 nelle ultime 5
   formMax: 0.2,
   wantsOut: 0.85, // chi ha chiesto la cessione ha meno potere contrattuale
-  wageOfValue: 0.12, // stipendio annuo tipico come quota del valore
+  // stipendio annuo coerente col valore: cresce meno del valore (esponente < 1), come nella realtà, dove un
+  // campione guadagna una quota del suo valore molto più piccola di un gregario. Tarato sui monti ingaggi di
+  // partenza (55% del fatturato) in A e in B insieme (Blocco 1.1b, 24/09/2026: era lineare, 12% del valore)
+  wageRef: 2_500_000, // stipendio di chi vale wageRefValue
+  wageRefValue: 10_000_000,
+  wageExp: 0.55,
   wageMin: 90000, // il minimo sindacale di un professionista
 } as const;
 
