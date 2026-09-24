@@ -85,7 +85,9 @@ function markUp(st: MatchState, att: Team, def: Team, presser: MP | undefined, d
     let target: MP | undefined, bd = 2;
     for (const a of att.on) {
       if (a === st.carrier || a.pos === 'GK' || a.marked === stamp) continue;
-      const d = len(12 - a.x - m.tx, 8 - a.y - m.ty);
+      const qx = 12 - a.x - m.tx, qy = 8 - a.y - m.ty;
+      if (qx * qx + qy * qy > 4.004) continue; // oltre 2 zone non lo marca (margine per restare esatti sul bordo)
+      const d = len(qx, qy);
       if (d < bd) { bd = d; target = a; }
     }
     if (target) {

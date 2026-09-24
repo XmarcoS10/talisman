@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "sim": "node src/sim-cli/sim.ts",
+    "bench": "node tools/bench.ts",
     "dist:win": "vite build && electron-builder --win nsis",
     "dist:linux": "vite build && electron-builder --linux AppImage",
     "assets": "node tools/assets/cli.ts"

@@ -6,6 +6,7 @@ import { len } from './pitch.ts';
 import { cover, type MatchState, type MP } from './state.ts';
 
 export const PRESS = [0.8, 1, 1.25];
+const FAR = MATCH.pressRadius * MATCH.pressRadius * 1.001;
 
 /** la difesa vista da chi attacca, la pressione sul portatore e il difensore più vicino (per il fallo di pressione) */
 export function readPlay(st: MatchState): { view: View; pressure: number; closest: MP | undefined } {
@@ -22,10 +23,13 @@ export function readPlay(st: MatchState): { view: View; pressure: number; closes
   let pressure = 0, line = 6, closest: MP | undefined, cd: number = MATCH.pressRadius;
   for (let i = 0; i < def.on.length; i++) {
     const m = def.on[i]!;
-    const d = len(defX[i]! - bx, defY[i]! - by);
+    if (m.pos !== 'GK') line = Math.max(line, defX[i]!);
+    // lontano dal portatore: né pressione né "più vicino". Il margine tiene esatto il confronto sul bordo
+    const qx = defX[i]! - bx, qy = defY[i]! - by;
+    if (qx * qx + qy * qy > FAR) continue;
+    const d = len(qx, qy);
     if (d < cd && m.pos !== 'GK') { cd = d; closest = m; }
     if (d < MATCH.pressRadius) pressure += (1 - d / MATCH.pressRadius) * (0.7 + 0.03 * m.p.attrs.workRate) * (m.energy / 100) * PRESS[def.tactic.pressing]! * cv * m.role.press;
-    if (m.pos !== 'GK') line = Math.max(line, defX[i]!);
   }
   const c = st.carrier;
   const sign = st.s === 0 ? 1 : -1;
