@@ -370,7 +370,7 @@ sotto un velo scuro.
 
 ![Rosa](img/04-rosa.jpg)
 
-Tabella ordinabile con ruolo, nazionalità, età, abilità e potenziale a stelle, forma, morale, valore, stipendio,
+Tabella ordinabile con ruolo, nazionalità, età, abilità e potenziale a stelle (relative al tuo campionato: 5 stelle = il 3% più forte), forma, morale, valore, stipendio,
 scadenza. Schede per **contratti**, **forma e statistiche**, **report medico**, **tecnici**, **mentali**, **fisici**,
 **portiere**; filtri per reparto e per «in scadenza»; in alto età media, monte ingaggi e quanti under 21.
 

@@ -1,11 +1,12 @@
 // Piccole primitive condivise tra le schermate.
-import type { Player, Position } from '../engine/model.ts';
+import type { Player, Position, WorldState } from '../engine/model.ts';
+import { toStars } from './stars.ts';
 import { t } from './i18n.ts';
 import { teamForms } from '../engine/narrative/italian.ts';
 
-/** abilità in stelle, scala FM: 0.5-5 (CA 40 → ½, CA 170+ → 5) */
-export function Stars({ ca }: { ca: number }) {
-  const v = Math.max(0.5, Math.min(5, Math.round(((ca - 40) / 130) * 10) / 2));
+/** abilità in stelle da ½ a 5, relative al campionato dell'utente (`stars.ts`) */
+export function Stars({ world, ca }: { world: WorldState; ca: number }) {
+  const v = toStars(world, ca);
   return (
     <span className="stars" title={`${v} / 5`}>
       ★★★★★<span style={{ width: `${v * 20}%` }}>★★★★★</span>

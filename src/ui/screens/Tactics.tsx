@@ -60,7 +60,7 @@ export function Tactics({ world, onChange, onPlayer }: { world: WorldState; onCh
       <td><b>{shortName(p)}</b> <Status p={p} out={club.excluded.includes(p.id)} /></td>
       <td><PosBadge pos={p.position} /></td>
       <td><span className="mini-bar"><span className="meter"><i className={p.condition.fitness < 60 ? 'bad' : p.condition.fitness < 75 ? 'warn' : ''} style={{ width: `${p.condition.fitness}%` }} /></span>{p.condition.fitness}%</span></td>
-      <td>{sel ? <span className={fitClass(p.positions[sel.pos])}><Stars ca={slotRating(p, sel)} /></span> : <Stars ca={p.ca} />}</td>
+      <td>{sel ? <span className={fitClass(p.positions[sel.pos])}><Stars world={world} ca={slotRating(p, sel)} /></span> : <Stars world={world} ca={p.ca} />}</td>
     </tr>
   );
   const bench = sorted.filter((p) => !lineup.includes(p.id));
@@ -76,7 +76,7 @@ export function Tactics({ world, onChange, onPlayer }: { world: WorldState; onCh
           <span className="row" style={{ justifyContent: 'space-between' }}><span className="caps">{t('tactics.famLabel')}</span><b className="num pos-good">{fam}%</b></span>
           <div className="meter"><i className={fam < 50 ? 'bad' : fam < 75 ? 'warn' : ''} style={{ width: `${fam}%` }} /></div>
         </div>
-        <div className="field"><span className="caps">{t('tactics.strength')}</span><Stars ca={xiStrength(current)} /></div>
+        <div className="field"><span className="caps">{t('tactics.strength')}</span><Stars world={world} ca={xiStrength(current)} /></div>
         <button className="btn" onClick={() => update(autoPick)}>{t('tactics.auto')}</button>
       </div>
 

@@ -2,6 +2,7 @@
 import type { Player, WorldState } from '../engine/model.ts';
 import { knowledge, range, type Band } from '../engine/scouting/fog.ts';
 import { Stars, attrClass } from './bits.tsx';
+import { toStars } from './stars.ts';
 import { t } from './i18n.ts';
 
 export const mine = (world: WorldState, p: Player) => p.clubId === world.manager.clubId;
@@ -17,17 +18,14 @@ export function Est({ b }: { b: Band }) {
   );
 }
 
-/** stesse unità delle stelle: 0,5 … 5 */
-const inStars = (ca: number) => Math.max(0.5, Math.min(5, Math.round(((ca - 40) / 130) * 10) / 2));
-
 /** abilità o potenziale: stelle se lo conosci, intervallo se lo stai indovinando */
 export function Ability({ world, p, which }: { world: WorldState; p: Player; which: 'ca' | 'pa' }) {
   const [lo, hi] = range(world, p, which);
-  if (lo === hi) return <Stars ca={lo} />;
+  if (lo === hi) return <Stars world={world} ca={lo} />;
   return (
     <span className="est range" title={t('fog.range', { lo, hi })}>
-      <Stars ca={lo} />
-      <i>→ {inStars(hi).toString().replace('.', ',')}</i>
+      <Stars world={world} ca={lo} />
+      <i>→ {toStars(world, hi).toString().replace('.', ',')}</i>
     </span>
   );
 }

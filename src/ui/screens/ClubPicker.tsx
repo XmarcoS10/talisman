@@ -95,7 +95,7 @@ export function ClubPicker({ world, selected, onPick }: { world: WorldState; sel
               <span className="tile-stats">
                 <span><span className="caps">{t('start.budget')}</span><b className="num pos-good">{fmtMoney(c.balance)}</b></span>
                 <span><span className="caps">{t('start.wages')}</span><b className="num">{fmtMoney(wageBill(world, c))}</b></span>
-                <span><span className="caps">{t('start.squadAvg')}</span><Stars ca={xi.get(c.id) ?? 0} /></span>
+                <span><span className="caps">{t('start.squadAvg')}</span><Stars world={world} ca={xi.get(c.id) ?? 0} /></span>
               </span>
               <span className="tile-facts">
                 <span>{t('start.reputation')}</span><span className="stars-txt">{'★'.repeat(Math.round(c.reputation / 20))}{'☆'.repeat(5 - Math.round(c.reputation / 20))}</span>

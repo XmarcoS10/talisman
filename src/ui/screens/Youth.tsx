@@ -44,7 +44,7 @@ export function Youth({ world, onPlayer, onChange }: { world: WorldState; onPlay
           <span className="muted small">{t('youth.recruitHint', { n: Math.round(club.youth.recruitment * YOUTH.foreignPerRecruitment * 100) })}</span></div>
         <div className="kpi"><span className="row" style={{ justifyContent: 'space-between' }}><span className="caps">{t('youth.next')}</span><Sparkles size={16} color="var(--accent)" /></span>
           <div className="big" style={{ color: 'var(--accent)' }}>{t('youth.summer', { y: world.season + 1 })}</div>
-          <span className="muted small">{t('youth.preview', { a: prev.size[0], b: prev.size[1] })} <Stars ca={prev.pa} /></span></div>
+          <span className="muted small">{t('youth.preview', { a: prev.size[0], b: prev.size[1] })} <Stars world={world} ca={prev.pa} /></span></div>
         <div className="kpi"><span className="caps">{t('youth.inFirst')}</span>
           <div className="big num">{inFirst} <small>{t('youth.ofKids', { n: kids.length })}</small></div>
           <span className="muted small">{t('youth.inFirstHint')}</span></div>
@@ -63,8 +63,8 @@ export function Youth({ world, onPlayer, onChange }: { world: WorldState; onPlay
                     <td><PosBadge pos={p.position} /></td>
                     <td><b>{fullName(p)}</b> {p.contract.loan ? <span className="tag dim">{t('youth.onLoan')}</span> : world.season - p.birthYear <= 19 ? <span className="tag">U19</span> : null}</td>
                     <td className="r num">{world.season - p.birthYear}</td>
-                    <td><Stars ca={p.ca} /></td>
-                    <td><Stars ca={p.pa} /></td>
+                    <td><Stars world={world} ca={p.ca} /></td>
+                    <td><Stars world={world} ca={p.pa} /></td>
                     <td className="r num">{p.stats.apps}</td>
                     <td><span className="mini-bar"><span className="meter"><i className={p.psych.minutes < 0.25 ? 'bad' : ''} style={{ width: `${Math.round(p.psych.minutes * 100)}%` }} /></span>{Math.round(p.psych.minutes * 100)}%</span></td>
                   </tr>

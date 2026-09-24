@@ -33,8 +33,8 @@ function columns(view: View, season: number, rep: number, world: WorldState, own
   const avg = (p: Player) => (p.stats.apps ? p.stats.ratingSum / p.stats.apps : 0);
   if (view === 'general') return [
     { key: 'age', label: t('col.age'), num: true, value: (p) => age(p, season) },
-    { key: 'ca', label: t('col.ability'), value: (p) => p.ca, cell: (p) => (own ? <Stars ca={p.ca} /> : <Ability world={world} p={p} which="ca" />) },
-    { key: 'pa', label: t('col.potential'), value: (p) => p.pa, cell: (p) => (own ? <Stars ca={p.pa} /> : <Ability world={world} p={p} which="pa" />) },
+    { key: 'ca', label: t('col.ability'), value: (p) => p.ca, cell: (p) => (own ? <Stars world={world} ca={p.ca} /> : <Ability world={world} p={p} which="ca" />) },
+    { key: 'pa', label: t('col.potential'), value: (p) => p.pa, cell: (p) => (own ? <Stars world={world} ca={p.pa} /> : <Ability world={world} p={p} which="pa" />) },
     { key: 'fit', label: t('col.fitness'), num: true, value: (p) => p.condition.fitness, cell: (p) => `${p.condition.fitness}%` },
     // il morale di uno spogliatoio che non è il tuo non lo puoi sapere
     { key: 'morale', label: t('col.morale'), num: true, value: (p) => (own ? p.psych.morale : 0),

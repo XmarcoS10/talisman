@@ -41,7 +41,7 @@ export function ReportCards({ world, onPlayer }: { world: WorldState; onPlayer: 
                 <span className={`tag ${tone}`}>{t('scout.grade', { g: grade })}</span>
               </div>
               <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', background: 'var(--bg-1)', borderRadius: 'var(--r-2)', padding: 10 }}>
-                <div><span className="caps">{t('col.potential')}</span><div><Stars ca={r.pa[0]} /> <span className="muted small">→ {r.pa[1]}</span></div></div>
+                <div><span className="caps">{t('col.potential')}</span><div><Stars world={world} ca={r.pa[0]} /> <span className="muted small">→ {r.pa[1]}</span></div></div>
                 <div className="r"><span className="caps">{t('scout.marketValue')}</span><div className="num"><b>{fmtMoney(value(p, world.season, { clubRep: club?.reputation ?? 40 }))}</b></div></div>
               </div>
               <span className="caps">{t('scout.advice')}</span>

@@ -61,8 +61,8 @@ export function PlayerView({ startDeal = false, world, playerId, onBack, onClub,
           </span>
         </div>
         <div className="dossier-side">
-          <span className="caps">{t('col.ability')}</span>{own ? <Stars ca={p.ca} /> : <Ability world={world} p={p} which="ca" />}
-          <span className="caps">{t('col.potential')}</span>{own ? <Stars ca={p.pa} /> : <Ability world={world} p={p} which="pa" />}
+          <span className="caps">{t('col.ability')}</span>{own ? <Stars world={world} ca={p.ca} /> : <Ability world={world} p={p} which="ca" />}
+          <span className="caps">{t('col.potential')}</span>{own ? <Stars world={world} ca={p.pa} /> : <Ability world={world} p={p} which="pa" />}
           {!own && <Known world={world} p={p} />}
         </div>
         {!own && p.clubId !== null && !deal && <button className="btn primary big" onClick={() => { setDeal(true); setTab('contract'); }}><Handshake size={16} /> {t('deal.start')}</button>}
