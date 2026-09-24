@@ -4,6 +4,7 @@ import { OFFERS } from '../balance.ts';
 import { Rng } from '../rng.ts';
 import { deserialize, serialize } from '../save.ts';
 import { advance, endSeason, isSeasonOver, newWorld } from '../world.ts';
+import { isWinterWindow } from './market.ts';
 import { acceptOffer, counterOffer, expireOffers, keen, makeOffer, rejectOffer } from './offers.ts';
 
 const setup = () => {
@@ -67,15 +68,25 @@ describe('offerte per i giocatori dell\'utente', () => {
     expect(world.offers).toHaveLength(0);
   });
 
-  it('nelle finestre vere i club IA fanno offerte al club dell\'utente', () => {
+  it("nelle finestre vere i club IA fanno offerte al club dell'utente, e fuori dalle finestre mai", () => {
     const world = newWorld(5);
-    let seen = 0;
-    for (let s = 0; s < 1; s++) { // inverno e poi estate
-      while (!isSeasonOver(world)) { advance(world); seen = Math.max(seen, world.offers.length); }
-      endSeason(world);
-      seen = Math.max(seen, world.offers.length);
+    const outside: number[] = []; // giorni in cui è comparsa un'offerta fuori dalla finestra invernale
+    let winter = 0;
+    const known = new Set<string>();
+    const fresh = () => world.offers.filter((o) => !known.has(`${o.playerId}:${o.buyer}`));
+    while (!isSeasonOver(world)) {
+      advance(world);
+      for (const o of fresh()) {
+        known.add(`${o.playerId}:${o.buyer}`);
+        if (isWinterWindow(world.day)) winter++; else outside.push(world.day);
+      }
     }
+    endSeason(world);
+    // le offerte dell'estate nascono in endSeason e si contano dal primo giorno della stagione nuova
+    const summer = fresh();
+    expect(outside).toEqual([]);
+    expect(winter + summer.length).toBeGreaterThan(0);
+    for (const o of summer) expect(o.until).toBe(OFFERS.days);
     expect(world.news.some((n) => n.key === 'news.offerIn')).toBe(true);
-    expect(seen).toBeGreaterThan(0);
   }, 60_000);
 });

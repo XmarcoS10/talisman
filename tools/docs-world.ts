@@ -5,6 +5,7 @@ import { serialize } from '../src/engine/save.ts';
 import { advance, newWorld } from '../src/engine/world.ts';
 import { preseason } from '../src/engine/friendlies.ts';
 import { makeOffer } from '../src/engine/transfers/offers.ts';
+import { isWinterWindow } from '../src/engine/transfers/market.ts';
 
 const out = process.argv[2] ?? 'tools/docs-save.json';
 const world = newWorld(2026);
@@ -12,7 +13,8 @@ const comp = world.competitions.ITA1!;
 world.manager.clubId = [...comp.clubIds].sort((a, b) => world.clubs[b]!.reputation - world.clubs[a]!.reputation)[6]!;
 world.manager.name = 'Marco';
 preseason(world);
-for (let i = 0; i < 16; i++) advance(world);
+// fino alla finestra di gennaio: le offerte dell'IA arrivano solo nelle finestre di mercato
+while (!isWinterWindow(world.day)) advance(world);
 
 // tre offerte per la Scrivania: i club più blasonati cercano i migliori della rosa
 const mine = world.clubs[world.manager.clubId]!;
