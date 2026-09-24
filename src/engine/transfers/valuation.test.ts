@@ -19,12 +19,13 @@ function who(o: { ca: number; pa?: number; age?: number; pos?: Position; until?:
 const v = (p: Player) => value(p, SEASON);
 
 describe('valore di mercato (F7)', () => {
-  it('un campione costa decine di milioni, un giocatore da metà classifica qualche milione', () => {
-    expect(v(who({ ca: 170 }))).toBeGreaterThan(40_000_000);
-    expect(v(who({ ca: 170 }))).toBeLessThan(200_000_000);
-    expect(v(who({ ca: 130 }))).toBeGreaterThan(1_000_000);
-    expect(v(who({ ca: 130 }))).toBeLessThan(15_000_000);
-    expect(v(who({ ca: 90 }))).toBeLessThan(1_000_000);
+  // la scala è quella dei fatturati del mondo: il club più ricco della A incassa ~90 M l'anno (Blocco 1.1)
+  it('un campione costa una parte del fatturato di un grande club, un giocatore da metà classifica un milione o due', () => {
+    expect(v(who({ ca: 170 }))).toBeGreaterThan(12_000_000);
+    expect(v(who({ ca: 170 }))).toBeLessThan(50_000_000);
+    expect(v(who({ ca: 130 }))).toBeGreaterThan(500_000);
+    expect(v(who({ ca: 130 }))).toBeLessThan(4_000_000);
+    expect(v(who({ ca: 90 }))).toBeLessThan(250_000);
   });
 
   it('si paga il potenziale del giovane e si svaluta il veterano', () => {

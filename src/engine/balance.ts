@@ -268,10 +268,12 @@ export const ADJACENT: Partial<Record<Position, Position[]>> = {
 };
 
 // --- mercato (GUIDA §7.5) ---
-// Il valore è derivato, mai salvato. La spina dorsale è 10^(CA/caK + caC): ≈70M a CA 170, ≈1,4M a CA 110.
+// Il valore è derivato, mai salvato. La spina dorsale è 10^(CA/caK + caC): ≈18M a CA 170, ≈350k a CA 110.
+// Scala dei fatturati del mondo (il più ricco della A incassa ~90 M): il più caro vale ~0,45 volte quel fatturato
+// (Blocco 1.1, 24/09/2026: con caC 3 valeva 1,8 volte, e un'offerta da 90 M non stava nella cassa di nessuno).
 export const MARKET = {
   caK: 35,
-  caC: 3,
+  caC: 2.4,
   // età: si paga il picco, si svaluta la coda
   peakFrom: 24,
   peakTo: 29,
