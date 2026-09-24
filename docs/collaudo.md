@@ -11,7 +11,7 @@ Tempo richiesto: una stagione intera, di solito **3-5 ore** divise come vuoi. Il
 ## 1. Installazione (Windows 10 o 11)
 
 1. Scarica **`TFM27-Setup.exe`** dalla pagina
-   [Download](https://xmarcos10.github.io/talisman/download.html) (circa 115 MB).
+   [Download](https://xmarcos10.github.io/talisman/download.html) (circa 123 MB).
 2. Aprilo con un doppio clic. Windows mostrerà quasi certamente una finestra blu:
    **«Windows ha protetto il PC»** (SmartScreen). Succede perché l'installer non è firmato: la firma costa un
    certificato che per un gioco gratuito in collaudo non abbiamo comprato. Il file è quello giusto se il codice

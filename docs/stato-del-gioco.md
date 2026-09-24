@@ -4,7 +4,7 @@ Questo documento racconta **tutto quello che il gioco fa oggi e come lo fa**, co
 numeri di taratura e i limiti noti. Serve a decidere il prossimo aggiornamento: in fondo ci sono le proposte, con la
 stima di lavoro.
 
-- **Versione**: 0.1.0 di collaudo (installer Windows) · formato dei salvataggi **20**
+- **Versione**: 0.1.1 di collaudo (installer Windows) · formato dei salvataggi **20**
 - **Codice**: <https://github.com/XmarcoS10/talisman> (GPL-3.0) · **Sito**: <https://xmarcos10.github.io/talisman/>
 - **Qualità**: 190 test verdi, controllo dei tipi pulito, CI su ogni modifica
 - **Misura**: ~13.000 righe di TypeScript (motore + interfaccia), 1.525 stringhe di testo italiano

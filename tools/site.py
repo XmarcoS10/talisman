@@ -4,7 +4,7 @@ import io, os
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'site')
 REPO = 'https://github.com/XmarcoS10/talisman'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
-SHA = '963992952d33ab9cdf85bd1ce01d0c229fc4f1210eb3f413a705896347ccdb80'
+SHA = 'db6add786d3d0c4c08cea1ba72e4cc43e0818272a9700bacc5b86414270dd959'
 
 # icone (tracciati di lucide, licenza ISC)
 I = {
@@ -68,7 +68,7 @@ def page(fname, title, desc, body):
       </nav>
       <div class="actions">
         <a class="btn sm gh" href="{REPO}">{svg('code', 14)} GitHub</a>
-        <a class="btn sm primary dl" href="{DL}">{svg('download', 14)} Scarica per Windows <small>113 MB</small></a>
+        <a class="btn sm primary dl" href="{DL}">{svg('download', 14)} Scarica per Windows <small>123 MB</small></a>
       </div>
       <button class="btn sm menu" aria-controls="nav" aria-expanded="false" onclick="var n=document.getElementById('nav');this.setAttribute('aria-expanded',n.classList.toggle('open'))">Menu</button>
     </div>
@@ -84,7 +84,7 @@ def page(fname, title, desc, body):
         <div>
           <a class="brand" href="index.html"><img src="favicon.png" alt="" width="32" height="32" /><span>Tactic F.C. Manager</span></a>
           <p>Gioco manageriale di calcio gratuito e in italiano. Spogliatoio vivo, partite in 2D, storie che nascono dal campionato.</p>
-          <p><span class="tag">GPL-3.0</span> <span class="tag cy">v0.1.0 collaudo</span></p>
+          <p><span class="tag">GPL-3.0</span> <span class="tag cy">v0.1.1 collaudo</span></p>
         </div>
         <div><h4>Il sito</h4><ul>{''.join(f'<li><a href="{h}">{n}</a></li>' for h, n in NAV)}</ul></div>
         <div><h4>Documenti</h4><ul>
@@ -126,12 +126,12 @@ home = f'''    <div class="hero">
       <div class="wrap split">
         <div>
           <img class="logo" src="img/logo.webp" alt="Tactic F.C. Manager" width="150" height="175" />
-          <span class="pill g">Versione di collaudo 0.1.0 · gratis</span>
+          <span class="pill g">Versione di collaudo 0.1.1 · gratis</span>
           <h1>Non alleni una rosa.<br /><span class="hl">Alleni un gruppo di persone.</span></h1>
           <p class="lead">Tactic F.C. Manager è un gioco manageriale di calcio, gratuito e in italiano. I tuoi giocatori hanno amici e
             rivali, un morale che contagia gli altri, promesse che si ricordano — e agenti che se le ricordano per loro.</p>
           <div class="cta">
-            <a class="btn primary big" href="{DL}">{svg('download')} Scarica per Windows <small>113 MB</small></a>
+            <a class="btn primary big" href="{DL}">{svg('download')} Scarica per Windows <small>123 MB</small></a>
             <a class="btn big" href="caratteristiche.html">Scopri il gioco</a>
           </div>
           <div class="fine">Windows 10 e 11, 64 bit · niente pubblicità, niente account, niente internet</div>
@@ -290,7 +290,7 @@ feat = f'''    <div class="hero">
       <div class="wrap">
         <div class="head"><div class="kicker">Guida rapida</div><h2>Come iniziare con TFM 27</h2><p>Nessun permesso di amministratore, nessun account.</p></div>
         <div class="grid g4">
-          <div class="panel step"><span class="n">01</span><h3>Scarica</h3><p>Il file <span class="mono">TFM27-Setup.exe</span> (113 MB) dal pulsante in alto.</p></div>
+          <div class="panel step"><span class="n">01</span><h3>Scarica</h3><p>Il file <span class="mono">TFM27-Setup.exe</span> (123 MB) dal pulsante in alto.</p></div>
           <div class="panel step"><span class="n">02</span><h3>Avvia e conferma</h3><p>Se Windows mostra l'avviso SmartScreen: «Ulteriori informazioni» e poi «Esegui comunque».</p></div>
           <div class="panel step"><span class="n">03</span><h3>Scegli il club</h3><p>Filtra i 40 club per campionato e ambizione, leggi il dossier e scegli la tua filosofia.</p></div>
           <div class="panel step"><span class="n">04</span><h3>Segui la guida</h3><p>La prima stagione ti accompagna in cinque passi: formazione, allenamento, prima partita.</p></div>
@@ -404,7 +404,7 @@ page('motore.html', 'Motore 2D e partita — Tactic F.C. Manager',
 dl = f'''    <div class="hero">
       <div class="wrap split">
         <div>
-          <span class="pill g">Versione 0.1.0 · collaudo</span> <span class="pill">GPL-3.0 · codice aperto</span>
+          <span class="pill g">Versione 0.1.1 · collaudo</span> <span class="pill">GPL-3.0 · codice aperto</span>
           <h1>Scarica TFM 27 e scendi <span class="hl">subito in panchina.</span></h1>
           <p class="lead">Gira tutto sul tuo computer: nessun account, nessuna raccolta di dati, nessun costo nascosto.</p>
           <div class="grid g2" style="margin-top:26px">
@@ -414,7 +414,7 @@ dl = f'''    <div class="hero">
         </div>
         <div class="panel hi">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h3>{svg('monitor', 18)} Windows 64 bit</h3><span class="tag">collaudo</span></div>
-          <p style="margin-top:12px"><b class="mono" style="color:var(--text)">TFM27-Setup.exe</b> · 113 MB · versione 0.1.0</p>
+          <p style="margin-top:12px"><b class="mono" style="color:var(--text)">TFM27-Setup.exe</b> · 123 MB · versione 0.1.1</p>
           <a class="btn primary big" style="width:100%;justify-content:center;margin:16px 0" href="{DL}">{svg('download')} Scarica l'installer</a>
           <div class="hash"><b>SHA-256</b>{SHA}</div>
           <p style="margin-top:10px;font-size:13px">Per controllare il file scaricato, in PowerShell: <span class="mono">Get-FileHash TFM27-Setup.exe</span>. Il numero deve essere uguale.</p>
@@ -428,7 +428,7 @@ dl = f'''    <div class="hero">
         <div class="head"><div class="kicker">Installazione</div><h2>Come installare TFM 27 in 4 passi</h2>
           <p>L'installer è gratuito e non ancora firmato (il certificato di firma si paga): per questo Windows può mostrare un avviso la prima volta.</p></div>
         <div class="grid g4">
-          <div class="panel step"><span class="n">01</span><h3>Scarica</h3><p>Premi il pulsante qui sopra e salva <span class="mono">TFM27-Setup.exe</span>.</p><div class="foot">113 MB</div></div>
+          <div class="panel step"><span class="n">01</span><h3>Scarica</h3><p>Premi il pulsante qui sopra e salva <span class="mono">TFM27-Setup.exe</span>.</p><div class="foot">123 MB</div></div>
           <div class="panel step"><span class="n">02</span><h3>Avviso SmartScreen</h3><p>Se compare «Windows ha protetto il PC», clicca <b>Ulteriori informazioni</b> e poi <b>Esegui comunque</b>.</p><div class="foot">codice pubblico e verificabile</div></div>
           <div class="panel step"><span class="n">03</span><h3>Scegli la cartella</h3><p>Il gioco si installa nella tua cartella utente. Non servono permessi di amministratore.</p><div class="foot">nessuna modifica al sistema</div></div>
           <div class="panel step"><span class="n">04</span><h3>Gioca</h3><p>Scegli il club, la tua filosofia, e la prima stagione ti accompagna passo per passo.</p><div class="foot">prima partita guidata</div></div>
@@ -505,7 +505,7 @@ pnpm dist:linux</pre>
     </section>
 {cta('Vuoi guardare dentro il codice?', 'Tutto il gioco è su GitHub: motore, interfaccia, bilanciamento e documenti di progetto.', (REPO, 'Codice su GitHub'))}'''
 page('download.html', 'Download e guida — Tactic F.C. Manager',
-     'Scarica Tactic F.C. Manager per Windows: installer gratuito da 113 MB, installazione in 4 passi, salvataggi locali, domande frequenti.', dl)
+     'Scarica Tactic F.C. Manager per Windows: installer gratuito da 123 MB, installazione in 4 passi, salvataggi locali, domande frequenti.', dl)
 
 # ---------- COMMUNITY ----------
 comm = f'''    <div class="hero">

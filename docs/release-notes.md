@@ -1,6 +1,20 @@
 # Note di rilascio
 
-## In arrivo — Tactic F.C. Manager (TFM 27)
+## 0.1.1 — per il collaudo esterno
+
+La versione da dare ai tester (istruzioni e modulo in `docs/collaudo.md`). I salvataggi della 0.1.0 si aprono:
+passano al formato 20.
+
+- **Offerte per i tuoi giocatori**: nelle finestre di mercato gli altri club ti fanno offerte, e decidi tu dalla
+  Scrivania: accetti, rifiuti o chiedi di più. Se un giocatore sognava quel club e gli dici di no, se lo ricorda.
+- **Mercato dell'IA più vivo**: i club grandi riescono a comprare i titolari dei piccoli, e il campionato non si
+  appiattisce dopo qualche stagione.
+- **Stemmi** tutti diversi (8 scudi, 12 partizioni, 10 simboli), **maglie** con 15 disegni e seconda maglia (in partita
+  le squadre non si confondono più), **volti** dei giocatori secondo nazionalità, età e altezza.
+- **Grafica generata**: sfondi delle schermate, illustrazioni delle storie e grana dell'erba sul campo 2D.
+- Modelli di segnalazione su GitHub per bug e impressioni.
+
+## 0.1.0 — Tactic F.C. Manager (TFM 27)
 
 Il gioco cambia nome (prima era Talisman) e faccia: tutte le schermate rifatte sui disegni di Marco. I salvataggi di
 prima si ritrovano. Novità di gioco:
@@ -12,12 +26,8 @@ prima si ritrovano. Novità di gioco:
 - Finanze con proiezione di fine stagione e cassa mese per mese; richiesta alla dirigenza per allargare lo staff
   osservatori; classifiche casa/trasferta/forma/xG; report sull'avversario; esportazione del calendario.
 - **5 slot** con nome e tempo di gioco, valuta e formato data a scelta, pausa sulle notizie importanti.
-- **Offerte per i tuoi giocatori**: nelle finestre di mercato gli altri club ti fanno offerte, e decidi tu: accetti,
-  rifiuti o chiedi di più. Se un giocatore sognava quel club e gli dici di no, se lo ricorda.
-- Mercato dell'IA più vivo: i club grandi riescono a comprare i titolari dei piccoli, e il campionato non si appiattisce
-  dopo qualche stagione.
 
-## 0.1.0 — prima versione di collaudo
+### Prima versione di collaudo
 
 La prima versione da far provare a persone che non hanno scritto il gioco. Obiettivo del collaudo (GUIDA §9, F9):
 tre tester esterni completano una stagione senza chiedere aiuto.

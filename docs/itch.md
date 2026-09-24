@@ -35,7 +35,7 @@ Il mondo è inventato: club, città e giocatori non esistono.
 - Windows 10/11, 64 bit. L'installer non è firmato: Windows può mostrare «editore sconosciuto». Clicca
   «Ulteriori informazioni» e poi «Esegui comunque».
 - I salvataggi restano sul tuo computer. Il gioco non manda niente da nessuna parte.
-- Versione di collaudo 0.1.0: segnalazioni benvenute. In «Salvataggi e impostazioni» c'è «Esporta diagnostica».
+- Versione di collaudo 0.1.1: segnalazioni benvenute. In «Salvataggi e impostazioni» c'è «Esporta diagnostica».
 
 ## Link
 Sito: https://xmarcos10.github.io/talisman/ · Codice: https://github.com/XmarcoS10/talisman ·
