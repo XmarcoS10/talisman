@@ -27,5 +27,5 @@ export function finish(st: MatchState) {
     const diff = score[i]! - score[1 - i]!;
     for (const m of tm.played) ratings[m.p.id] = rate(m, diff, score[1 - i]!);
   });
-  st.output = { result: { hg: score[0], ag: score[1], events: st.events, stats: [teams[0].stats, teams[1].stats], ratings }, played: [teams[0].played, teams[1].played] };
+  st.output = { result: { hg: score[0], ag: score[1], events: st.events, stats: [teams[0].stats, teams[1].stats], ratings }, played: [teams[0].played, teams[1].played], log: [teams[0].log, teams[1].log] };
 }

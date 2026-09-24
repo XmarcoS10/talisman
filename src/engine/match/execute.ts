@@ -8,7 +8,7 @@ import { inBox, len, segDist, shotGeometry } from './pitch.ts';
 import { kickoff } from './positioning.ts';
 import { PRESS } from './pressure.ts';
 import { corner } from './setpieces.ts';
-import { best, ev, gain, gx, gy, minute, nearest, type MatchState, type MP, type Team, type TraceStep } from './state.ts';
+import { best, ev, gain, gx, gy, minute, nearest, type MatchState, type MP, type Origin, type Team, type TraceStep } from './state.ts';
 
 const TEMPO = [1.2, 1, 0.85];
 type ShotKind = 'open' | 'header' | 'pen' | 'fk';
@@ -24,8 +24,13 @@ function shotSkill(st: MatchState, sh: MP, kind: ShotKind) {
   return shotGeometry(st.bx, st.by).dist > 18 ? a.longShots : a.finishing;
 }
 
-function scoreGoal(st: MatchState, sh: MP, xg: number, kind: ShotKind, assist: MP | null, sign: number) {
+/** contropiede: il possesso è nato nella propria metà campo da meno di 15 s, con al massimo 4 azioni */
+const counter = (st: MatchState) => st.poss.half === st.half && st.poss.x < 6 && st.t - st.poss.t <= 15 && st.poss.acts <= 4;
+
+function scoreGoal(st: MatchState, sh: MP, xg: number, kind: ShotKind, assist: MP | null, sign: number, origin: Origin) {
   const att = st.teams[st.s], def = st.teams[1 - st.s]!;
+  att.log.goals[origin]++;
+  if ((origin === 'open' || origin === 'cross') && counter(st)) att.log.counterGoals++;
   att.stats.onTarget++; sh.st.onTarget++; sh.st.goals++;
   st.score[st.s]++;
   if (assist) assist.st.assists++;
@@ -54,10 +59,11 @@ function missed(st: MatchState, sh: MP, xg: number, kind: ShotKind, gk: MP | und
   } else gain(st, def, gk ?? nearest(def, 0.6, 4));
 }
 
-export function shoot(st: MatchState, sh: MP, xg: number, kind: ShotKind) {
+export function shoot(st: MatchState, sh: MP, xg: number, kind: ShotKind, origin: Origin) {
   const att = st.teams[st.s], def = st.teams[1 - st.s]!;
   const gk = def.on.find((m) => m.pos === 'GK');
   att.stats.shots++; sh.st.shots++; att.stats.xg += xg;
+  if (kind === 'header') att.log.headers++;
   const skill = shotSkill(st, sh, kind);
   const gkSkill = gk ? (gk.p.attrs.reflexes + gk.p.attrs.oneOnOnes + gk.p.attrs.handling) / 3 : 3;
   const pGoal = clamp(xg * (1 + MATCH.shotSkill * (skill - 11)) * (1 - MATCH.gkSkill * (gkSkill - 11)), 0.005, 0.97);
@@ -65,7 +71,7 @@ export function shoot(st: MatchState, sh: MP, xg: number, kind: ShotKind) {
   if (assist) assist.st.keyPasses++;
   const sign = st.s === 0 ? 1 : -1;
   st.momentum = clamp(st.momentum + sign * MATCH.momentumShot, -100, 100);
-  if (st.rng.next() < pGoal) scoreGoal(st, sh, xg, kind, assist, sign);
+  if (st.rng.next() < pGoal) scoreGoal(st, sh, xg, kind, assist, sign, origin);
   else missed(st, sh, xg, kind, gk);
 }
 
@@ -92,12 +98,17 @@ function frame(st: MatchState, o: Option): TraceStep {
 function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, { kind: 'pass' }>, f: TraceStep | null) {
   const { rng } = st;
   att.stats.passes++; c.st.passes++;
+  if (o.deep) att.log.deep++;
+  const late = minute(st) >= 70 ? (c.energy < 65 ? att.log.lateTired : c.energy > 80 ? att.log.lateFresh : null) : null;
+  if (late) late[0]++;
   if (o.off > 0 && rng.next() < o.off) {
     att.stats.offsides++;
     st.t += MATCH.restartTime;
     gain(st, def, nearest(def, 12 - o.tx, 8 - o.ty));
   } else if (rng.next() < o.p) {
     att.stats.passesOk++; c.st.passesOk++;
+    if (o.deep) att.log.deepOk++;
+    if (late) late[1]++;
     if (f) f.ok = true;
     st.lastPass = c;
     st.chain++;
@@ -112,6 +123,7 @@ function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, 
       if (d < bd) { bd = d; w = def.on[i]!; }
     }
     w.st.tackles++; def.stats.tackles++;
+    def.log.intercepts++; def.log.regains++; def.log.regainX += w.x;
     st.t += MATCH.passTime + MATCH.turnoverTime;
     gain(st, def, w);
   }
@@ -119,11 +131,13 @@ function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, 
 
 function doDribble(st: MatchState, def: Team, c: MP, o: Extract<Option, { kind: 'dribble' }>, f: TraceStep | null) {
   const tk = o.tackler as MP | undefined;
+  st.teams[st.s].log.dribbles++;
   const foulP = MATCH.foulBase * (1 + MATCH.foulAggression * (tk ? tk.p.attrs.aggression - 11 : 0)) * PRESS[def.tactic.pressing]!
     * (inBox(st.bx, st.by) ? MATCH.foulInBox : 1) * (tk?.st.yellows ? MATCH.bookedCaution : 1);
   if (tk && st.rng.next() < foulP) foul(st, tk, c);
   else if (st.rng.next() < o.p) {
     c.st.dribbles++;
+    st.teams[st.s].log.dribblesOk++;
     if (f) f.ok = true;
     st.bx = o.tx; st.by = o.ty;
     st.lastPass = null;
@@ -131,6 +145,7 @@ function doDribble(st: MatchState, def: Team, c: MP, o: Extract<Option, { kind: 
   } else {
     const w = tk ?? nearest(def, 12 - st.bx, 8 - st.by);
     w.st.tackles++; def.stats.tackles++; c.st.duelsLost++;
+    def.log.tackles++; def.log.regains++; def.log.regainX += w.x;
     st.t += MATCH.turnoverTime + 1;
     gain(st, def, w);
   }
@@ -138,9 +153,11 @@ function doDribble(st: MatchState, def: Team, c: MP, o: Extract<Option, { kind: 
 
 function doCross(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, { kind: 'cross' }>, f: TraceStep | null) {
   att.stats.passes++; c.st.passes++;
+  att.log.crosses++;
   st.t += MATCH.passTime;
   if (st.rng.next() < o.p) {
     att.stats.passesOk++; c.st.passesOk++;
+    att.log.crossesOk++;
     if (f) f.ok = true;
     const inBoxMates = att.on.filter((m) => m !== c && m.pos !== 'GK' && m.x >= 9.5);
     const header = inBoxMates.length
@@ -149,7 +166,7 @@ function doCross(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option,
     const dh = best(def, (m) => m.p.attrs.heading, (m) => m.pos !== 'GK');
     st.lastPass = c;
     st.bx = 10.8; st.by = 4;
-    shoot(st, header, MATCH.headerXg * (1 + 0.06 * (header.p.attrs.heading - 11)) * (1 - 0.04 * (dh.p.attrs.heading - 11)), 'header');
+    shoot(st, header, MATCH.headerXg * (1 + 0.06 * (header.p.attrs.heading - 11)) * (1 - 0.04 * (dh.p.attrs.heading - 11)), 'header', 'cross');
   } else if (st.rng.next() < MATCH.cornerAfterClear) corner(st);
   else gain(st, def, nearest(def, 1.5, 4, true));
 }
@@ -163,7 +180,7 @@ export function act(st: MatchState, att: Team, def: Team, c: MP, o: Option) {
   else {
     const side = st.s; // dopo un gol kickoff() passa la palla all'altra squadra: l'esito va letto su chi ha tirato
     const before = st.score[side];
-    shoot(st, c, o.xg, 'open');
+    shoot(st, c, o.xg, 'open', 'open');
     if (f) f.ok = st.score[side] > before;
   }
 }

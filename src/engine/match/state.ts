@@ -41,6 +41,27 @@ export interface TeamSetup {
   auto?: boolean; // false: cambi e mentalità li decide l'utente dal vivo (schermata Live)
 }
 
+/** da dove nasce un tiro: serve a contare i gol per origine (piazzati, cross, contropiede) */
+export type Origin = 'open' | 'cross' | 'corner' | 'pen' | 'fk';
+
+/**
+ * contatori di una squadra in partita (Blocco 2b): non cambiano il gioco e non si salvano. Li leggono
+ * `pnpm sim -- --match-stats` e i test di buon senso tattico.
+ */
+export interface MatchLog {
+  crosses: number; crossesOk: number;
+  dribbles: number; dribblesOk: number; // tentati (anche quelli fermati con un fallo) e riusciti
+  tackles: number; // palla vinta in un duello
+  intercepts: number; // passaggio intercettato
+  headers: number; // tiri di testa
+  deep: number; deepOk: number; // palle in profondità alle spalle della linea
+  regainX: number; regains: number; // somma e numero delle x (nel proprio sistema) dei recuperi da contrasto o intercetto
+  goals: Record<Origin, number>;
+  counterGoals: number; // possesso nato nella propria metà da meno di 15 s e al massimo 4 azioni
+  lateTired: [number, number]; // passaggi tentati e riusciti dal 70' con energia sotto 65…
+  lateFresh: [number, number]; // …e sopra 80
+}
+
 export interface Team {
   side: 0 | 1;
   tactic: Tactic;
@@ -53,6 +74,7 @@ export interface Team {
   stats: SideStats;
   fam: number;
   auto: boolean; // false = i cambi li fa l'utente dalla panchina (F6)
+  log: MatchLog;
 }
 
 /**
@@ -107,6 +129,7 @@ export interface PosFrame {
 export interface SimOutput {
   result: MatchResult;
   played: [MP[], MP[]]; // tutti quelli scesi in campo, con statistiche
+  log: [MatchLog, MatchLog]; // contatori per il bilanciamento: non entrano nel mondo
 }
 
 export type Shout = 'encourage' | 'demand' | 'calm';
@@ -126,6 +149,7 @@ export interface MatchState {
   carrier: MP;
   lastPass: MP | null;
   chain: number; // passaggi consecutivi nel possesso attuale
+  poss: { t: number; half: number; x: number; acts: number }; // come è cominciato il possesso in corso (contropiede)
   momentum: number; // + casa, − ospiti
   half: number;
   t: number;
@@ -156,6 +180,8 @@ export interface MatchState {
 }
 
 export const newPStats = (from: number): PStats => ({ passes: 0, passesOk: 0, keyPasses: 0, shots: 0, onTarget: 0, goals: 0, assists: 0, tackles: 0, dribbles: 0, duelsLost: 0, saves: 0, fouls: 0, yellows: 0, red: false, injured: false, conceded: 0, injuryCtx: 'contact', from, to: 90 });
+const newLog = (): MatchLog => ({ crosses: 0, crossesOk: 0, dribbles: 0, dribblesOk: 0, tackles: 0, intercepts: 0, headers: 0, deep: 0, deepOk: 0,
+  regainX: 0, regains: 0, goals: { open: 0, cross: 0, corner: 0, pen: 0, fk: 0 }, counterGoals: 0, lateTired: [0, 0], lateFresh: [0, 0] });
 const newSide = (): SideStats => ({ possession: 0, shots: 0, onTarget: 0, xg: 0, passes: 0, passesOk: 0, tackles: 0, fouls: 0, corners: 0, offsides: 0, yellows: 0, reds: 0 });
 
 /** logit personale del giorno, centrato sul giocatore "normale" (morale 65, condizione ≥ 80, modulo conosciuto) */
@@ -169,10 +195,10 @@ export const mp = (player: Player, slot: Slot, role: RoleId, fam: number, from =
 export function createState(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: TraceStep[]): MatchState {
   const teams = setups.map((s, i) => {
     const on = s.xi.map((e) => mp(e.player, e.slot, e.role, s.familiarity));
-    return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity, auto: s.auto !== false };
+    return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity, auto: s.auto !== false, log: newLog() };
   }) as [Team, Team];
   return {
-    rng, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, momentum: 0,
+    rng, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, momentum: 0,
     half: 1, t: 0, length: 0, scheduled: [], lastPlace: 0, markStamp: 0, holder: null, meet: null, snap: true,
     trace, track: [], playAt: 0, lastBall: { x: 6, y: 4 }, lastStep: -1, ids0: [], idsDirty: true,
     defX: [], defY: [], defAnt: [], pendingDrain: [0, 0], subIdx: 0, shoutAt: [0, 0], output: null,
@@ -210,4 +236,5 @@ export function gain(st: MatchState, tm: Team, m: MP) {
   st.by = m.y;
   st.lastPass = null;
   st.chain = 0;
+  st.poss = { t: st.t, half: st.half, x: m.x, acts: 0 };
 }

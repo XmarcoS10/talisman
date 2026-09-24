@@ -37,7 +37,7 @@ export interface View {
 }
 
 export type Option =
-  | { kind: 'pass'; to: OnPitch; tx: number; ty: number; p: number; off: number; u: number; w: number } // w: intesa (chem)
+  | { kind: 'pass'; to: OnPitch; tx: number; ty: number; p: number; off: number; u: number; w: number; deep: boolean } // w: intesa (chem); deep: in profondità
   | { kind: 'dribble'; tx: number; ty: number; p: number; tackler: OnPitch | undefined; u: number }
   | { kind: 'shot'; xg: number; u: number }
   | { kind: 'cross'; p: number; u: number };
@@ -98,7 +98,7 @@ function passes(v: View, x: Ctx, out: Option[]) {
     const edge = v.offsideLine - MATCH.offsideWindow;
     const off = dx > 1 && m.x > edge ? Math.min(0.6, MATCH.offsideBase + MATCH.offsidePerZone * (m.x - edge)) : 0;
     const pe = p * (1 - off);
-    out.push({ kind: 'pass', to: m, tx: m.x, ty: m.y, p, off, u: pe * (xT(m.x, m.y) + keep) - (1 - pe) * loss + direct * dx, w: chem(rel[m.p.id]) });
+    out.push({ kind: 'pass', to: m, tx: m.x, ty: m.y, p, off, u: pe * (xT(m.x, m.y) + keep) - (1 - pe) * loss + direct * dx, w: chem(rel[m.p.id]), deep: false });
   }
 }
 
@@ -119,7 +119,7 @@ function throughBalls(v: View, x: Ctx, out: Option[]) {
       + MATCH.passSkill * a(c, 'passing') + 2 * vision + v.bonus);
     const off = MATCH.throughOffside * (1 - (m.p.attrs.offTheBall - 11) * 0.04);
     const pe = p * (1 - off);
-    out.push({ kind: 'pass', to: m, tx, ty: m.y, p, off, u: pe * (xT(tx, m.y) + keep) - (1 - pe) * loss + direct * (tx - bx), w: chem(rel[m.p.id]) });
+    out.push({ kind: 'pass', to: m, tx, ty: m.y, p, off, u: pe * (xT(tx, m.y) + keep) - (1 - pe) * loss + direct * (tx - bx), w: chem(rel[m.p.id]), deep: true });
   }
 }
 

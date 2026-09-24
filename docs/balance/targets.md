@@ -36,3 +36,21 @@ Report completi in questa cartella (`f5-*.md`, `development.md`, `psychology.md`
 | Tempo stagione batch | < 25 s | ✅ ~3,9 s |
 | 10.000 partite (`pnpm sim -- --matches 10000`, 16 blocchi in parallelo) | < 20 s | ✅ 6,5 s |
 | Motore, un thread (`pnpm bench`) | ≤ 4,2 ms a partita (CI ≤ 7) | ✅ 3,85 ms |
+
+## Statistiche per partita (Blocco 2b)
+
+Verifica: `pnpm sim -- --match-stats 4000`. Fonti e correzioni ai target proposti in `docs/design/motore-v2.md` §1
+(Serie A 2024-25 da StatMuse, contropiede, piazzati e colpi di testa da Opta Analyst sulla Premier League).
+
+| Metrica (per squadra a partita) | Target | Serie A reale | Prima di 2b (24/09) |
+|---|---|---|---|
+| Passaggi tentati · precisione | 380-520 · 80-86% | 433 · 83,6% | 410 · 78,7% ❌ |
+| Cross tentati · riusciti | 12-18 · 20-30% | ~4,3 riusciti | 7,2 · 49% ❌ |
+| Dribbling tentati · riusciti | 11-17 · 40-55% | ~6,1 riusciti | 3,9 · 34% ❌ |
+| Contrasti vinti (intercetti a parte) | 13-18 | 15,0 | 1,7 ❌ |
+| Corner | 4-6 | ~4,7 | 5,0 ✅ |
+| Fuorigioco | 1-2,5 | ~1,5 | 2,5 ❌ (bordo) |
+| Tiri di testa sul totale | 15-22% | gol di testa 13-16% | 34% ❌ |
+| Gol da piazzato (corner, punizione, rigore) | 25-35% | ~30% | 26,8% ✅ |
+| Gol in contropiede | 5-10% | 7,1% (record Premier) | 2,7% ❌ |
+| Possesso della nettamente più forte (CA medio +15) | 57-63% | 59,8% (Inter) | 50,4% ❌ |

@@ -62,6 +62,7 @@ function step(st: MatchState) {
   const { view, pressure, closest } = readPlay(st);
   const t0 = st.t;
   const c = st.carrier;
+  st.poss.acts++;
   // fallo "di pressione": il difensore più vicino ferma l'azione (in area si sta più attenti)
   const pressFoul = MATCH.pressFoul * pressure * PRESS[def.tactic.pressing]! * (inBox(st.bx, st.by) ? MATCH.foulInBox : 1)
     * (closest?.st.yellows ? MATCH.bookedCaution : 1);

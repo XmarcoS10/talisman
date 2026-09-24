@@ -250,7 +250,7 @@ function replay(st: MatchState) {
 export const settle = (st: MatchState) => (st.trace ? replay(st) : place(st));
 
 export function kickoff(st: MatchState, side: 0 | 1) {
-  st.s = side; st.bx = 6; st.by = 4; st.lastPass = null; st.chain = 0;
+  st.s = side; st.bx = 6; st.by = 4; st.lastPass = null; st.chain = 0; st.poss = { t: st.t, half: st.half, x: 6, acts: 0 };
   const tm = st.teams[side];
   st.carrier = tm.on.find((m) => m.pos === 'ST' || m.pos === 'AMC') ?? tm.on[tm.on.length - 1]!;
   settle(st);
