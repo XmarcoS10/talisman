@@ -690,9 +690,10 @@ export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
         break;
       }
       case 'shot': {
-        const before = score[s];
+        const side = s; // dopo un gol kickoff() passa la palla all'altra squadra: l'esito va letto su chi ha tirato
+        const before = score[side];
         shoot(c, o.xg, 'open');
-        if (f) f.ok = score[s] > before;
+        if (f) f.ok = score[side] > before;
         break;
       }
       case 'cross': {

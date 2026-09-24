@@ -7,6 +7,7 @@ import { Rng } from '../../engine/rng.ts';
 import { newWorld } from '../../engine/world.ts';
 import { RULES, context, pick } from './analyst.ts';
 import { duration, ensure, sample } from './playback.ts';
+import { line } from './commentary.ts';
 
 const setup = (mine: 0 | 1 = 0) => {
   const w = newWorld(17);
@@ -126,5 +127,23 @@ describe('partita in 2D (F6)', { timeout: 30000 }, () => {
     const p = pick(c, said);
     expect(p).not.toBeNull();
     expect(pick(c, said)?.id).not.toBe(p!.id); // non ripete la stessa frase
+  });
+
+  it('un tiro che diventa gol è raccontato come gol', () => {
+    const { w, fx } = setup();
+    const names = new Map<number, string>();
+    let told = 0, scored = 0;
+    for (let seed = 1; seed <= 6; seed++) {
+      const run = runMatch(new Rng(seed), matchSetups(w, fx), []);
+      run.result();
+      run.frames.forEach((f, k) => {
+        if (f.kind !== 'shot') return;
+        const after = run.frames[k + 1]?.score ?? run.score;
+        if (after[f.side] > f.score[f.side]) scored++;
+        if (line(f, names).key === 'say.goal') told++;
+      });
+    }
+    expect(scored).toBeGreaterThan(0);
+    expect(told).toBe(scored);
   });
 });
