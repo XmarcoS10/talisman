@@ -541,7 +541,7 @@ export const BOARD = {
 // --- conferenze stampa (GUIDA §7.4) ---
 // Ogni risposta ha effetti dichiarati prima di scegliere: niente sorprese nascoste.
 export const PRESS = {
-  questions: 3, // domande a conferenza
+  questions: 3, // domande a conferenza, al massimo: una per storia aperta, se ce ne sono meno sono meno
   defend: 6, // morale in più per chi difendi in pubblico
   praise: 5,
   challengeUp: 4, // chi regge la pressione si carica se lo pungoli…

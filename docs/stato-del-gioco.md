@@ -4,7 +4,7 @@ Questo documento racconta **tutto quello che il gioco fa oggi e come lo fa**, co
 numeri di taratura e i limiti noti. Serve a decidere il prossimo aggiornamento: in fondo ci sono le proposte, con la
 stima di lavoro.
 
-- **Versione**: 0.1.1 di collaudo (installer Windows) · formato dei salvataggi **20**
+- **Versione**: 0.1.1 di collaudo (installer Windows) · formato dei salvataggi **21**
 - **Codice**: <https://github.com/XmarcoS10/talisman> (GPL-3.0) · **Sito**: <https://xmarcos10.github.io/talisman/>
 - **Qualità**: 190 test verdi, controllo dei tipi pulito, CI su ogni modifica
 - **Misura**: ~13.000 righe di TypeScript (motore + interfaccia), 1.525 stringhe di testo italiano
@@ -336,7 +336,7 @@ Ogni storia ha regole precise: quando nasce, come avanza, quanto vive, ogni quan
 **template a grammatica italiana** (niente modelli linguistici a runtime: costo zero e funziona offline), con articoli e
 preposizioni corretti per ogni nome di squadra — «della Vignarola», non «del Vignarola».
 
-**Le conferenze stampa** fanno tre domande che nascono dalle storie aperte, mai a caso. Ogni risposta **dichiara i suoi
+**Le conferenze stampa** fanno fino a tre domande, una per ciascuna delle storie aperte più recenti che ti riguardano (con due storie, due domande), mai a caso. Ogni risposta **dichiara i suoi
 effetti prima che tu scelga**: difendere un giocatore gli dà +6 di morale, elogiarlo +5, pungolarlo +4 se regge la
 pressione ma -8 se non la regge (la soglia è 13 di Tolleranza), le risposte sul gruppo muovono tutta la rosa di ±2/4, e
 ogni risposta sposta di 4 una barra fra dirigenza, tifosi e stampa. Il «no comment» costa 3 alla stampa.

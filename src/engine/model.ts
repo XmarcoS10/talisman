@@ -413,6 +413,8 @@ export interface PressEffect {
 }
 
 export interface PressOption {
+  /** che risposta è (elogio, difesa, pungolo…): dà l'etichetta, sempre diversa dentro una domanda */
+  key: string;
   text: string;
   effects: PressEffect[];
 }

@@ -30,6 +30,8 @@ describe('conferenze stampa (F8)', { timeout: 60000 }, () => {
       expect(q.options.length).toBeLessThanOrEqual(6);
       expect(q.text).not.toMatch(/[{}[\]#]/);
       for (const o of q.options) expect(o.effects.length).toBeGreaterThan(0);
+      // ogni risposta ha il suo tipo, e dentro una domanda non se ne ripete nessuno (prima: tre «Motivante»)
+      expect(new Set(q.options.map((o) => o.key)).size).toBe(q.options.length);
     }
   });
 

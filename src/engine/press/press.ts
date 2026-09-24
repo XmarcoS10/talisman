@@ -79,7 +79,7 @@ export function weekPress(world: WorldState, rng: Rng) {
       arcId: a.id,
       asker: expand(rng.pick(T.askers!), vars, GRAMMAR, rng),
       text: expand(rng.pick(q), vars, GRAMMAR, rng),
-      options: options(world, a, kind).map((o): PressOption => ({ text: expand(rng.pick(T[o.key]!), vars, GRAMMAR, rng), effects: o.effects })),
+      options: options(world, a, kind).map((o): PressOption => ({ key: o.key.slice(2), text: expand(rng.pick(T[o.key]!), vars, GRAMMAR, rng), effects: o.effects })),
       answered: null,
     };
   });

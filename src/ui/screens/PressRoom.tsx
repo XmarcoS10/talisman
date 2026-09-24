@@ -1,7 +1,7 @@
 // Sala stampa (GUIDA §7.4): una domanda per volta, le risposte con tono ed effetti scritti accanto, si conferma.
 import { useState } from 'react';
 import { Mic, Send } from 'lucide-react';
-import type { PressEffect, PressOption, WorldState } from '../../engine/model.ts';
+import type { PressEffect, WorldState } from '../../engine/model.ts';
 import { answerPress } from '../../engine/press/press.ts';
 import { t } from '../i18n.ts';
 
@@ -10,13 +10,6 @@ function Effect({ world, e }: { world: WorldState; e: PressEffect }) {
   const p = e.playerId !== undefined ? world.players[e.playerId] : undefined;
   const label = e.target === 'player' ? t('press.effect.player', { name: p?.lastName ?? '?', d }) : t(`press.effect.${e.target}`, { d });
   return <span className={`tag ${e.delta > 0 ? '' : e.delta < 0 ? 'bad' : 'dim'}`}>{label}</span>;
-}
-
-/** il tono di una risposta: chi ne guadagna di più */
-function tone(o: PressOption): string {
-  const best = [...o.effects].sort((a, b) => b.delta - a.delta)[0];
-  if (!best || best.delta <= 0) return 'direct';
-  return best.target === 'board' ? 'institutional' : best.target === 'press' ? 'diplomatic' : best.target === 'fans' ? 'popular' : 'motivating';
 }
 
 export function PressRoom({ world, onChange }: { world: WorldState; onChange: () => void }) {
@@ -45,10 +38,7 @@ export function PressRoom({ world, onChange }: { world: WorldState; onChange: ()
               <button key={oi} className={`answer-card ${pick === oi ? 'chosen' : ''}`} onClick={() => setPick(oi)}>
                 <span className="radio" />
                 <span className="stack" style={{ gap: 6 }}>
-                  <span className="row" style={{ justifyContent: 'space-between' }}>
-                    <b>{t('press.option', { l: 'ABCDEF'[oi] ?? '' })}: {t(`press.tone.${tone(o)}`)}</b>
-                    <span className="tag dim">{t('press.toneTag', { tone: t(`press.toneShort.${tone(o)}`) })}</span>
-                  </span>
+                  <b>{t('press.option', { l: 'ABCDEF'[oi] ?? '' })}: {t(`press.kind.${o.key}`)}</b>
                   <span className="muted">«{o.text}»</span>
                   <span className="row wrap">{o.effects.map((e, i) => <Effect key={i} world={world} e={e} />)}</span>
                 </span>
