@@ -58,8 +58,7 @@ export interface MatchLog {
   regainX: number; regains: number; // somma e numero delle x (nel proprio sistema) dei recuperi da contrasto o intercetto
   goals: Record<Origin, number>;
   counterGoals: number; // possesso nato nella propria metà da meno di 15 s e al massimo 4 azioni
-  lateTired: [number, number]; // passaggi tentati e riusciti dal 70' con energia sotto 65…
-  lateFresh: [number, number]; // …e sopra 80
+  late: [number, number]; // passaggi tentati e riusciti dal 70': la stanchezza si vede qui
 }
 
 export interface Team {
@@ -181,7 +180,7 @@ export interface MatchState {
 
 export const newPStats = (from: number): PStats => ({ passes: 0, passesOk: 0, keyPasses: 0, shots: 0, onTarget: 0, goals: 0, assists: 0, tackles: 0, dribbles: 0, duelsLost: 0, saves: 0, fouls: 0, yellows: 0, red: false, injured: false, conceded: 0, injuryCtx: 'contact', from, to: 90 });
 const newLog = (): MatchLog => ({ crosses: 0, crossesOk: 0, dribbles: 0, dribblesOk: 0, tackles: 0, intercepts: 0, headers: 0, deep: 0, deepOk: 0,
-  regainX: 0, regains: 0, goals: { open: 0, cross: 0, corner: 0, pen: 0, fk: 0 }, counterGoals: 0, lateTired: [0, 0], lateFresh: [0, 0] });
+  regainX: 0, regains: 0, goals: { open: 0, cross: 0, corner: 0, pen: 0, fk: 0 }, counterGoals: 0, late: [0, 0] });
 const newSide = (): SideStats => ({ possession: 0, shots: 0, onTarget: 0, xg: 0, passes: 0, passesOk: 0, tackles: 0, fouls: 0, corners: 0, offsides: 0, yellows: 0, reds: 0 });
 
 /** logit personale del giorno, centrato sul giocatore "normale" (morale 65, condizione ≥ 80, modulo conosciuto) */

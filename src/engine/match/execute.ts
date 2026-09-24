@@ -99,7 +99,7 @@ function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, 
   const { rng } = st;
   att.stats.passes++; c.st.passes++;
   if (o.deep) att.log.deep++;
-  const late = minute(st) >= 70 ? (c.energy < 65 ? att.log.lateTired : c.energy > 80 ? att.log.lateFresh : null) : null;
+  const late = minute(st) >= 70 ? att.log.late : null;
   if (late) late[0]++;
   if (o.off > 0 && rng.next() < o.off) {
     att.stats.offsides++;
