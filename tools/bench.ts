@@ -1,12 +1,13 @@
 // Benchmark del motore partita (Blocco 2a): millisecondi a partita, solo simulazione (formazioni preparate prima).
-// Uso: pnpm bench [--matches 2000] [--max 1.9]. Esce con errore se la media supera --max (nella CI: --max 3.5).
+// Uso: pnpm bench [--matches 2000] [--max 4.2]. Esce con errore se la media supera --max (nella CI, più lenta: --max 7).
+// È una guardia contro i peggioramenti: ogni meccanica nuova del Blocco 2b può aggiungere al massimo il 15%.
 import { parseArgs } from 'node:util';
 import { matchSetups } from '../src/engine/match.ts';
 import { simulate } from '../src/engine/match/engine.ts';
 import { Rng } from '../src/engine/rng.ts';
 import { newWorld } from '../src/engine/world.ts';
 
-const { values } = parseArgs({ args: process.argv.slice(2).filter((a) => a !== '--'), options: { matches: { type: 'string', default: '2000' }, max: { type: 'string', default: '1.9' } } });
+const { values } = parseArgs({ args: process.argv.slice(2).filter((a) => a !== '--'), options: { matches: { type: 'string', default: '2000' }, max: { type: 'string', default: '4.2' } } });
 const n = Number(values.matches), max = Number(values.max);
 const world = newWorld(42);
 world.manager.clubId = -1;

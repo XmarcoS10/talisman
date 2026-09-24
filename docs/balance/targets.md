@@ -34,4 +34,5 @@ Report completi in questa cartella (`f5-*.md`, `development.md`, `psychology.md`
 | Partita live: fotogrammi coerenti e simulazione pigra | test verdi | ✅ `playback.test.ts` |
 | Partita live: fps con 4× | > 55 fps | da provare a mano (il browser ferma l'animazione in secondo piano) |
 | Tempo stagione batch | < 25 s | ✅ ~3,9 s |
-| 10.000 partite | < 20 s | ❌ ~41 s |
+| 10.000 partite (`pnpm sim -- --matches 10000`, 16 blocchi in parallelo) | < 20 s | ✅ 6,5 s |
+| Motore, un thread (`pnpm bench`) | ≤ 4,2 ms a partita (CI ≤ 7) | ✅ 3,85 ms |

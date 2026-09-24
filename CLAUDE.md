@@ -24,6 +24,8 @@ Marco non programma: fa collaudo, playtest e decisioni. Il codice lo scrive Clau
 `pnpm dist:win` (installer Windows in `release/`; ferma prima `pnpm dev`, che tiene aperta la cartella) · `pnpm dist:linux` (solo su Linux)
 `pnpm sim -- --seasons 10 --seed 42` · `pnpm sim -- --matches 3000` (bilanciamento motore partita)
 `pnpm sim -- --dev 10` (curve di sviluppo) · `pnpm sim -- --psych 20` (A/B della psicologia, ~5 min)
+`pnpm bench` (ms a partita del motore, guardia nella CI) · `GOLDEN=update pnpm vitest run golden` (golden master del motore:
+si aggiorna solo apposta, con il motivo nel commit)
 
 ## Persone (F5)
 Settimana = `trainWeek` (allenamento, condizione, infortuni, sviluppo) + `weekPsych` (grafo, morale, contagio) per ogni club,
@@ -51,7 +53,8 @@ gioco dal manifest generato `src/ui/assets-manifest.ts` (non si modifica a mano)
 
 ## Motore partita
 Spiegato in `docs/03-match-engine.md`, decisioni in `docs/adr/0002-motore-l2.md` e `docs/adr/0005-partita-2d.md`.
-Le decisioni restano per azione; col registro acceso (partita seguita dal vivo) il motore emette anche `run.track`,
+Moduli con stato esplicito (`match/state.ts`), nessuna funzione oltre 80 righe o complessità 20 (`structure.test.ts`);
+il golden master (`golden.test.ts`) dice se una modifica cambia le partite. Le decisioni restano per azione; col registro acceso (partita seguita dal vivo) il motore emette anche `run.track`,
 il campo ogni 0,25 s. Le posizioni di fine intervallo sono quelle del motore: i passi intermedi non spostano il
 bilanciamento e il sim-cli non li calcola. Il ciclo più caldo è `options()` in
 `match/decision.ts`: niente allocazioni dentro i loop, niente `Math.hypot` (usa `len`).

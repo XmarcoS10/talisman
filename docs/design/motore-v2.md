@@ -116,8 +116,10 @@ e xG, ma diverse cose del calcio vero ci sono solo come probabilità astratte.
 | 4 | `pnpm bench` (tempo per partita su 2.000 partite) con limite controllato nella CI | fallisce se si sfora |
 | 5 | Motore in un **Web Worker** nell'interfaccia (vedi D3) | nessun blocco dell'interfaccia oltre 50 ms durante giornata e partita |
 
-Obiettivo di velocità: **≤ 1,9 ms a partita su un solo thread** (10.000 partite in < 20 s), così resta margine per le
-meccaniche di 2b. Budget: nessun intervento di 2b può portare oltre **2,0 ms**; se lo fa, prima si ottimizza.
+Obiettivo di velocità (deciso il 24/09 dopo la misura, opzione A): a comportamento identico il motore non scende sotto
+~3,8 ms a partita (il ciclo dei passaggi è già a ~12 ns per coppia compagno-difensore). Le 10.000 partite si giocano in
+16 blocchi paralleli (6,5 s); `pnpm bench` fa da guardia (4,2 ms in locale, 7 nella CI). Budget: ogni intervento di 2b
+può aggiungere al massimo il 15%; oltre, prima si ottimizza.
 
 ### 2b — Realismo, un intervento per commit, in ordine di impatto
 

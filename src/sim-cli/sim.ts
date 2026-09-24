@@ -6,6 +6,7 @@
 // Persone:  pnpm sim -- --dev 10 · pnpm sim -- --psych 20 (people.ts)
 import { writeFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
+import { Worker } from 'node:worker_threads';
 import { pickXI, playMatch, xiStrength } from '../engine/match.ts';
 import type { Fixture, SideStats, WorldState } from '../engine/model.ts';
 import { Rng } from '../engine/rng.ts';
@@ -125,7 +126,19 @@ function seasonsReport(seasons: number) {
   ];
 }
 
-function matchesReport(n: number) {
+/** partite isolate in 16 blocchi paralleli: ogni blocco ha il suo seme, il totale non dipende dai core */
+const BLOCKS = 16;
+async function playBlocks(n: number): Promise<Fixture[]> {
+  const sizes = Array.from({ length: BLOCKS }, (_, b) => Math.floor(n / BLOCKS) + (b < n % BLOCKS ? 1 : 0));
+  const parts = await Promise.all(sizes.map((size, block) => new Promise<Fixture[]>((ok, ko) => {
+    const w = new Worker(new URL('./matches-worker.ts', import.meta.url), { workerData: { seed, block, n: size } });
+    w.once('message', (fx: Fixture[]) => { ok(fx); void w.terminate(); });
+    w.once('error', ko);
+  })));
+  return parts.flat();
+}
+
+async function matchesReport(n: number) {
   const rng = new Rng(seed);
   const serieA = world.competitions.ITA1!.clubIds;
   const agg = new Agg();
@@ -133,15 +146,7 @@ function matchesReport(n: number) {
   const byRep = [...serieA].sort((a, b) => world.clubs[b]!.reputation - world.clubs[a]!.reputation);
   let strongWins = 0, strongGames = 0;
   const fresh = (w: WorldState) => { for (const p of Object.values(w.players)) { p.condition.fitness = 100; p.condition.injuryDays = 0; p.discipline.ban = 0; } };
-  for (let i = 0; i < n; i++) {
-    const home = rng.pick(serieA);
-    let away = rng.pick(serieA);
-    while (away === home) away = rng.pick(serieA);
-    const fx: Fixture = { day: 0, home, away };
-    fresh(world); // partite isolate: tutti riposati e disponibili
-    playMatch(world, rng, fx);
-    agg.add(fx);
-  }
+  for (const fx of await playBlocks(n)) agg.add(fx);
   const tMatches = performance.now() - t0;
   for (let i = 0; i < 400; i++) {
     const [strong, weak] = [byRep[0]!, byRep[byRep.length - 1]!];
@@ -157,13 +162,13 @@ function matchesReport(n: number) {
     '| Metrica | Valore | Target | |', '|---|---|---|---|',
     ...matchRows(agg),
     row('Vittorie della più forte contro la più debole', strongWins / strongGames, 0.65, 0.8, pct),
-    row(`Tempo per ${n} partite (s)`, tMatches / 1000, 0, (20 * n) / 10000, (v) => v.toFixed(1)),
+    row(`Tempo per ${n} partite (s, ${BLOCKS} blocchi in parallelo)`, tMatches / 1000, 0, (20 * n) / 10000, (v) => v.toFixed(1)),
   ];
 }
 
 const report = (values.dev ? devReport(seed, Number(values.dev)) : values.psych ? psychReport(seed, Number(values.psych))
   : values.market ? marketReport(seed, Number(values.market))
   : values.stories ? storiesReport(seed, Number(values.stories))
-  : values.matches ? matchesReport(Number(values.matches)) : seasonsReport(Number(values.seasons ?? 10))).join('\n');
+  : values.matches ? await matchesReport(Number(values.matches)) : seasonsReport(Number(values.seasons ?? 10))).join('\n');
 console.log(report);
 if (values.report) writeFileSync(values.report, report + '\n');
