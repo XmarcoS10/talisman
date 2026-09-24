@@ -160,7 +160,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
 
         <div className="stack">
           <LiveAnalyst run={run} me={me} names={look.names} phrase={phrase} ctx={ctx} />
-          <div className="panel">
+          <div className="panel quick">
             <h3>{t('live.quick')}</h3>
             <Seg label={t('tactics.mentality')} value={tac.mentality - 1} options={[1, 2, 3, 4, 5].map((m) => t(`mentality.${m}`))} onChange={(v) => setTac('mentality', v + 1)} />
             {INSTR.map((k) => (

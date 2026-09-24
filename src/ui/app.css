@@ -140,6 +140,10 @@ select:focus, input:focus { outline: none; border-color: var(--data-1); box-shad
 .seg button { background: none; border: 0; padding: 4px 10px; font-size: 12px; color: var(--text-2); border-right: 1px solid var(--border); }
 .seg button:last-child { border-right: 0; }
 .seg button.active { background: var(--accent); color: var(--accent-ink); font-weight: 700; box-shadow: 0 0 12px rgb(0 245 155 / 0.3); }
+/* nella colonna stretta della partita l'etichetta va sopra e i pulsanti si dividono la larghezza (5 mentalità non ci stavano) */
+.quick .seg-row { flex-direction: column; align-items: stretch; gap: 4px; }
+.quick .seg { display: flex; }
+.quick .seg button { flex: 1 1 0; min-width: 0; padding: 4px 2px; }
 
 /* avvio */
 .start { max-width: 1100px; margin: 0 auto; padding: var(--s-6) var(--s-5); display: flex; flex-direction: column; gap: var(--s-5); }
@@ -331,7 +335,7 @@ td.zone-up { box-shadow: inset 3px 0 0 var(--positive); } td.zone-down { box-sha
 .leader-card .big-num { font-size: 32px; color: var(--text-1); }
 .mini-card { background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--r-2); padding: 10px; display: flex; flex-direction: column; gap: 2px; }
 .results { display: flex; flex-direction: column; gap: 4px; }
-.result { display: grid; grid-template-columns: 1fr 70px 1fr; align-items: center; gap: var(--s-2); padding: 7px 10px; background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--r-2); }
+.result { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 6px; padding: 7px 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--r-2); }
 .result.me { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--bg-1)); }
 .featured { flex-direction: row; align-items: center; gap: var(--s-5); padding: var(--s-5); }
 .featured h1 { font-size: 28px; }
@@ -344,7 +348,7 @@ tr.rivalry { background: color-mix(in srgb, var(--warning) 7%, transparent); }
 .analyst b { color: var(--text-1); }
 h2 svg { vertical-align: -3px; color: var(--accent); }
 .link svg { vertical-align: -2px; }
-.result > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.result > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; }
 .side-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-radius: var(--r-2); background: var(--bg-1); font: 700 15px var(--font-title); text-transform: uppercase; }
 .side-head.in b { color: var(--accent); } .side-head.out b { color: var(--negative); }
 .side-head svg { vertical-align: -3px; }

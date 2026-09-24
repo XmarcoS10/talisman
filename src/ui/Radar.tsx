@@ -14,6 +14,8 @@ const KEEPER: [string, AttrKey[]][] = [
   ['kicking', ['kicking']], ['communication', ['communication']], ['mental', ['decisions', 'composure', 'concentration']], ['physical', ['agility', 'strength']],
 ];
 
+const PAD = 44;
+
 export function Radar({ world, p, own, size = 320 }: { world: WorldState; p: Player; own: boolean; size?: number }) {
   const axes = p.position === 'GK' ? KEEPER : OUTFIELD;
   const val = (k: AttrKey) => (own ? p.attrs[k] : estimate(world, p, k).mid);
@@ -25,7 +27,8 @@ export function Radar({ world, p, own, size = 320 }: { world: WorldState; p: Pla
   };
   const ring = (f: number) => axes.map((_, i) => pt(i, R * f).join(',')).join(' ');
   return (
-    <svg viewBox={`0 0 ${size} ${size}`} width="100%" style={{ maxWidth: size }} className="radar" role="img" aria-label={t('radar.label')}>
+    // ai lati le etichette lunghe («Uno contro uno 13») uscivano dal disegno: 44 px di margine a destra e a sinistra
+    <svg viewBox={`${-PAD} 0 ${size + 2 * PAD} ${size}`} width="100%" style={{ maxWidth: size + 2 * PAD }} className="radar" role="img" aria-label={t('radar.label')}>
       {[0.25, 0.5, 0.75, 1].map((f) => <polygon key={f} points={ring(f)} className="radar-ring" />)}
       {axes.map((_, i) => { const [x, y] = pt(i, R); return <line key={i} x1={c} y1={c} x2={x} y2={y} className="radar-ring" />; })}
       <polygon points={values.map((v, i) => pt(i, (R * v) / 20).join(',')).join(' ')} className="radar-shape" />

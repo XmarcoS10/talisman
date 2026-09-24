@@ -25,9 +25,10 @@ export function ResultsList({ world, fixtures, highlight }: { world: WorldState;
         const me = fx.home === highlight || fx.away === highlight;
         return (
           <div key={`${fx.home}-${fx.away}`} className={`result ${me ? 'me' : ''}`}>
-            <span className="r">{h.name} <Crest club={h} size={16} /></span>
+            {/* la città basta a riconoscere il club, e nella colonna stretta il nome intero finiva coi puntini */}
+            <span className="r" title={h.name}>{h.city} <Crest club={h} size={16} /></span>
             <b className="num c">{fx.result ? `${fx.result.hg} - ${fx.result.ag}` : kickoff(world, fx)}</b>
-            <span><Crest club={a} size={16} /> {a.name}</span>
+            <span title={a.name}><Crest club={a} size={16} /> {a.city}</span>
           </div>
         );
       })}
