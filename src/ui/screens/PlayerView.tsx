@@ -9,7 +9,7 @@ import { value } from '../../engine/transfers/valuation.ts';
 import { Crest } from '../Crest.tsx';
 import { Face } from '../Face.tsx';
 import { Radar } from '../Radar.tsx';
-import { PosBadge, Rating, Stars, attrClass, fullName, personalityKey } from '../bits.tsx';
+import { PosBadge, Rating, Stars, attrClass, fullName, personalityKey, standoutTraits } from '../bits.tsx';
 import { Ability, Est, Known } from '../fog.tsx';
 import { fmtMoney, fmtSeason, t } from '../i18n.ts';
 import { ContractPanel } from './ContractPanel.tsx';
@@ -27,6 +27,8 @@ export function PlayerView({ startDeal = false, world, playerId, onBack, onClub,
   if (!p) return <button className="btn" onClick={onBack}>{t('player.back')}</button>;
   const club = p.clubId !== null ? world.clubs[p.clubId] : undefined;
   const own = p.clubId === world.manager.clubId;
+  const known = own || personalityKnown(world, p);
+  const traits = standoutTraits(p);
   const groups = p.position === 'GK' ? (['goalkeeping', 'mental', 'physical'] as const) : (['technical', 'mental', 'physical'] as const);
   const secondary = Object.entries(p.positions).filter(([pos]) => pos !== p.position);
   const tabs: Tab[] = own ? ['profile', 'attrs', 'stats', 'form', 'contract', 'people'] : ['profile', 'attrs', 'stats', 'form', 'contract'];
@@ -86,7 +88,11 @@ export function PlayerView({ startDeal = false, world, playerId, onBack, onClub,
             </div>
             <div className="panel">
               <h2>{t('player.personality')}</h2>
-              <b className="deal-h">{own || personalityKnown(world, p) ? t(personalityKey(p)) : t('fog.personality')}</b>
+              {/* «Equilibrato» sopra tratti che spiccano si contraddirebbe: in quel caso parlano i tratti */}
+              {!known ? <b className="deal-h">{t('fog.personality')}</b> : (personalityKey(p) !== 'pers.balanced' || !traits.length) && <b className="deal-h">{t(personalityKey(p))}</b>}
+              {known && traits.map((k) => (
+                <span key={k} className="stack" style={{ gap: 2 }}><b className="small">{t(`${k}.name`)}</b><span className="muted small">{t(`${k}.what`)}</span></span>
+              ))}
               {p.intl.caps > 0 && <span className="muted">{t('player.intl', { caps: p.intl.caps, goals: p.intl.goals })}</span>}
             </div>
           </div>

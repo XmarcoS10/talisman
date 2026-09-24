@@ -41,5 +41,17 @@ export function personalityKey(p: Player): string {
   return 'pers.balanced';
 }
 
+/**
+ * i tratti di personalità che spiccano (15+ o 6-), al massimo tre, dal più marcato: `trait.ambition.hi` ecc.
+ * Le frasi dicono cosa comportano davvero nel motore (sviluppo, rinnovi, liti, panchina, conferenze).
+ */
+export function standoutTraits(p: Player): string[] {
+  return (Object.entries(p.personality) as [string, number][])
+    .filter(([, v]) => v >= 15 || v <= 6)
+    .sort((a, b) => Math.abs(b[1] - 10.5) - Math.abs(a[1] - 10.5))
+    .slice(0, 3)
+    .map(([k, v]) => `trait.${k}.${v >= 15 ? 'hi' : 'lo'}`);
+}
+
 export const fullName = (p: Player) => `${p.firstName} ${p.lastName}`;
 export const shortName = (p: Player) => `${p.firstName[0]}. ${p.lastName}`;

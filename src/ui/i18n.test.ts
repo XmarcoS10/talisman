@@ -24,4 +24,10 @@ describe('testi', () => {
     const kinds = Object.keys(press).filter((k) => k.startsWith('a.')).map((k) => `press.kind.${k.slice(2)}`);
     expect(kinds.filter((k) => !(k in it_))).toEqual([]);
   });
+
+  it('ogni tratto di personalità, alto e basso, ha nome e frase', () => {
+    const keys = ['ambition', 'professionalism', 'loyalty', 'temperament', 'sociability', 'pressureTolerance']
+      .flatMap((k) => ['hi', 'lo'].flatMap((l) => [`trait.${k}.${l}.name`, `trait.${k}.${l}.what`]));
+    expect(keys.filter((k) => !(k in it_))).toEqual([]);
+  });
 });
