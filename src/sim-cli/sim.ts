@@ -14,7 +14,9 @@ import { marketReport } from './market.ts';
 import { storiesReport } from './stories.ts';
 import { devReport, psychReport } from './people.ts';
 
+// pnpm 12 passa il `--` di `pnpm sim -- --seasons 10` così com'è
 const { values } = parseArgs({
+  args: process.argv.slice(2).filter((a) => a !== '--'),
   options: { seasons: { type: 'string' }, matches: { type: 'string' }, dev: { type: 'string' }, psych: { type: 'string' }, market: { type: 'string' }, stories: { type: 'string' }, seed: { type: 'string', default: '42' }, report: { type: 'string' } },
 });
 const seed = Number(values.seed);
