@@ -321,3 +321,46 @@ Due prove che non cambiano niente: la mentalità che non tocca la pressione (51,
 Conclusione: la squadra forte non tira per disperazione, **arriva in zona tiro troppo facilmente**, perché la debole
 non si chiude in un blocco basso e compatto; e quando ha palla la debole la fa girare con calma nella sua metà invece
 di giocare lungo. Nel motore la mentalità prudente vuol dire "attento a non perderla", non "chiuditi e riparti".
+
+---
+
+## 8. Proposta: cosa vuol dire la mentalità (da approvare prima del codice)
+
+**Il problema** (§6, ultima prova): la squadra forte arriva in zona tiro troppo facilmente e ha il 41% dei passaggi
+(Opta: la prima della A ne ha il ~60%). Nel motore la mentalità prudente vuol dire "non perderla", quella offensiva
+"rischia e tira". Nel calcio vero chi è prudente **si chiude e riparte**, chi è propositivo **tiene palla e pressa**.
+
+**Oggi, per livello di mentalità sopra 3** (`balance.ts`): in possesso +0,1 zone di salita, −4% di paura di perderla,
++4% di voglia di tirare; senza palla linea +0,25 zone, blocco −4% compatto, e **−15% di impegno difensivo, pressione
+compresa**. Risultato al rovescio: la squadra forte (mentalità 4) pressa meno della debole (mentalità 2).
+
+**La proposta, in due passi misurati separatamente:**
+
+1. **Possesso misurato come Opta** (quota dei passaggi, non tempo con palla, che oggi conta anche 22 s di gioco fermo
+   dopo ogni tiro o fallo subito). Cambia solo il numero: il gioco no. Serve perché il target (57-63%) è quello di Opta,
+   e perché nel tabellino il possesso deve dire la stessa cosa che dice in TV.
+2. **La mentalità cambia comportamento, non solo quantità:**
+
+| | Prudente (1-2) | Equilibrata (3) | Propositiva (4-5) |
+|---|---|---|---|
+| Linea e blocco senza palla | bassa, corta: anche le punte rientrano, pochi spazi fra le linee | come oggi | alta, uomini avanti |
+| Pressione | solo nella propria metà campo | come oggi | anche alta, più intensa (non meno, come oggi) |
+| In possesso | palla lunga presto verso chi attacca la profondità, poca costruzione dal basso | come oggi | costruzione paziente: il possesso vale di più **nella propria metà** (dove perderla costa), non vicino all'area |
+| Rischio | contropiede subito dietro al blocco? No: chi si chiude rischia poco, ma crea poco | | chi sale lascia spazio alle spalle: contropiedi subiti |
+
+L'impegno difensivo (`cover`) continua a scendere con la mentalità offensiva, ma solo per **rientri e marcature**,
+non per la pressione. Quello che cambia davvero per il gioco: davanti a un blocco basso e corto le linee di passaggio
+in avanti sono affollate (i termini di corsia e marcatura del passaggio pesano di più) e la squadra forte deve far
+girare palla; la debole, quando recupera, gioca lungo e la perde spesso, o riparte: è da qui che nascono i contropiedi
+che oggi mancano (2,4% contro 5-10%).
+
+**Come lo misuro**, fermandomi se un target verde diventa rosso:
+- passo 1: `--match-stats` e stagioni (cambia solo il possesso riportato: il golden master cambia per il campo
+  `possession`, i gol no);
+- passo 2: possesso Opta della più forte (57-63%), gol, contropiedi (5-10%), correlazione su 3 semi, e **punti a partita
+  per mentalità a parità di rosa** (`tools/diag-match.ts`: oggi la prudente vince, 1,40 contro 1,26-1,29): nessuna deve
+  dominare, perché questo è anche l'intervento 9 (equilibrio di moduli e mentalità).
+
+**Rischio**: alto, l'IA sceglie la mentalità in ogni partita, quindi cambia tutto il campionato. **Costo**: mezza
+giornata per il passo 2, più le tarature. Dopo, su questa base, si riprendono corse (7), qualità del passaggio (2) e
+disordine, che oggi non rendevano perché mancava il blocco basso da scardinare.
