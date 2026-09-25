@@ -146,4 +146,25 @@ describe('partita in 2D (F6)', { timeout: 30000 }, () => {
     expect(scored).toBeGreaterThan(0);
     expect(told).toBe(scored);
   });
+
+  it('il registro racconta i momenti di ogni azione: un gol per ogni gol, giocatori in campo, piazzati e duelli', () => {
+    const { w, fx } = setup();
+    let goals = 0, beatsGoal = 0;
+    const kinds = new Set<string>();
+    for (let seed = 1; seed <= 4; seed++) {
+      const run = runMatch(new Rng(seed), matchSetups(w, fx), []);
+      run.result();
+      goals += run.score[0] + run.score[1];
+      for (const f of run.frames) {
+        kinds.add(f.kind);
+        for (const b of f.beats ?? []) {
+          kinds.add(b.kind);
+          if (b.kind === 'goal') beatsGoal++;
+          expect(f.ids).toContain(b.who); // chi è coinvolto è in campo in quel momento
+        }
+      }
+    }
+    expect(beatsGoal).toBe(goals);
+    for (const k of ['tackle', 'foul', 'corner', 'header', 'intercept', 'save']) expect(kinds).toContain(k);
+  });
 });

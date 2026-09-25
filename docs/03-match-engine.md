@@ -120,6 +120,14 @@ traiettoria dell'azione nella prima parte dell'intervallo e poi aspetta. Decisio
   giocatori in campo vanno alle posizioni nuove, al più adatto); il vice lo annuncia con l'evento `plan`. A fine partita
   la tattica del club torna com'era. L'IA non usa i piani.
 
+## Registro per il 2D (`trace.ts`)
+Un fotogramma (`TraceStep`) per azione: `pass`, `dribble`, `shot`, `cross`, e `tackle` / `foul` quando la difesa ferma
+il portatore prima che giochi; `high` se la palla è alta (cross, rinvio lungo). Dentro, `beats`: i momenti in ordine,
+ognuno con chi (`who`), contro chi (`vs`), dove era la palla e se era alta: intercetto, fuorigioco, uomo saltato,
+contrasto, fallo, giallo, rosso, corner, punizione, barriera, rigore, colpo di testa, respinta della difesa, seconda
+palla, uscita alta, uscita in profondità, parata, respinta del portiere, ribattuta, tiro murato, fuori, gol, rinvio
+lungo. Le posizioni dei 22 ogni 0,25 s restano in `run.track`. Col registro spento `beat()` non fa niente.
+
 ## Fatica
 Energia persa al minuto: `drain del ruolo × (drainBase + drainStamina·(1 − Resistenza/20))`, più per chi pressa. Con
 `drainStamina` 0,5 chi ha poca Resistenza arriva davvero stanco (prima al 75' erano tutti fra 76 e 80). L'energia

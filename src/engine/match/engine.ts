@@ -7,6 +7,7 @@ import type { Rng } from '../rng.ts';
 import { choose, options } from './decision.ts';
 import { challenge, challengeP, drain, dueInjuries, foul, scheduleInjuries } from './events.ts';
 import { act } from './execute.ts';
+import { frame } from './trace.ts';
 import { inBox } from './pitch.ts';
 import { kickoff, settle } from './positioning.ts';
 import { PRESS, readPlay } from './pressure.ts';
@@ -56,6 +57,9 @@ export function simulate(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
   return runMatch(rng, setups, trace).result();
 }
 
+/** la difesa ferma il portatore prima che giochi: anche questo è un fotogramma del registro */
+const mark = (st: MatchState, kind: 'foul' | 'tackle') => { if (st.trace) frame(st, kind); };
+
 /** un'azione del portatore: posizioni, pressione, fallo di pressione o scelta ed esecuzione, tempo che passa */
 function step(st: MatchState) {
   const att = st.teams[st.s], def = st.teams[1 - st.s]!;
@@ -72,9 +76,10 @@ function step(st: MatchState) {
   // fallo tattico: la ripartenza trova la difesa scoperta a metà campo, e il più vicino la ferma
   const tactical = closest && exposed > MATCH.counterFrom && st.bx >= 4 && st.bx <= 8
     ? MATCH.tacticalFoul * closest.p.attrs.aggression / 10 : 0;
-  if (closest && st.rng.next() < pressFoul) foul(st, closest, c);
-  else if (closest && tactical && st.rng.next() < tactical) { def.log.tacticalFouls++; foul(st, closest, c, true); }
-  else if (closest && st.rng.next() < challengeP(closest, c, pressure)) challenge(st, closest); // gli porta via palla
+  st.curFrame = null; // i momenti di questa azione vanno nel suo fotogramma
+  if (closest && st.rng.next() < pressFoul) { mark(st, 'foul'); foul(st, closest, c); }
+  else if (closest && tactical && st.rng.next() < tactical) { def.log.tacticalFouls++; mark(st, 'foul'); foul(st, closest, c, true); }
+  else if (closest && st.rng.next() < challengeP(closest, c, pressure)) { mark(st, 'tackle'); challenge(st, closest); } // gli porta via palla
   else act(st, att, def, c, choose(st.rng, options(view), st.carrier, pressure));
 
   // tempo che passa: stanchezza (applicata a blocchi di un minuto), momentum

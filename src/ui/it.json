@@ -543,6 +543,8 @@
   "say.cross": "{min}' Cross di {a}",
   "say.crossOut": "{min}' Cross di {a} respinto",
   "say.shot": "{min}' Tiro di {a}",
+  "say.tackle": "{min}' {a} perde palla in un contrasto",
+  "say.foul": "{min}' Fallo su {a}",
   "say.goal": "GOL! {a}",
   "live.nextEvent": "Prossimo episodio",
   "live.tacticalPause": "Pausa tattica",

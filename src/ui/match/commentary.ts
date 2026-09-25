@@ -21,6 +21,10 @@ export function line(f: TraceStep, names: Map<number, string>): Line {
       return { key: f.ok ? 'say.cross' : 'say.crossOut', vars, big: false };
     case 'shot':
       return f.ok ? { key: 'say.goal', vars, big: true } : { key: 'say.shot', vars, big: false };
+    case 'tackle':
+      return { key: 'say.tackle', vars, big: false };
+    case 'foul':
+      return { key: 'say.foul', vars, big: false };
   }
 }
 

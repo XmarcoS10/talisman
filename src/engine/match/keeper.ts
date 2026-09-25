@@ -5,6 +5,7 @@ import { sigmoid } from './pitch.ts';
 import { corner } from './setpieces.ts';
 import { shoot } from './execute.ts';
 import { gain, nearest, type MatchState, type MP, type Team } from './state.ts';
+import { beat } from './trace.ts';
 
 /**
  * bravura del portiere sul tiro: ravvicinato (xG alto) = Uno contro uno, Riflessi, Uscite basse; rigore = Riflessi e
@@ -25,7 +26,8 @@ export function keeperSkill(gk: MP | undefined, pen: boolean, xg: number): numbe
 export function afterSave(st: MatchState, att: Team, def: Team, gk: MP | undefined, xg: number) {
   if (!gk) { gain(st, def, nearest(def, 0.6, 4)); return; }
   const { rng } = st;
-  if (rng.next() < sigmoid(MATCH.gkHoldBase + MATCH.gkHoldSkill * (gk.p.attrs.handling - 11) - MATCH.gkHoldXg * xg)) { gain(st, def, gk); return; }
+  if (rng.next() < sigmoid(MATCH.gkHoldBase + MATCH.gkHoldSkill * (gk.p.attrs.handling - 11) - MATCH.gkHoldXg * xg)) { beat(st, 'save', gk); gain(st, def, gk); return; }
+  beat(st, 'parry', gk);
   const r = rng.next();
   if (r < MATCH.gkParryCorner) { corner(st); return; }
   if (r < MATCH.gkParryCorner + MATCH.gkRebound) {
@@ -33,6 +35,7 @@ export function afterSave(st: MatchState, att: Team, def: Team, gk: MP | undefin
     st.bx = 10.7; st.by = 4 + (rng.next() - 0.5) * 2;
     st.lastPass = null;
     att.log.rebounds++;
+    beat(st, 'rebound', rb);
     shoot(st, rb, MATCH.gkReboundXg, 'open', 'open');
     return;
   }

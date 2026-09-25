@@ -5,6 +5,7 @@ import { sigmoid, xG } from './pitch.ts';
 import { corner } from './setpieces.ts';
 import { shoot } from './execute.ts';
 import { best, gain, nearest, type MatchState, type MP, type Origin, type Team } from './state.ts';
+import { beat } from './trace.ts';
 
 /** forza nel gioco aereo: Colpo di testa, Coraggio, Forza e altezza (182 cm = 11), più il bonus del ruolo (la punta di peso) */
 export const aerial = (m: MP) => {
@@ -47,6 +48,7 @@ function cleared(st: MatchState, att: Team, def: Team, d: MP) {
     st.bx = 8.6; st.by = 4 + (st.rng.next() - 0.5) * 3;
     st.lastPass = null;
     st.chain = 0;
+    beat(st, 'secondBall', st.carrier);
     return;
   }
   gain(st, def, d);
@@ -60,7 +62,8 @@ function cleared(st: MatchState, att: Team, def: Team, d: MP) {
 export function headerDuel(st: MatchState, att: Team, def: Team, from: MP, quality: number, base: number, xgMul: number, origin: Origin): boolean {
   const a = target(att, from), d = marker(def);
   const margin = aerial(a) - aerial(d);
-  if (st.rng.next() >= sigmoid(base + MATCH.duelSkill * margin + quality)) { cleared(st, att, def, d); return false; }
+  if (st.rng.next() >= sigmoid(base + MATCH.duelSkill * margin + quality)) { beat(st, 'clear', d, a, true); cleared(st, att, def, d); return false; }
+  beat(st, 'header', a, d, true);
   st.lastPass = from;
   st.bx = 10.8; st.by = 4;
   shoot(st, a, MATCH.headerXg * xgMul * Math.max(0.4, 1 + MATCH.headerMargin * margin), 'header', origin);
@@ -89,6 +92,6 @@ export function cross(st: MatchState, att: Team, def: Team, c: MP, p: number, lo
     return false;
   }
   const gk = def.on.find((m) => m.pos === 'GK');
-  if (!low && claims(st, gk)) { gain(st, def, gk!); return false; }
+  if (!low && claims(st, gk)) { beat(st, 'claim', gk!, undefined, true); gain(st, def, gk!); return false; }
   return low ? cutback(st, att, def, c) : headerDuel(st, att, def, c, MATCH.crossSkill * (c.p.attrs.crossing - 11), MATCH.duelBase, 1, 'cross');
 }

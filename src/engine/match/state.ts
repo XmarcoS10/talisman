@@ -4,6 +4,7 @@ import { FLAGS, MATCH } from '../balance.ts';
 import type { Club, MatchEvent, MatchEventType, MatchResult, Player, PlayerInstr, Position, SideStats, Tactic } from '../model.ts';
 import type { Rng } from '../rng.ts';
 import type { OnPitch } from './decision.ts';
+import type { Beat } from './trace.ts';
 import { len } from './pitch.ts';
 import { ROLES, type RoleId } from './roles.ts';
 import type { Slot } from './tactics.ts';
@@ -90,7 +91,7 @@ export interface TraceStep {
   t: number; // secondi dall'inizio del tempo
   min: number;
   side: 0 | 1; // chi ha la palla
-  kind: 'pass' | 'dribble' | 'shot' | 'cross';
+  kind: 'pass' | 'dribble' | 'shot' | 'cross' | 'tackle' | 'foul'; // tackle, foul: la difesa ferma il portatore prima che giochi
   bx: number;
   by: number;
   tx?: number;
@@ -107,6 +108,8 @@ export interface TraceStep {
   py: number[];
   n0: number; // quanti dei primi `ids` sono della squadra 0
   score: [number, number];
+  high?: boolean; // palla alta (cross, rinvio lungo)
+  beats?: Beat[]; // i momenti dell'azione, in ordine (trace.ts)
 }
 
 /**
@@ -168,6 +171,7 @@ export interface MatchState {
   snap: boolean; // il portatore sta sulla palla; nei passi intermedi ci corre invece di comparirci
   // registro e traccia densa (F6.2): solo per la partita guardata
   trace: TraceStep[] | undefined;
+  curFrame: TraceStep | null; // fotogramma dell'azione in corso, a cui si aggiungono i momenti
   track: PosFrame[];
   playAt: number; // secondi di riproduzione già emessi
   lastBall: { x: number; y: number }; // palla globale a inizio intervallo
@@ -207,7 +211,7 @@ export function createState(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Tr
   return {
     rng, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, counterNow: false, momentum: 0,
     half: 1, t: 0, length: 0, scheduled: [], lastPlace: 0, markStamp: 0, holder: null, meet: null, snap: true,
-    trace, track: [], playAt: 0, lastBall: { x: 6, y: 4 }, lastStep: -1, ids0: [], idsDirty: true,
+    trace, curFrame: null, track: [], playAt: 0, lastBall: { x: 6, y: 4 }, lastStep: -1, ids0: [], idsDirty: true,
     defX: [], defY: [], defAnt: [], pendingDrain: [0, 0], subIdx: 0, shoutAt: [0, 0], output: null, plansFired: [[], []], planUndo: [null, null],
   };
 }

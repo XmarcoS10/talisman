@@ -10,6 +10,7 @@ import { PRESS } from './pressure.ts';
 import { cross } from './aerial.ts';
 import { afterSave, keeperSkill, sweeps } from './keeper.ts';
 import { corner } from './setpieces.ts';
+import { beat, frame } from './trace.ts';
 import { best, ev, gain, gx, gy, minute, nearest, type MatchState, type MP, type Origin, type Team, type TraceStep } from './state.ts';
 
 const TEMPO = [1.2, 1, 0.85];
@@ -29,6 +30,7 @@ const counter = (st: MatchState) => st.poss.half === st.half && st.poss.x < 6 &&
 function scoreGoal(st: MatchState, sh: MP, xg: number, kind: ShotKind, assist: MP | null, sign: number, origin: Origin) {
   const att = st.teams[st.s], def = st.teams[1 - st.s]!;
   att.log.goals[origin]++;
+  beat(st, 'goal', sh);
   if ((origin === 'open' || origin === 'cross') && counter(st)) att.log.counterGoals++;
   att.stats.onTarget++; sh.st.onTarget++; sh.st.goals++;
   st.score[st.s]++;
@@ -52,9 +54,10 @@ function missed(st: MatchState, sh: MP, xg: number, kind: ShotKind, gk: MP | und
     if (gk) gk.st.saves++;
     afterSave(st, att, def, gk, xg);
   } else if (kind !== 'pen' && rng.next() < MATCH.blockedShare) {
+    beat(st, 'block', nearest(def, 12 - st.bx, 8 - st.by, true), sh);
     if (rng.next() < MATCH.cornerAfterBlock) corner(st);
     else gain(st, def, nearest(def, 12 - st.bx, 8 - st.by, true));
-  } else gain(st, def, gk ?? nearest(def, 0.6, 4));
+  } else { beat(st, 'miss', sh); gain(st, def, gk ?? nearest(def, 0.6, 4)); }
 }
 
 export function shoot(st: MatchState, sh: MP, xg: number, kind: ShotKind, origin: Origin) {
@@ -73,26 +76,6 @@ export function shoot(st: MatchState, sh: MP, xg: number, kind: ShotKind, origin
   else missed(st, sh, xg, kind, gk);
 }
 
-/** fotogramma per il replay 2D: tutti in campo in coordinate globali (la squadra 1 gioca a specchio) */
-function frame(st: MatchState, o: Option): TraceStep {
-  const ids: number[] = [], px: number[] = [], py: number[] = [];
-  for (const tm of st.teams)
-    for (const m of tm.on) {
-      ids.push(m.p.id);
-      px.push(tm.side === 0 ? m.x : 12 - m.x);
-      py.push(tm.side === 0 ? m.y : 8 - m.y);
-    }
-  const f: TraceStep = {
-    half: st.half, t: st.t, min: minute(st), side: st.s, kind: o.kind, bx: gx(st, st.bx), by: gy(st, st.by), pressure: 0,
-    mom: Math.round(st.momentum), from: st.carrier.p.id, ids, px, py, n0: st.teams[0].on.length, score: [st.score[0], st.score[1]],
-    ...(o.kind === 'pass' ? { tx: gx(st, o.tx), ty: gy(st, o.ty), p: o.p, to: (o.to as MP).p.id }
-      : o.kind === 'dribble' ? { tx: gx(st, o.tx), ty: gy(st, o.ty), p: o.p }
-      : o.kind === 'shot' ? { xg: o.xg } : { p: o.p }),
-  };
-  st.trace!.push(f);
-  return f;
-}
-
 function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, { kind: 'pass' }>, f: TraceStep | null) {
   const { rng } = st;
   att.stats.passes++; c.st.passes++;
@@ -100,11 +83,12 @@ function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, 
   if (o.long) att.log.longKicks++;
   // palla in profondità: il portiere può uscire e prenderla prima
   const keeper = o.deep ? sweeps(st, def) : null;
-  if (keeper) { def.log.sweeps++; st.t += MATCH.passTime; gain(st, def, keeper); return; }
+  if (keeper) { def.log.sweeps++; beat(st, 'sweep', keeper); st.t += MATCH.passTime; gain(st, def, keeper); return; }
   const late = minute(st) >= 70 ? att.log.late : null;
   if (late) late[0]++;
   if (o.off > 0 && rng.next() < o.off) {
     att.stats.offsides++;
+    beat(st, 'offside', o.to as MP);
     st.t += MATCH.restartTime;
     gain(st, def, nearest(def, 12 - o.tx, 8 - o.ty));
   } else if (rng.next() < o.p) {
@@ -127,6 +111,7 @@ function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, 
     }
     w.st.tackles++; def.stats.tackles++;
     def.log.intercepts++; def.log.regains++; def.log.regainX += w.x;
+    beat(st, 'intercept', w, c);
     st.t += MATCH.passTime + MATCH.turnoverTime;
     gain(st, def, w);
   }
@@ -141,6 +126,7 @@ function doDribble(st: MatchState, def: Team, c: MP, o: Extract<Option, { kind: 
   else if (st.rng.next() < o.p) {
     c.st.dribbles++;
     st.teams[st.s].log.dribblesOk++;
+    if (tk) beat(st, 'beat', c, tk);
     if (f) f.ok = true;
     st.bx = o.tx; st.by = o.ty;
     st.lastPass = null;
@@ -149,6 +135,7 @@ function doDribble(st: MatchState, def: Team, c: MP, o: Extract<Option, { kind: 
     const w = tk ?? nearest(def, 12 - st.bx, 8 - st.by);
     w.st.tackles++; def.stats.tackles++; c.st.duelsLost++;
     def.log.tackles++; def.log.regains++; def.log.regainX += w.x;
+    beat(st, 'tackle', w, c);
     st.t += MATCH.turnoverTime + 1;
     gain(st, def, w);
   }
@@ -166,7 +153,10 @@ function doCross(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option,
 
 /** esegue l'opzione scelta dal portatore */
 export function act(st: MatchState, att: Team, def: Team, c: MP, o: Option) {
-  const f = st.trace ? frame(st, o) : null;
+  const f = st.trace ? frame(st, o.kind, o.kind === 'pass' ? { tx: gx(st, o.tx), ty: gy(st, o.ty), p: o.p, to: (o.to as MP).p.id, ...(o.long ? { high: true } : {}) }
+    : o.kind === 'dribble' ? { tx: gx(st, o.tx), ty: gy(st, o.ty), p: o.p }
+    : o.kind === 'shot' ? { xg: o.xg } : { p: o.p, ...(o.low ? {} : { high: true }) }) : null;
+  if (o.kind === 'pass' && o.long) beat(st, 'longKick', c, o.to as MP, true);
   if (o.kind === 'pass') doPass(st, att, def, c, o, f);
   else if (o.kind === 'dribble') doDribble(st, def, c, o, f);
   else if (o.kind === 'cross') doCross(st, att, def, c, o, f);

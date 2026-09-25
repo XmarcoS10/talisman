@@ -3,6 +3,7 @@ import { MATCH } from '../balance.ts';
 import { afterFoul } from './setpieces.ts';
 import { ev, gain, minute, nearest, type MatchState, type MP, type PStats, type Team } from './state.ts';
 import { substitute } from './subs.ts';
+import { beat } from './trace.ts';
 
 export function removeFromPitch(st: MatchState, tm: Team, m: MP) {
   m.on = false;
@@ -21,6 +22,7 @@ export function injure(st: MatchState, tm: Team, m: MP, ctx: PStats['injuryCtx']
 }
 
 function sendOff(st: MatchState, tm: Team, m: MP) {
+  beat(st, 'red', m);
   m.st.red = true;
   tm.stats.reds++;
   ev(st, 'red', tm.side, m);
@@ -39,6 +41,7 @@ export function challenge(st: MatchState, tk: MP) {
   const def = st.teams[1 - st.s]!;
   tk.st.tackles++; def.stats.tackles++;
   def.log.tackles++; def.log.regains++; def.log.regainX += tk.x;
+  beat(st, 'tackle', tk, st.carrier);
   st.t += MATCH.turnoverTime + 1;
   gain(st, def, tk);
 }
@@ -47,11 +50,13 @@ export function foul(st: MatchState, fouler: MP, victim: MP, tactical = false) {
   const att = st.teams[st.s], def = st.teams[1 - st.s]!;
   const { rng } = st;
   def.stats.fouls++; fouler.st.fouls++;
+  beat(st, 'foul', fouler, victim);
   st.t += MATCH.restartTime;
   if (rng.next() < MATCH.redP) sendOff(st, def, fouler);
   // chi è già ammonito entra con più prudenza: il secondo giallo è più raro
   else if (rng.next() < MATCH.yellowP * (tactical ? MATCH.tacticalYellow : 1) * (1 + 0.08 * (fouler.p.attrs.aggression - 11)) * (fouler.st.yellows ? MATCH.bookedCaution : 1)) {
     fouler.st.yellows++; def.stats.yellows++;
+    beat(st, 'yellow', fouler);
     ev(st, 'yellow', def.side, fouler);
     if (fouler.st.yellows === 2) sendOff(st, def, fouler);
   }
