@@ -9,7 +9,7 @@ export function substitute(st: MatchState, tm: Team, out: MP, chosen?: Player): 
   if (tm.subs <= 0 || tm.bench.length === 0 || !out.on) return false;
   const inP = chosen ?? tm.bench.reduce((a, b) => (ratingAt(b, out.pos) > ratingAt(a, out.pos) ? b : a));
   tm.bench = tm.bench.filter((b) => b !== inP);
-  const m = mp(inP, { pos: out.pos, x: out.hx, y: out.hy }, out.roleId, tm.fam, minute(st)); // entra nello stesso ruolo
+  const m = mp(inP, { pos: out.pos, x: out.hx, y: out.hy }, out.roleId, tm.fam, minute(st), tm.tactic.players?.[inP.id]); // entra nello stesso ruolo
   m.x = out.x; m.y = out.y;
   tm.on = tm.on.map((x) => (x === out ? m : x));
   st.idsDirty = true;

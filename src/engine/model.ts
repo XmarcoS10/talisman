@@ -258,6 +258,26 @@ export interface Tactic {
   roles: RoleId[]; // ruolo di ogni slot del modulo, nello stesso ordine
   /** battitori scelti dall'allenatore (id del giocatore); se manca o non è in campo, batte il migliore (schema 22) */
   takers?: { corners?: number; freeKicks?: number; penalties?: number };
+  /** istruzioni individuali, per id del giocatore (schema 24) */
+  players?: Record<number, PlayerInstr>;
+  /** piani partita: al massimo 3, scattano una volta per partita (schema 24) */
+  plans?: MatchPlan[];
+}
+
+/** istruzioni individuali (Blocco 2b, intervento 10); 1 = normale dove c'è una scala 0-2 */
+export interface PlayerInstr {
+  mark?: Position; // marca stretto chi gioca in quel ruolo nella squadra avversaria
+  shoot?: number; // 0 tira di meno, 1 normale, 2 tira di più
+  width?: number; // 0 stringi, 1 normale, 2 resta largo
+  runs?: number; // 0 inserimenti di meno, 1 normale, 2 di più
+  stayBack?: boolean; // in possesso non sale oltre la metà campo
+}
+
+/** piano partita: se il punteggio è così dal minuto `from`, cambia mentalità, modulo, pressing e linea */
+export interface MatchPlan {
+  name: string;
+  when: { score: 'behind' | 'level' | 'ahead'; by: number; from: number }; // by: di quanti gol (sotto o sopra)
+  set: { mentality?: number; formation?: FormationId; pressing?: number; line?: number };
 }
 
 export interface NewsItem {
@@ -267,7 +287,7 @@ export interface NewsItem {
   vars: Record<string, string | number>;
 }
 
-export type MatchEventType = 'goal' | 'penGoal' | 'penMiss' | 'chance' | 'yellow' | 'red' | 'injury' | 'sub';
+export type MatchEventType = 'goal' | 'penGoal' | 'penMiss' | 'chance' | 'yellow' | 'red' | 'injury' | 'sub' | 'plan';
 export type MatchEvent = {
   min: number;
   side: 0 | 1;
@@ -275,6 +295,7 @@ export type MatchEvent = {
   playerId: PlayerId;
   assistId?: PlayerId; // per 'sub': chi entra
   xg?: number;
+  plan?: string; // per 'plan': il nome del piano scattato (playerId 0)
 };
 
 export interface SideStats {

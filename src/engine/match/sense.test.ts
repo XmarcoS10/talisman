@@ -92,4 +92,13 @@ describe('buon senso tattico', { timeout: 120_000 }, () => {
     expect(report('recuperi subito dopo la perdita, contro-pressing contro ripiego', play(cp(2), quick), play(cp(0), quick))).toBeGreaterThan(T_MIN);
     expect(report('energia a fine partita, ripiego contro contro-pressing', play(cp(0), energy), play(cp(2), energy))).toBeGreaterThan(T_MIN);
   });
+
+  it('"tira di più" fa tirare di più quel giocatore', () => {
+    // la punta di A (il primo attaccante della rosa): i suoi tiri a partita, con e senza l'istruzione
+    const striker = (w: WorldState, a: number) => w.clubs[a]!.playerIds.find((id) => w.players[id]!.position === 'ST')!;
+    let who = 0;
+    const shots = (o: SimOutput, a: 0 | 1) => o.played[a].find((m) => m.p.id === who)?.st.shots ?? null;
+    const ins = (v: number) => (w: WorldState, a: number) => { who = striker(w, a); w.clubs[a]!.tactic.players = { [who]: { shoot: v } }; };
+    expect(report('tiri della punta, "tira di più" contro "tira di meno"', play(ins(2), shots), play(ins(0), shots))).toBeGreaterThan(T_MIN);
+  });
 });

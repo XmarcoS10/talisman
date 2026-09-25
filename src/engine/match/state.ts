@@ -1,7 +1,7 @@
 // Stato esplicito di una partita (Blocco 2a): tutto quello che il motore ricorda fra un'azione e l'altra sta qui,
 // e i moduli (posizionamento, pressione, esecuzione, eventi, piazzati, cambi, voti) lo ricevono come parametro.
 import { FLAGS, MATCH } from '../balance.ts';
-import type { Club, MatchEvent, MatchEventType, MatchResult, Player, Position, SideStats, Tactic } from '../model.ts';
+import type { Club, MatchEvent, MatchEventType, MatchResult, Player, PlayerInstr, Position, SideStats, Tactic } from '../model.ts';
 import type { Rng } from '../rng.ts';
 import type { OnPitch } from './decision.ts';
 import { len } from './pitch.ts';
@@ -182,6 +182,8 @@ export interface MatchState {
   subIdx: number;
   shoutAt: [number, number];
   output: SimOutput | null;
+  plansFired: [boolean[], boolean[]]; // piani partita già scattati, per squadra
+  planUndo: [Pick<Tactic, 'formation' | 'pressing' | 'line' | 'roles'> | null, Pick<Tactic, 'formation' | 'pressing' | 'line' | 'roles'> | null]; // tattica da rimettere a posto a fine partita
 }
 
 export const newPStats = (from: number): PStats => ({ passes: 0, passesOk: 0, keyPasses: 0, shots: 0, onTarget: 0, goals: 0, assists: 0, tackles: 0, dribbles: 0, duelsLost: 0, saves: 0, fouls: 0, yellows: 0, red: false, injured: false, conceded: 0, injuryCtx: 'contact', from, to: 90 });
@@ -193,20 +195,20 @@ const newSide = (): SideStats => ({ possession: 0, shots: 0, onTarget: 0, xg: 0,
 const dayMod = (p: Player, fam: number) =>
   (FLAGS.psychology ? MATCH.moraleK * (p.psych.morale - 65) : 0) - MATCH.sharpK * Math.max(0, 80 - p.condition.sharpness)
   - MATCH.famK * Math.max(0, 1 - fam / 90);
-export const mp = (player: Player, slot: Slot, role: RoleId, fam: number, from = 0): MP =>
+export const mp = (player: Player, slot: Slot, role: RoleId, fam: number, from = 0, ins: PlayerInstr = {}): MP =>
   ({ p: player, pos: slot.pos, hx: slot.x, hy: slot.y, roleId: role, role: ROLES[role], marked: 0, x: slot.x, y: slot.y, tx: slot.x, ty: slot.y,
-    jx: 0, jy: 0, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from) });
+    jx: 0, jy: 0, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from), ins });
 
 export function createState(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: TraceStep[]): MatchState {
   const teams = setups.map((s, i) => {
-    const on = s.xi.map((e) => mp(e.player, e.slot, e.role, s.familiarity));
+    const on = s.xi.map((e) => mp(e.player, e.slot, e.role, s.familiarity, 0, s.tactic.players?.[e.player.id]));
     return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity, auto: s.auto !== false, log: newLog() };
   }) as [Team, Team];
   return {
     rng, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, counterNow: false, momentum: 0,
     half: 1, t: 0, length: 0, scheduled: [], lastPlace: 0, markStamp: 0, holder: null, meet: null, snap: true,
     trace, track: [], playAt: 0, lastBall: { x: 6, y: 4 }, lastStep: -1, ids0: [], idsDirty: true,
-    defX: [], defY: [], defAnt: [], pendingDrain: [0, 0], subIdx: 0, shoutAt: [0, 0], output: null,
+    defX: [], defY: [], defAnt: [], pendingDrain: [0, 0], subIdx: 0, shoutAt: [0, 0], output: null, plansFired: [[], []], planUndo: [null, null],
   };
 }
 

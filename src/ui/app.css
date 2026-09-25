@@ -503,3 +503,6 @@ html.rail .shell { grid-template-columns: 64px 1fr; }
 
 /* il motore sta lavorando nel worker: niente clic su un mondo che sta per essere sostituito (Blocco 2a) */
 .busy { position: fixed; inset: 0; z-index: 50; cursor: progress; }
+
+/* piani partita (Blocco 2b, intervento 10) */
+.plan-name { background: var(--surface-1); border: 1px solid var(--border); color: var(--text-1); padding: 4px 8px; border-radius: var(--r-1); font: inherit; width: 140px; }

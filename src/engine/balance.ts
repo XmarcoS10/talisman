@@ -149,6 +149,15 @@ export const MATCH = {
   deadSpeed: 8, // il gioco fermo (rimesse, esultanza) scorre più in fretta nella riproduzione
   deadFrom: 12, // oltre questi secondi un intervallo è gioco fermo
   offBallMove: 1.2, // ampiezza (zone) degli smarcamenti casuali di chi attacca
+  // la difesa che si disordina (Blocco 2b, docs/design/motore-v2.md §7): disordine 0-1 della squadra senza palla
+  disSwitch: 0.15, // cambio di gioco riuscito (≥ 3 zone in larghezza), × qualità di Visione e Passaggi
+  disLine: 0.1, // per difensore scavalcato da un passaggio riuscito
+  disDribble: 0.2, // uomo saltato
+  disTau: 8, // secondi in cui il disordine cala a 1/e (la difesa si riorganizza)…
+  disOrg: 0.04, // …più in fretta per punto di Concentrazione e Posizionamento medi sopra 11
+  disK: 0.5, // efficacia persa su intercetti e pressione a disordine pieno
+  disXg: 0.6, // logit in più dei tiri a disordine pieno (c'è spazio)
+  disValue: 0.02, // quanto vale, nella scelta del passaggio, il disordine che produce
   patience: 0.0015, // voglia di verticalizzare in più per ogni passaggio consecutivo oltre il 5°
   boxRun: 0.6, // zone di inserimento in area (× Inserimenti/20) per centrocampisti e trequartisti
   defCompact: 0.75, // senza palla: quanto si accorcia il modulo verso la propria porta (1 = per niente)
@@ -308,6 +317,12 @@ export const MATCH = {
   counterDirect: 0.002, // …voglia di verticalizzare in più per ognuno oltre questa soglia
   tacticalFoul: 0.06, // fallo tattico per fermare una ripartenza con la difesa scoperta, × Aggressività/10
   tacticalYellow: 2.5, // il fallo tattico si prende il giallo più spesso
+  // istruzioni individuali (Blocco 2b, intervento 10)
+  insShoot: [0.6, 1, 1.5], // voglia di tirare: di meno, normale, di più
+  insWidth: 1, // zone in più o in meno in ampiezza per "resta largo" / "stringi"
+  insRuns: [0.4, 1, 1.7], // inserimenti in area: di meno, normale, di più
+  stayBackX: 5.5, // chi "resta dietro" non sale oltre questa x in possesso
+  markStrict: 1.3, // marcatura stretta su un uomo: quanto più vicino di una marcatura normale
   homeBoost: 0.12, // logit in più per la squadra di casa (pubblico)
   protectLeadFrom: 55, // minuto da cui chi è in vantaggio abbassa la mentalità di 1
   chaseFrom: 60, // minuto da cui chi è sotto la alza di 1 (di 2 dal 75')

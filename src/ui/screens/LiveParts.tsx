@@ -8,7 +8,7 @@ import { shortName } from '../bits.tsx';
 import { t } from '../i18n.ts';
 import { lines } from '../match/commentary.ts';
 
-const EV_ICON: Record<string, string> = { goal: '⚽', penGoal: '⚽', penMiss: '✖', chance: '◎', yellow: '🟨', red: '🟥', injury: '✚', sub: '⇄' };
+const EV_ICON: Record<string, string> = { goal: '⚽', penGoal: '⚽', penMiss: '✖', chance: '◎', yellow: '🟨', red: '🟥', injury: '✚', sub: '⇄', plan: '📋' };
 
 export function Scoreboard({ clubs, score, min, over, me, tactics }: {
   clubs: readonly [Club, Club]; score: [number, number]; min: number; over: boolean; me: 0 | 1; tactics: [Tactic, Tactic];
@@ -75,7 +75,7 @@ export function Ticker({ frames, i, names, world, run }: { frames: TraceStep[]; 
       <span className="caps pos-good"><span className="live-dot" />{t('live.ticker')}</span>
       {now && <span className={`tick-now ${now.big ? 'big' : ''}`}>{t(now.key, now.vars)}</span>}
       {evs.map((e, k) => (
-        <span key={k} className="muted small">→ {e.min}' {EV_ICON[e.type]} {world.players[e.playerId] ? shortName(world.players[e.playerId]!) : ''}</span>
+        <span key={k} className="muted small">→ {e.min}' {EV_ICON[e.type]} {e.type === 'plan' ? t('live.planFired', { name: e.plan ?? '' }) : world.players[e.playerId] ? shortName(world.players[e.playerId]!) : ''}</span>
       ))}
     </div>
   );

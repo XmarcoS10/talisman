@@ -3,7 +3,7 @@
 // u = p · valore_dopo − (1 − p) · costo_della_perdita · avversione_al_rischio (+ preferenze tattiche).
 // La scelta è un softmax con temperatura: Decisioni alte → quasi sempre l'opzione migliore.
 import { FLAGS, MATCH } from '../balance.ts';
-import type { Player, Tactic } from '../model.ts';
+import type { Player, PlayerInstr, Tactic } from '../model.ts';
 import type { Rng } from '../rng.ts';
 import { len, lossCost, segDist, sigmoid, xG, xT } from './pitch.ts';
 import type { Role } from './roles.ts';
@@ -16,6 +16,7 @@ export interface OnPitch {
   energy: number;
   role: Role; // tendenze del ruolo (roles.ts)
   mod: number; // logit personale del giorno: morale, condizione partita, familiarità col modulo
+  ins: PlayerInstr; // istruzioni individuali dell'allenatore
 }
 
 export interface View {
@@ -163,7 +164,8 @@ function shot(v: View, x: Ctx, out: Option[]) {
   const skill = bx < 10 ? a(c, 'longShots') : a(c, 'finishing');
   const mm = v.mentality - 3;
   // tirare chiude quasi sempre l'azione: si rinuncia a metà del valore del possesso
-  out.push({ kind: 'shot', xg, u: xg * (1 + MATCH.shotSkill * skill) * MATCH.shotBias * c.role.shoot * (1 + MATCH.mentalityShot * mm) - (1 - xg) * x.keep * 0.5 });
+  const want = c.role.shoot * MATCH.insShoot[c.ins.shoot ?? 1]!; // ruolo e istruzione individuale
+  out.push({ kind: 'shot', xg, u: xg * (1 + MATCH.shotSkill * skill) * MATCH.shotBias * want * (1 + MATCH.mentalityShot * mm) - (1 - xg) * x.keep * 0.5 });
 }
 
 /** xG del tiro dopo la palla bassa all'indietro: sempre dallo stesso punto, si calcola una volta */

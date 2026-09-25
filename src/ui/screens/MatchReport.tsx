@@ -5,7 +5,7 @@ import { PosBadge, Rating, shortName } from '../bits.tsx';
 import { t } from '../i18n.ts';
 import { ResultsList } from './Fixtures.tsx';
 
-const ICON: Record<MatchEvent['type'], string> = { goal: '⚽', penGoal: '⚽', penMiss: '✖', chance: '◎', yellow: '🟨', red: '🟥', injury: '✚', sub: '⇄' };
+const ICON: Record<MatchEvent['type'], string> = { goal: '⚽', penGoal: '⚽', penMiss: '✖', chance: '◎', yellow: '🟨', red: '🟥', injury: '✚', sub: '⇄', plan: '📋' };
 
 /** righe statistiche: [chiave i18n, valore casa, valore ospiti, quota della barra di casa 0-1] */
 function statRows(s: [SideStats, SideStats]): [string, string, string, number][] {
@@ -30,6 +30,11 @@ function statRows(s: [SideStats, SideStats]): [string, string, string, number][]
 
 function EventLine({ world, e }: { world: WorldState; e: MatchEvent }) {
   const name = (id: number) => { const p = world.players[id]; return p ? shortName(p) : '?'; };
+  if (e.type === 'plan') return ( // il vice annuncia il piano partita scattato
+    <div className="row muted small" style={{ justifyContent: e.side ? 'flex-start' : 'flex-end', gap: 'var(--s-2)' }}>
+      {ICON.plan} {t('match.planFired', { min: e.min, name: e.plan ?? '' })}
+    </div>
+  );
   const extra = e.type === 'sub' && e.assistId !== undefined ? ` → ${name(e.assistId)}`
     : e.assistId !== undefined ? ` (${t('match.assist', { name: name(e.assistId) })})`
     : e.type === 'penGoal' ? ` (${t('match.pen')})` : e.type === 'chance' ? ` · xG ${e.xg?.toFixed(2)}` : '';

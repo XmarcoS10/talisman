@@ -49,12 +49,15 @@ function aimAtt(st: MatchState) {
     const rl = m.role;
     let x = Math.max(m.hx, rl.baseX) + rl.push + (bx - 6) * rl.follow + MATCH.mentalityPush * mmA;
     // negli ultimi 30 metri chi sa inserirsi attacca l'area
-    if (bx >= 8 && rl.runs) x += (m.p.attrs.offTheBall / 20) * MATCH.boxRun;
+    const runs = MATCH.insRuns[m.ins.runs ?? 1]!; // istruzione individuale: inserimenti di meno o di più
+    if (bx >= 8 && (rl.runs || m.ins.runs === 2)) x += (m.p.attrs.offTheBall / 20) * MATCH.boxRun * runs;
+    if (m.ins.stayBack) x = Math.min(x, MATCH.stayBackX);
     // movimento senza palla: smarcamenti che aprono (o chiudono) le linee di passaggio
     const mv = 0.5 + m.p.attrs.offTheBall / 20;
     const side = m.hy > 4.3 ? 1 : m.hy < 3.7 ? -1 : 0; // da che lato gioca, per allargarsi o stringere
+    const wide = side * MATCH.insWidth * ((m.ins.width ?? 1) - 1); // "resta largo" / "stringi"
     m.tx = clamp(x + m.jx * mv, 0.3, rl.maxX);
-    m.ty = clamp(4 + (m.hy - 4) * wf + rl.dy * side + (by - 4) * 0.25 + m.jy * mv, 0.2, 7.8);
+    m.ty = clamp(4 + (m.hy - 4) * wf + rl.dy * side + wide + (by - 4) * 0.25 + m.jy * mv, 0.2, 7.8);
   }
 }
 
@@ -80,8 +83,19 @@ function shapeDef(def: Team, dbx: number, dby: number): MP | undefined {
  */
 function markUp(st: MatchState, att: Team, def: Team, presser: MP | undefined, dby: number) {
   const stamp = ++st.markStamp; // "già marcato" senza allocare un Set a ogni azione
+  // prima chi ha la marcatura stretta su un ruolo avversario: prende quell'uomo, più vicino
   for (const m of def.on) {
-    if (m === presser || m.pos === 'GK' || m.tx > 5) continue;
+    if (!m.ins.mark || m === presser || m.pos === 'GK' || m.tx > 5) continue;
+    const target = att.on.find((a) => a.pos === m.ins.mark && a !== st.carrier && a.marked !== stamp);
+    if (!target) continue;
+    target.marked = stamp;
+    m.marked = -stamp; // già sistemato: il giro normale lo salta
+    const tight = Math.min(1, MATCH.markTightness * MATCH.markStrict * cover(def));
+    m.tx += (12 - target.x - MATCH.markGoalSide - m.tx) * tight;
+    m.ty += (8 - target.y - m.ty) * tight;
+  }
+  for (const m of def.on) {
+    if (m === presser || m.pos === 'GK' || m.tx > 5 || m.marked === -stamp) continue;
     let target: MP | undefined, bd = 2;
     for (const a of att.on) {
       if (a === st.carrier || a.pos === 'GK' || a.marked === stamp) continue;

@@ -8,6 +8,8 @@ import { t } from '../i18n.ts';
 import { Pitch, fitClass } from './Pitch.tsx';
 import { Status } from './Squad.tsx';
 import { Takers } from './Takers.tsx';
+import { Plans } from './Plans.tsx';
+import { PlayerInstructions } from './PlayerInstructions.tsx';
 
 type Instr = 'pressing' | 'tempo' | 'width' | 'line' | 'directness' | 'counterPress';
 const INSTRUCTIONS: Instr[] = ['pressing', 'tempo', 'width', 'line', 'directness', 'counterPress'];
@@ -87,6 +89,7 @@ export function Tactics({ world, onChange, onPlayer }: { world: WorldState; onCh
             onRole={(i, r) => update(() => { tac.roles = slots.map((s, k) => (k === i ? validRole(r, s.pos) : validRole(tac.roles[k], s.pos))); })} />
           <div className="row muted small"><span className="ring-key fit" /> {t('tactics.ringFit')} <span className="ring-key fam" /> {t('tactics.ringFam')}</div>
           {selRole && <div className="panel"><b className="deal-h">{t(`role.${selRole}`)}</b><span className="muted">{t(`role.${selRole}.desc`)}</span></div>}
+          {selected !== null && lineup[selected] != null && <PlayerInstructions world={world} tactic={tac} playerId={lineup[selected]!} onChange={onChange} />}
           {warnings.length > 0 && <div className="panel warn">{t('tactics.unavailable', { names: warnings.map((p) => shortName(p!)).join(', ') })}</div>}
         </div>
 
@@ -99,6 +102,7 @@ export function Tactics({ world, onChange, onPlayer }: { world: WorldState; onCh
             ))}
           </div>
           <Takers world={world} tactic={tac} playerIds={club.playerIds} onChange={onChange} />
+          <Plans tactic={tac} onChange={onChange} />
           <div className="panel">
             <h2>{sel ? t('tactics.candidates', { pos: t(`pos.${sel.pos}`) }) : t('tactics.squadTitle')}</h2>
             <div className="muted small">{t('tactics.hint')}</div>

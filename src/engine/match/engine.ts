@@ -12,6 +12,7 @@ import { kickoff, settle } from './positioning.ts';
 import { PRESS, readPlay } from './pressure.ts';
 import { finish, rate } from './ratings.ts';
 import { createState, inTransition, minute, type MatchState, type MP, type PosFrame, type Shout, type SimOutput, type Team, type TeamSetup, type TraceStep } from './state.ts';
+import { checkPlans, undoPlans } from './plans.ts';
 import { autoSubs, gameState, substitute } from './subs.ts';
 
 export type { MP, PosFrame, PStats, Shout, SimOutput, Team, TeamSetup, TraceStep } from './state.ts';
@@ -99,9 +100,10 @@ function tick(st: MatchState) {
   step(st);
   const min = minute(st);
   gameState(st, min);
+  checkPlans(st, min);
   autoSubs(st, min);
   dueInjuries(st, min);
-  if (st.t >= st.length) { if (st.half === 1) startHalf(st, 2); else finish(st); }
+  if (st.t >= st.length) { if (st.half === 1) startHalf(st, 2); else { undoPlans(st); finish(st); } }
 }
 
 export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: TraceStep[]): MatchRun {

@@ -111,6 +111,15 @@ traiettoria dell'azione nella prima parte dell'intervallo e poi aspetta. Decisio
 - **Fallo tattico**: contro una ripartenza a metà campo con la difesa scoperta, il più vicino può fermarla
   (`tacticalFoul × Aggressività/10`), e il giallo arriva ×`tacticalYellow` più spesso.
 
+## Istruzioni individuali e piani partita (Blocco 2b, intervento 10)
+- **Istruzioni individuali** (`tactic.players`, schema 24, `MP.ins`): tiro (×`insShoot`), ampiezza (±`insWidth`
+  zone), inserimenti (×`insRuns`, e "di più" attacca l'area anche se il ruolo non lo fa), resta dietro (non oltre
+  `stayBackX`), marca stretto un ruolo avversario (lo prende prima degli altri, ×`markStrict` più vicino).
+- **Piani partita** (`tactic.plans`, `plans.ts`): fino a 3; ognuno scatta una volta, al primo minuto ≥ `from` in cui
+  il punteggio è quello previsto (sotto o sopra di `by`, o in parità). Cambia mentalità, pressing, linea e modulo (i
+  giocatori in campo vanno alle posizioni nuove, al più adatto); il vice lo annuncia con l'evento `plan`. A fine partita
+  la tattica del club torna com'era. L'IA non usa i piani.
+
 ## Fatica
 Energia persa al minuto: `drain del ruolo × (drainBase + drainStamina·(1 − Resistenza/20))`, più per chi pressa. Con
 `drainStamina` 0,5 chi ha poca Resistenza arriva davvero stanco (prima al 75' erano tutti fra 76 e 80). L'energia
