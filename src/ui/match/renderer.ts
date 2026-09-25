@@ -30,6 +30,7 @@ export class Camera {
    * nel riquadro centrale la telecamera non si muove (niente tremolii a ogni passaggio corto)
    */
   step(bx: number, by: number, dt: number, zoom: number, w: number, h: number) {
+    if (!w || !h) return; // campo nascosto (tabellino aperto): con misure zero la telecamera finirebbe a NaN per sempre
     const k = Math.min(1, dt * 1.25);
     const follow = zoom > 1;
     this.zoom += (zoom - this.zoom) * k;
@@ -48,21 +49,74 @@ const trail: { x: number; y: number }[] = [];
 
 // erba: la texture generata con la pipeline (tools/assets). Si carica una volta sola; senza, il campo resta a fasce piatte.
 let grassImg: HTMLImageElement | null = null;
-let grassPat: CanvasPattern | null = null;
-function grassPattern(ctx: CanvasRenderingContext2D): CanvasPattern | null {
+/** la texture dell'erba è pronta? (la prima volta comincia a caricarla) */
+function grassReady(): boolean {
   const a = art('texture/erba');
-  if (!a) return null;
+  if (!a) return false;
   if (!grassImg) { grassImg = new Image(); grassImg.src = a.src; }
-  if (!grassImg.complete || !grassImg.naturalWidth) return null;
-  if (!grassPat) {
-    grassPat = ctx.createPattern(grassImg, 'repeat');
-    grassPat?.setTransform(new DOMMatrix().scale(0.35));
-  }
-  return grassPat;
+  return grassImg.complete && grassImg.naturalWidth > 0;
+}
+
+function grassPattern(ctx: CanvasRenderingContext2D): CanvasPattern | null {
+  if (!grassReady()) return null;
+  const pat = ctx.createPattern(grassImg!, 'repeat');
+  pat?.setTransform(new DOMMatrix().scale(0.35));
+  return pat;
 }
 
 /** sovrapposizioni tattiche da disegnare sotto i giocatori (overlays.ts) */
 export interface OverlayView { ov: Overlays; on: ReadonlySet<OverlayKind>; mirror: boolean; before: string }
+
+const MARGIN = 0.3; // zone attorno al campo nell'immagine (le porte escono dalla linea)
+const PITCH_RES = 2; // l'immagine ha il doppio dei pixel del campo intero: resta nitida fino allo zoom del rigore
+let pitchCache: { key: string; canvas: HTMLCanvasElement } | null = null;
+
+/** l'erba, le fasce e le linee, in un'immagine da `px` pixel per zona; si rifà solo se cambia la misura o arriva la texture */
+function pitchImage(css: (v: string) => string, px: number): HTMLCanvasElement | null {
+  px = Math.round(px);
+  if (px < 1 || typeof document === 'undefined') return null;
+  const key = `${px}|${grassReady() ? 1 : 0}`;
+  if (pitchCache?.key === key) return pitchCache.canvas;
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.ceil((PITCH_X + 2 * MARGIN) * px);
+  canvas.height = Math.ceil((PITCH_Y + 2 * MARGIN) * px);
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+  const X = (x: number) => (x + MARGIN) * px, Y = (y: number) => (y + MARGIN) * px;
+  ctx.fillStyle = css('--bg-0');
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < 12; i++) {
+    ctx.fillStyle = css(i % 2 ? '--pitch-1' : '--pitch-2');
+    ctx.fillRect(X(i), Y(0), px + 1, PITCH_Y * px);
+  }
+  const grass = grassPattern(ctx);
+  if (grass) { // la texture della pipeline, se c'è: solo grana, le fasce restano quelle dei colori
+    ctx.globalAlpha = 0.2;
+    ctx.fillStyle = grass;
+    ctx.fillRect(X(0), Y(0), PITCH_X * px, PITCH_Y * px);
+    ctx.globalAlpha = 1;
+  }
+  ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+  ctx.lineWidth = Math.max(1, px * 0.02);
+  ctx.strokeRect(X(0), Y(0), PITCH_X * px, PITCH_Y * px);
+  ctx.beginPath();
+  ctx.moveTo(X(6), Y(0)); ctx.lineTo(X(6), Y(PITCH_Y));
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(X(6), Y(4), 1.05 * px, 0, Math.PI * 2);
+  ctx.stroke();
+  for (const side of [0, 1]) {
+    ctx.strokeRect(X(side ? PITCH_X - 1.9 : 0), Y(2.1), 1.9 * px, 3.8 * px); // area di rigore
+    ctx.strokeRect(X(side ? PITCH_X - 0.65 : 0), Y(3.1), 0.65 * px, 1.8 * px); // area piccola
+    ctx.beginPath();
+    ctx.arc(X(side ? PITCH_X - 1.35 : 1.35), Y(4), px * 0.05, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.fill();
+    ctx.fillRect(X(side ? PITCH_X : -0.18), Y(3.35), 0.18 * px, 1.3 * px); // porta
+  }
+  pitchCache = { key, canvas };
+  return canvas;
+}
 
 export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: Live | null, look: Look, cam: Camera, css: (v: string) => string,
   moments: Moment[] = [], over?: OverlayView) {
@@ -72,43 +126,11 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: 
   const X = (x: number) => ox + x * scale;
   const Y = (y: number) => oy + y * scale;
 
-  ctx.clearRect(0, 0, w, h);
-  for (let i = 0; i < 12; i++) {
-    ctx.fillStyle = css(i % 2 ? '--pitch-1' : '--pitch-2');
-    ctx.fillRect(X(i), Y(0), scale + 1, PITCH_Y * scale);
-  }
-  const grass = grassPattern(ctx);
-  if (grass) { // la texture della pipeline, se c'è: solo grana, le fasce restano quelle dei colori
-    ctx.save();
-    ctx.globalAlpha = 0.2;
-    ctx.fillStyle = grass;
-    ctx.fillRect(X(0), Y(0), PITCH_X * scale, PITCH_Y * scale);
-    ctx.restore();
-  }
+  // il campo è sempre lo stesso: si disegna una volta in un'immagine e a ogni fotogramma la si copia con la telecamera
+  const img = pitchImage(css, Math.min(w / PITCH_X, h / PITCH_Y) * PITCH_RES);
   ctx.fillStyle = css('--bg-0');
-  if (X(0) > 0) ctx.fillRect(0, 0, X(0), h);
-  if (X(PITCH_X) < w) ctx.fillRect(X(PITCH_X), 0, w - X(PITCH_X), h);
-  if (Y(0) > 0) ctx.fillRect(0, 0, w, Y(0));
-  if (Y(PITCH_Y) < h) ctx.fillRect(0, Y(PITCH_Y), w, h - Y(PITCH_Y));
-
-  ctx.strokeStyle = 'rgba(255,255,255,0.35)';
-  ctx.lineWidth = Math.max(1, scale * 0.02);
-  ctx.strokeRect(X(0), Y(0), PITCH_X * scale, PITCH_Y * scale);
-  ctx.beginPath();
-  ctx.moveTo(X(6), Y(0)); ctx.lineTo(X(6), Y(PITCH_Y));
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(X(6), Y(4), 1.05 * scale, 0, Math.PI * 2);
-  ctx.stroke();
-  for (const side of [0, 1]) {
-    ctx.strokeRect(X(side ? PITCH_X - 1.9 : 0), Y(2.1), 1.9 * scale, 3.8 * scale); // area di rigore
-    ctx.strokeRect(X(side ? PITCH_X - 0.65 : 0), Y(3.1), 0.65 * scale, 1.8 * scale); // area piccola
-    ctx.beginPath();
-    ctx.arc(X(side ? PITCH_X - 1.35 : 1.35), Y(4), scale * 0.05, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255,255,255,0.5)';
-    ctx.fill();
-    ctx.fillRect(X(side ? PITCH_X : -0.18), Y(3.35), 0.18 * scale, 1.3 * scale); // porta
-  }
+  ctx.fillRect(0, 0, w, h);
+  if (img) ctx.drawImage(img, X(-MARGIN), Y(-MARGIN), (PITCH_X + 2 * MARGIN) * scale, (PITCH_Y + 2 * MARGIN) * scale);
   if (!live) return;
   if (over?.on.size) {
     ctx.textAlign = 'center';

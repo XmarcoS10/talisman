@@ -12,6 +12,9 @@ import { t } from '../i18n.ts';
 import { crowdReact, type CrowdReaction } from '../audio.ts';
 import { CHANCE_XG } from '../match/highlights.ts';
 
+/** gancio per gli strumenti (tools/clips.cjs registra le clip del sito): la partita, spostarsi, velocità fissa */
+declare global { interface Window { talismanLive?: { run: MatchRun; seek(T: number): void; speed: number | null } } }
+
 export interface LoopOpts { playing: boolean; speed: number; view: ViewMode; camera: CameraMode; overlays: OverlayKind[] }
 
 /** quanto la simulazione sta avanti alla riproduzione: nei salienti deve vedere l'azione prima che cominci */
@@ -52,6 +55,11 @@ export function useLiveLoop(run: MatchRun, canvas: RefObject<HTMLCanvasElement |
   const stopReplay = () => { if (replay.current) { T.current = replay.current.back; replay.current = null; resetTrail(); } };
 
   useEffect(() => {
+    window.talismanLive = { run, seek: (x) => { T.current = x; replay.current = null; resetTrail(); }, speed: null };
+    return () => { delete window.talismanLive; };
+  }, [run]);
+
+  useEffect(() => {
     let raf = 0, last = performance.now(), acc = 0;
     const style = getComputedStyle(document.documentElement);
     const css = (v: string) => style.getPropertyValue(v) || '#123';
@@ -61,7 +69,8 @@ export function useLiveLoop(run: MatchRun, canvas: RefObject<HTMLCanvasElement |
       last = now;
       const r = o.view === 'full' ? null : reel.current;
       const rp = replay.current;
-      const speed = rp ? REPLAY_SPEED : speedAt(r, T.current, SPEEDS[o.speed]!) * (r ? SPEEDS[o.speed]! / SPEEDS[0] : 1);
+      const speed = rp ? REPLAY_SPEED : window.talismanLive?.speed ?? speedAt(r, T.current, SPEEDS[o.speed]!) * (r ? SPEEDS[o.speed]! / SPEEDS[0] : 1);
+      const prevT = T.current;
       if (o.playing) {
         T.current += dt * speed;
         if (rp && T.current >= rp.to) stopReplay();
@@ -77,8 +86,8 @@ export function useLiveLoop(run: MatchRun, canvas: RefObject<HTMLCanvasElement |
         const ctx = el.getContext('2d');
         const st = sample(run, T.current, mirror);
         moments.current = st ? momentsAt(run, T.current, st.i, speed, mirror) : [];
-        // replay automatico di ogni gol, alla fine del suo saliente (se ci si è appena passati, non saltando)
-        const goal = rp ? undefined : reel.current.clips.find((c) => c.kind === 'goal' && c.to <= T.current && c.to > T.current - 5 && !replayed.current.has(c.step));
+        // replay automatico di ogni gol, alla fine del suo saliente: solo se ci si passa giocando, non saltando
+        const goal = rp ? undefined : reel.current.clips.find((c) => c.kind === 'goal' && prevT < c.to && c.to <= T.current && !replayed.current.has(c.step));
         if (goal) {
           replayed.current.add(goal.step);
           const k = beatTime(run, goal.step, 'goal');

@@ -134,6 +134,8 @@ describe('partita in 2D (F6)', { timeout: 30000 }, () => {
     console.log(`telecamera: ${(flips / secs).toFixed(2)} inversioni al secondo, passo massimo ${maxStep.toFixed(3)} zone per fotogramma`);
     expect(flips / secs).toBeLessThan(0.5);
     expect(maxStep).toBeLessThan(0.1); // meno di 1 m per fotogramma a 60 fps
+    cam.step(6, 4, 0.1, 1.3, 0, 0); // campo nascosto dal tabellino: niente misure
+    expect(Number.isFinite(cam.cx) && Number.isFinite(cam.cy) && Number.isFinite(cam.zoom)).toBe(true);
   });
 
   it('cambio deciso dalla panchina: entra chi scelgo io', () => {
