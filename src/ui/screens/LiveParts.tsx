@@ -9,6 +9,7 @@ import { t } from '../i18n.ts';
 import { lines } from '../match/commentary.ts';
 import { VIEW_MODES, type Clip, type ViewMode } from '../match/highlights.ts';
 import { CAMERA_MODES, type CameraMode } from '../match/renderer.ts';
+import { OVERLAYS, type OverlayKind } from '../match/overlays.ts';
 import { FastForward, Rewind } from 'lucide-react';
 
 const EV_ICON: Record<string, string> = { goal: '⚽', penGoal: '⚽', penMiss: '✖', chance: '◎', yellow: '🟨', red: '🟥', injury: '✚', sub: '⇄', plan: '📋' };
@@ -131,6 +132,19 @@ export function ReplayTag({ onSkip }: { onSkip: () => void }) {
     <div className="replay-tag">
       <Rewind size={14} /> <b>{t('live.replay')}</b>
       <button className="btn small" onClick={onSkip}>{t('live.replaySkip')}</button>
+    </div>
+  );
+}
+
+/** sovrapposizioni tattiche da accendere sopra il campo */
+export function OverlayChips({ on, onChange }: { on: OverlayKind[]; onChange: (v: OverlayKind[]) => void }) {
+  return (
+    <div className="overlay-chips">
+      <span className="caps">{t('live.overlays')}</span>
+      {OVERLAYS.map((k) => (
+        <button key={k} className={`chip-btn ${on.includes(k) ? 'on' : ''}`} title={t(`overlay.${k}.hint`)}
+          onClick={() => onChange(on.includes(k) ? on.filter((x) => x !== k) : [...on, k])}>{t(`overlay.${k}`)}</button>
+      ))}
     </div>
   );
 }

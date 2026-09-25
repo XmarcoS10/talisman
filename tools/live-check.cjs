@@ -2,7 +2,7 @@
 // misura i fotogrammi al secondo e scatta foto del campo. Non tocca i salvataggi veri (cartella dati temporanea).
 // Uso: pnpm build && npx electron tools/live-check.cjs
 // Variabili: VIEW (highlights | extended | full), CAMERA (wide | follow | close), SECONDS (quanto guardare, 20),
-// SHOTS (quante foto, 4), OUT (cartella delle foto, di default una temporanea)
+// OVERLAYS (sovrapposizioni accese, separate da virgole), SHOTS (quante foto, 4), OUT (cartella delle foto, di default una temporanea)
 const { app } = require('electron');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -30,7 +30,7 @@ app.on('browser-window-created', async (_e, win) => {
     await loaded();
     win.show();
     const s = { hints: false, seen: [], visited: ['board', 'squad', 'tactics', 'training', 'live'], guideDone: true, volume: { ui: 0, crowd: 0, fx: 0 },
-      view: process.env.VIEW || 'highlights', camera: process.env.CAMERA || 'follow' };
+      view: process.env.VIEW || 'highlights', camera: process.env.CAMERA || 'follow', overlays: (process.env.OVERLAYS || '').split(',').filter(Boolean) };
     await js(`localStorage.setItem('talisman-settings', ${JSON.stringify(JSON.stringify(s))}); location.reload();`);
     await loaded();
     await wait(800);
@@ -46,6 +46,7 @@ app.on('browser-window-created', async (_e, win) => {
       await wait(300);
     }
     if (!await until(`!!document.querySelector('canvas.pitch2d')`)) throw new Error('la partita non si apre');
+    console.log('sovrapposizioni accese:', await js(`[...document.querySelectorAll('.chip-btn.on')].map((b) => b.textContent).join(', ') || 'nessuna'`));
     await js(`window.__dt = []; (() => { let l = performance.now(); const f = (n) => { window.__dt.push(n - l); l = n; requestAnimationFrame(f); }; requestAnimationFrame(f); })(); true`);
     for (let k = 0; k < SHOTS; k++) {
       await wait((SECONDS * 1000) / SHOTS);

@@ -14,7 +14,7 @@ import { Pause, Play, SkipForward, SlidersHorizontal } from 'lucide-react';
 import { Hint } from '../Hint.tsx';
 import { crowdIntensity, crowdStart, crowdStop, playUi } from '../audio.ts';
 import { shortName } from '../bits.tsx';
-import { ClipStrip, Inertia, ReplayTag, Scoreboard, Shouts, SkipCard, Ticker, ViewBar } from './LiveParts.tsx';
+import { ClipStrip, Inertia, OverlayChips, ReplayTag, Scoreboard, Shouts, SkipCard, Ticker, ViewBar } from './LiveParts.tsx';
 import { t } from '../i18n.ts';
 import { LiveAnalyst } from './LiveAnalyst.tsx';
 import { LiveBench } from './LiveBench.tsx';
@@ -32,6 +32,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   const [speed, setSpeed] = useState(0);
   const [view, setView] = useState<ViewMode>(settings().view);
   const [camera, setCamera] = useState<CameraMode>(settings().camera);
+  const [overlays, setOverlays] = useState(settings().overlays);
   const [pause, setPause] = useState(false); // pausa tattica
   const [phrase, setPhrase] = useState<{ id: string; vars: Record<string, string | number> } | null>(null);
   const [, rerender] = useReducer((x: number) => x + 1, 0);
@@ -46,7 +47,8 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
     look.names.set(m.p.id, shortName(m.p));
   }));
 
-  const { T, reel, moments, replay, startReplay, stopReplay } = useLiveLoop(run, canvas, look, mirror, { playing: playing && !pause, speed, view, camera }, rerender);
+  const { T, reel, moments, replay, startReplay, stopReplay, overlays: ov } = useLiveLoop(run, canvas, look, mirror,
+    { playing: playing && !pause, speed, view, camera, overlays }, rerender);
   const clip = view === 'full' ? null : reel.current.at(T.current);
 
   const st = sample(run, T.current, mirror);
@@ -97,7 +99,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
     setPlaying(false);
   };
   const tac = world.clubs[world.manager.clubId]!.tactic;
-  const setTac = <K extends keyof Tactic>(k: K, v: Tactic[K]) => { tac[k] = v; run.teams[me].baseMentality = tac.mentality; rerender(); };
+  const setTac = <K extends keyof Tactic>(k: K, v: Tactic[K]) => { ov.current.snapshot(min); tac[k] = v; run.teams[me].baseMentality = tac.mentality; rerender(); };
 
   return (
     <div className="live">
@@ -126,6 +128,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
 
         <div className="stack">
           <Hint id="live" />
+          <OverlayChips on={overlays} onChange={(v) => { setOverlays(v); updateSettings({ overlays: v }); }} />
           <div className="pitch-wrap">
             <canvas ref={canvas} className="pitch2d" />
             <span className="attack-dir">{t('live.attackRight', { club: clubs[me].shortName })}</span>

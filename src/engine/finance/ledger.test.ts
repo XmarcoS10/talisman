@@ -104,7 +104,7 @@ describe('finanze (F8)', { timeout: 30000 }, () => {
     expect(club.playerIds.length).toBeGreaterThanOrEqual(FIN.minSquad);
   });
 
-  it('una stagione intera lascia libri coerenti e nessun club con i conti impossibili', () => {
+  it('una stagione intera lascia libri coerenti e nessun club con i conti impossibili', { timeout: 90_000 }, () => { // ~11 s da sola, di più con gli altri test in parallelo
     const world = newWorld(9);
     world.manager.clubId = -1;
     while (!isSeasonOver(world)) advance(world);

@@ -7,8 +7,10 @@ import { sample, SPEEDS, ensure } from '../match/playback.ts';
 import { Camera, cameraZoom, draw, resetTrail, type CameraMode, type Look } from '../match/renderer.ts';
 import { focusOf } from '../match/fx.ts';
 import { beatTime, momentsAt, type Moment } from '../match/moments.ts';
+import { Overlays, type OverlayKind } from '../match/overlays.ts';
+import { t } from '../i18n.ts';
 
-export interface LoopOpts { playing: boolean; speed: number; view: ViewMode; camera: CameraMode }
+export interface LoopOpts { playing: boolean; speed: number; view: ViewMode; camera: CameraMode; overlays: OverlayKind[] }
 
 /** quanto la simulazione sta avanti alla riproduzione: nei salienti deve vedere l'azione prima che cominci */
 const AHEAD = PRE + 18;
@@ -24,6 +26,7 @@ export function useLiveLoop(run: MatchRun, canvas: RefObject<HTMLCanvasElement |
   const mode = o.view === 'full' ? 'highlights' : o.view;
   const reel = useRef(new Reel(mode));
   const moments = useRef<Moment[]>([]);
+  const overlays = useRef(new Overlays(look.mine));
   const replay = useRef<{ to: number; back: number } | null>(null);
   const replayed = useRef(new Set<number>()); // gol già rivisti in automatico
   if (reel.current.mode !== mode) reel.current = new Reel(mode); // si ricalcola da capo sulla traccia già pronta
@@ -39,6 +42,7 @@ export function useLiveLoop(run: MatchRun, canvas: RefObject<HTMLCanvasElement |
     let raf = 0, last = performance.now(), acc = 0;
     const style = getComputedStyle(document.documentElement);
     const css = (v: string) => style.getPropertyValue(v) || '#123';
+    const on = new Set(o.overlays);
     const loop = (now: number) => {
       const dt = Math.min(0.1, (now - last) / 1000);
       last = now;
@@ -51,6 +55,7 @@ export function useLiveLoop(run: MatchRun, canvas: RefObject<HTMLCanvasElement |
         ensure(run, T.current + (r ? AHEAD : 0));
         reel.current.update(run);
       }
+      overlays.current.update(run, T.current);
       const el = canvas.current;
       if (el) {
         const dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -70,7 +75,9 @@ export function useLiveLoop(run: MatchRun, canvas: RefObject<HTMLCanvasElement |
         if (ctx) {
           if (focus) cam.current.step(focus.x, focus.y, dt, focus.zoom, w, h);
           else if (st) cam.current.step(st.bx, st.by, dt, cameraZoom(o.camera, !!r?.at(T.current)), w, h);
-          draw(ctx, w, h, st, look, cam.current, css, moments.current);
+          const g = overlays.current.ghost;
+          draw(ctx, w, h, st, look, cam.current, css, moments.current,
+            { ov: overlays.current, on, mirror, before: g ? t('overlay.before', { n: g.min }) : '' });
         }
       }
       acc += dt;
@@ -79,7 +86,7 @@ export function useLiveLoop(run: MatchRun, canvas: RefObject<HTMLCanvasElement |
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [o.playing, o.speed, o.view, o.camera, run, look, mirror, canvas, tick]);
+  }, [o.playing, o.speed, o.view, o.camera, o.overlays, run, look, mirror, canvas, tick]);
 
-  return { T, reel, moments, replay, startReplay, stopReplay };
+  return { T, reel, moments, replay, startReplay, stopReplay, overlays };
 }

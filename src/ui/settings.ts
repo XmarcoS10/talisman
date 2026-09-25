@@ -3,6 +3,7 @@
 
 import type { ViewMode } from './match/highlights.ts';
 import type { CameraMode } from './match/renderer.ts';
+import type { OverlayKind } from './match/overlays.ts';
 
 export interface Settings {
   hints: boolean; // suggerimenti alla prima apertura di ogni schermata
@@ -19,12 +20,13 @@ export interface Settings {
   win: string; // misura della finestra nell'app desktop, "1440x900"; vuoto = quella di partenza
   view: ViewMode; // partita: Salienti, Estesa o Completa (Blocco 3)
   camera: CameraMode; // partita: campo intero, segui la palla, ravvicinata sui salienti
+  overlays: OverlayKind[]; // partita: sovrapposizioni tattiche accese
 }
 
 const KEY = 'talisman-settings';
 export const DEFAULTS: Settings = { hints: true, seen: [], visited: [], guideDone: false, volume: { ui: 0.5, crowd: 0.4, fx: 0.65 },
   muteOnBlur: true, autosave: true, pauseNews: true, currency: 'EUR', dateFmt: 'long', win: '', rail: false,
-  view: 'highlights', camera: 'follow' };
+  view: 'highlights', camera: 'follow', overlays: [] };
 
 let cache: Settings | null = null;
 

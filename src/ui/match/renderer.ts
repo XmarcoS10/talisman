@@ -5,6 +5,7 @@ import type { Live } from './playback.ts';
 import { art } from '../assets-manifest.ts';
 import { drawMoments } from './fx.ts';
 import type { Moment } from './moments.ts';
+import { drawOverlays, type OverlayKind, type Overlays } from './overlays.ts';
 
 export const PITCH_X = 12, PITCH_Y = 8;
 export type CameraMode = 'wide' | 'follow' | 'close';
@@ -60,7 +61,11 @@ function grassPattern(ctx: CanvasRenderingContext2D): CanvasPattern | null {
   return grassPat;
 }
 
-export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: Live | null, look: Look, cam: Camera, css: (v: string) => string, moments: Moment[] = []) {
+/** sovrapposizioni tattiche da disegnare sotto i giocatori (overlays.ts) */
+export interface OverlayView { ov: Overlays; on: ReadonlySet<OverlayKind>; mirror: boolean; before: string }
+
+export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: Live | null, look: Look, cam: Camera, css: (v: string) => string,
+  moments: Moment[] = [], over?: OverlayView) {
   const scale = Math.min(w / PITCH_X, h / PITCH_Y) * cam.zoom;
   const ox = w / 2 - cam.cx * scale;
   const oy = h / 2 - cam.cy * scale;
@@ -105,6 +110,11 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: 
     ctx.fillRect(X(side ? PITCH_X : -0.18), Y(3.35), 0.18 * scale, 1.3 * scale); // porta
   }
   if (!live) return;
+  if (over?.on.size) {
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    drawOverlays(ctx, over.ov, over.on, { X, Y, scale, mirror: over.mirror, before: over.before });
+  }
 
   // scia della palla
   trail.push({ x: live.bx, y: live.by });

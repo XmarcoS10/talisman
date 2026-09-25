@@ -1634,5 +1634,15 @@
   "clip.save": "parata",
   "clip.chance": "occasione",
   "clip.press": "pressione",
-  "clip.break": "ripartenza"
+  "clip.break": "ripartenza",
+  "live.overlays": "Sovrapposizioni",
+  "overlay.shape": "Linea e baricentro",
+  "overlay.passes": "Rete passaggi",
+  "overlay.heat": "Heatmap",
+  "overlay.press": "Zone di pressing",
+  "overlay.shape.hint": "Linea difensiva e baricentro delle due squadre (noi azzurro, loro rosso), sugli ultimi minuti. Quando cambi un'istruzione resta tratteggiato com'era prima.",
+  "overlay.passes.hint": "I passaggi riusciti fra i nostri giocatori negli ultimi 10 minuti: più spessa la linea, più passaggi",
+  "overlay.heat.hint": "Dove sono stati i nostri giocatori negli ultimi minuti",
+  "overlay.press.hint": "Dove abbiamo ripreso palla negli ultimi 10 minuti (a destra la metà campo avversaria)",
+  "overlay.before": "prima (fino al {n}')"
 }

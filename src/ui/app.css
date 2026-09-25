@@ -239,6 +239,9 @@ select:focus, input:focus { outline: none; border-color: var(--data-1); box-shad
 .clip-strip .clip.me { border-color: var(--border-2); color: var(--text-1); }
 .clip-strip .clip.goal { background: rgb(0 245 155 / 0.16); color: var(--accent); }
 .clip-strip .clip:hover { border-color: var(--data-1); }
+.overlay-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.chip-btn { font: 500 12px var(--font-ui); padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border-2); background: transparent; color: var(--text-2); cursor: pointer; }
+.chip-btn.on { border-color: var(--data-1); color: var(--data-1); background: rgb(6 182 212 / 0.1); }
 .view-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--s-2) var(--s-3); }
 /* fra un saliente e l'altro (Blocco 3): il campo si scurisce e il cronometro corre */
 .skip-card { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: var(--s-3);
