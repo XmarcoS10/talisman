@@ -76,6 +76,8 @@ describe('offerte per i giocatori dell\'utente', () => {
     const fresh = () => world.offers.filter((o) => !known.has(`${o.playerId}:${o.buyer}`));
     while (!isSeasonOver(world)) {
       advance(world);
+      // ogni offerta arriva con la sua notizia sulla Scrivania (si controlla subito: le notizie vecchie poi scorrono via)
+      if (fresh().length) expect(world.news.some((n) => n.key === 'news.offerIn')).toBe(true);
       for (const o of fresh()) {
         known.add(`${o.playerId}:${o.buyer}`);
         if (isWinterWindow(world.day)) winter++; else outside.push(world.day);
@@ -87,6 +89,5 @@ describe('offerte per i giocatori dell\'utente', () => {
     expect(outside).toEqual([]);
     expect(winter + summer.length).toBeGreaterThan(0);
     for (const o of summer) expect(o.until).toBe(OFFERS.days);
-    expect(world.news.some((n) => n.key === 'news.offerIn')).toBe(true);
   }, 60_000);
 });
