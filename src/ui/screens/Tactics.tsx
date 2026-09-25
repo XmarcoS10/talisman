@@ -7,6 +7,7 @@ import { PosBadge, Stars, shortName } from '../bits.tsx';
 import { t } from '../i18n.ts';
 import { Pitch, fitClass } from './Pitch.tsx';
 import { Status } from './Squad.tsx';
+import { Takers } from './Takers.tsx';
 
 type Instr = 'pressing' | 'tempo' | 'width' | 'line' | 'directness';
 const INSTRUCTIONS: Instr[] = ['pressing', 'tempo', 'width', 'line', 'directness'];
@@ -97,6 +98,7 @@ export function Tactics({ world, onChange, onPlayer }: { world: WorldState; onCh
               <Seg key={k} label={t(`instr.${k}`)} value={tac[k]} options={[0, 1, 2].map((v) => t(`instr.${k}.${v}`))} onChange={(v) => setTactic(k, v)} />
             ))}
           </div>
+          <Takers world={world} tactic={tac} playerIds={club.playerIds} onChange={onChange} />
           <div className="panel">
             <h2>{sel ? t('tactics.candidates', { pos: t(`pos.${sel.pos}`) }) : t('tactics.squadTitle')}</h2>
             <div className="muted small">{t('tactics.hint')}</div>

@@ -238,10 +238,20 @@ export const MATCH = {
   secondValue: 0.05, // valore, nella scelta, di una respinta che resta a chi attacca
   crossLoss: 0.0, // un cross perso costa meno di un passaggio perso: la palla va lontano
   cornerAfterBlock: 0.5,
-  cornerHeader: 0.3,
-  cornerHeaderXg: 0.07,
-  fkShot: 0.4,
+  // piazzati (Blocco 2b, intervento 8, match/setpieces.ts)
+  cornerShort: 0.2, // corner battuto corto
+  cornerDuel: 0.5, // sul corner chi attacca ha lo schema e arriva in corsa: duello più facile che su un cross
+  cornerXg: 1.6, // colpo di testa da corner, rispetto a quello da cross: schema, saltatore che arriva libero
+  cornerNear: 0.35, // sul primo palo (il resto sul secondo)…
+  nearPostDuel: 0.4, // …dove il duello si vince più spesso…
+  nearPostXg: 0.7, // …ma il colpo di testa vale meno
+  spDelivery: 1.0, // logit che la palla da fermo arrivi in area, + Calci d'angolo o Calci piazzati del battitore
+  fkShot: 0.4, // dal limite si tira in porta…
+  fkWall: 0.3, // …e la barriera respinge…
+  fkWallCorner: 0.3, // …a volte in corner
   fkXg: 0.05,
+  fkCrossX: 7.5, // da qui in su la punizione si calcia in area…
+  fkCross: 0.5, // …con questa probabilità (il resto si gioca corta)
 
   // scelta dell'opzione (§6.2 punto 4): softmax con temperatura
   tempBase: 0.008,

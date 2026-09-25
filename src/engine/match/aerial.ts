@@ -4,7 +4,7 @@ import { MATCH } from '../balance.ts';
 import { sigmoid, xG } from './pitch.ts';
 import { corner } from './setpieces.ts';
 import { shoot } from './execute.ts';
-import { best, gain, nearest, type MatchState, type MP, type Team } from './state.ts';
+import { best, gain, nearest, type MatchState, type MP, type Origin, type Team } from './state.ts';
 
 /** forza nel gioco aereo: Colpo di testa, Coraggio, Forza e altezza (182 cm = 11), più il bonus del ruolo (la punta di peso) */
 export const aerial = (m: MP) => {
@@ -13,7 +13,7 @@ export const aerial = (m: MP) => {
 };
 
 /** il portiere esce sul cross alto e lo blocca: Uscite alte e Comando dell'area */
-const claims = (st: MatchState, gk: MP | undefined) =>
+export const claims = (st: MatchState, gk: MP | undefined) =>
   !!gk && st.rng.next() < MATCH.claimBase + MATCH.claimSkill * ((gk.p.attrs.aerialReach + gk.p.attrs.commandOfArea) / 2 - 11);
 
 /** chi va sulla palla in area: fra quelli che ci sono, il più forte di testa; se non c'è nessuno, il migliore in campo */
@@ -52,21 +52,29 @@ function cleared(st: MatchState, att: Team, def: Team, d: MP) {
   gain(st, def, d);
 }
 
-/** il cross è arrivato: duello (alto) o anticipo (basso); vinto è un tiro, perso è una respinta */
-function contest(st: MatchState, att: Team, def: Team, c: MP, low: boolean): boolean {
+/**
+ * palla alta in area da `from` (cross, corner, punizione): duello fra il più forte di testa in area e chi lo marca.
+ * `quality`: logit della battuta (Cross o Calci d'angolo); `base`: logit del duello a pari forza; `xgMul`: il colpo di
+ * testa vale di più o di meno (primo palo: si vince più spesso ma si tira peggio). Vinto è un tiro, perso una respinta.
+ */
+export function headerDuel(st: MatchState, att: Team, def: Team, from: MP, quality: number, base: number, xgMul: number, origin: Origin): boolean {
+  const a = target(att, from), d = marker(def);
+  const margin = aerial(a) - aerial(d);
+  if (st.rng.next() >= sigmoid(base + MATCH.duelSkill * margin + quality)) { cleared(st, att, def, d); return false; }
+  st.lastPass = from;
+  st.bx = 10.8; st.by = 4;
+  shoot(st, a, MATCH.headerXg * xgMul * Math.max(0.4, 1 + MATCH.headerMargin * margin), 'header', origin);
+  return true;
+}
+
+/** palla bassa all'indietro dal fondo: anticipo, e il tiro è di piatto dal dischetto contro una difesa che rientra */
+function cutback(st: MatchState, att: Team, def: Team, c: MP): boolean {
   const a = target(att, c), d = marker(def);
-  const q = MATCH.crossSkill * (c.p.attrs.crossing - 11);
-  const margin = low ? (a.p.attrs.offTheBall + a.p.attrs.firstTouch - d.p.attrs.anticipation - d.p.attrs.positioning) / 2 : aerial(a) - aerial(d);
-  const pWin = sigmoid((low ? MATCH.lowBase : MATCH.duelBase) + MATCH.duelSkill * margin + q);
-  if (st.rng.next() >= pWin) { cleared(st, att, def, d); return false; }
+  const margin = (a.p.attrs.offTheBall + a.p.attrs.firstTouch - d.p.attrs.anticipation - d.p.attrs.positioning) / 2;
+  if (st.rng.next() >= sigmoid(MATCH.lowBase + MATCH.duelSkill * margin + MATCH.crossSkill * (c.p.attrs.crossing - 11))) { cleared(st, att, def, d); return false; }
   st.lastPass = c;
-  if (low) { // palla bassa all'indietro: tiro di piatto dal dischetto, contro una difesa che sta rientrando
-    st.bx = 10.2; st.by = 4;
-    shoot(st, a, xG(10.2, 4, MATCH.lowPressure), 'open', 'cross');
-  } else {
-    st.bx = 10.8; st.by = 4;
-    shoot(st, a, MATCH.headerXg * Math.max(0.4, 1 + MATCH.headerMargin * margin), 'header', 'cross');
-  }
+  st.bx = 10.2; st.by = 4;
+  shoot(st, a, xG(10.2, 4, MATCH.lowPressure), 'open', 'cross');
   return true;
 }
 
@@ -82,5 +90,5 @@ export function cross(st: MatchState, att: Team, def: Team, c: MP, p: number, lo
   }
   const gk = def.on.find((m) => m.pos === 'GK');
   if (!low && claims(st, gk)) { gain(st, def, gk!); return false; }
-  return contest(st, att, def, c, low);
+  return low ? cutback(st, att, def, c) : headerDuel(st, att, def, c, MATCH.crossSkill * (c.p.attrs.crossing - 11), MATCH.duelBase, 1, 'cross');
 }

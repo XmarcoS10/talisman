@@ -92,6 +92,16 @@ traiettoria dell'azione nella prima parte dell'intervallo e poi aspetta. Decisio
 - **Rinvio lungo**: opzione del portiere verso chi sta nella metà campo avversaria, riuscita `σ(kickBase +
   kickSkill·(Rinvio + Colpo di testa di chi riceve))`, voglia `kickDirect × verticalità`.
 
+## Piazzati (Blocco 2b, intervento 8, `setpieces.ts`)
+- **Battitori**: quelli scelti in Tattica (`tactic.takers`, schema 22) se sono in campo, altrimenti il migliore per
+  Calci d'angolo, Calci piazzati, o `0,7·Rigori + 0,3·Compostezza` per il rigore.
+- **Corner**: corto (`cornerShort`), sul primo palo (`cornerNear`: duello +`nearPostDuel`, colpo di testa ×`nearPostXg`)
+  o sul secondo. La palla arriva con `σ(spDelivery + crossSkill·Calci d'angolo)`, il portiere può uscire, poi il duello
+  aereo dei cross con `cornerDuel` in più per chi attacca (schema, rincorsa) e colpo di testa ×`cornerXg`.
+- **Punizioni**: dal limite (`fkShot`) tira lo specialista, la barriera respinge (`fkWall`, a volte in corner); dalla
+  trequarti (`fkCrossX`) la palla va in area (`fkCross`) ed è un duello aereo.
+- Le rimesse lunghe non ci sono: il modello non ha l'attributo né le rimesse laterali.
+
 ## Fatica
 Energia persa al minuto: `drain del ruolo × (drainBase + drainStamina·(1 − Resistenza/20))`, più per chi pressa. Con
 `drainStamina` 0,5 chi ha poca Resistenza arriva davvero stanco (prima al 75' erano tutti fra 76 e 80). L'energia

@@ -255,6 +255,8 @@ export interface Tactic {
   line: number; // linea difensiva
   directness: number; // passaggi diretti/verticali
   roles: RoleId[]; // ruolo di ogni slot del modulo, nello stesso ordine
+  /** battitori scelti dall'allenatore (id del giocatore); se manca o non è in campo, batte il migliore (schema 22) */
+  takers?: { corners?: number; freeKicks?: number; penalties?: number };
 }
 
 export interface NewsItem {
