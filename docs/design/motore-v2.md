@@ -274,3 +274,26 @@ più bravo **e** si trasforma in occasioni, quindi la correlazione forza↔punti
 
 **Rischio**: alto, tocca il cuore del modello. **Costo**: un giorno di lavoro, circa +10% di tempo per partita
 (budget 15%).
+
+### Intervento 3 (dribbling e 1 contro 1) — 25/09, fermo su due target
+
+Chi punta: Dribbling 0,4, Tecnica, Agilità, Accelerazione 0,2; chi difende: Contrasto 0,4, Posizionamento e Anticipo
+0,3; esiti uomo saltato, fallo subito, palla persa; più il contrasto sul portatore pressato (Contrasto, Posizionamento,
+Anticipo contro Tecnica, Compostezza, Equilibrio). Patch: `docs/design/patches/dribbling-v1.patch`
+(dribBase 0,5 · dribBeat 0,004 · pressTackle 0,035 · tackleSkill 0,04).
+
+| | Prima | Dopo |
+|---|---|---|
+| Dribbling tentati · riusciti | 3,9 · 34% | **15,5 · 43%** ✅ |
+| Contrasti vinti | 1,7 | **15,5** ✅ |
+| Fuorigioco | 2,5 | 2,4 ✅ |
+| Gol (4.000 partite · stagioni 42 · 7) | 2,68 · 2,66 · 2,80 | 2,67 · 2,50 · 2,76 ✅ |
+| Falli per partita | 23 | 28 ✅ (Serie A ~26) |
+| Correlazione (42 · 7) | 0,78 · 0,74 | 0,77 · 0,77 ✅ |
+| Campioni diversi · punti massimi (42 · 7) | 5-6 · 94-95 | 8 · 91 / 6 · 93 ✅ (con tackleSkill 0,08: 3 · 102 / 5 · 105 ❌) |
+| **Infortuni per squadra/stagione (42 · 7)** | 18,0 · 17,6 | **20,8 · 20,1** ❌ |
+| **Test della stanchezza (t)** | 4,4 | **1,8** ❌ |
+
+Più contrasti → più falli (realistici) → più infortuni da contatto, con la stessa probabilità per fallo di prima. La
+stanchezza era già un effetto di un solo punto di precisione (tutti fra 76 e 80 di energia al 75'): con più
+turnover la nasconde il rumore.

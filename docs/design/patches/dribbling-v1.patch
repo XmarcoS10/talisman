@@ -1,0 +1,105 @@
+diff --git a/src/engine/balance.ts b/src/engine/balance.ts
+index ec9bc61..5ccda57 100644
+--- a/src/engine/balance.ts
++++ b/src/engine/balance.ts
+@@ -171,11 +171,19 @@ export const MATCH = {
+   offsidePerZone: 0.15, // per zona oltre la linea difensiva
+ 
+   // dribbling
+-  dribBase: 0.1,
+-  dribSkill: 0.09,
+-  dribDef: 0.08,
++  // dribbling e 1 contro 1 (Blocco 2b, intervento 3): chi punta (Dribbling 0,4, Tecnica, Agilità, Accelerazione 0,2)
++  // contro chi difende (Contrasto 0,4, Posizionamento e Anticipo 0,3). Saltare un uomo vicino vale più della zona
++  // guadagnata: ci si libera della pressione (dribBeat)
++  dribBase: 0.5,
++  dribSkill: 0.12, // per punto di abilità di chi punta, sopra/sotto 11
++  dribDef: 0.1, // per punto di abilità del difensore, pesato da quanto è vicino
+   dribPress: 0.9,
+   dribGain: 1.0, // zone guadagnate
++  dribBeat: 0.004, // valore di aver saltato il difensore più vicino (× quanto era vicino)
++  // contrasto sul portatore pressato: il difensore più vicino entra (Contrasto 0,4, Posizionamento e Anticipo 0,3)
++  // contro Tecnica 0,5, Compostezza ed Equilibrio 0,25 di chi ha palla
++  pressTackle: 0.035, // per unità di pressione, a ogni azione
++  tackleSkill: 0.04, // per punto di differenza fra difensore e portatore
+ 
+   // tiro e xG (§6.3): logit = base + angolo·a − distanza_m·d − pressione·p (+ colpo di testa)
+   shotMinX: 7,
+diff --git a/src/engine/match/decision.ts b/src/engine/match/decision.ts
+index 922a167..3e7c65a 100644
+--- a/src/engine/match/decision.ts
++++ b/src/engine/match/decision.ts
+@@ -132,13 +132,13 @@ function dribble(v: View, x: Ctx): Option {
+     if (d < best) { best = d; tackler = v.defs[i]; }
+   }
+   const close = best < 2.2 ? 1 - best / 2.2 : 0; // quanto è vicino il difensore
+-  const dribSkill = (a(c, 'dribbling') + a(c, 'agility') + a(c, 'acceleration')) / 3;
+-  const tackSkill = tackler ? (a(tackler, 'tackling') + a(tackler, 'positioning') + a(tackler, 'anticipation')) / 3 : 0;
++  const dribSkill = 0.4 * a(c, 'dribbling') + 0.2 * (a(c, 'technique') + a(c, 'agility') + a(c, 'acceleration'));
++  const tackSkill = tackler ? 0.4 * a(tackler, 'tackling') + 0.3 * (a(tackler, 'positioning') + a(tackler, 'anticipation')) : 0;
+   const tx = Math.min(10.8, bx + MATCH.dribGain);
+   const ty = by + (bx > 7 ? (4 - by) * 0.25 : 0);
+   const pd = sigmoid(MATCH.dribBase + MATCH.dribSkill * dribSkill - close * MATCH.dribDef * tackSkill - MATCH.dribPress * pressure
+     + (tackler ? (100 - tackler.energy) * MATCH.energySkill : 0) + v.bonus);
+-  return { kind: 'dribble', tx, ty, p: pd, tackler: close > 0 ? tackler : undefined, u: pd * (xT(tx, ty) + x.keep) - (1 - pd) * x.loss + 0.0008 * a(c, 'flair') + c.role.dribble };
++  return { kind: 'dribble', tx, ty, p: pd, tackler: close > 0 ? tackler : undefined, u: pd * (xT(tx, ty) + x.keep + MATCH.dribBeat * close) - (1 - pd) * x.loss + 0.0008 * a(c, 'flair') + c.role.dribble };
+ }
+ 
+ /** 3) TIRO dalla trequarti in su */
+diff --git a/src/engine/match/engine.ts b/src/engine/match/engine.ts
+index 49c64b2..19c8f4b 100644
+--- a/src/engine/match/engine.ts
++++ b/src/engine/match/engine.ts
+@@ -5,7 +5,7 @@ import { MATCH } from '../balance.ts';
+ import type { MatchEvent, Player } from '../model.ts';
+ import type { Rng } from '../rng.ts';
+ import { choose, options } from './decision.ts';
+-import { drain, dueInjuries, foul, scheduleInjuries } from './events.ts';
++import { challenge, challengeP, drain, dueInjuries, foul, scheduleInjuries } from './events.ts';
+ import { act } from './execute.ts';
+ import { inBox } from './pitch.ts';
+ import { kickoff, settle } from './positioning.ts';
+@@ -67,6 +67,7 @@ function step(st: MatchState) {
+   const pressFoul = MATCH.pressFoul * pressure * PRESS[def.tactic.pressing]! * (inBox(st.bx, st.by) ? MATCH.foulInBox : 1)
+     * (closest?.st.yellows ? MATCH.bookedCaution : 1);
+   if (closest && st.rng.next() < pressFoul) foul(st, closest, c);
++  else if (closest && st.rng.next() < challengeP(closest, c, pressure)) challenge(st, closest); // gli porta via palla
+   else act(st, att, def, c, choose(st.rng, options(view), st.carrier, pressure));
+ 
+   // tempo che passa: possesso, stanchezza (applicata a blocchi di un minuto), momentum
+diff --git a/src/engine/match/events.ts b/src/engine/match/events.ts
+index c329607..b8fc6d2 100644
+--- a/src/engine/match/events.ts
++++ b/src/engine/match/events.ts
+@@ -1,7 +1,7 @@
+ // Eventi intorno al gioco: falli, cartellini, infortuni (di contatto e "senza contatto"), stanchezza.
+ import { MATCH } from '../balance.ts';
+ import { afterFoul } from './setpieces.ts';
+-import { ev, minute, nearest, type MatchState, type MP, type PStats, type Team } from './state.ts';
++import { ev, gain, minute, nearest, type MatchState, type MP, type PStats, type Team } from './state.ts';
+ import { substitute } from './subs.ts';
+ 
+ export function removeFromPitch(st: MatchState, tm: Team, m: MP) {
+@@ -27,6 +27,22 @@ function sendOff(st: MatchState, tm: Team, m: MP) {
+   removeFromPitch(st, tm, m);
+ }
+ 
++/** quanto è probabile che il difensore più vicino porti via palla al portatore pressato, prima che giochi */
++export function challengeP(tk: MP, c: MP, pressure: number) {
++  const a = tk.p.attrs, b = c.p.attrs;
++  const diff = 0.4 * a.tackling + 0.3 * (a.positioning + a.anticipation) - 0.5 * b.technique - 0.25 * (b.composure + b.balance);
++  return MATCH.pressTackle * pressure * Math.max(0.2, 1 + MATCH.tackleSkill * diff);
++}
++
++/** contrasto vinto sul portatore: palla al difensore, dove si trova */
++export function challenge(st: MatchState, tk: MP) {
++  const def = st.teams[1 - st.s]!;
++  tk.st.tackles++; def.stats.tackles++;
++  def.log.tackles++; def.log.regains++; def.log.regainX += tk.x;
++  st.t += MATCH.turnoverTime + 1;
++  gain(st, def, tk);
++}
++
+ export function foul(st: MatchState, fouler: MP, victim: MP) {
+   const att = st.teams[st.s], def = st.teams[1 - st.s]!;
+   const { rng } = st;
