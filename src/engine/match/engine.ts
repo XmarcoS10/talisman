@@ -5,7 +5,7 @@ import { MATCH } from '../balance.ts';
 import type { MatchEvent, Player } from '../model.ts';
 import type { Rng } from '../rng.ts';
 import { choose, options } from './decision.ts';
-import { drain, dueInjuries, foul, scheduleInjuries } from './events.ts';
+import { challenge, challengeP, drain, dueInjuries, foul, scheduleInjuries } from './events.ts';
 import { act } from './execute.ts';
 import { inBox } from './pitch.ts';
 import { kickoff, settle } from './positioning.ts';
@@ -67,6 +67,7 @@ function step(st: MatchState) {
   const pressFoul = MATCH.pressFoul * pressure * PRESS[def.tactic.pressing]! * (inBox(st.bx, st.by) ? MATCH.foulInBox : 1)
     * (closest?.st.yellows ? MATCH.bookedCaution : 1);
   if (closest && st.rng.next() < pressFoul) foul(st, closest, c);
+  else if (closest && st.rng.next() < challengeP(closest, c, pressure)) challenge(st, closest); // gli porta via palla
   else act(st, att, def, c, choose(st.rng, options(view), st.carrier, pressure));
 
   // tempo che passa: possesso, stanchezza (applicata a blocchi di un minuto), momentum

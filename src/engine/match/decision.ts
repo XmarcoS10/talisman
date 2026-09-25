@@ -132,13 +132,13 @@ function dribble(v: View, x: Ctx): Option {
     if (d < best) { best = d; tackler = v.defs[i]; }
   }
   const close = best < 2.2 ? 1 - best / 2.2 : 0; // quanto è vicino il difensore
-  const dribSkill = (a(c, 'dribbling') + a(c, 'agility') + a(c, 'acceleration')) / 3;
-  const tackSkill = tackler ? (a(tackler, 'tackling') + a(tackler, 'positioning') + a(tackler, 'anticipation')) / 3 : 0;
+  const dribSkill = 0.4 * a(c, 'dribbling') + 0.2 * (a(c, 'technique') + a(c, 'agility') + a(c, 'acceleration'));
+  const tackSkill = tackler ? 0.4 * a(tackler, 'tackling') + 0.3 * (a(tackler, 'positioning') + a(tackler, 'anticipation')) : 0;
   const tx = Math.min(10.8, bx + MATCH.dribGain);
   const ty = by + (bx > 7 ? (4 - by) * 0.25 : 0);
   const pd = sigmoid(MATCH.dribBase + MATCH.dribSkill * dribSkill - close * MATCH.dribDef * tackSkill - MATCH.dribPress * pressure
     + (tackler ? (100 - tackler.energy) * MATCH.energySkill : 0) + v.bonus);
-  return { kind: 'dribble', tx, ty, p: pd, tackler: close > 0 ? tackler : undefined, u: pd * (xT(tx, ty) + x.keep) - (1 - pd) * x.loss + 0.0008 * a(c, 'flair') + c.role.dribble };
+  return { kind: 'dribble', tx, ty, p: pd, tackler: close > 0 ? tackler : undefined, u: pd * (xT(tx, ty) + x.keep + MATCH.dribBeat * close) - (1 - pd) * x.loss + 0.0008 * a(c, 'flair') + c.role.dribble };
 }
 
 /** 3) TIRO dalla trequarti in su */

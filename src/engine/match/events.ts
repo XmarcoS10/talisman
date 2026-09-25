@@ -1,7 +1,7 @@
 // Eventi intorno al gioco: falli, cartellini, infortuni (di contatto e "senza contatto"), stanchezza.
 import { MATCH } from '../balance.ts';
 import { afterFoul } from './setpieces.ts';
-import { ev, minute, nearest, type MatchState, type MP, type PStats, type Team } from './state.ts';
+import { ev, gain, minute, nearest, type MatchState, type MP, type PStats, type Team } from './state.ts';
 import { substitute } from './subs.ts';
 
 export function removeFromPitch(st: MatchState, tm: Team, m: MP) {
@@ -25,6 +25,22 @@ function sendOff(st: MatchState, tm: Team, m: MP) {
   tm.stats.reds++;
   ev(st, 'red', tm.side, m);
   removeFromPitch(st, tm, m);
+}
+
+/** quanto è probabile che il difensore più vicino porti via palla al portatore pressato, prima che giochi */
+export function challengeP(tk: MP, c: MP, pressure: number) {
+  const a = tk.p.attrs, b = c.p.attrs;
+  const diff = 0.4 * a.tackling + 0.3 * (a.positioning + a.anticipation) - 0.5 * b.technique - 0.25 * (b.composure + b.balance);
+  return MATCH.pressTackle * pressure * Math.max(0.2, 1 + MATCH.tackleSkill * diff);
+}
+
+/** contrasto vinto sul portatore: palla al difensore, dove si trova */
+export function challenge(st: MatchState, tk: MP) {
+  const def = st.teams[1 - st.s]!;
+  tk.st.tackles++; def.stats.tackles++;
+  def.log.tackles++; def.log.regains++; def.log.regainX += tk.x;
+  st.t += MATCH.turnoverTime + 1;
+  gain(st, def, tk);
 }
 
 export function foul(st: MatchState, fouler: MP, victim: MP) {

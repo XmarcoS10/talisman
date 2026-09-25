@@ -171,11 +171,19 @@ export const MATCH = {
   offsidePerZone: 0.15, // per zona oltre la linea difensiva
 
   // dribbling
-  dribBase: 0.1,
-  dribSkill: 0.09,
-  dribDef: 0.08,
+  // dribbling e 1 contro 1 (Blocco 2b, intervento 3): chi punta (Dribbling 0,4, Tecnica, Agilità, Accelerazione 0,2)
+  // contro chi difende (Contrasto 0,4, Posizionamento e Anticipo 0,3). Saltare un uomo vicino vale più della zona
+  // guadagnata: ci si libera della pressione (dribBeat)
+  dribBase: 0.5,
+  dribSkill: 0.12, // per punto di abilità di chi punta, sopra/sotto 11
+  dribDef: 0.1, // per punto di abilità del difensore, pesato da quanto è vicino
   dribPress: 0.9,
   dribGain: 1.0, // zone guadagnate
+  dribBeat: 0.004, // valore di aver saltato il difensore più vicino (× quanto era vicino)
+  // contrasto sul portatore pressato: il difensore più vicino entra (Contrasto 0,4, Posizionamento e Anticipo 0,3)
+  // contro Tecnica 0,5, Compostezza ed Equilibrio 0,25 di chi ha palla
+  pressTackle: 0.035, // per unità di pressione, a ogni azione
+  tackleSkill: 0.04, // per punto di differenza fra difensore e portatore
 
   // tiro e xG (§6.3): logit = base + angolo·a − distanza_m·d − pressione·p (+ colpo di testa)
   shotMinX: 7,
