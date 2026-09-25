@@ -18,6 +18,7 @@ import { ClipStrip, Inertia, OverlayChips, ReplayTag, Scoreboard, Shouts, SkipCa
 import { t } from '../i18n.ts';
 import { LiveAnalyst } from './LiveAnalyst.tsx';
 import { LiveBench } from './LiveBench.tsx';
+import { LiveSheet } from './LiveSheet.tsx';
 import { Seg } from './Tactics.tsx';
 
 const INSTR = ['pressing', 'tempo', 'width', 'line', 'directness', 'counterPress'] as const;
@@ -34,6 +35,8 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   const [camera, setCamera] = useState<CameraMode>(settings().camera);
   const [overlays, setOverlays] = useState(settings().overlays);
   const [pause, setPause] = useState(false); // pausa tattica
+  const [sheetOpen, setSheet] = useState<'half' | 'full' | null>(null); // tabellino
+  const halfShown = useRef(false);
   const [phrase, setPhrase] = useState<{ id: string; vars: Record<string, string | number> } | null>(null);
   const [, rerender] = useReducer((x: number) => x + 1, 0);
 
@@ -74,7 +77,11 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
 
   const over = run.done && T.current >= duration(run);
   const whistled = useRef(false);
-  if (over && !whistled.current) { whistled.current = true; playUi('whistle'); }
+  if (over && !whistled.current) { whistled.current = true; playUi('whistle'); setTimeout(() => setSheet('full'), 0); }
+  if (!halfShown.current && !replay.current && (st?.frame?.half ?? 1) === 2) { // intervallo: la partita aspetta col tabellino
+    halfShown.current = true;
+    setTimeout(() => { setPlaying(false); setSheet('half'); playUi('whistle'); }, 0);
+  }
   const jumpTo = (minute: number) => {
     replay.current = null; // saltare chiude il replay
     const a = atMinute(run.track, minute);
@@ -94,6 +101,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   const toEnd = () => {
     replay.current = null; // saltare chiude il replay
     run.result();
+    halfShown.current = true; // niente intervallo se si salta al finale
     T.current = duration(run);
     resetTrail();
     setPlaying(false);
@@ -129,13 +137,18 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
         <div className="stack">
           <Hint id="live" />
           <OverlayChips on={overlays} onChange={(v) => { setOverlays(v); updateSettings({ overlays: v }); }} />
-          <div className="pitch-wrap">
+          {sheetOpen && (
+            <LiveSheet run={run} me={me} clubs={clubs} step={st?.i ?? 0} final={sheetOpen === 'full'} ctx={{ ...ctx, min }} clips={reel.current.clips}
+              now={replay.current?.back ?? T.current} onReplay={(c) => { setSheet(null); setPlaying(true); startReplay(c.from, c.to); }}
+              onClose={() => { setSheet(null); setPlaying(true); }} onFinish={onFinish} />
+          )}
+          <div className="pitch-wrap" hidden={!!sheetOpen}>
             <canvas ref={canvas} className="pitch2d" />
             <span className="attack-dir">{t('live.attackRight', { club: clubs[me].shortName })}</span>
             {view !== 'full' && !clip && !over && !replay.current && <SkipCard min={min} />}
             {replay.current && <ReplayTag onSkip={stopReplay} />}
           </div>
-          <ClipStrip clips={reel.current.clips} now={replay.current?.back ?? T.current} me={me} onReplay={(c) => startReplay(c.from, c.to)} />
+          {!sheetOpen && <ClipStrip clips={reel.current.clips} now={replay.current?.back ?? T.current} me={me} onReplay={(c) => startReplay(c.from, c.to)} />}
           <div className="panel say">
             {lines(run.frames, st?.i ?? 0, look.names, 3, view !== 'full').map((l, i, a) => (
               <div key={`${l.key}${i}`} className={`${i === a.length - 1 ? 'now' : 'muted'} ${l.big ? 'big' : ''}`}>{t(l.key, l.vars)}</div>
@@ -144,7 +157,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
         </div>
 
         <div className="stack">
-          <LiveAnalyst run={run} me={me} names={look.names} phrase={phrase} ctx={ctx} />
+          <LiveAnalyst run={run} me={me} names={look.names} phrase={phrase} ctx={ctx} upTo={st?.i ?? 0} />
           <div className="panel quick">
             <h3>{t('live.quick')}</h3>
             <Seg label={t('tactics.mentality')} value={tac.mentality - 1} options={[1, 2, 3, 4, 5].map((m) => t(`mentality.${m}`))} onChange={(v) => setTac('mentality', v + 1)} />

@@ -1744,5 +1744,21 @@
   "say.pass.2": "{min}' {a} per {b}",
   "say.pass.3": "{min}' {a} appoggia su {b}",
   "say.pass.4": "{min}' Scambio fra {a} e {b}",
-  "say.pass.5": "{min}' {a} cerca {b}"
+  "say.pass.5": "{min}' {a} cerca {b}",
+  "sheet.half": "Intervallo",
+  "sheet.final": "Fine partita",
+  "sheet.xg": "xG",
+  "sheet.shots": "Tiri (in porta)",
+  "sheet.possession": "Possesso",
+  "sheet.passes": "Passaggi riusciti",
+  "sheet.duels": "Duelli vinti",
+  "sheet.shotMap": "Mappa dei tiri",
+  "sheet.best": "Migliori in campo",
+  "sheet.out.goal": "gol",
+  "sheet.out.saved": "parato",
+  "sheet.out.blocked": "murato",
+  "sheet.out.off": "fuori",
+  "sheet.resume": "Riprendi il secondo tempo",
+  "sheet.watch": "Torna al campo",
+  "live.momentumSoon": "Il grafico si riempie minuto per minuto"
 }

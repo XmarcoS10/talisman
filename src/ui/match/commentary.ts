@@ -67,7 +67,7 @@ export function line(f: TraceStep, names: Map<number, string>, i = 0): Line {
  */
 export function lines(frames: TraceStep[], i: number, names: Map<number, string>, n = 3, quiet = false): Line[] {
   const out: Line[] = [];
-  for (let k = i; k >= 0 && k > i - 300 && out.length < n; k--) {
+  for (let k = Math.min(i, frames.length - 1); k >= 0 && k > i - 300 && out.length < n; k--) {
     const l = line(frames[k]!, names, k);
     if (!quiet || l.kind !== 'pass') out.unshift(l);
   }

@@ -8,17 +8,27 @@ import { t } from '../i18n.ts';
 type Tab = 'momentum' | 'pressing' | 'chains' | 'duels';
 const TABS: Tab[] = ['momentum', 'pressing', 'chains', 'duels'];
 
-/** grafico a fiume del momentum: sopra la linea comanda la tua squadra */
-function Momentum({ frames, me }: { frames: TraceStep[]; me: 0 | 1 }) {
-  const step = Math.max(1, Math.floor(frames.length / 90));
-  const pts = frames.filter((_, i) => i % step === 0).map((f, i, a) => {
-    const v = (f.mom * (me === 0 ? 1 : -1)) / 100;
-    return `${(i / Math.max(1, a.length - 1)) * 300},${45 - v * 40}`;
-  });
+/**
+ * grafico a fiume del momentum, minuto per minuto fino a quello che si sta guardando (Blocco 3, correzione: prima
+ * all'inizio era una riga piatta larga tutto il grafico). Sopra la linea comanda la tua squadra, sotto l'altra.
+ */
+function Momentum({ frames, me, upTo }: { frames: TraceStep[]; me: 0 | 1; upTo: number }) {
+  const byMin: number[] = [0];
+  for (let k = 0; k <= upTo && k < frames.length; k++) byMin[Math.min(95, frames[k]!.min)] = (frames[k]!.mom * (me === 0 ? 1 : -1)) / 100;
+  const pts: [number, number][] = [];
+  byMin.forEach((v, m) => { if (v !== undefined) pts.push([(m / 95) * 300, 45 - v * 40]); });
+  const last = pts[pts.length - 1]!;
+  const area = `0,45 ${pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ')} ${last[0].toFixed(1)},45`;
   return (
     <svg viewBox="0 0 300 90" className="chart river" role="img" aria-label={t('live.tab.momentum')}>
+      <defs><clipPath id="mom-up"><rect x="0" y="0" width="300" height="45" /></clipPath><clipPath id="mom-down"><rect x="0" y="45" width="300" height="45" /></clipPath></defs>
+      {[15, 30, 45, 60, 75, 90].map((m) => <line key={m} className="tick" x1={(m / 95) * 300} y1="0" x2={(m / 95) * 300} y2="90" />)}
       <line x1="0" y1="45" x2="300" y2="45" />
-      {pts.length > 1 && <polyline points={pts.join(' ')} />}
+      <polygon points={area} className="up" clipPath="url(#mom-up)" />
+      <polygon points={area} className="down" clipPath="url(#mom-down)" />
+      {pts.length > 1 && <polyline points={pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ')} />}
+      <circle cx={last[0]} cy={last[1]} r="3" className="now" />
+      {pts.length < 3 && <text x="150" y="20" textAnchor="middle">{t('live.momentumSoon')}</text>}
     </svg>
   );
 }
@@ -102,8 +112,8 @@ function Duels({ run, me }: { run: MatchRun; me: 0 | 1 }) {
   );
 }
 
-export function LiveAnalyst({ run, me, names, phrase, ctx }: {
-  run: MatchRun; me: 0 | 1; names: Map<number, string>; phrase: { id: string; vars: Record<string, string | number> } | null; ctx: Ctx;
+export function LiveAnalyst({ run, me, names, phrase, ctx, upTo }: {
+  run: MatchRun; me: 0 | 1; names: Map<number, string>; phrase: { id: string; vars: Record<string, string | number> } | null; ctx: Ctx; upTo: number;
 }) {
   const [tab, setTab] = useState<Tab>('momentum');
   return (
@@ -112,7 +122,7 @@ export function LiveAnalyst({ run, me, names, phrase, ctx }: {
         {TABS.map((x) => <button key={x} className={x === tab ? 'active' : ''} onClick={() => setTab(x)}>{t(`live.tab.${x}`)}</button>)}
       </div>
       {tab === 'momentum' && <>
-        <Momentum frames={run.frames} me={me} />
+        <Momentum frames={run.frames} me={me} upTo={upTo} />
         <div className="attr"><span className="muted">xG</span><b className="num">{ctx.xg.toFixed(2)} – {ctx.xgA.toFixed(2)}</b></div>
         <div className="attr"><span className="muted">{t('match.stat.possession')}</span><b className="num">{ctx.poss}%</b></div>
         <div className="attr"><span className="muted">{t('match.stat.shots')}</span><b className="num">{ctx.my.shots} ({ctx.my.onTarget}) – {ctx.opp.shots} ({ctx.opp.onTarget})</b></div>

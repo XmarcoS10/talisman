@@ -108,7 +108,6 @@ export function SkipCard({ min }: { min: number }) {
   );
 }
 
-const CLIP_ICON: Record<Clip['kind'], string> = { goal: '⚽', penalty: '◉', red: '🟥', injury: '✚', save: '🧤', chance: '◎', press: '⇡', break: '⇢' };
 
 /** striscia dei salienti già visti: un clic li rivede al rallentatore */
 export function ClipStrip({ clips, now, me, onReplay }: { clips: Clip[]; now: number; me: 0 | 1; onReplay: (c: Clip) => void }) {
@@ -119,7 +118,7 @@ export function ClipStrip({ clips, now, me, onReplay }: { clips: Clip[]; now: nu
       <span className="caps">{t('live.clips')}</span>
       {seen.map((c) => (
         <button key={c.step} className={`clip ${c.kind} ${c.side === me ? 'me' : ''}`} title={t('live.replayThis', { what: t(`clip.${c.kind}`), n: c.min })} onClick={() => onReplay(c)}>
-          {c.min}' {CLIP_ICON[c.kind]}
+          {c.min}' {t(`clip.${c.kind}`)}
         </button>
       ))}
     </div>

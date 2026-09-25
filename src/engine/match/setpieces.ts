@@ -51,6 +51,7 @@ function directFreeKick(st: MatchState, att: Team, def: Team) {
   st.lastPass = null;
   beat(st, 'freeKick', tk);
   if (st.rng.next() < MATCH.fkWall) {
+    beat(st, 'shot', tk, undefined, false, MATCH.fkXg); // è un tiro anche se lo ferma la barriera
     beat(st, 'wall', nearest(def, 12 - st.bx, 8 - st.by, true), tk);
     att.stats.shots++; tk.st.shots++; att.stats.xg += MATCH.fkXg;
     if (st.rng.next() < MATCH.fkWallCorner) corner(st);

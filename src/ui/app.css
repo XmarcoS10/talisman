@@ -142,8 +142,9 @@ select:focus, input:focus { outline: none; border-color: var(--data-1); box-shad
 .seg button.active { background: var(--accent); color: var(--accent-ink); font-weight: 700; box-shadow: 0 0 12px rgb(0 245 155 / 0.3); }
 /* nella colonna stretta della partita l'etichetta va sopra e i pulsanti si dividono la larghezza (5 mentalità non ci stavano) */
 .quick .seg-row { flex-direction: column; align-items: stretch; gap: 4px; }
-.quick .seg { display: flex; }
-.quick .seg button { flex: 1 1 0; min-width: 0; padding: 4px 2px; }
+/* regolazioni rapide: i bottoni vanno a capo invece di tagliare le parole (Blocco 3, correzione) */
+.quick .seg { display: flex; flex-wrap: wrap; }
+.quick .seg button { flex: 1 1 auto; min-width: 0; padding: 4px 8px; white-space: nowrap; font-size: 12px; }
 
 /* avvio */
 .start { max-width: 1100px; margin: 0 auto; padding: var(--s-6) var(--s-5); display: flex; flex-direction: column; gap: var(--s-5); }
@@ -224,6 +225,11 @@ select:focus, input:focus { outline: none; border-color: var(--data-1); box-shad
 .live-analyst .analyst p { margin: var(--s-2) 0 0; }
 .river line { stroke: var(--border); }
 .river polyline { fill: none; stroke: var(--accent); stroke-width: 2; }
+.river .tick { stroke: rgb(255 255 255 / 0.05); }
+.river .up { fill: rgb(0 245 155 / 0.18); }
+.river .down { fill: rgb(239 68 68 / 0.18); }
+.river .now { fill: var(--accent); }
+.river text { fill: var(--text-2); font: 500 10px var(--font-ui); }
 .zones { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-1); }
 .zones div { display: grid; justify-items: center; padding: var(--s-2) 0; border-radius: var(--r-1); font-size: 11px; }
 .network rect { fill: var(--pitch-1); }
@@ -242,6 +248,26 @@ select:focus, input:focus { outline: none; border-color: var(--data-1); box-shad
 .overlay-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .chip-btn { font: 500 12px var(--font-ui); padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border-2); background: transparent; color: var(--text-2); cursor: pointer; }
 .chip-btn.on { border-color: var(--data-1); color: var(--data-1); background: rgb(6 182 212 / 0.1); }
+/* tabellino dell'intervallo e della fine (Blocco 3) */
+.live-sheet { gap: var(--s-3); }
+.sheet-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); flex-wrap: wrap; }
+.sheet-head .num { font: 700 22px var(--font-num); color: var(--warning); }
+.sheet-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s-4); align-items: start; }
+.sheet-stats { display: grid; gap: var(--s-3); }
+.sheet-row { display: grid; grid-template-columns: auto 1fr auto; gap: 2px var(--s-2); align-items: center; font-size: 13px; }
+.sheet-row .num:last-of-type { text-align: right; }
+.sheet-row .lbl { text-align: center; color: var(--text-2); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+.sheet-bar { grid-column: 1 / -1; height: 6px; border-radius: 3px; background: var(--data-4); overflow: hidden; }
+.sheet-bar i { display: block; height: 100%; background: var(--data-1); }
+.shot-map { width: 100%; max-height: 220px; }
+.shot-map .field { fill: var(--pitch-1); }
+.shot-map line, .shot-map rect:not(.field) { fill: none; stroke: rgb(255 255 255 / 0.4); stroke-width: 0.6; }
+.shot-map .shot { stroke: #fff; stroke-width: 0.5; fill-opacity: 0.75; }
+.shot-map .shot.me { fill: var(--data-1); }
+.shot-map .shot.them { fill: var(--data-4); }
+.shot-map .shot.goal { fill: var(--accent); fill-opacity: 1; stroke-width: 1; }
+.shot-map .shot.off, .shot-map .shot.blocked { fill-opacity: 0.35; }
+.sheet-advice { margin: 0; color: var(--text-1); }
 .view-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--s-2) var(--s-3); }
 /* fra un saliente e l'altro (Blocco 3): il campo si scurisce e il cronometro corre */
 .skip-card { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: var(--s-3);
