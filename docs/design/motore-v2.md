@@ -188,3 +188,27 @@ istruzioni vuote e battitori automatici.
 
 2a: circa 2 giornate di lavoro (la ristrutturazione a comportamento identico è la parte lenta). 2b: 10 interventi,
 da mezza giornata a una giornata ciascuno; il 2 e il 7 sono quelli con più tentativi di taratura.
+
+---
+
+## 6. Diario di 2b
+
+### Intervento 2 (possesso legato alla qualità) — 25/09, fermo: serve prima il movimento senza palla
+
+Misura di partenza: contro la 19ª della A, la 2ª fa **29 tiri, 340 passaggi, precisione 79,3%** (la debole: 9 tiri,
+452 passaggi, 80,4%), possesso 51%. La superiorità si esprime tutta in tiri affrettati. Prove (4.000 partite ciascuna):
+
+| Variante | Gol | Possesso della più forte | Forte contro debole: precisione · passaggi · tiri |
+|---|---|---|---|
+| Prima | 2,68 | 50,4% | 79,3% · 340 · 29 contro 80,4% · 452 · 9 |
+| Qualità (Passaggi, Tecnica, Visione) più pesante sulla precisione, fino a 0,20 | 2,67 → 3,16 | 50,5 → 51,4% | quasi invariato |
+| Mentalità imposte (4-2, 3-3, 2-4, 3-1, 5-3) | — | 49-53% | la mentalità non sposta il possesso |
+| Valore del possesso × qualità assoluta, 0,2 | 2,39 (stagioni 2,46, correlazione **0,54**) | 54,1% | 84,8% · 505 · 16 contro 76,8% · 341 · 14 |
+| … solo sopra la media, 0,2 | 2,10 | 53,0% | 85,1% · 467 · 17 contro 81,0% · 408 · 10 |
+| … relativo all'avversario, 0,5 | 1,80 | 57,7% | 88,8% · 637 · **5,5** contro 78,7% · 314 · 12 |
+| … relativo, solo fra passaggi (non contro il tiro), 0,6 | 1,83 | 58,8% | 89,5% · 643 · **7,8** contro 78,4% · 299 · 12 |
+
+Tutte le varianti che danno il possesso giusto tolgono i tiri alla squadra forte: in questo motore far girare palla
+non crea occasioni, perché senza movimento senza palla i passaggi sicuri vanno indietro e di lato e la difesa non si
+apre. Il lavoro è salvato in `docs/design/patches/possesso-qualita-v1.patch` (qualità di palleggio, Compostezza contro
+la pressione, valore del possesso relativo all'avversario) per riprenderlo dopo l'intervento 7.
