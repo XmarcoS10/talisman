@@ -445,3 +445,38 @@ Un intervento si registra quando i suoi target migliorano e nessun target si rom
 di poco (entro ~5% dal bordo, come pareggi, tiri e punti massimi che oscillano col seme) si annotano nel commit. Alla
 fine del 2b una **ritaratura complessiva** esplicita, con il via di Marco: tiri, gol, pareggi, precisione riportati nel
 target con poche costanti globali, una per commit, tutte misurate su 3 semi.
+
+---
+
+## 10. Proposta: istruzioni individuali e piani partita (intervento 10), e come si chiude il Blocco 2
+
+**Istruzioni individuali** (in Tattica, cliccando un giocatore sul campo; salvate nella tattica, schema 24):
+
+| Istruzione | Valori | Cosa fa nel motore |
+|---|---|---|
+| Marca stretto | nessuno / un avversario scelto | nella marcatura prende sempre quell'uomo (se è nella sua metà campo), più stretto |
+| Tiro | di meno / normale / di più | × 0,6 / 1 / 1,5 la voglia di tirare (come il ruolo) |
+| Posizione in ampiezza | stringi / normale / resta largo | ± 1 zona sulla larghezza in possesso |
+| Inserimenti | di meno / normale / di più | corse in area e in profondità (dagli inserimenti del ruolo) |
+| Resta dietro | sì / no | non sale oltre la metà campo in possesso (copertura) |
+
+**Piani partita** (GUIDA §6.4): fino a **3 piani**, ognuno con una condizione e cosa cambia.
+
+| | Opzione A (consiglio) | Opzione B |
+|---|---|---|
+| Condizione | punteggio (sotto / pari / sopra, di quanto) **e** dal minuto | come A, più espulsioni ("se siamo in 10") |
+| Cosa cambia | mentalità, modulo, pressing, linea | come A, più un cambio di giocatore |
+| Quando | una volta per partita per piano, al primo minuto in cui la condizione vale | |
+
+Il cambio lo annuncia il vice sulla schermata della partita ("Piano *Assalto*: mentalità offensiva e 3-5-2"). L'IA
+non usa i piani (usa già la sua regola sul punteggio dopo il 55'/60'). Test: un piano "sotto dopo il 70' → offensiva"
+cambia la mentalità al minuto giusto e solo se la condizione vale; "tira di più" porta più tiri a quel giocatore
+(test di buon senso su 500 partite).
+
+**Per chiudere il Blocco 2, in quest'ordine:**
+1. intervento 10 (sopra);
+2. **registro del 2D**: tipo di azione (dribbling, contrasto, cross, colpo di testa, parata, respinta, uscita,
+   piazzato), altezza della palla, esito, giocatori coinvolti; le posizioni dei 22 ogni 0,25 s ci sono già;
+3. **ritaratura complessiva** (metodo del 25/09): gol 2,88-2,97 → 2,5-2,9, pareggi 20,5-21,2% → 22-30%, tiri
+   15,3-15,6 → 10-15, colpi di testa, precisione; poche costanti globali, una per commit, 3 semi;
+4. intervento 9, **equilibrio di moduli e mentalità**, sul motore già ritarato.
