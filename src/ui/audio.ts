@@ -104,6 +104,34 @@ export function playUi(kind: UiSound) {
   }
 }
 
+/**
+ * la folla reagisce (Blocco 3, punto 9), sul volume del pubblico: «ooh» che sale quando parte un tiro pericoloso,
+ * «aah» deluso quando va fuori o lo para il portiere, applauso breve per una parata o un dribbling
+ */
+export type CrowdReaction = 'ooh' | 'aah' | 'applause';
+
+let reactNoise: AudioBuffer | null = null; // un solo buffer per tutte le reazioni: niente calcoli durante la partita
+
+export function crowdReact(kind: CrowdReaction) {
+  const a = audio();
+  if (!a || !crowdBus) return;
+  reactNoise ??= noise(a, 2);
+  const [freq, q, peak, rise, dur] = kind === 'ooh' ? [520, 1.2, 0.9, 0.5, 1.6] : kind === 'aah' ? [330, 1.4, 0.7, 0.15, 1.8] : [2400, 0.4, 0.35, 0.05, 1.4];
+  const src = a.createBufferSource();
+  src.buffer = reactNoise;
+  const f = a.createBiquadFilter();
+  f.type = 'bandpass';
+  f.frequency.value = freq;
+  f.Q.value = q;
+  if (kind === 'aah') f.frequency.exponentialRampToValueAtTime(freq * 0.7, a.currentTime + dur); // la voce che scende
+  const g = a.createGain();
+  g.gain.setValueAtTime(0.0001, a.currentTime);
+  g.gain.exponentialRampToValueAtTime(peak, a.currentTime + rise);
+  g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + dur);
+  src.connect(f).connect(g).connect(crowdBus);
+  src.start();
+}
+
 let crowd: { src: AudioBufferSourceNode; gain: GainNode } | null = null;
 
 /** il brusio dello stadio durante la partita; `intensity` 0-1 segue il momento */

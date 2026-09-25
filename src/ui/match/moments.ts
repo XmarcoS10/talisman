@@ -7,7 +7,7 @@ import type { MatchRun } from '../../engine/match/engine.ts';
 import type { BeatKind } from '../../engine/match/trace.ts';
 
 /** momenti che si vedono appena comincia l'azione; gli altri quando la palla arriva */
-const AT_START = new Set<BeatKind>(['offside', 'tackle', 'foul', 'yellow', 'red', 'corner', 'freeKick', 'wall', 'penalty', 'injury', 'longKick']);
+const AT_START = new Set<BeatKind>(['offside', 'tackle', 'foul', 'yellow', 'red', 'corner', 'freeKick', 'wall', 'penalty', 'injury', 'longKick', 'shot']);
 
 /** quanto dura sullo schermo, in secondi reali */
 const SHOW: Partial<Record<BeatKind, number>> = { goal: 3.5, yellow: 2.5, red: 3, injury: 2.5, penalty: 3.5, offside: 1.6, save: 1.2, parry: 1.2 };
@@ -20,6 +20,7 @@ export interface Moment {
   x: number; // dove era la palla (già specchiato se serve)
   y: number;
   age: number; // 0 appena successo, 1 sta per sparire
+  xg?: number; // per il tiro
   step: number;
 }
 
@@ -66,7 +67,7 @@ export function momentsAt(run: MatchRun, T: number, step: number, speed: number,
       const at = AT_START.has(b.kind) ? tm.start[s]! : end;
       const age = (T - at) / (speed * (SHOW[b.kind] ?? SHOW_DEFAULT));
       if (age < 0 || age >= 1) continue;
-      out.push({ kind: b.kind, who: b.who, ...(b.vs !== undefined ? { vs: b.vs } : {}), x: mirror ? 12 - b.x : b.x, y: mirror ? 8 - b.y : b.y, age, step: s });
+      out.push({ kind: b.kind, who: b.who, ...(b.vs !== undefined ? { vs: b.vs } : {}), ...(b.xg !== undefined ? { xg: b.xg } : {}), x: mirror ? 12 - b.x : b.x, y: mirror ? 8 - b.y : b.y, age, step: s });
     }
   }
   return out;
