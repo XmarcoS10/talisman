@@ -7,7 +7,8 @@ import { Rng } from '../../engine/rng.ts';
 import { newWorld } from '../../engine/world.ts';
 import { RULES, context, pick } from './analyst.ts';
 import { duration, ensure, sample } from './playback.ts';
-import { line } from './commentary.ts';
+import { line, lines, SAY, VARIANTS } from './commentary.ts';
+import { t } from '../i18n.ts';
 import { momentsAt } from './moments.ts';
 import { Camera, cameraZoom } from './renderer.ts';
 
@@ -195,11 +196,33 @@ describe('partita in 2D (F6)', { timeout: 30000 }, () => {
         if (f.kind !== 'shot') return;
         const after = run.frames[k + 1]?.score ?? run.score;
         if (after[f.side] > f.score[f.side]) scored++;
-        if (line(f, names).key === 'say.goal') told++;
+        if (line(f, names).kind === 'goal') told++;
       });
     }
     expect(scored).toBeGreaterThan(0);
     expect(told).toBe(scored);
+  });
+
+  it('racconto: 5 frasi per ogni tipo di evento, nessun nome mancante, nessuna frase uguale due volte di fila (Blocco 3)', () => {
+    for (const k of SAY) for (let n = 1; n <= VARIANTS; n++) expect(t(`say.${k}.${n}`), `say.${k}.${n}`).not.toBe(`say.${k}.${n}`);
+    const { run } = setup();
+    run.result();
+    const names = new Map<number, string>();
+    run.teams.forEach((tm) => tm.played.forEach((m) => names.set(m.p.id, m.p.lastName)));
+    const kinds = new Set<string>();
+    let prev = '';
+    const told = lines(run.frames, run.frames.length - 1, names, 5000, true);
+    expect(told.some((l) => l.kind === 'pass')).toBe(false); // nei salienti i passaggi riusciti non si raccontano
+    for (const [k, f] of run.frames.entries()) {
+      const l = line(f, names, k);
+      kinds.add(l.kind);
+      const text = t(l.key, l.vars);
+      expect(text, text).not.toMatch(/\{|\}|  | $|^ /); // niente segnaposto rimasti né buchi al posto dei nomi
+      expect(l.vars.a, `${l.key} senza protagonista`).not.toBe('');
+      if (/\{b\}/.test(t(l.key))) expect(l.vars.b, `${l.key} senza il secondo nome`).not.toBe('');
+      if (l.kind !== 'pass') { expect(text).not.toBe(prev); prev = text; }
+    }
+    expect(kinds.size).toBeGreaterThan(12);
   });
 
   it('il registro racconta i momenti di ogni azione: un gol per ogni gol, giocatori in campo, piazzati e duelli', () => {

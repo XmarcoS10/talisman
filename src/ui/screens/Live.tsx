@@ -137,7 +137,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
           </div>
           <ClipStrip clips={reel.current.clips} now={replay.current?.back ?? T.current} me={me} onReplay={(c) => startReplay(c.from, c.to)} />
           <div className="panel say">
-            {lines(run.frames, st?.i ?? 0, look.names).map((l, i, a) => (
+            {lines(run.frames, st?.i ?? 0, look.names, 3, view !== 'full').map((l, i, a) => (
               <div key={`${l.key}${i}`} className={`${i === a.length - 1 ? 'now' : 'muted'} ${l.big ? 'big' : ''}`}>{t(l.key, l.vars)}</div>
             ))}
           </div>
@@ -156,7 +156,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
         </div>
       </div>
 
-      <Ticker frames={run.frames} i={st?.i ?? 0} names={look.names} world={world} run={run} />
+      <Ticker frames={run.frames} i={st?.i ?? 0} names={look.names} world={world} run={run} quiet={view !== 'full'} />
     </div>
   );
 }

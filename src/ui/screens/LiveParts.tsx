@@ -71,8 +71,8 @@ export function Shouts({ run, me, min, onDone }: { run: MatchRun; me: 0 | 1; min
   );
 }
 
-export function Ticker({ frames, i, names, world, run }: { frames: TraceStep[]; i: number; names: Map<number, string>; world: WorldState; run: MatchRun }) {
-  const now = lines(frames, i, names, 1)[0];
+export function Ticker({ frames, i, names, world, run, quiet = false }: { frames: TraceStep[]; i: number; names: Map<number, string>; world: WorldState; run: MatchRun; quiet?: boolean }) {
+  const now = lines(frames, i, names, 1, quiet)[0];
   const evs = run.events.filter((e) => e.type !== 'chance').slice(-4).reverse();
   return (
     <div className="ticker">
