@@ -391,3 +391,14 @@ del possesso (§6), toglie efficacia alla forte e abbassa la correlazione.
 possesso della squadra forte si sposta al massimo di 5-10 punti e ogni volta a spese di un altro target. Il modello a
 catena di azioni fa decidere al portatore dove va la palla, ma non ha una fase di costruzione contro un blocco
 schierato: finché non c'è, un possesso realistico e un campionato realistico non stanno insieme.
+
+---
+
+## 9. Rimandato (decisione di Marco, 25/09): la fase di costruzione
+
+Possesso realistico (57-63% per la più forte), corse senza palla (intervento 7) e possesso legato alla qualità
+(intervento 2) restano aperti. Serve un pezzo di modello che oggi non c'è: una **fase di costruzione contro un blocco
+schierato** (linee difensive da superare, spazi fra le linee, disordine che nasce dal giro palla) e un **xG che conta
+i difensori fra chi tira e la porta** (oggi vede solo la pressione). Materiale pronto in `docs/design/patches/`:
+qualità del passaggio, corse, disordine, costruzione paziente, con le misure al §6. Da progettare come proposta per
+dopo la 0.2.0, o per il suo finale se resta tempo.
