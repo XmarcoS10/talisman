@@ -1,8 +1,8 @@
 // GP2: maglie deterministiche, leggere, e in partita le due squadre non si confondono.
 import { describe, expect, it } from 'vitest';
 import { newWorld } from '../../engine/world.ts';
-import { contrast } from './color.ts';
-import { awayWearsAlt, kitBase, kitShape, kitSvg } from './kit.ts';
+import { contrast, deltaE } from './color.ts';
+import { KIT_APART, kitBase, kitShape, kitSvg, matchKits } from './kit.ts';
 
 describe('maglie generate (GP2)', () => {
   it('stessa squadra, stessa maglia; 90 club, 90 disegni diversi; ognuna sotto i 2 KB', () => {
@@ -18,13 +18,18 @@ describe('maglie generate (GP2)', () => {
     for (const club of Object.values(newWorld(4).clubs)) expect(contrast(kitBase(club), kitBase(club, true))).toBeGreaterThanOrEqual(1.6);
   });
 
-  it('in ogni partita possibile le due maglie in campo si distinguono', () => {
+  it('in ogni partita possibile le due squadre in campo si distinguono: maglie lontane o bordo (Blocco 3)', () => {
     const clubs = Object.values(newWorld(4).clubs);
+    let alt = 0, ring = 0;
     for (const h of clubs) for (const a of clubs) {
       if (h === a) continue;
-      const away = kitBase(a, awayWearsAlt(h, a));
-      // se anche la seconda si confonde c'è poco da fare: almeno non peggio della prima
-      expect(contrast(kitBase(h), away)).toBeGreaterThanOrEqual(Math.min(1.6, contrast(kitBase(h), kitBase(a))));
+      const k = matchKits(h, a);
+      expect(k.colors[0]).toBe(kitBase(h));
+      if (k.alt) alt++;
+      if (k.ring[1]) ring++;
+      // o le maglie sono lontane a occhio, o l'ospite ha il bordo
+      expect(deltaE(k.colors[0], k.colors[1]) >= KIT_APART || k.ring[1]).toBe(true);
     }
+    console.log(`${clubs.length * (clubs.length - 1)} partite: seconda maglia in ${alt}, bordo in ${ring}`);
   });
 });

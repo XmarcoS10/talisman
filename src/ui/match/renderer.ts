@@ -11,7 +11,8 @@ export const CAMERA_MODES: CameraMode[] = ['wide', 'follow', 'close'];
 export const cameraZoom = (mode: CameraMode, inClip: boolean) => (mode === 'wide' ? 1 : mode === 'close' && inClip ? 1.8 : 1.3);
 
 export interface Look {
-  colors: [string, string]; // maglia squadra 0 e squadra 1
+  colors: [string, string]; // maglia squadra 0 e squadra 1 (matchKits: sempre distinguibili)
+  ring: [boolean, boolean]; // bordo spesso per chi si confonderebbe con l'altra maglia o col prato
   numbers: Map<number, number>;
   names: Map<number, string>;
   mine: 0 | 1; // quale delle due è la squadra dell'utente
@@ -112,29 +113,31 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: 
   trail.forEach((p, i) => (i ? ctx.lineTo(X(p.x), Y(p.y)) : ctx.moveTo(X(p.x), Y(p.y))));
   ctx.stroke();
 
-  // giocatori: i nostri pieni, gli avversari smorzati; chi ha la palla è più grande e con l'anello
+  // giocatori coi colori veri delle maglie (il contrasto lo garantisce matchKits); chi ha la palla è più grande e con l'anello
   const r0 = scale * 0.26;
   const blink = 0.55 + 0.45 * Math.sin(performance.now() / 120);
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
+  const ci = live.ids.indexOf(live.carrier);
+  pressers(ctx, live, ci, X, Y, r0);
   live.ids.forEach((id, i) => {
     const side = i < live.n0 ? 0 : 1;
-    const mine = side === look.mine;
-    const hasBall = id === live.carrier;
+    const hasBall = i === ci;
     const r = hasBall ? r0 * 1.25 : r0;
     const px = X(live.x[i]!), py = Y(live.y[i]!);
     ctx.beginPath();
     ctx.arc(px, py, r, 0, Math.PI * 2);
-    ctx.fillStyle = mine ? look.colors[side]! : fade(look.colors[side]!, 0.45);
+    ctx.fillStyle = look.colors[side]!;
     ctx.fill();
-    ctx.lineWidth = Math.max(1, r * (mine ? 0.18 : 0.1));
-    ctx.strokeStyle = mine ? 'rgba(0,0,0,0.55)' : 'rgba(0,0,0,0.35)';
+    const ring = look.ring[side];
+    ctx.lineWidth = Math.max(1, r * (ring ? 0.3 : 0.14));
+    ctx.strokeStyle = ring ? contrast(look.colors[side]!) : 'rgba(0,0,0,0.55)';
     ctx.stroke();
     if (hasBall) { // anello luminoso sul portatore
       ctx.beginPath();
       ctx.arc(px, py, r * 1.45, 0, Math.PI * 2);
       ctx.lineWidth = Math.max(1.5, r * 0.22);
-      ctx.strokeStyle = '#fff';
+      ctx.strokeStyle = css('--accent'); // non bianco: su una maglia bianca sparirebbe
       ctx.stroke();
     } else if (id === live.passTo) { // chi sta per ricevere lampeggia
       ctx.beginPath();
@@ -146,27 +149,63 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: 
     if (r > 9) { // numero solo se c'è spazio per leggerlo
       ctx.font = `700 ${Math.round(r)}px 'JetBrains Mono', monospace`;
       ctx.fillStyle = contrast(look.colors[side]!);
-      ctx.globalAlpha = mine ? 1 : 0.7;
       ctx.fillText(String(look.numbers.get(id) ?? ''), px, py + r * 0.05);
-      ctx.globalAlpha = 1;
     }
   });
+  if (ci >= 0) nameTag(ctx, look.names.get(live.carrier) ?? '', X(live.x[ci]!), Y(live.y[ci]!) - r0 * 2.1, r0);
+  ball(ctx, X(live.bx), Y(live.by), live.h, scale);
+}
 
+/** la palla e la sua ombra: più la palla è alta, più l'ombra si stacca e si allarga, e la palla sembra più grande */
+function ball(ctx: CanvasRenderingContext2D, x: number, y: number, h: number, scale: number) {
+  const rb = Math.max(2.5, scale * 0.12);
+  const lift = h * scale * 0.55;
   ctx.beginPath();
-  ctx.arc(X(live.bx), Y(live.by), Math.max(2.5, scale * 0.12), 0, Math.PI * 2);
+  ctx.ellipse(x + lift * 0.45, y + lift * 0.25, rb * (1 + h * 0.6), rb * (0.6 + h * 0.3), 0, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(0,0,0,${(0.45 - h * 0.2).toFixed(2)})`;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(x, y - lift, rb * (1 + h * 0.35), 0, Math.PI * 2);
   ctx.fillStyle = '#fff';
   ctx.fill();
 }
 
-export const resetTrail = () => trail.splice(0, trail.length);
-
-/** smorza un colore verso il grigio della sua stessa luminosità */
-function fade(hex: string, amount: number): string {
-  const [r, g, b] = rgb(hex);
-  const l = 0.299 * r + 0.587 * g + 0.114 * b;
-  const m = (v: number) => Math.round(v + (l - v) * amount);
-  return `rgb(${m(r)} ${m(g)} ${m(b)})`;
+/** il nome del portatore, su una targhetta sopra di lui */
+function nameTag(ctx: CanvasRenderingContext2D, name: string, x: number, y: number, r0: number) {
+  if (!name) return;
+  const fs = Math.max(11, Math.round(r0 * 0.95));
+  ctx.font = `600 ${fs}px 'Hanken Grotesk', system-ui, sans-serif`;
+  const w = ctx.measureText(name).width + fs * 0.9;
+  ctx.fillStyle = 'rgba(10,14,24,0.82)';
+  ctx.beginPath();
+  ctx.roundRect(x - w / 2, y - fs * 0.75, w, fs * 1.5, fs * 0.35);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.fillText(name, x, y + fs * 0.05);
 }
+
+/** chi pressa il portatore (i due avversari più vicini, entro una zona): un arco giallo rivolto verso di lui */
+function pressers(ctx: CanvasRenderingContext2D, live: Live, ci: number, X: (x: number) => number, Y: (y: number) => number, r0: number) {
+  if (ci < 0) return;
+  const cx = live.x[ci]!, cy = live.y[ci]!;
+  const mine = ci < live.n0;
+  const near: [number, number][] = [];
+  for (let i = mine ? live.n0 : 0; i < (mine ? live.ids.length : live.n0); i++) {
+    const d = (live.x[i]! - cx) ** 2 + (live.y[i]! - cy) ** 2;
+    if (d < 1) near.push([d, i]);
+  }
+  near.sort((a, b) => a[0] - b[0]);
+  ctx.strokeStyle = '#eab308'; // --gold di tokens.css
+  ctx.lineWidth = Math.max(2, r0 * 0.22);
+  for (const [, i] of near.slice(0, 2)) {
+    const a = Math.atan2(cy - live.y[i]!, cx - live.x[i]!);
+    ctx.beginPath();
+    ctx.arc(X(live.x[i]!), Y(live.y[i]!), r0 * 1.45, a - 0.7, a + 0.7);
+    ctx.stroke();
+  }
+}
+
+export const resetTrail = () => trail.splice(0, trail.length);
 
 function rgb(hex: string): [number, number, number] {
   const v = hex.trim().replace('#', '');

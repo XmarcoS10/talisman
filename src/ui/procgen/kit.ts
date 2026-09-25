@@ -2,7 +2,7 @@
 // Prima maglia coi colori del club, seconda coi colori scambiati (o il terzo colore). La versione mini (≤ 28 px) toglie
 // i dettagli sottili e il numero, che a quella misura diventano rumore.
 import type { Club } from '../../engine/model.ts';
-import { contrast, readable } from './color.ts';
+import { contrast, deltaE, readable } from './color.ts';
 
 const BODY = 'M20 6l6-3h12l6 3 14 8-6 12-6-3v35H18V23l-6 3-6-12z';
 const SLEEVES = 'M20 6L6 14l6 12 6-3V10zM44 6l14 8-6 12-6-3V10z';
@@ -45,11 +45,25 @@ export interface KitOpts { away?: boolean; number?: number; size?: number }
 /** colore di fondo della maglia. La seconda: il secondo colore; se è troppo vicino al primo il terzo, o bianco/nero */
 export const kitBase = (club: KitClub, away = false) => (away ? readable(club.colors[0], [club.colors[1], club.colors[2]], 1.6) : club.colors[0]);
 
-/** in partita l'ospite mette la seconda maglia se la prima si confonde con quella di casa (e la seconda si vede meglio) */
-export function awayWearsAlt(home: KitClub, away: KitClub): boolean {
-  const h = kitBase(home), first = contrast(h, kitBase(away));
-  return first < 1.6 && contrast(h, kitBase(away, true)) > first;
+/** sotto questa distanza (OKLab) due maglie in campo si confondono */
+export const KIT_APART = 0.2;
+/** erba del campo 2D (--pitch-1 e --pitch-2 di tokens.css): una maglia troppo vicina prende il bordo */
+const GRASS = ['#143823', '#1a452b'];
+const GRASS_APART = 0.12;
+
+/**
+ * Maglie in partita (Blocco 3): l'ospite mette la seconda se la prima si confonde con quella di casa; se si
+ * confonde anche la seconda tiene la più diversa e i suoi giocatori hanno un bordo. Bordo anche per chi si confonde col prato.
+ */
+export function matchKits(home: KitClub, away: KitClub): { colors: [string, string]; alt: boolean; ring: [boolean, boolean] } {
+  const h = kitBase(home), first = kitBase(away), second = kitBase(away, true);
+  const alt = deltaE(h, first) < KIT_APART && deltaE(h, second) > deltaE(h, first);
+  const a = alt ? second : first;
+  const onGrass = (c: string) => GRASS.some((g) => deltaE(c, g) < GRASS_APART);
+  return { colors: [h, a], alt, ring: [onGrass(h), deltaE(h, a) < KIT_APART || onGrass(a)] };
 }
+
+export const awayWearsAlt = (home: KitClub, away: KitClub) => matchKits(home, away).alt;
 
 export function kitSvg(club: KitClub, { away = false, number, size = 64 }: KitOpts = {}): string {
   const { pattern, collar, contrastSleeves } = kitShape(club.id);

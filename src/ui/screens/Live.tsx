@@ -1,6 +1,6 @@
 // Partita in diretta (GUIDA §8.4): campo 2D, panchina, pannello analista, controlli.
 import { useEffect, useReducer, useRef, useState } from 'react';
-import { awayWearsAlt, kitBase } from '../procgen/kit.ts';
+import { matchKits } from '../procgen/kit.ts';
 import type { Tactic, WorldState } from '../../engine/model.ts';
 import type { LiveDay } from '../../engine/world.ts';
 import { context, pick } from '../match/analyst.ts';
@@ -37,7 +37,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   const [, rerender] = useReducer((x: number) => x + 1, 0);
 
   const look: Look = useRef<Look>({
-    colors: [kitBase(clubs[0]), kitBase(clubs[1], awayWearsAlt(clubs[0], clubs[1]))], // gli stessi colori delle maglie
+    ...matchKits(clubs[0], clubs[1]), // gli stessi colori delle maglie, con il bordo se si confondono
     numbers: new Map(), names: new Map(), mine: me,
   }).current;
   const mirror = me === 1; // la squadra dell'utente attacca sempre verso destra

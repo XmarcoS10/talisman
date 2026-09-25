@@ -21,6 +21,7 @@ export interface Live {
   i: number; // indice dell'azione, per il racconto
   carrier: number; // id di chi ha la palla, 0 se è in viaggio
   passTo: number | null; // chi la sta aspettando
+  h: number; // quanto è alta la palla, 0-1 (cross, lanci lunghi, rinvii): la sua ombra si stacca
 }
 
 /** durata della riproduzione già disponibile, in secondi di gioco */
@@ -39,6 +40,19 @@ export function ensure(run: MatchRun, until: number) {
 export function atMinute(track: PosFrame[], min: number): number | null {
   const f = track.find((k) => k.min >= min);
   return f ? f.at : null;
+}
+
+/** altezza della palla in volo: una parabola sul tratto in cui nessuno la tiene, se l'azione è una palla alta */
+function height(run: MatchRun, i: number, T: number): number {
+  const track = run.track, f = track[i]!;
+  if (f.carrier !== 0 || !run.frames[f.step]?.high) return 0;
+  const inFlight = (k: number) => track[k]!.carrier === 0 && track[k]!.step === f.step && !track[k]!.dead;
+  let a = i, b = i;
+  while (a > 0 && inFlight(a - 1)) a--;
+  while (b < track.length - 1 && inFlight(b + 1)) b++;
+  const t0 = track[a]!.at, t1 = track[b + 1]?.at ?? track[b]!.at;
+  const u = Math.min(1, Math.max(0, (T - t0) / (t1 - t0 || 1)));
+  return 4 * u * (1 - u);
 }
 
 /** stato del campo all'istante di riproduzione `T`. `mirror`: la squadra dell'utente attacca sempre verso destra */
@@ -67,7 +81,7 @@ export function sample(run: MatchRun, T: number, mirror = false): Live | null {
   let by = f.by + ((nx?.by ?? f.by) - f.by) * u;
   if (mirror) { bx = 12 - bx; by = 8 - by; }
   return {
-    x, y, ids: f.ids, n0: f.n0, bx, by, min: f.min, score: [f.sc0, f.sc1], dead: f.dead,
+    h: height(run, lo, T), x, y, ids: f.ids, n0: f.n0, bx, by, min: f.min, score: [f.sc0, f.sc1], dead: f.dead,
     frame: run.frames[f.step] ?? null, i: f.step, carrier: f.carrier, passTo: f.to || null,
   };
 }

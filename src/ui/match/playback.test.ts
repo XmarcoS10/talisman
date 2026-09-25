@@ -80,6 +80,19 @@ describe('partita in 2D (F6)', { timeout: 30000 }, () => {
     expect(Math.abs(a.bx - b.bx) + Math.abs(a.by - b.by)).toBeGreaterThan(0.2);
   });
 
+  it("la palla alta si stacca da terra (ombra) solo mentre vola, e ricade", () => {
+    const { run } = setup();
+    run.result();
+    let up = 0;
+    for (let T = 0; T < duration(run); T += 0.5) {
+      const s = sample(run, T)!;
+      expect(s.h).toBeGreaterThanOrEqual(0);
+      expect(s.h).toBeLessThanOrEqual(1);
+      if (s.h > 0) { up++; expect(s.carrier).toBe(0); } // nessuno la tiene mentre è in aria
+    }
+    expect(up).toBeGreaterThan(50); // cross e lanci lunghi ci sono in ogni partita
+  });
+
   it('cambio deciso dalla panchina: entra chi scelgo io', () => {
     const { run } = setup();
     ensure(run, 600);
