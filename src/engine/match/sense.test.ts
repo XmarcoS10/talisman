@@ -40,9 +40,8 @@ const report = (name: string, hi: number[], lo: number[]) => {
 };
 
 describe('buon senso tattico', { timeout: 120_000 }, () => {
-  // Fallisce ancora (24/09): le palle in profondità quasi non esistono (0,12 riuscite a partita con qualsiasi linea).
-  // La rende vera il movimento senza palla (intervento 7 di docs/design/motore-v2.md): allora si toglie `.fails`.
-  it.fails('la linea alta contro punte veloci concede più palle in profondità', () => {
+  // Passa dal 25/09 (intervento 5): con il portiere che esce, la linea alta concede il doppio delle palle in profondità
+  it('la linea alta contro punte veloci concede più palle in profondità', () => {
     const fast = (w: WorldState, b: number) => {
       for (const id of w.clubs[b]!.playerIds) { const p = w.players[id]!; if (p.position === 'ST' || p.position.startsWith('AM')) { p.attrs.pace = 18; p.attrs.acceleration = 18; } }
     };

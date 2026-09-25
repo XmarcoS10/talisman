@@ -37,7 +37,7 @@ export interface View {
 }
 
 export type Option =
-  | { kind: 'pass'; to: OnPitch; tx: number; ty: number; p: number; off: number; u: number; w: number; deep: boolean } // w: intesa (chem); deep: in profondità
+  | { kind: 'pass'; to: OnPitch; tx: number; ty: number; p: number; off: number; u: number; w: number; deep: boolean; long?: boolean } // w: intesa (chem); deep: in profondità; long: rinvio lungo del portiere
   | { kind: 'dribble'; tx: number; ty: number; p: number; tackler: OnPitch | undefined; u: number }
   | { kind: 'shot'; xg: number; u: number }
   | { kind: 'cross'; p: number; u: number; low: boolean }; // p: che arrivi; low: palla bassa all'indietro dal fondo
@@ -123,6 +123,17 @@ function throughBalls(v: View, x: Ctx, out: Option[]) {
   }
 }
 
+/** 1c) RINVIO LUNGO del portiere verso chi sta nella metà campo avversaria: Rinvio suo, Colpo di testa di chi riceve */
+function longKicks(v: View, x: Ctx, out: Option[]) {
+  const { carrier: c, bx, tactic } = v;
+  for (const m of v.mates) {
+    if (m === c || m.x < 6.5) continue;
+    const p = sigmoid(MATCH.kickBase + MATCH.kickSkill * (a(c, 'kicking') + a(m, 'heading')) + v.bonus);
+    out.push({ kind: 'pass', to: m, tx: m.x, ty: m.y, p, off: 0, u: p * (xT(m.x, m.y) + x.keep) - (1 - p) * x.loss + MATCH.kickDirect * tactic.directness * (m.x - bx) / 6,
+      w: chem(x.rel[m.p.id]), deep: false, long: true });
+  }
+}
+
 /** 2) DRIBBLING: puntare l'uomo, portando palla verso il centro negli ultimi metri */
 function dribble(v: View, x: Ctx): Option {
   const { carrier: c, bx, by, pressure } = v;
@@ -177,7 +188,7 @@ export function options(v: View): Option[] {
   const out: Option[] = [];
   passes(v, x, out);
   throughBalls(v, x, out);
-  if (v.isGK) return out; // il portiere si limita a giocarla
+  if (v.isGK) { longKicks(v, x, out); return out; } // il portiere la gioca corta o la rinvia lunga
   out.push(dribble(v, x));
   shot(v, x, out);
   cross(v, x, out);

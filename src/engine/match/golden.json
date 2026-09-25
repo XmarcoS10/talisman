@@ -1,13 +1,13 @@
 {
-  "results": "fc1a822f27dc9d3fcbdcedcfdf7673043b2637dd5214690a16daa12d120e6c03",
-  "traced": "50b7f4865edc9fe047813e9d6a69c90c93cb4d524fdc110f5294b1a826f194cd",
+  "results": "d0497553b7deffc52c86b17ad11402cb0146bbc44b152e8c40462d29e9f06bad",
+  "traced": "c40b685922f818c7d0e3267b0a5c9e35f39cfbb74edd3d0fcb7db82994521e3a",
   "sameResults": true,
   "summary": {
-    "goals": 3189,
-    "shots": 31915,
-    "passes": 786608,
-    "events": 13918,
-    "actions": 24778,
-    "frames": 674762
+    "goals": 3269,
+    "shots": 32709,
+    "passes": 780251,
+    "events": 14203,
+    "actions": 24826,
+    "frames": 674477
   }
 }

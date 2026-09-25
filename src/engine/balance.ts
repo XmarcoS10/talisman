@@ -194,7 +194,21 @@ export const MATCH = {
   xgHeader: -0.9,
   penaltyXg: 0.76,
   shotSkill: 0.025, // Finalizzazione: moltiplicatore sulla probabilità di gol
-  gkSkill: 0.025, // Portiere: riduzione
+  gkSkill: 0.025, // Portiere: riduzione (bravura da keeper.ts, secondo il tipo di tiro)
+  // portiere (Blocco 2b, intervento 5, match/keeper.ts)
+  gkCloseXg: 0.25, // da questo xG il tiro è ravvicinato: contano Uno contro uno e Uscite basse
+  gkHoldBase: 0.0, // logit di trattenere una parata…
+  gkHoldSkill: 0.15, // …per punto di Presa sopra 11…
+  gkHoldXg: 3, // …e in meno per unità di xG (i tiri forti da vicino si respingono)
+  gkParryCorner: 0.85, // respinta in corner
+  gkRebound: 0.12, // respinta sui piedi di un attaccante: ribattuta
+  gkReboundXg: 0.25, // xG della ribattuta
+  gkSweepBase: 0.06, // esce e prende la palla in profondità…
+  gkSweepSkill: 0.012, // …per punto di Uscite basse sopra 11…
+  gkSweepRole: 0.08, // …e in più il portiere libero
+  kickBase: -0.2, // rinvio lungo: logit che arrivi a un compagno…
+  kickSkill: 0.08, // …per punto di Rinvio sopra 11 e di Colpo di testa del compagno
+  kickDirect: 0.03, // voglia di rinviare lungo, × istruzione di verticalità
   onTargetBase: 0.25,
   onTargetXg: 0.3,
   blockedShare: 0.25,
@@ -223,7 +237,6 @@ export const MATCH = {
   crossBlockCorner: 0.2, // cross che non arriva: respinto in corner
   secondValue: 0.05, // valore, nella scelta, di una respinta che resta a chi attacca
   crossLoss: 0.0, // un cross perso costa meno di un passaggio perso: la palla va lontano
-  cornerAfterSave: 0.45,
   cornerAfterBlock: 0.5,
   cornerHeader: 0.3,
   cornerHeaderXg: 0.07,

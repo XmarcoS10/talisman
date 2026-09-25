@@ -8,6 +8,7 @@ import { inBox, len, segDist, shotGeometry } from './pitch.ts';
 import { kickoff } from './positioning.ts';
 import { PRESS } from './pressure.ts';
 import { cross } from './aerial.ts';
+import { afterSave, keeperSkill, sweeps } from './keeper.ts';
 import { corner } from './setpieces.ts';
 import { best, ev, gain, gx, gy, minute, nearest, type MatchState, type MP, type Origin, type Team, type TraceStep } from './state.ts';
 
@@ -49,8 +50,7 @@ function missed(st: MatchState, sh: MP, xg: number, kind: ShotKind, gk: MP | und
   if (rng.next() < MATCH.onTargetBase + MATCH.onTargetXg * xg) {
     att.stats.onTarget++; sh.st.onTarget++;
     if (gk) gk.st.saves++;
-    if (rng.next() < MATCH.cornerAfterSave) corner(st);
-    else gain(st, def, gk ?? nearest(def, 0.6, 4));
+    afterSave(st, att, def, gk, xg);
   } else if (kind !== 'pen' && rng.next() < MATCH.blockedShare) {
     if (rng.next() < MATCH.cornerAfterBlock) corner(st);
     else gain(st, def, nearest(def, 12 - st.bx, 8 - st.by, true));
@@ -63,7 +63,7 @@ export function shoot(st: MatchState, sh: MP, xg: number, kind: ShotKind, origin
   att.stats.shots++; sh.st.shots++; att.stats.xg += xg;
   if (kind === 'header') att.log.headers++;
   const skill = shotSkill(st, sh, kind);
-  const gkSkill = gk ? (gk.p.attrs.reflexes + gk.p.attrs.oneOnOnes + gk.p.attrs.handling) / 3 : 3;
+  const gkSkill = keeperSkill(gk, kind === 'pen', xg);
   const pGoal = clamp(xg * (1 + MATCH.shotSkill * (skill - 11)) * (1 - MATCH.gkSkill * (gkSkill - 11)), 0.005, 0.97);
   const assist = st.lastPass && st.lastPass !== sh && kind !== 'pen' ? st.lastPass : null;
   if (assist) assist.st.keyPasses++;
@@ -97,6 +97,10 @@ function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, 
   const { rng } = st;
   att.stats.passes++; c.st.passes++;
   if (o.deep) att.log.deep++;
+  if (o.long) att.log.longKicks++;
+  // palla in profondità: il portiere può uscire e prenderla prima
+  const keeper = o.deep ? sweeps(st, def) : null;
+  if (keeper) { def.log.sweeps++; st.t += MATCH.passTime; gain(st, def, keeper); return; }
   const late = minute(st) >= 70 ? att.log.late : null;
   if (late) late[0]++;
   if (o.off > 0 && rng.next() < o.off) {

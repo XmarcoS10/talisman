@@ -438,3 +438,10 @@ doppio delle palle in profondità** (0,18 contro 0,08, t 4,2: va tolto `.fails`)
 Stagioni 42 / 7 / 99: gol 2,81 / **2,94** / 2,79, pareggi **21,2 / 21,4** / 22,9%, tiri **15,2 / 15,7** / 14,6,
 correlazione 0,82 / 0,76 / 0,78, punti massimi 103 (seme 99). I tiri per squadra crescono a ogni intervento
 (14,1 prima del Blocco 2b; Serie A ~12,5).
+
+### Metodo per il resto del 2b (decisione di Marco, 25/09)
+
+Un intervento si registra quando i suoi target migliorano e nessun target si rompe in modo netto; i valori che escono
+di poco (entro ~5% dal bordo, come pareggi, tiri e punti massimi che oscillano col seme) si annotano nel commit. Alla
+fine del 2b una **ritaratura complessiva** esplicita, con il via di Marco: tiri, gol, pareggi, precisione riportati nel
+target con poche costanti globali, una per commit, tutte misurate su 3 semi.

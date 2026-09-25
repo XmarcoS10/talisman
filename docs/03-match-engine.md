@@ -81,6 +81,17 @@ traiettoria dell'azione nella prima parte dell'intervallo e poi aspetta. Decisio
 - **Statistiche**: il cross riuscito è quello che trova un compagno, come Opta; conta anche fra i passaggi, e per
   questo la precisione complessiva scende di circa un punto e mezzo.
 
+## Portiere (Blocco 2b, intervento 5, `keeper.ts`)
+- **Parata**: la bravura dipende dal tiro. Ravvicinato (xG ≥ `gkCloseXg`): `0,5·Uno contro uno + 0,3·Riflessi +
+  0,2·Uscite basse`; rigore: `0,7·Riflessi + 0,3·Concentrazione`; il resto: `0,6·Riflessi + 0,25·Posizionamento +
+  0,15·Concentrazione`. Entra nella probabilità di gol come prima (`gkSkill`).
+- **Presa o respinta**: trattiene con `σ(gkHoldBase + gkHoldSkill·Presa − gkHoldXg·xG)`; la respinta va in corner
+  (`gkParryCorner`), sui piedi di un attaccante (ribattuta, `gkRebound`, xG `gkReboundXg`) o a un difensore.
+- **Uscita in profondità**: prende la palla in profondità prima dell'attaccante con `gkSweepBase + gkSweepSkill·Uscite
+  basse` (+ `gkSweepRole` il portiere libero).
+- **Rinvio lungo**: opzione del portiere verso chi sta nella metà campo avversaria, riuscita `σ(kickBase +
+  kickSkill·(Rinvio + Colpo di testa di chi riceve))`, voglia `kickDirect × verticalità`.
+
 ## Fatica
 Energia persa al minuto: `drain del ruolo × (drainBase + drainStamina·(1 − Resistenza/20))`, più per chi pressa. Con
 `drainStamina` 0,5 chi ha poca Resistenza arriva davvero stanco (prima al 75' erano tutti fra 76 e 80). L'energia
