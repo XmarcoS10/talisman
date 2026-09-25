@@ -480,3 +480,10 @@ cambia la mentalità al minuto giusto e solo se la condizione vale; "tira di pi�
 3. **ritaratura complessiva** (metodo del 25/09): gol 2,88-2,97 → 2,5-2,9, pareggi 20,5-21,2% → 22-30%, tiri
    15,3-15,6 → 10-15, colpi di testa, precisione; poche costanti globali, una per commit, 3 semi;
 4. intervento 9, **equilibrio di moduli e mentalità**, sul motore già ritarato.
+
+### Intervento 9 (equilibrio di moduli e mentalità) — 25/09, fatto
+Strumento: `node tools/diag-formations.ts` (matrice modulo contro modulo, rose alla pari, 500 partite per casella).
+Il 4-3-3 batteva tutti (media 1,66 punti a partita), sia in attacco sia in difesa. Abbassare la posizione di partenza
+delle ali non bastava (1,60); farle restare più alte senza palla (`wideForward` hold 1,2) sì: medie 1,29-1,47, nessun
+modulo sopra 1,5. Con hold 1,4 il 4-2-3-1 (che usa lo stesso ruolo) scendeva a 1,13. La stessa modifica riporta le
+mentalità fra 1,24 e 1,40 (la 1 era a 1,15). Resta il 5-3-2 al bordo basso (1,29).
