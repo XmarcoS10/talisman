@@ -13,8 +13,8 @@ import { FastForward } from 'lucide-react';
 
 const EV_ICON: Record<string, string> = { goal: '⚽', penGoal: '⚽', penMiss: '✖', chance: '◎', yellow: '🟨', red: '🟥', injury: '✚', sub: '⇄', plan: '📋' };
 
-export function Scoreboard({ clubs, score, min, over, me, tactics }: {
-  clubs: readonly [Club, Club]; score: [number, number]; min: number; over: boolean; me: 0 | 1; tactics: [Tactic, Tactic];
+export function Scoreboard({ clubs, score, min, over, me, tactics, flash = false }: {
+  clubs: readonly [Club, Club]; score: [number, number]; min: number; over: boolean; me: 0 | 1; tactics: [Tactic, Tactic]; flash?: boolean;
 }) {
   const side = (i: 0 | 1) => (
     <div className={`sb-team ${i === 1 ? 'away' : ''}`}>
@@ -26,7 +26,7 @@ export function Scoreboard({ clubs, score, min, over, me, tactics }: {
   return (
     <div className="scoreboard">
       {side(0)}
-      <div className="sb-score">
+      <div className={`sb-score ${flash ? 'flash' : ''}`}>
         <b className="num">{score[0]}</b><span className="muted">:</span><b className="num">{score[1]}</b>
         <span className="sb-time"><span className="live-dot" />{over ? t('match.fullTime') : `${min}'`}<small>{t(min <= 45 ? 'live.firstHalf' : 'live.secondHalf')}</small></span>
       </div>

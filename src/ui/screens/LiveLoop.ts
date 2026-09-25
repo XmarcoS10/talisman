@@ -5,6 +5,8 @@ import type { MatchRun } from '../../engine/match/engine.ts';
 import { Reel, speedAt, PRE, type ViewMode } from '../match/highlights.ts';
 import { sample, SPEEDS, ensure } from '../match/playback.ts';
 import { Camera, cameraZoom, draw, type CameraMode, type Look } from '../match/renderer.ts';
+import { focusOf } from '../match/fx.ts';
+import { momentsAt, type Moment } from '../match/moments.ts';
 
 export interface LoopOpts { playing: boolean; speed: number; view: ViewMode; camera: CameraMode }
 
@@ -15,6 +17,7 @@ export function useLiveLoop(run: MatchRun, canvas: RefObject<HTMLCanvasElement |
   const T = useRef(0);
   const cam = useRef(new Camera());
   const reel = useRef(new Reel(o.view));
+  const moments = useRef<Moment[]>([]);
   if (reel.current.mode !== o.view) reel.current = new Reel(o.view); // si ricalcola da capo sulla traccia già pronta
 
   useEffect(() => {
@@ -25,8 +28,9 @@ export function useLiveLoop(run: MatchRun, canvas: RefObject<HTMLCanvasElement |
       const dt = Math.min(0.1, (now - last) / 1000);
       last = now;
       const r = o.view === 'full' ? null : reel.current;
+      const speed = speedAt(r, T.current, SPEEDS[o.speed]!) * (r ? SPEEDS[o.speed]! / SPEEDS[0] : 1);
       if (o.playing) {
-        T.current += dt * speedAt(r, T.current, SPEEDS[o.speed]!) * (r ? SPEEDS[o.speed]! / SPEEDS[0] : 1);
+        T.current += dt * speed;
         ensure(run, T.current + (r ? AHEAD : 0));
         r?.update(run);
       }
@@ -37,9 +41,12 @@ export function useLiveLoop(run: MatchRun, canvas: RefObject<HTMLCanvasElement |
         if (el.width !== w || el.height !== h) { el.width = w; el.height = h; }
         const ctx = el.getContext('2d');
         const st = sample(run, T.current, mirror);
+        moments.current = st ? momentsAt(run, T.current, st.i, speed, mirror) : [];
+        const focus = focusOf(moments.current); // rigore: inquadratura dedicata
         if (ctx) {
-          if (st) cam.current.step(st.bx, st.by, dt, cameraZoom(o.camera, !!r?.at(T.current)), w, h);
-          draw(ctx, w, h, st, look, cam.current, css);
+          if (focus) cam.current.step(focus.x, focus.y, dt, focus.zoom, w, h);
+          else if (st) cam.current.step(st.bx, st.by, dt, cameraZoom(o.camera, !!r?.at(T.current)), w, h);
+          draw(ctx, w, h, st, look, cam.current, css, moments.current);
         }
       }
       acc += dt;
@@ -50,5 +57,5 @@ export function useLiveLoop(run: MatchRun, canvas: RefObject<HTMLCanvasElement |
     return () => cancelAnimationFrame(raf);
   }, [o.playing, o.speed, o.view, o.camera, run, look, mirror, canvas, tick]);
 
-  return { T, reel };
+  return { T, reel, moments };
 }

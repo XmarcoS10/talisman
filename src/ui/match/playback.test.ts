@@ -8,6 +8,7 @@ import { newWorld } from '../../engine/world.ts';
 import { RULES, context, pick } from './analyst.ts';
 import { duration, ensure, sample } from './playback.ts';
 import { line } from './commentary.ts';
+import { momentsAt } from './moments.ts';
 
 const setup = (mine: 0 | 1 = 0) => {
   const w = newWorld(17);
@@ -91,6 +92,25 @@ describe('partita in 2D (F6)', { timeout: 30000 }, () => {
       if (s.h > 0) { up++; expect(s.carrier).toBe(0); } // nessuno la tiene mentre è in aria
     }
     expect(up).toBeGreaterThan(50); // cross e lanci lunghi ci sono in ogni partita
+  });
+
+  it('ogni gol, cartellino e fuorigioco del registro si vede sul campo come momento (Blocco 3)', () => {
+    const { run } = setup();
+    run.result();
+    const seen = new Map<string, Set<number>>();
+    for (let T = 0; T < duration(run); T += 0.25) {
+      const s = sample(run, T)!;
+      for (const m of momentsAt(run, T, s.i, 6, false)) {
+        expect(m.age).toBeGreaterThanOrEqual(0);
+        expect(m.age).toBeLessThan(1);
+        if (!seen.has(m.kind)) seen.set(m.kind, new Set());
+        seen.get(m.kind)!.add(m.step);
+      }
+    }
+    for (const kind of ['goal', 'yellow', 'offside', 'foul'] as const) {
+      const want = run.frames.filter((f) => f.beats?.some((b) => b.kind === kind)).length;
+      expect(seen.get(kind)?.size ?? 0, kind).toBe(want);
+    }
   });
 
   it('cambio deciso dalla panchina: entra chi scelgo io', () => {

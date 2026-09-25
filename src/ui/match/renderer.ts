@@ -3,6 +3,8 @@
 // qui la squadra dell'utente attacca sempre verso destra.
 import type { Live } from './playback.ts';
 import { art } from '../assets-manifest.ts';
+import { drawMoments } from './fx.ts';
+import type { Moment } from './moments.ts';
 
 export const PITCH_X = 12, PITCH_Y = 8;
 export type CameraMode = 'wide' | 'follow' | 'close';
@@ -58,7 +60,7 @@ function grassPattern(ctx: CanvasRenderingContext2D): CanvasPattern | null {
   return grassPat;
 }
 
-export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: Live | null, look: Look, cam: Camera, css: (v: string) => string) {
+export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: Live | null, look: Look, cam: Camera, css: (v: string) => string, moments: Moment[] = []) {
   const scale = Math.min(w / PITCH_X, h / PITCH_Y) * cam.zoom;
   const ox = w / 2 - cam.cx * scale;
   const oy = h / 2 - cam.cy * scale;
@@ -154,6 +156,7 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: 
   });
   if (ci >= 0) nameTag(ctx, look.names.get(live.carrier) ?? '', X(live.x[ci]!), Y(live.y[ci]!) - r0 * 2.1, r0);
   ball(ctx, X(live.bx), Y(live.by), live.h, scale);
+  drawMoments(ctx, moments, live, look, { X, Y, r0, w, css });
 }
 
 /** la palla e la sua ombra: più la palla è alta, più l'ombra si stacca e si allarga, e la palla sembra più grande */

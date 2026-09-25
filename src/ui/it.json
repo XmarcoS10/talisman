@@ -1614,5 +1614,13 @@
   "camera.close": "Vicina",
   "live.skip": "avanti veloce fino alla prossima azione",
   "settings.view": "Partita: visione",
-  "settings.camera": "Partita: telecamera"
+  "settings.camera": "Partita: telecamera",
+  "fx.foul": "FALLO",
+  "fx.offside": "FUORIGIOCO",
+  "fx.corner": "CORNER",
+  "fx.freeKick": "PUNIZIONE",
+  "fx.penalty": "RIGORE",
+  "fx.save": "PARATA",
+  "fx.parry": "RESPINTA",
+  "fx.goal": "GOL"
 }

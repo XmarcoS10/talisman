@@ -46,7 +46,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
     look.names.set(m.p.id, shortName(m.p));
   }));
 
-  const { T, reel } = useLiveLoop(run, canvas, look, mirror, { playing: playing && !pause, speed, view, camera }, rerender);
+  const { T, reel, moments } = useLiveLoop(run, canvas, look, mirror, { playing: playing && !pause, speed, view, camera }, rerender);
   const clip = view === 'full' ? null : reel.current.at(T.current);
 
   const st = sample(run, T.current, mirror);
@@ -99,7 +99,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   return (
     <div className="live">
       <div className="panel live-top">
-        <Scoreboard clubs={clubs} score={score} min={min} over={over} me={me}
+        <Scoreboard clubs={clubs} score={score} min={min} over={over} me={me} flash={moments.current.some((m) => m.kind === 'goal')}
           tactics={[{ ...run.teams[0].tactic, mentality: run.teams[0].mentality }, { ...run.teams[1].tactic, mentality: run.teams[1].mentality }]} />
         <div className="live-ctl">
           <button className="btn primary sq" onClick={() => setPlaying(!playing)} disabled={over} aria-label={t('live.play')}>{playing ? <Pause size={16} /> : <Play size={16} />}</button>
