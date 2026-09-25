@@ -230,7 +230,7 @@ export const MATCH = {
   yellowP: 0.18,
   bookedCaution: 0.35, // probabilità di giallo ridotta per chi è già ammonito
   redP: 0.003,
-  injuryOnFoul: 0.025,
+  injuryOnFoul: 0.019, // era 0,025 con 23 falli a partita; con il contrasto sul portatore (intervento 3) i falli sono 28
   injuryPerPlayer: 0.006, // infortunio "senza contatto" per giocatore a partita (× rischio personale, injuries.ts)
 
   // condizione fisica
