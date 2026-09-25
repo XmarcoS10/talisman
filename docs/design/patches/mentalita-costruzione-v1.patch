@@ -1,0 +1,31 @@
+diff --git a/src/engine/balance.ts b/src/engine/balance.ts
+index 4a29b9c..c6132cb 100644
+--- a/src/engine/balance.ts
++++ b/src/engine/balance.ts
+@@ -155,7 +155,10 @@ export const MATCH = {
+   mentalityCompact: 0.04, // per livello di mentalità: più offensiva = meno uomini che rientrano
+   mentalityPush: 0.1, // zone in avanti in possesso per livello di mentalità
+   mentalityCover: 0.15, // per livello: impegno difensivo in meno (pressione, corsie, marcature)
+-  mentalityRisk: 0.04, // per livello: quanto meno pesa perdere palla
++  mentalityRisk: 0.04, // per livello, nella metà campo avversaria: quanto meno pesa perdere palla
++  // per livello, nella propria metà campo: valore del possesso in più per la propositiva (costruzione paziente) e in
++  // meno per la prudente (§8 di docs/design/motore-v2.md; prima valeva la regola della metà avversaria anche qui)
++  mentalityBuild: 0.25,
+   mentalityShot: 0.04, // per livello: voglia di tirare
+   markTightness: 0.75, // quanto i difensori stringono sull'uomo nella propria metà campo
+   markGoalSide: 0.35, // distanza tenuta tra uomo e porta
+diff --git a/src/engine/match/decision.ts b/src/engine/match/decision.ts
+index 3e7c65a..58583e6 100644
+--- a/src/engine/match/decision.ts
++++ b/src/engine/match/decision.ts
+@@ -53,7 +53,9 @@ interface Ctx { keep: number; loss: number; direct: number; vision: number; rel:
+ function context(v: View): Ctx {
+   const { carrier: c, bx, by, tactic } = v;
+   const mm = v.mentality - 3; // −2 … +2
+-  const riskW = 1 - MATCH.mentalityRisk * mm; // mentalità offensiva = meno paura di perdere palla
++  // nella propria metà la propositiva costruisce con pazienza e la prudente la butta avanti; nella metà avversaria
++  // la mentalità offensiva toglie paura di perdere palla (§8)
++  const riskW = bx < 6 ? 1 + MATCH.mentalityBuild * mm : 1 - MATCH.mentalityRisk * mm;
+   // perdere palla costa il valore regalato all'avversario + il valore del possesso stesso (K)
+   const keep = MATCH.possessionValue * riskW;
+   const loss = lossCost(bx, by) * riskW + keep;

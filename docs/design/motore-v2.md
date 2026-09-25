@@ -364,3 +364,30 @@ che oggi mancano (2,4% contro 5-10%).
 **Rischio**: alto, l'IA sceglie la mentalità in ogni partita, quindi cambia tutto il campionato. **Costo**: mezza
 giornata per il passo 2, più le tarature. Dopo, su questa base, si riprendono corse (7), qualità del passaggio (2) e
 disordine, che oggi non rendevano perché mancava il blocco basso da scardinare.
+
+### Mentalità (§8) — 25/09
+
+**Passo 1, fatto:** possesso misurato come Opta (quota dei passaggi). La nettamente più forte passa da 50,4% (tempo)
+a **44,5%**; la 2ª contro la 19ª al 41%.
+
+**Passo 2, fermo.** Ablazione (4.000 partite; tra parentesi la 2ª contro la 19ª):
+
+| Variante | Gol | Possesso della più forte | Altro |
+|---|---|---|---|
+| Tutto (pressione, blocco, costruzione, palla lunga) | 2,97 | 51,5% (47%) | dribbling 20,2, fuorigioco 3,3 ❌ |
+| Solo pressione (sale con la mentalità, la prudente non pressa in alto) | 3,00 | 42,2% (39%) | la forte tira 34 volte |
+| Pressione + blocco basso e corto | 3,26 | 42,5% | |
+| Solo costruzione paziente 0,15 + palla lunga 0,003 | 2,53 | 54,1% (52%) | fuorigioco 3,0 ❌ |
+| Costruzione 0,15 + palla lunga 0,0015 | 2,54 | 51,3% (48%) | fuorigioco 2,7 ❌ |
+| **Costruzione 0,25, niente palla lunga** | 2,53 | 50,4% (47%) | stagioni: correlazione 0,71 / 0,75 / 0,77 ❌, punti 103 ❌ |
+| Costruzione 0,25 + disordine (xG 0,3 / 0,6) | 2,70 / 2,91 | 49,4% | precisione 77,6%, fuorigioco 2,8-2,9 ❌ |
+
+Patch: `docs/design/patches/mentalita-costruzione-v1.patch`. In questo motore pressione e blocco basso **aiutano**
+la squadra forte ad arrivare al tiro (la debole che non pressa le lascia spazio, il blocco basso non toglie xG
+perché l'xG vede solo la pressione, non i corpi davanti al tiro); la pazienza sposta il possesso ma, come il valore
+del possesso (§6), toglie efficacia alla forte e abbassa la correlazione.
+
+**Bilancio dei tentativi sul possesso** (valore del possesso, qualità del passaggio, corse, disordine, mentalità): il
+possesso della squadra forte si sposta al massimo di 5-10 punti e ogni volta a spese di un altro target. Il modello a
+catena di azioni fa decidere al portatore dove va la palla, ma non ha una fase di costruzione contro un blocco
+schierato: finché non c'è, un possesso realistico e un campionato realistico non stanno insieme.
