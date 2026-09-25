@@ -236,8 +236,12 @@ export function nearest(tm: Team, x: number, y: number, skipGK = false): MP {
   return best;
 }
 
-export const best = (tm: Team, f: (m: MP) => number, filter: (m: MP) => boolean = () => true) =>
-  tm.on.filter(filter).reduce((a, b) => (f(b) > f(a) ? b : a), tm.on[0]!);
+/** il migliore secondo `f` fra chi passa il filtro (prima partiva dal primo in campo, il portiere, anche se il filtro
+ * lo escludeva: batteva lui le punizioni se aveva Calci piazzati più alti); se nessuno passa il filtro, il primo in campo */
+export function best(tm: Team, f: (m: MP) => number, filter: (m: MP) => boolean = () => true): MP {
+  const ok = tm.on.filter(filter);
+  return ok.length ? ok.reduce((a, b) => (f(b) > f(a) ? b : a)) : tm.on[0]!;
+}
 
 /** la squadra `tm` prende palla col giocatore `m`, dove si trova */
 export function gain(st: MatchState, tm: Team, m: MP) {
