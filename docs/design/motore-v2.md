@@ -423,3 +423,18 @@ Stagioni 42 / 7 / 99: gol 2,64 / 2,68 / 2,88, correlazione 0,82 / 0,85 / 0,84. *
 passaggi 77,6 / 77,9 / 77,9% (target 78-88; i cross contano come passaggi e ne riesce uno su cinque, come nei dati
 Opta), e col seme 99 pareggi 20,3%, tiri 15,3, punti massimi 102. Alzare la precisione di base (passBase 4,0 → 4,3)
 peggiora il resto: gol 2,42, corner sotto 4, correlazione 0,75.
+
+### Intervento 5 (portiere) — 25/09, pronto ma fermo sulle stagioni
+
+Parata secondo il tipo di tiro (ravvicinato: Uno contro uno, Riflessi, Uscite basse; rigore: Riflessi, Concentrazione;
+altri: Riflessi, Posizionamento, Concentrazione), presa o respinta (Presa, forza del tiro), respinta in corner o
+ribattuta, uscita sulle palle in profondità (Uscite basse, portiere libero), rinvio lungo (Rinvio, Colpo di testa di chi
+riceve, istruzione di verticalità). Patch: `docs/design/patches/portiere-v1.patch` (con `match/keeper.ts`); valori:
+presa 0, respinta in corner 0,85, ribattuta 0,12 (xG 0,25), uscita 0,06 + 0,012/punto + 0,08 libero, rinvio 0,03.
+
+4.000 partite: tutto come prima (cross 15,7 · 22%, dribbling 12,6, contrasti 14,1, corner 4,2, gol 2,73), rinvii lunghi
+3,9 a squadra, gol da piazzato 25,0% (bordo), precisione 77,1%. Test di buon senso: **la linea alta ora concede il
+doppio delle palle in profondità** (0,18 contro 0,08, t 4,2: va tolto `.fails`), portiere t 4,4. Tempo +9%.
+Stagioni 42 / 7 / 99: gol 2,81 / **2,94** / 2,79, pareggi **21,2 / 21,4** / 22,9%, tiri **15,2 / 15,7** / 14,6,
+correlazione 0,82 / 0,76 / 0,78, punti massimi 103 (seme 99). I tiri per squadra crescono a ogni intervento
+(14,1 prima del Blocco 2b; Serie A ~12,5).

@@ -1,0 +1,194 @@
+diff --git a/src/engine/balance.ts b/src/engine/balance.ts
+index 93ac982..f0f20cb 100644
+--- a/src/engine/balance.ts
++++ b/src/engine/balance.ts
+@@ -194,7 +194,21 @@ export const MATCH = {
+   xgHeader: -0.9,
+   penaltyXg: 0.76,
+   shotSkill: 0.025, // Finalizzazione: moltiplicatore sulla probabilità di gol
+-  gkSkill: 0.025, // Portiere: riduzione
++  gkSkill: 0.025, // Portiere: riduzione (bravura da keeper.ts, secondo il tipo di tiro)
++  // portiere (Blocco 2b, intervento 5, match/keeper.ts)
++  gkCloseXg: 0.25, // da questo xG il tiro è ravvicinato: contano Uno contro uno e Uscite basse
++  gkHoldBase: 0.0, // logit di trattenere una parata…
++  gkHoldSkill: 0.15, // …per punto di Presa sopra 11…
++  gkHoldXg: 3, // …e in meno per unità di xG (i tiri forti da vicino si respingono)
++  gkParryCorner: 0.85, // respinta in corner
++  gkRebound: 0.12, // respinta sui piedi di un attaccante: ribattuta
++  gkReboundXg: 0.25, // xG della ribattuta
++  gkSweepBase: 0.06, // esce e prende la palla in profondità…
++  gkSweepSkill: 0.012, // …per punto di Uscite basse sopra 11…
++  gkSweepRole: 0.08, // …e in più il portiere libero
++  kickBase: -0.2, // rinvio lungo: logit che arrivi a un compagno…
++  kickSkill: 0.08, // …per punto di Rinvio sopra 11 e di Colpo di testa del compagno
++  kickDirect: 0.03, // voglia di rinviare lungo, × istruzione di verticalità
+   onTargetBase: 0.25,
+   onTargetXg: 0.3,
+   blockedShare: 0.25,
+@@ -223,7 +237,6 @@ export const MATCH = {
+   crossBlockCorner: 0.2, // cross che non arriva: respinto in corner
+   secondValue: 0.05, // valore, nella scelta, di una respinta che resta a chi attacca
+   crossLoss: 0.0, // un cross perso costa meno di un passaggio perso: la palla va lontano
+-  cornerAfterSave: 0.45,
+   cornerAfterBlock: 0.5,
+   cornerHeader: 0.3,
+   cornerHeaderXg: 0.07,
+diff --git a/src/engine/match/decision.ts b/src/engine/match/decision.ts
+index c87a653..461219e 100644
+--- a/src/engine/match/decision.ts
++++ b/src/engine/match/decision.ts
+@@ -37,7 +37,7 @@ export interface View {
+ }
+ 
+ export type Option =
+-  | { kind: 'pass'; to: OnPitch; tx: number; ty: number; p: number; off: number; u: number; w: number; deep: boolean } // w: intesa (chem); deep: in profondità
++  | { kind: 'pass'; to: OnPitch; tx: number; ty: number; p: number; off: number; u: number; w: number; deep: boolean; long?: boolean } // w: intesa (chem); deep: in profondità; long: rinvio lungo del portiere
+   | { kind: 'dribble'; tx: number; ty: number; p: number; tackler: OnPitch | undefined; u: number }
+   | { kind: 'shot'; xg: number; u: number }
+   | { kind: 'cross'; p: number; u: number; low: boolean }; // p: che arrivi; low: palla bassa all'indietro dal fondo
+@@ -123,6 +123,17 @@ function throughBalls(v: View, x: Ctx, out: Option[]) {
+   }
+ }
+ 
++/** 1c) RINVIO LUNGO del portiere verso chi sta nella metà campo avversaria: Rinvio suo, Colpo di testa di chi riceve */
++function longKicks(v: View, x: Ctx, out: Option[]) {
++  const { carrier: c, bx, tactic } = v;
++  for (const m of v.mates) {
++    if (m === c || m.x < 6.5) continue;
++    const p = sigmoid(MATCH.kickBase + MATCH.kickSkill * (a(c, 'kicking') + a(m, 'heading')) + v.bonus);
++    out.push({ kind: 'pass', to: m, tx: m.x, ty: m.y, p, off: 0, u: p * (xT(m.x, m.y) + x.keep) - (1 - p) * x.loss + MATCH.kickDirect * tactic.directness * (m.x - bx) / 6,
++      w: chem(x.rel[m.p.id]), deep: false, long: true });
++  }
++}
++
+ /** 2) DRIBBLING: puntare l'uomo, portando palla verso il centro negli ultimi metri */
+ function dribble(v: View, x: Ctx): Option {
+   const { carrier: c, bx, by, pressure } = v;
+@@ -177,7 +188,7 @@ export function options(v: View): Option[] {
+   const out: Option[] = [];
+   passes(v, x, out);
+   throughBalls(v, x, out);
+-  if (v.isGK) return out; // il portiere si limita a giocarla
++  if (v.isGK) { longKicks(v, x, out); return out; } // il portiere la gioca corta o la rinvia lunga
+   out.push(dribble(v, x));
+   shot(v, x, out);
+   cross(v, x, out);
+diff --git a/src/engine/match/execute.ts b/src/engine/match/execute.ts
+index d1f22e3..0f107d6 100644
+--- a/src/engine/match/execute.ts
++++ b/src/engine/match/execute.ts
+@@ -8,6 +8,7 @@ import { inBox, len, segDist, shotGeometry } from './pitch.ts';
+ import { kickoff } from './positioning.ts';
+ import { PRESS } from './pressure.ts';
+ import { cross } from './aerial.ts';
++import { afterSave, keeperSkill, sweeps } from './keeper.ts';
+ import { corner } from './setpieces.ts';
+ import { best, ev, gain, gx, gy, minute, nearest, type MatchState, type MP, type Origin, type Team, type TraceStep } from './state.ts';
+ 
+@@ -49,8 +50,7 @@ function missed(st: MatchState, sh: MP, xg: number, kind: ShotKind, gk: MP | und
+   if (rng.next() < MATCH.onTargetBase + MATCH.onTargetXg * xg) {
+     att.stats.onTarget++; sh.st.onTarget++;
+     if (gk) gk.st.saves++;
+-    if (rng.next() < MATCH.cornerAfterSave) corner(st);
+-    else gain(st, def, gk ?? nearest(def, 0.6, 4));
++    afterSave(st, att, def, gk, xg);
+   } else if (kind !== 'pen' && rng.next() < MATCH.blockedShare) {
+     if (rng.next() < MATCH.cornerAfterBlock) corner(st);
+     else gain(st, def, nearest(def, 12 - st.bx, 8 - st.by, true));
+@@ -63,7 +63,7 @@ export function shoot(st: MatchState, sh: MP, xg: number, kind: ShotKind, origin
+   att.stats.shots++; sh.st.shots++; att.stats.xg += xg;
+   if (kind === 'header') att.log.headers++;
+   const skill = shotSkill(st, sh, kind);
+-  const gkSkill = gk ? (gk.p.attrs.reflexes + gk.p.attrs.oneOnOnes + gk.p.attrs.handling) / 3 : 3;
++  const gkSkill = keeperSkill(gk, kind === 'pen', xg);
+   const pGoal = clamp(xg * (1 + MATCH.shotSkill * (skill - 11)) * (1 - MATCH.gkSkill * (gkSkill - 11)), 0.005, 0.97);
+   const assist = st.lastPass && st.lastPass !== sh && kind !== 'pen' ? st.lastPass : null;
+   if (assist) assist.st.keyPasses++;
+@@ -97,6 +97,10 @@ function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option,
+   const { rng } = st;
+   att.stats.passes++; c.st.passes++;
+   if (o.deep) att.log.deep++;
++  if (o.long) att.log.longKicks++;
++  // palla in profondità: il portiere può uscire e prenderla prima
++  const keeper = o.deep ? sweeps(st, def) : null;
++  if (keeper) { def.log.sweeps++; st.t += MATCH.passTime; gain(st, def, keeper); return; }
+   const late = minute(st) >= 70 ? att.log.late : null;
+   if (late) late[0]++;
+   if (o.off > 0 && rng.next() < o.off) {
+diff --git a/src/engine/match/keeper.ts b/src/engine/match/keeper.ts
+new file mode 100644
+index 0000000..249c389
+--- /dev/null
++++ b/src/engine/match/keeper.ts
+@@ -0,0 +1,48 @@
++// Il portiere (Blocco 2b, intervento 5): parata secondo il tipo di tiro, presa o respinta (la respinta crea la
++// ribattuta), uscita sulle palle in profondità. Il rinvio lungo è un'opzione in decision.ts. Costanti in MATCH (gk*).
++import { MATCH } from '../balance.ts';
++import { sigmoid } from './pitch.ts';
++import { corner } from './setpieces.ts';
++import { shoot } from './execute.ts';
++import { gain, nearest, type MatchState, type MP, type Team } from './state.ts';
++
++/**
++ * bravura del portiere sul tiro: ravvicinato (xG alto) = Uno contro uno, Riflessi, Uscite basse; rigore = Riflessi e
++ * Concentrazione; il resto = Riflessi, Posizionamento, Concentrazione
++ */
++export function keeperSkill(gk: MP | undefined, pen: boolean, xg: number): number {
++  if (!gk) return 3;
++  const a = gk.p.attrs;
++  if (pen) return 0.7 * a.reflexes + 0.3 * a.concentration;
++  if (xg >= MATCH.gkCloseXg) return 0.5 * a.oneOnOnes + 0.3 * a.reflexes + 0.2 * a.rushingOut;
++  return 0.6 * a.reflexes + 0.25 * a.positioning + 0.15 * a.concentration;
++}
++
++/**
++ * dopo la parata: la trattiene (Presa, più difficile sui tiri forti da vicino) o la respinge. Respinta: in corner, sui
++ * piedi di un attaccante (ribattuta) o a un difensore
++ */
++export function afterSave(st: MatchState, att: Team, def: Team, gk: MP | undefined, xg: number) {
++  if (!gk) { gain(st, def, nearest(def, 0.6, 4)); return; }
++  const { rng } = st;
++  if (rng.next() < sigmoid(MATCH.gkHoldBase + MATCH.gkHoldSkill * (gk.p.attrs.handling - 11) - MATCH.gkHoldXg * xg)) { gain(st, def, gk); return; }
++  const r = rng.next();
++  if (r < MATCH.gkParryCorner) { corner(st); return; }
++  if (r < MATCH.gkParryCorner + MATCH.gkRebound) {
++    const rb = nearest(att, 10.7, 4, true); // chi arriva sulla ribattuta
++    st.bx = 10.7; st.by = 4 + (rng.next() - 0.5) * 2;
++    st.lastPass = null;
++    att.log.rebounds++;
++    shoot(st, rb, MATCH.gkReboundXg, 'open', 'open');
++    return;
++  }
++  gain(st, def, nearest(def, 1.2, 4, true));
++}
++
++/** il portiere esce sulla palla in profondità: Uscite basse, e di più il portiere libero (che sta già più alto) */
++export function sweeps(st: MatchState, def: Team): MP | null {
++  const gk = def.on.find((m) => m.pos === 'GK');
++  if (!gk) return null;
++  const p = MATCH.gkSweepBase + MATCH.gkSweepSkill * (gk.p.attrs.rushingOut - 11) + (gk.roleId === 'sweeperKeeper' ? MATCH.gkSweepRole : 0);
++  return st.rng.next() < p ? gk : null;
++}
+diff --git a/src/engine/match/state.ts b/src/engine/match/state.ts
+index 7e07ac3..b4a926d 100644
+--- a/src/engine/match/state.ts
++++ b/src/engine/match/state.ts
+@@ -58,6 +58,9 @@ export interface MatchLog {
+   regainX: number; regains: number; // somma e numero delle x (nel proprio sistema) dei recuperi da contrasto o intercetto
+   goals: Record<Origin, number>;
+   counterGoals: number; // possesso nato nella propria metà da meno di 15 s e al massimo 4 azioni
++  rebounds: number; // tiri su ribattuta dopo una respinta del portiere
++  sweeps: number; // palle in profondità prese in uscita dal portiere
++  longKicks: number; // rinvii lunghi del portiere
+   late: [number, number]; // passaggi tentati e riusciti dal 70': la stanchezza si vede qui
+ }
+ 
+@@ -180,7 +183,7 @@ export interface MatchState {
+ 
+ export const newPStats = (from: number): PStats => ({ passes: 0, passesOk: 0, keyPasses: 0, shots: 0, onTarget: 0, goals: 0, assists: 0, tackles: 0, dribbles: 0, duelsLost: 0, saves: 0, fouls: 0, yellows: 0, red: false, injured: false, conceded: 0, injuryCtx: 'contact', from, to: 90 });
+ const newLog = (): MatchLog => ({ crosses: 0, crossesOk: 0, dribbles: 0, dribblesOk: 0, tackles: 0, intercepts: 0, headers: 0, deep: 0, deepOk: 0,
+-  regainX: 0, regains: 0, goals: { open: 0, cross: 0, corner: 0, pen: 0, fk: 0 }, counterGoals: 0, late: [0, 0] });
++  regainX: 0, regains: 0, goals: { open: 0, cross: 0, corner: 0, pen: 0, fk: 0 }, counterGoals: 0, late: [0, 0], rebounds: 0, sweeps: 0, longKicks: 0 });
+ const newSide = (): SideStats => ({ possession: 0, shots: 0, onTarget: 0, xg: 0, passes: 0, passesOk: 0, tackles: 0, fouls: 0, corners: 0, offsides: 0, yellows: 0, reds: 0 });
+ 
+ /** logit personale del giorno, centrato sul giocatore "normale" (morale 65, condizione ≥ 80, modulo conosciuto) */
