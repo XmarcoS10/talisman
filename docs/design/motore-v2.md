@@ -402,3 +402,24 @@ schierato** (linee difensive da superare, spazi fra le linee, disordine che nasc
 i difensori fra chi tira e la porta** (oggi vede solo la pressione). Materiale pronto in `docs/design/patches/`:
 qualità del passaggio, corse, disordine, costruzione paziente, con le misure al §6. Da progettare come proposta per
 dopo la 0.2.0, o per il suo finale se resta tempo.
+
+### Intervento 4 (cross e duello aereo) — 25/09, fermo sulla precisione delle stagioni
+
+Cross alto (anche anticipato dalla trequarti) e palla bassa all'indietro dal fondo; il cross arriva (Cross, pressione),
+il portiere può uscire (Uscite alte, Comando dell'area), poi duello aereo (Colpo di testa, Coraggio, Forza, altezza:
+nel modello non esiste Elevazione) o anticipo sulla palla bassa; respinta in corner o seconda palla al limite.
+Cross riuscito = trova un compagno, come Opta. Patch: `docs/design/patches/cross-v1.patch` (con `match/aerial.ts`).
+
+| 4.000 partite | Prima | Dopo |
+|---|---|---|
+| Cross tentati · riusciti | 5,7 · 49% ❌ | **15,5 · 22%** ✅ |
+| Tiri di testa sul totale | 28,5% ❌ | 24,2% (il resto viene dai corner: intervento 8) |
+| Corner · gol · gol da piazzato | 4,4 · 2,62 · 28,9% | 4,5 · 2,60 · 26,3% ✅ |
+| Dribbling tentati | 15,7 | 12,4 ✅ |
+| Test di buon senso | 4 su 4 | 4 su 4 (ampiezza: 23,6 cross contro 10,0) |
+| Tempo | uguale (misurato contro la versione registrata nelle stesse condizioni) |
+
+Stagioni 42 / 7 / 99: gol 2,64 / 2,68 / 2,88, correlazione 0,82 / 0,85 / 0,84. **Fuori target**: precisione dei
+passaggi 77,6 / 77,9 / 77,9% (target 78-88; i cross contano come passaggi e ne riesce uno su cinque, come nei dati
+Opta), e col seme 99 pareggi 20,3%, tiri 15,3, punti massimi 102. Alzare la precisione di base (passBase 4,0 → 4,3)
+peggiora il resto: gol 2,42, corner sotto 4, correlazione 0,75.

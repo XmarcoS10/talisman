@@ -1,0 +1,220 @@
+diff --git a/src/engine/balance.ts b/src/engine/balance.ts
+index 4a29b9c..93ac982 100644
+--- a/src/engine/balance.ts
++++ b/src/engine/balance.ts
+@@ -200,16 +200,31 @@ export const MATCH = {
+   blockedShare: 0.25,
+ 
+   // cross e piazzati
+-  crossMinX: 8.3,
+-  crossBase: 0.2,
+-  crossSkill: 0.1,
+-  crossAtt: 0.35, // per attaccante in area
+-  crossDef: 0.25, // per difensore in area
++  // cross e duelli aerei (Blocco 2b, intervento 4, match/aerial.ts): il cross arriva (Cross, pressione), il portiere
++  // può uscire, poi si contende la palla; cross "riuscito" = trova un compagno, come Opta
++  crossMinX: 7.8, // dalla trequarti in su, anche il cross anticipato
++  crossWide: 2.2, // zone dalla linea laterale entro cui si crossa
++  lowMinX: 9.5, // da qui, sul fondo, anche la palla bassa all'indietro
++  crossBase: 0.9, // logit che il cross arrivi in area
++  crossSkill: 0.1, // per punto di Cross sopra/sotto 11 (arrivo e duello)
+   crossPress: 0.5,
++  crossAtt: 0.25, // stima del duello nella scelta: per attaccante in area…
++  crossDef: 0.2, // …e per difensore in area
++  duelBase: -0.9, // logit che l'attaccante vinca il duello aereo a pari forza
++  duelSkill: 0.12, // per punto di differenza nel gioco aereo (aerial.ts)
++  lowBase: -0.3, // logit che la palla bassa trovi il compagno a pari anticipo
++  lowPressure: 0.6, // pressione su chi tira dopo la palla bassa
+   headerXg: 0.1,
++  headerMargin: 0.05, // xG del colpo di testa in più per punto di duello vinto
++  claimBase: 0.08, // il portiere esce e blocca il cross alto…
++  claimSkill: 0.015, // …in più per punto di Uscite alte e Comando dell'area sopra 11
++  crossClearCorner: 0.1, // respinta in corner
++  secondBall: 0.3, // seconda palla ripresa dall'attacco al limite dell'area
++  crossBlockCorner: 0.2, // cross che non arriva: respinto in corner
++  secondValue: 0.05, // valore, nella scelta, di una respinta che resta a chi attacca
++  crossLoss: 0.0, // un cross perso costa meno di un passaggio perso: la palla va lontano
+   cornerAfterSave: 0.45,
+   cornerAfterBlock: 0.5,
+-  cornerAfterClear: 0.6,
+   cornerHeader: 0.3,
+   cornerHeaderXg: 0.07,
+   fkShot: 0.4,
+diff --git a/src/engine/match/aerial.ts b/src/engine/match/aerial.ts
+new file mode 100644
+index 0000000..9236d36
+--- /dev/null
++++ b/src/engine/match/aerial.ts
+@@ -0,0 +1,86 @@
++// Gioco sulle fasce e duelli aerei (Blocco 2b, intervento 4): il cross alto o basso, l'uscita del portiere, il duello
++// fra chi attacca e chi difende la palla, la respinta e la seconda palla. Costanti in MATCH (cross*, duel*, claim*).
++import { MATCH } from '../balance.ts';
++import { sigmoid, xG } from './pitch.ts';
++import { corner } from './setpieces.ts';
++import { shoot } from './execute.ts';
++import { best, gain, nearest, type MatchState, type MP, type Team } from './state.ts';
++
++/** forza nel gioco aereo: Colpo di testa, Coraggio, Forza e altezza (182 cm = 11), più il bonus del ruolo (la punta di peso) */
++export const aerial = (m: MP) => {
++  const a = m.p.attrs;
++  return 0.45 * a.heading + 0.15 * a.bravery + 0.15 * a.strength + 0.25 * (11 + (m.p.heightCm - 182) / 2) + m.role.aerial;
++};
++
++/** il portiere esce sul cross alto e lo blocca: Uscite alte e Comando dell'area */
++const claims = (st: MatchState, gk: MP | undefined) =>
++  !!gk && st.rng.next() < MATCH.claimBase + MATCH.claimSkill * ((gk.p.attrs.aerialReach + gk.p.attrs.commandOfArea) / 2 - 11);
++
++/** chi va sulla palla in area: fra quelli che ci sono, il più forte di testa; se non c'è nessuno, il migliore in campo */
++function target(att: Team, c: MP): MP {
++  let pick: MP | undefined, top = -Infinity;
++  for (const m of att.on) {
++    if (m === c || m.pos === 'GK' || m.x < 9.5) continue;
++    const s = aerial(m);
++    if (s > top) { top = s; pick = m; }
++  }
++  return pick ?? best(att, aerial, (m) => m !== c && m.pos !== 'GK');
++}
++
++/** chi lo marca: il difensore in area più forte di testa, o il più vicino al dischetto */
++function marker(def: Team): MP {
++  let pick: MP | undefined, top = -Infinity;
++  for (const m of def.on) {
++    if (m.pos === 'GK' || 12 - m.x < 9.5) continue;
++    const s = aerial(m);
++    if (s > top) { top = s; pick = m; }
++  }
++  return pick ?? nearest(def, 1.2, 4, true);
++}
++
++/** respinta della difesa: a volte in corner, a volte la seconda palla la riprende chi attacca al limite dell'area */
++function cleared(st: MatchState, att: Team, def: Team, d: MP) {
++  const r = st.rng.next();
++  if (r < MATCH.crossClearCorner) { corner(st); return; }
++  if (r < MATCH.crossClearCorner + MATCH.secondBall) {
++    st.carrier = nearest(att, 8.6, 4, true); // seconda palla: chi arriva da dietro
++    st.bx = 8.6; st.by = 4 + (st.rng.next() - 0.5) * 3;
++    st.lastPass = null;
++    st.chain = 0;
++    return;
++  }
++  gain(st, def, d);
++}
++
++/** il cross è arrivato: duello (alto) o anticipo (basso); vinto è un tiro, perso è una respinta */
++function contest(st: MatchState, att: Team, def: Team, c: MP, low: boolean): boolean {
++  const a = target(att, c), d = marker(def);
++  const q = MATCH.crossSkill * (c.p.attrs.crossing - 11);
++  const margin = low ? (a.p.attrs.offTheBall + a.p.attrs.firstTouch - d.p.attrs.anticipation - d.p.attrs.positioning) / 2 : aerial(a) - aerial(d);
++  const pWin = sigmoid((low ? MATCH.lowBase : MATCH.duelBase) + MATCH.duelSkill * margin + q);
++  if (st.rng.next() >= pWin) { cleared(st, att, def, d); return false; }
++  st.lastPass = c;
++  if (low) { // palla bassa all'indietro: tiro di piatto dal dischetto, contro una difesa che sta rientrando
++    st.bx = 10.2; st.by = 4;
++    shoot(st, a, xG(10.2, 4, MATCH.lowPressure), 'open', 'cross');
++  } else {
++    st.bx = 10.8; st.by = 4;
++    shoot(st, a, MATCH.headerXg * Math.max(0.4, 1 + MATCH.headerMargin * margin), 'header', 'cross');
++  }
++  return true;
++}
++
++/**
++ * esegue il cross: se arriva e il portiere non esce, si contende la palla. Restituisce se ha trovato un compagno
++ * (è il "cross riuscito" delle statistiche). Il chiamante ha già contato il passaggio.
++ */
++export function cross(st: MatchState, att: Team, def: Team, c: MP, p: number, low: boolean): boolean {
++  if (st.rng.next() >= p) { // non arriva: respinto subito o fuori
++    if (st.rng.next() < MATCH.crossBlockCorner) corner(st);
++    else gain(st, def, nearest(def, 12 - st.bx, 8 - st.by, true));
++    return false;
++  }
++  const gk = def.on.find((m) => m.pos === 'GK');
++  if (!low && claims(st, gk)) { gain(st, def, gk!); return false; }
++  return contest(st, att, def, c, low);
++}
+diff --git a/src/engine/match/decision.ts b/src/engine/match/decision.ts
+index 3e7c65a..c87a653 100644
+--- a/src/engine/match/decision.ts
++++ b/src/engine/match/decision.ts
+@@ -40,7 +40,7 @@ export type Option =
+   | { kind: 'pass'; to: OnPitch; tx: number; ty: number; p: number; off: number; u: number; w: number; deep: boolean } // w: intesa (chem); deep: in profondità
+   | { kind: 'dribble'; tx: number; ty: number; p: number; tackler: OnPitch | undefined; u: number }
+   | { kind: 'shot'; xg: number; u: number }
+-  | { kind: 'cross'; p: number; u: number };
++  | { kind: 'cross'; p: number; u: number; low: boolean }; // p: che arrivi; low: palla bassa all'indietro dal fondo
+ 
+ const a = (pl: OnPitch, k: keyof Player['attrs']) => pl.p.attrs[k] - 11; // attributo centrato su 11
+ const NO_REL: Record<number, number> = {};
+@@ -153,15 +153,22 @@ function shot(v: View, x: Ctx, out: Option[]) {
+   out.push({ kind: 'shot', xg, u: xg * (1 + MATCH.shotSkill * skill) * MATCH.shotBias * c.role.shoot * (1 + MATCH.mentalityShot * mm) - (1 - xg) * x.keep * 0.5 });
+ }
+ 
+-/** 4) CROSS dal fondo */
++/** xG del tiro dopo la palla bassa all'indietro: sempre dallo stesso punto, si calcola una volta */
++const LOW_XG = xG(10.2, 4, MATCH.lowPressure);
++
++/** 4) CROSS dalla fascia (alto) e, dal fondo, palla bassa all'indietro */
+ function cross(v: View, x: Ctx, out: Option[]) {
+   const { carrier: c, bx, by, pressure } = v;
+-  if (!(bx >= MATCH.crossMinX && (by < 2 || by > 6))) return;
++  if (!(bx >= MATCH.crossMinX && (by < MATCH.crossWide || by > 8 - MATCH.crossWide))) return;
+   let attBox = 0, defBox = 0;
+   for (const m of v.mates) if (m !== c && m.x >= 9.8 && m.y > 2 && m.y < 6) attBox++;
+   for (let i = 0; i < v.defX.length; i++) if (v.defX[i]! >= 9.8 && v.defY[i]! > 2 && v.defY[i]! < 6) defBox++;
+-  const p = sigmoid(MATCH.crossBase + MATCH.crossSkill * a(c, 'crossing') + MATCH.crossAtt * attBox - MATCH.crossDef * defBox - MATCH.crossPress * pressure + v.bonus);
+-  out.push({ kind: 'cross', p, u: p * MATCH.headerXg * 1.1 * c.role.cross - (1 - p) * x.loss });
++  const p = sigmoid(MATCH.crossBase + MATCH.crossSkill * a(c, 'crossing') - MATCH.crossPress * pressure + v.bonus);
++  // stima del duello: quanti dei miei e dei loro ci sono in area
++  const win = sigmoid(MATCH.duelBase + MATCH.crossAtt * attBox - MATCH.crossDef * defBox);
++  const value = (w: number, xg: number) => p * (w * xg + (1 - w) * MATCH.secondValue) * c.role.cross - (1 - p) * x.loss * MATCH.crossLoss;
++  out.push({ kind: 'cross', p, low: false, u: value(win, MATCH.headerXg) });
++  if (bx >= MATCH.lowMinX) out.push({ kind: 'cross', p, low: true, u: value(sigmoid(MATCH.lowBase + MATCH.crossAtt * attBox - MATCH.crossDef * defBox), LOW_XG) });
+ }
+ 
+ /** le opzioni del portatore, nell'ordine in cui le valuta: passaggi, profondità, dribbling, tiro, cross */
+diff --git a/src/engine/match/execute.ts b/src/engine/match/execute.ts
+index be3354e..d1f22e3 100644
+--- a/src/engine/match/execute.ts
++++ b/src/engine/match/execute.ts
+@@ -7,15 +7,13 @@ import { foul } from './events.ts';
+ import { inBox, len, segDist, shotGeometry } from './pitch.ts';
+ import { kickoff } from './positioning.ts';
+ import { PRESS } from './pressure.ts';
++import { cross } from './aerial.ts';
+ import { corner } from './setpieces.ts';
+ import { best, ev, gain, gx, gy, minute, nearest, type MatchState, type MP, type Origin, type Team, type TraceStep } from './state.ts';
+ 
+ const TEMPO = [1.2, 1, 0.85];
+ type ShotKind = 'open' | 'header' | 'pen' | 'fk';
+ 
+-/** chi va a prendere un cross: testa, coraggio, e la punta di peso ha la precedenza */
+-const aerialScore = (m: MP) => m.p.attrs.heading + m.p.attrs.bravery / 2 + m.role.aerial;
+-
+ function shotSkill(st: MatchState, sh: MP, kind: ShotKind) {
+   const a = sh.p.attrs;
+   if (kind === 'pen') return a.penalties;
+@@ -155,20 +153,10 @@ function doCross(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option,
+   att.stats.passes++; c.st.passes++;
+   att.log.crosses++;
+   st.t += MATCH.passTime;
+-  if (st.rng.next() < o.p) {
+-    att.stats.passesOk++; c.st.passesOk++;
+-    att.log.crossesOk++;
+-    if (f) f.ok = true;
+-    const inBoxMates = att.on.filter((m) => m !== c && m.pos !== 'GK' && m.x >= 9.5);
+-    const header = inBoxMates.length
+-      ? inBoxMates.reduce((a, b) => (aerialScore(b) > aerialScore(a) ? b : a))
+-      : best(att, (m) => m.p.attrs.heading, (m) => m !== c && m.pos !== 'GK');
+-    const dh = best(def, (m) => m.p.attrs.heading, (m) => m.pos !== 'GK');
+-    st.lastPass = c;
+-    st.bx = 10.8; st.by = 4;
+-    shoot(st, header, MATCH.headerXg * (1 + 0.06 * (header.p.attrs.heading - 11)) * (1 - 0.04 * (dh.p.attrs.heading - 11)), 'header', 'cross');
+-  } else if (st.rng.next() < MATCH.cornerAfterClear) corner(st);
+-  else gain(st, def, nearest(def, 1.5, 4, true));
++  if (!cross(st, att, def, c, o.p, o.low)) return;
++  att.stats.passesOk++; c.st.passesOk++;
++  att.log.crossesOk++;
++  if (f) f.ok = true;
+ }
+ 
+ /** esegue l'opzione scelta dal portatore */
