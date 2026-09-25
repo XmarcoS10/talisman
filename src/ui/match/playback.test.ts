@@ -9,6 +9,7 @@ import { RULES, context, pick } from './analyst.ts';
 import { duration, ensure, sample } from './playback.ts';
 import { line } from './commentary.ts';
 import { momentsAt } from './moments.ts';
+import { Camera, cameraZoom } from './renderer.ts';
 
 const setup = (mine: 0 | 1 = 0) => {
   const w = newWorld(17);
@@ -111,6 +112,27 @@ describe('partita in 2D (F6)', { timeout: 30000 }, () => {
       const want = run.frames.filter((f) => f.beats?.some((b) => b.kind === kind)).length;
       expect(seen.get(kind)?.size ?? 0, kind).toBe(want);
     }
+  });
+
+  it('la telecamera che segue la palla non trema: poche inversioni di marcia, niente scatti', () => {
+    const { run } = setup();
+    run.result();
+    const cam = new Camera();
+    let flips = 0, lastDir = 0, maxStep = 0, prev = cam.cx;
+    const fps = 60, secs = 120, speed = 6; // due minuti reali a 1x
+    for (let k = 0; k < fps * secs; k++) {
+      const s = sample(run, (k / fps) * speed)!;
+      cam.step(s.bx, s.by, 1 / fps, cameraZoom('follow', false), 1280, 720);
+      const d = cam.cx - prev;
+      prev = cam.cx;
+      maxStep = Math.max(maxStep, Math.abs(d));
+      const dir = Math.abs(d) < 1e-3 ? 0 : Math.sign(d);
+      if (dir && lastDir && dir !== lastDir) flips++;
+      if (dir) lastDir = dir;
+    }
+    console.log(`telecamera: ${(flips / secs).toFixed(2)} inversioni al secondo, passo massimo ${maxStep.toFixed(3)} zone per fotogramma`);
+    expect(flips / secs).toBeLessThan(0.5);
+    expect(maxStep).toBeLessThan(0.1); // meno di 1 m per fotogramma a 60 fps
   });
 
   it('cambio deciso dalla panchina: entra chi scelgo io', () => {
