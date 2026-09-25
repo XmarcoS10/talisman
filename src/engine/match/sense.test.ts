@@ -45,10 +45,11 @@ describe('buon senso tattico', { timeout: 120_000 }, () => {
     const fast = (w: WorldState, b: number) => {
       for (const id of w.clubs[b]!.playerIds) { const p = w.players[id]!; if (p.position === 'ST' || p.position.startsWith('AM')) { p.attrs.pace = 18; p.attrs.acceleration = 18; } }
     };
-    const conceded = (o: SimOutput, a: 0 | 1) => o.log[1 - a]!.deepOk;
+    // palle giocate alle spalle della linea dagli avversari (le riuscite sono così poche, ~0,1 a partita, che 500 partite non bastano)
+    const conceded = (o: SimOutput, a: 0 | 1) => o.log[1 - a]!.deep;
     const high = play((w, a, b) => { fast(w, b); w.clubs[a]!.tactic.line = 2; }, conceded);
     const low = play((w, a, b) => { fast(w, b); w.clubs[a]!.tactic.line = 0; }, conceded);
-    expect(report('palle in profondità riuscite dagli avversari, linea alta contro bassa', high, low)).toBeGreaterThan(T_MIN);
+    expect(report('palle in profondità giocate dagli avversari, linea alta contro bassa', high, low)).toBeGreaterThan(T_MIN);
   });
 
   it('il pressing alto stanca di più e recupera palla più avanti', () => {
