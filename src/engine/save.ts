@@ -10,7 +10,7 @@ import { assignAgents } from './transfers/agents.ts';
 import { makeScouts } from './scouting/scouts.ts';
 import { newBoard } from './board/board.ts';
 
-export const SCHEMA_VERSION = 22;
+export const SCHEMA_VERSION = 23;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -121,6 +121,8 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
   (w) => { w.press = null; },
   // 21 → 22 (0.2.0, piazzati): i battitori scelti in Tattica; nelle carriere di prima nessuno, batte il migliore in campo
   (w) => { for (const c of Object.values(w.clubs as Obj)) c.tactic.takers ??= {}; },
+  // 22 → 23 (0.2.0, transizioni): l'istruzione "dopo la palla persa"; per tutti "normale", cioè come prima
+  (w) => { for (const c of Object.values(w.clubs as Obj)) c.tactic.counterPress ??= 1; },
 ];
 
 export function serialize(world: WorldState): string {

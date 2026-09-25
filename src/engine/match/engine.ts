@@ -11,7 +11,7 @@ import { inBox } from './pitch.ts';
 import { kickoff, settle } from './positioning.ts';
 import { PRESS, readPlay } from './pressure.ts';
 import { finish, rate } from './ratings.ts';
-import { createState, minute, type MatchState, type MP, type PosFrame, type Shout, type SimOutput, type Team, type TeamSetup, type TraceStep } from './state.ts';
+import { createState, inTransition, minute, type MatchState, type MP, type PosFrame, type Shout, type SimOutput, type Team, type TeamSetup, type TraceStep } from './state.ts';
 import { autoSubs, gameState, substitute } from './subs.ts';
 
 export type { MP, PosFrame, PStats, Shout, SimOutput, Team, TeamSetup, TraceStep } from './state.ts';
@@ -59,14 +59,20 @@ export function simulate(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
 function step(st: MatchState) {
   const att = st.teams[st.s], def = st.teams[1 - st.s]!;
   settle(st);
-  const { view, pressure, closest } = readPlay(st);
+  const trans = inTransition(st); // prima dell'azione: dopo, il possesso può essere già cambiato
+  const { view, pressure, closest, exposed } = readPlay(st);
+  st.counterNow = exposed > MATCH.counterFrom;
   const t0 = st.t;
   const c = st.carrier;
   st.poss.acts++;
   // fallo "di pressione": il difensore più vicino ferma l'azione (in area si sta più attenti)
   const pressFoul = MATCH.pressFoul * pressure * PRESS[def.tactic.pressing]! * (inBox(st.bx, st.by) ? MATCH.foulInBox : 1)
     * (closest?.st.yellows ? MATCH.bookedCaution : 1);
+  // fallo tattico: la ripartenza trova la difesa scoperta a metà campo, e il più vicino la ferma
+  const tactical = closest && exposed > MATCH.counterFrom && st.bx >= 4 && st.bx <= 8
+    ? MATCH.tacticalFoul * closest.p.attrs.aggression / 10 : 0;
   if (closest && st.rng.next() < pressFoul) foul(st, closest, c);
+  else if (closest && tactical && st.rng.next() < tactical) { def.log.tacticalFouls++; foul(st, closest, c, true); }
   else if (closest && st.rng.next() < challengeP(closest, c, pressure)) challenge(st, closest); // gli porta via palla
   else act(st, att, def, c, choose(st.rng, options(view), st.carrier, pressure));
 
@@ -74,6 +80,8 @@ function step(st: MatchState) {
   const dt = st.t - t0;
   st.pendingDrain[st.s] += dt;
   st.pendingDrain[st.s === 0 ? 1 : 0] += dt * PRESS[def.tactic.pressing]!; // chi pressa si stanca di più
+  if (trans && def.tactic.counterPress === 2) st.pendingDrain[def.side] += dt * MATCH.cpDrain; // il contro-pressing stanca
+
   if (st.pendingDrain[0] + st.pendingDrain[1] >= 120) drain(st);
   st.momentum *= MATCH.momentumDecay;
 }

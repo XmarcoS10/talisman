@@ -34,6 +34,7 @@ export interface View {
   mentality: number;
   bonus: number; // logit comune: casa, momentum, stanchezza del portatore
   chain: number; // passaggi consecutivi in questo possesso
+  counter: number; // ripartenza: avversari rimasti oltre la palla, oltre la soglia (0 fuori dalla transizione)
 }
 
 export type Option =
@@ -58,7 +59,8 @@ function context(v: View): Ctx {
   const keep = MATCH.possessionValue * riskW;
   const loss = lossCost(bx, by) * riskW + keep;
   // verticalità: istruzione tattica + impazienza dopo una lunga serie di passaggi
-  const direct = MATCH.directnessK * tactic.directness + MATCH.patience * Math.max(0, v.chain - 5) + c.role.direct;
+  const direct = MATCH.directnessK * tactic.directness + MATCH.patience * Math.max(0, v.chain - 5) + c.role.direct
+    + MATCH.counterDirect * v.counter; // difesa sbilanciata: si riparte in verticale
   // spogliatoio in campo (§7.3): tra amici ci si cerca un po' di più, tra nemici un po' di meno
   return { keep, loss, direct, vision: MATCH.passVision * a(c, 'vision'), rel: FLAGS.psychology ? c.p.rel : NO_REL };
 }

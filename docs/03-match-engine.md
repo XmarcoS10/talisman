@@ -102,6 +102,15 @@ traiettoria dell'azione nella prima parte dell'intervallo e poi aspetta. Decisio
   trequarti (`fkCrossX`) la palla va in area (`fkCross`) ed è un duello aereo.
 - Le rimesse lunghe non ci sono: il modello non ha l'attributo né le rimesse laterali.
 
+## Transizioni (Blocco 2b, intervento 6)
+- **Transizione**: i `transWindow` secondi e le `transActs` azioni dopo un cambio di possesso (`inTransition`).
+- **Dopo la palla persa** (istruzione `counterPress`, schema 23): la pressione di chi ha appena perso palla è ×`cpRetreat`
+  (ripiega), ×1 (normale) o ×`cpPress` (contro-pressing, che stanca di `cpDrain` in più).
+- **Ripartenza**: se in transizione restano oltre la palla più di `counterFrom` avversari, chi ha palla verticalizza
+  (`counterDirect` per ognuno oltre la soglia) e i passaggi durano ×`transTempo`.
+- **Fallo tattico**: contro una ripartenza a metà campo con la difesa scoperta, il più vicino può fermarla
+  (`tacticalFoul × Aggressività/10`), e il giallo arriva ×`tacticalYellow` più spesso.
+
 ## Fatica
 Energia persa al minuto: `drain del ruolo × (drainBase + drainStamina·(1 − Resistenza/20))`, più per chi pressa. Con
 `drainStamina` 0,5 chi ha poca Resistenza arriva davvero stanco (prima al 75' erano tutti fra 76 e 80). L'energia

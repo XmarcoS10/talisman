@@ -297,6 +297,17 @@ export const MATCH = {
   shoutBoost: 0.03, // logit in più per chi risponde bene (≈ 15 punti di morale)
   shoutBackfire: 0.02, // logit in meno per chi la prende male
 
+  // transizioni (Blocco 2b, intervento 6): i secondi dopo un cambio di possesso
+  transWindow: 8, // secondi dopo il recupero in cui si è "in transizione"…
+  transActs: 4, // …e per quante azioni al massimo
+  cpRetreat: 0.7, // pressione di chi ha perso palla se l'istruzione è "ripiega"…
+  cpPress: 1.5, // …e se è "contro-pressing" (che stanca: cpDrain)
+  cpDrain: 0.6, // fatica in più di chi fa contro-pressing, per secondo di transizione
+  transTempo: 0.7, // in transizione la palla viaggia più in fretta: durata di un passaggio × questo
+  counterFrom: 3, // difensori rimasti oltre la palla da cui la ripartenza conviene…
+  counterDirect: 0.002, // …voglia di verticalizzare in più per ognuno oltre questa soglia
+  tacticalFoul: 0.06, // fallo tattico per fermare una ripartenza con la difesa scoperta, × Aggressività/10
+  tacticalYellow: 2.5, // il fallo tattico si prende il giallo più spesso
   homeBoost: 0.12, // logit in più per la squadra di casa (pubblico)
   protectLeadFrom: 55, // minuto da cui chi è in vantaggio abbassa la mentalità di 1
   chaseFrom: 60, // minuto da cui chi è sotto la alza di 1 (di 2 dal 75')

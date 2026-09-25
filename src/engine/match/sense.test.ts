@@ -84,4 +84,12 @@ describe('buon senso tattico', { timeout: 120_000 }, () => {
     const overXg = (o: SimOutput, a: 0 | 1) => (a === 0 ? o.result.ag : o.result.hg) - o.result.stats[1 - a]!.xg;
     expect(report('gol subiti oltre gli xG, portiere scarso contro forte', play(keeper(6), overXg), play(keeper(18), overXg))).toBeGreaterThan(T_MIN);
   });
+
+  it('il contro-pressing riprende più palloni subito dopo averli persi e stanca di più', () => {
+    const quick = (o: SimOutput, a: 0 | 1) => o.log[a].quickRegains;
+    const energy = (o: SimOutput, a: 0 | 1) => mean(o.played[a].map((m) => m.energy));
+    const cp = (v: number) => (w: WorldState, a: number) => { w.clubs[a]!.tactic.counterPress = v; };
+    expect(report('recuperi subito dopo la perdita, contro-pressing contro ripiego', play(cp(2), quick), play(cp(0), quick))).toBeGreaterThan(T_MIN);
+    expect(report('energia a fine partita, ripiego contro contro-pressing', play(cp(0), energy), play(cp(2), energy))).toBeGreaterThan(T_MIN);
+  });
 });

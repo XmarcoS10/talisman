@@ -43,14 +43,14 @@ export function challenge(st: MatchState, tk: MP) {
   gain(st, def, tk);
 }
 
-export function foul(st: MatchState, fouler: MP, victim: MP) {
+export function foul(st: MatchState, fouler: MP, victim: MP, tactical = false) {
   const att = st.teams[st.s], def = st.teams[1 - st.s]!;
   const { rng } = st;
   def.stats.fouls++; fouler.st.fouls++;
   st.t += MATCH.restartTime;
   if (rng.next() < MATCH.redP) sendOff(st, def, fouler);
   // chi è già ammonito entra con più prudenza: il secondo giallo è più raro
-  else if (rng.next() < MATCH.yellowP * (1 + 0.08 * (fouler.p.attrs.aggression - 11)) * (fouler.st.yellows ? MATCH.bookedCaution : 1)) {
+  else if (rng.next() < MATCH.yellowP * (tactical ? MATCH.tacticalYellow : 1) * (1 + 0.08 * (fouler.p.attrs.aggression - 11)) * (fouler.st.yellows ? MATCH.bookedCaution : 1)) {
     fouler.st.yellows++; def.stats.yellows++;
     ev(st, 'yellow', def.side, fouler);
     if (fouler.st.yellows === 2) sendOff(st, def, fouler);

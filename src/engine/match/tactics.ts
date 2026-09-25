@@ -26,4 +26,4 @@ export const FORMATIONS: Record<FormationId, Slot[]> = {
 export const defaultRoles = (f: FormationId): RoleId[] => FORMATIONS[f].map((s) => s.role ?? DEFAULT_ROLE[s.pos]);
 
 export const defaultTactic = (): Tactic =>
-  ({ formation: '4-3-3', mentality: 3, pressing: 1, tempo: 1, width: 1, line: 1, directness: 1, roles: defaultRoles('4-3-3') });
+  ({ formation: '4-3-3', mentality: 3, pressing: 1, tempo: 1, width: 1, line: 1, directness: 1, counterPress: 1, roles: defaultRoles('4-3-3') });

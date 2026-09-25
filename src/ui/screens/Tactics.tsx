@@ -9,8 +9,8 @@ import { Pitch, fitClass } from './Pitch.tsx';
 import { Status } from './Squad.tsx';
 import { Takers } from './Takers.tsx';
 
-type Instr = 'pressing' | 'tempo' | 'width' | 'line' | 'directness';
-const INSTRUCTIONS: Instr[] = ['pressing', 'tempo', 'width', 'line', 'directness'];
+type Instr = 'pressing' | 'tempo' | 'width' | 'line' | 'directness' | 'counterPress';
+const INSTRUCTIONS: Instr[] = ['pressing', 'tempo', 'width', 'line', 'directness', 'counterPress'];
 
 export function Seg({ label, value, options, onChange }: { label: string; value: number; options: string[]; onChange: (v: number) => void }) {
   return (

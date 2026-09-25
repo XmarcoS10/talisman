@@ -59,6 +59,8 @@ export interface MatchLog {
   goals: Record<Origin, number>;
   counterGoals: number; // possesso nato nella propria metà da meno di 15 s e al massimo 4 azioni
   rebounds: number; // tiri su ribattuta dopo una respinta del portiere
+  tacticalFouls: number; // falli tattici per fermare una ripartenza
+  quickRegains: number; // palloni recuperati nella transizione, cioè subito dopo averli persi
   sweeps: number; // palle in profondità prese in uscita dal portiere
   longKicks: number; // rinvii lunghi del portiere
   late: [number, number]; // passaggi tentati e riusciti dal 70': la stanchezza si vede qui
@@ -152,6 +154,7 @@ export interface MatchState {
   lastPass: MP | null;
   chain: number; // passaggi consecutivi nel possesso attuale
   poss: { t: number; half: number; x: number; acts: number }; // come è cominciato il possesso in corso (contropiede)
+  counterNow: boolean; // l'azione in corso è una ripartenza contro una difesa scoperta
   momentum: number; // + casa, − ospiti
   half: number;
   t: number;
@@ -183,7 +186,7 @@ export interface MatchState {
 
 export const newPStats = (from: number): PStats => ({ passes: 0, passesOk: 0, keyPasses: 0, shots: 0, onTarget: 0, goals: 0, assists: 0, tackles: 0, dribbles: 0, duelsLost: 0, saves: 0, fouls: 0, yellows: 0, red: false, injured: false, conceded: 0, injuryCtx: 'contact', from, to: 90 });
 const newLog = (): MatchLog => ({ crosses: 0, crossesOk: 0, dribbles: 0, dribblesOk: 0, tackles: 0, intercepts: 0, headers: 0, deep: 0, deepOk: 0,
-  regainX: 0, regains: 0, goals: { open: 0, cross: 0, corner: 0, pen: 0, fk: 0 }, counterGoals: 0, late: [0, 0], rebounds: 0, sweeps: 0, longKicks: 0 });
+  regainX: 0, regains: 0, goals: { open: 0, cross: 0, corner: 0, pen: 0, fk: 0 }, counterGoals: 0, late: [0, 0], rebounds: 0, sweeps: 0, longKicks: 0, tacticalFouls: 0, quickRegains: 0 });
 const newSide = (): SideStats => ({ possession: 0, shots: 0, onTarget: 0, xg: 0, passes: 0, passesOk: 0, tackles: 0, fouls: 0, corners: 0, offsides: 0, yellows: 0, reds: 0 });
 
 /** logit personale del giorno, centrato sul giocatore "normale" (morale 65, condizione ≥ 80, modulo conosciuto) */
@@ -200,7 +203,7 @@ export function createState(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Tr
     return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity, auto: s.auto !== false, log: newLog() };
   }) as [Team, Team];
   return {
-    rng, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, momentum: 0,
+    rng, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, counterNow: false, momentum: 0,
     half: 1, t: 0, length: 0, scheduled: [], lastPlace: 0, markStamp: 0, holder: null, meet: null, snap: true,
     trace, track: [], playAt: 0, lastBall: { x: 6, y: 4 }, lastStep: -1, ids0: [], idsDirty: true,
     defX: [], defY: [], defAnt: [], pendingDrain: [0, 0], subIdx: 0, shoutAt: [0, 0], output: null,
@@ -214,6 +217,10 @@ export const ev = (st: MatchState, type: MatchEventType, side: 0 | 1, player: MP
 // dal sistema di chi attacca alle coordinate globali (la squadra 1 gioca a specchio)
 export const gx = (st: MatchState, x: number) => (st.s === 0 ? x : 12 - x);
 export const gy = (st: MatchState, y: number) => (st.s === 0 ? y : 8 - y);
+/** si è nella transizione: il possesso è appena cambiato (pochi secondi e poche azioni fa) */
+export const inTransition = (st: MatchState) =>
+  st.poss.half === st.half && st.t - st.poss.t <= MATCH.transWindow && st.poss.acts <= MATCH.transActs;
+
 /** impegno difensivo: con mentalità offensiva si rientra meno e si pressa peggio */
 export const cover = (tm: Team) => 1 - MATCH.mentalityCover * (tm.mentality - 3);
 
@@ -232,6 +239,7 @@ export const best = (tm: Team, f: (m: MP) => number, filter: (m: MP) => boolean 
 
 /** la squadra `tm` prende palla col giocatore `m`, dove si trova */
 export function gain(st: MatchState, tm: Team, m: MP) {
+  if (tm.side !== st.s && inTransition(st)) tm.log.quickRegains++; // l'ha ripresa subito dopo averla persa
   st.s = tm.side;
   st.carrier = m;
   st.bx = m.x;

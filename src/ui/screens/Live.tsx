@@ -17,7 +17,7 @@ import { LiveAnalyst } from './LiveAnalyst.tsx';
 import { LiveBench } from './LiveBench.tsx';
 import { Seg } from './Tactics.tsx';
 
-const INSTR = ['pressing', 'tempo', 'width', 'line', 'directness'] as const;
+const INSTR = ['pressing', 'tempo', 'width', 'line', 'directness', 'counterPress'] as const;
 
 export function Live({ world, live, onFinish }: { world: WorldState; live: LiveDay; onFinish: () => void }) {
   const { run, fx } = live;

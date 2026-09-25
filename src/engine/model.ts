@@ -254,6 +254,7 @@ export interface Tactic {
   width: number;
   line: number; // linea difensiva
   directness: number; // passaggi diretti/verticali
+  counterPress: number; // dopo la palla persa: 0 ripiega, 1 normale, 2 contro-pressing (schema 23)
   roles: RoleId[]; // ruolo di ogni slot del modulo, nello stesso ordine
   /** battitori scelti dall'allenatore (id del giocatore); se manca o non è in campo, batte il migliore (schema 22) */
   takers?: { corners?: number; freeKicks?: number; penalties?: number };

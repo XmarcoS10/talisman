@@ -116,7 +116,8 @@ function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, 
     st.chain++;
     st.carrier = o.to as MP;
     st.bx = o.tx; st.by = o.ty;
-    st.t += MATCH.passTime * TEMPO[att.tactic.tempo]! + MATCH.passTimePerZone * len(o.tx - c.x, o.ty - c.y);
+    const quick = st.counterNow ? MATCH.transTempo : 1; // la ripartenza contro una difesa scoperta non si ferma a pensare
+    st.t += (MATCH.passTime * TEMPO[att.tactic.tempo]! + MATCH.passTimePerZone * len(o.tx - c.x, o.ty - c.y)) * quick;
   } else {
     // intercetto: il difensore più vicino alla linea di passaggio
     let w = def.on[0]!, bd = Infinity;

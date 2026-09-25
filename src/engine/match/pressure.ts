@@ -3,13 +3,13 @@
 import { MATCH } from '../balance.ts';
 import type { View } from './decision.ts';
 import { len } from './pitch.ts';
-import { cover, type MatchState, type MP } from './state.ts';
+import { cover, inTransition, type MatchState, type MP } from './state.ts';
 
 export const PRESS = [0.8, 1, 1.25];
 const FAR = MATCH.pressRadius * MATCH.pressRadius * 1.001;
 
 /** la difesa vista da chi attacca, la pressione sul portatore e il difensore più vicino (per il fallo di pressione) */
-export function readPlay(st: MatchState): { view: View; pressure: number; closest: MP | undefined } {
+export function readPlay(st: MatchState): { view: View; pressure: number; closest: MP | undefined; exposed: number } {
   const att = st.teams[st.s], def = st.teams[1 - st.s]!;
   const { bx, by, defX, defY, defAnt } = st;
   const cv = cover(def);
@@ -20,16 +20,20 @@ export function readPlay(st: MatchState): { view: View; pressure: number; closes
     defY[i] = 8 - m.y;
     defAnt[i] = (0.6 + 0.03 * m.p.attrs.anticipation) * cv;
   }
-  let pressure = 0, line = 6, closest: MP | undefined, cd: number = MATCH.pressRadius;
+  // nei secondi dopo aver perso palla chi difende ripiega o aggredisce secondo l'istruzione
+  const trans = inTransition(st);
+  const cp = trans ? [MATCH.cpRetreat, 1, MATCH.cpPress][def.tactic.counterPress ?? 1]! : 1;
+  let pressure = 0, line = 6, exposed = 0, closest: MP | undefined, cd: number = MATCH.pressRadius;
   for (let i = 0; i < def.on.length; i++) {
     const m = def.on[i]!;
     if (m.pos !== 'GK') line = Math.max(line, defX[i]!);
+    if (m.pos !== 'GK' && defX[i]! < bx) exposed++; // rimasto oltre la palla: non difende la porta
     // lontano dal portatore: né pressione né "più vicino". Il margine tiene esatto il confronto sul bordo
     const qx = defX[i]! - bx, qy = defY[i]! - by;
     if (qx * qx + qy * qy > FAR) continue;
     const d = len(qx, qy);
     if (d < cd && m.pos !== 'GK') { cd = d; closest = m; }
-    if (d < MATCH.pressRadius) pressure += (1 - d / MATCH.pressRadius) * (0.7 + 0.03 * m.p.attrs.workRate) * (m.energy / 100) * PRESS[def.tactic.pressing]! * cv * m.role.press;
+    if (d < MATCH.pressRadius) pressure += (1 - d / MATCH.pressRadius) * (0.7 + 0.03 * m.p.attrs.workRate) * (m.energy / 100) * PRESS[def.tactic.pressing]! * cv * cp * m.role.press;
   }
   const c = st.carrier;
   const sign = st.s === 0 ? 1 : -1;
@@ -39,6 +43,7 @@ export function readPlay(st: MatchState): { view: View; pressure: number; closes
     bonus: (st.s === 0 ? MATCH.homeBoost : 0) + (sign * st.momentum / 100) * MATCH.momentumK * (1 - c.p.attrs.composure / 25)
       - (100 - c.energy) * MATCH.energySkill + c.mod,
     chain: st.chain,
+    counter: trans ? Math.max(0, exposed - MATCH.counterFrom) : 0,
   };
-  return { view, pressure, closest };
+  return { view, pressure, closest, exposed: trans ? exposed : 0 };
 }
