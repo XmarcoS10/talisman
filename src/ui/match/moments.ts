@@ -45,6 +45,12 @@ function arrival(run: MatchRun, tm: Timing, s: number): number {
   return a + (b - a) * flight;
 }
 
+/** istante della traccia in cui si vede il momento `kind` dell'azione `s` (per il replay) */
+export function beatTime(run: MatchRun, s: number, kind: BeatKind): number {
+  const tm = timing(run);
+  return AT_START.has(kind) ? tm.start[s] ?? 0 : arrival(run, tm, s);
+}
+
 /**
  * i momenti visibili all'istante T. `step`: l'azione in corso; si guardano anche le ultime prima (un gol resta a
  * schermo mentre si riparte). `speed`: secondi di gioco per secondo reale, perché le durate sono in tempo reale.

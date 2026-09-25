@@ -14,7 +14,7 @@ import { Pause, Play, SkipForward, SlidersHorizontal } from 'lucide-react';
 import { Hint } from '../Hint.tsx';
 import { crowdIntensity, crowdStart, crowdStop, playUi } from '../audio.ts';
 import { shortName } from '../bits.tsx';
-import { Inertia, Scoreboard, Shouts, SkipCard, Ticker, ViewBar } from './LiveParts.tsx';
+import { ClipStrip, Inertia, ReplayTag, Scoreboard, Shouts, SkipCard, Ticker, ViewBar } from './LiveParts.tsx';
 import { t } from '../i18n.ts';
 import { LiveAnalyst } from './LiveAnalyst.tsx';
 import { LiveBench } from './LiveBench.tsx';
@@ -46,7 +46,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
     look.names.set(m.p.id, shortName(m.p));
   }));
 
-  const { T, reel, moments } = useLiveLoop(run, canvas, look, mirror, { playing: playing && !pause, speed, view, camera }, rerender);
+  const { T, reel, moments, replay, startReplay, stopReplay } = useLiveLoop(run, canvas, look, mirror, { playing: playing && !pause, speed, view, camera }, rerender);
   const clip = view === 'full' ? null : reel.current.at(T.current);
 
   const st = sample(run, T.current, mirror);
@@ -74,10 +74,12 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   const whistled = useRef(false);
   if (over && !whistled.current) { whistled.current = true; playUi('whistle'); }
   const jumpTo = (minute: number) => {
+    replay.current = null; // saltare chiude il replay
     const a = atMinute(run.track, minute);
     if (a !== null) { T.current = a; resetTrail(); }
   };
   const nextEvent = () => {
+    replay.current = null; // saltare chiude il replay
     const c = reel.current.clips.find((x) => x.from > T.current + 0.5);
     if (view !== 'full' && c) { T.current = c.from; resetTrail(); return; }
     const n = run.events.length;
@@ -88,6 +90,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   };
   // la partita finisce di giocarsi subito
   const toEnd = () => {
+    replay.current = null; // saltare chiude il replay
     run.result();
     T.current = duration(run);
     resetTrail();
@@ -126,8 +129,10 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
           <div className="pitch-wrap">
             <canvas ref={canvas} className="pitch2d" />
             <span className="attack-dir">{t('live.attackRight', { club: clubs[me].shortName })}</span>
-            {view !== 'full' && !clip && !over && <SkipCard min={min} />}
+            {view !== 'full' && !clip && !over && !replay.current && <SkipCard min={min} />}
+            {replay.current && <ReplayTag onSkip={stopReplay} />}
           </div>
+          <ClipStrip clips={reel.current.clips} now={replay.current?.back ?? T.current} me={me} onReplay={(c) => startReplay(c.from, c.to)} />
           <div className="panel say">
             {lines(run.frames, st?.i ?? 0, look.names).map((l, i, a) => (
               <div key={`${l.key}${i}`} className={`${i === a.length - 1 ? 'now' : 'muted'} ${l.big ? 'big' : ''}`}>{t(l.key, l.vars)}</div>

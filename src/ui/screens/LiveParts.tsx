@@ -7,9 +7,9 @@ import { Crest } from '../Crest.tsx';
 import { shortName } from '../bits.tsx';
 import { t } from '../i18n.ts';
 import { lines } from '../match/commentary.ts';
-import { VIEW_MODES, type ViewMode } from '../match/highlights.ts';
+import { VIEW_MODES, type Clip, type ViewMode } from '../match/highlights.ts';
 import { CAMERA_MODES, type CameraMode } from '../match/renderer.ts';
-import { FastForward } from 'lucide-react';
+import { FastForward, Rewind } from 'lucide-react';
 
 const EV_ICON: Record<string, string> = { goal: '⚽', penGoal: '⚽', penMiss: '✖', chance: '◎', yellow: '🟨', red: '🟥', injury: '✚', sub: '⇄', plan: '📋' };
 
@@ -103,6 +103,34 @@ export function SkipCard({ min }: { min: number }) {
       <FastForward size={18} />
       <b className="num">{min}'</b>
       <span className="muted small">{t('live.skip')}</span>
+    </div>
+  );
+}
+
+const CLIP_ICON: Record<Clip['kind'], string> = { goal: '⚽', penalty: '◉', red: '🟥', injury: '✚', save: '🧤', chance: '◎', press: '⇡', break: '⇢' };
+
+/** striscia dei salienti già visti: un clic li rivede al rallentatore */
+export function ClipStrip({ clips, now, me, onReplay }: { clips: Clip[]; now: number; me: 0 | 1; onReplay: (c: Clip) => void }) {
+  const seen = clips.filter((c) => c.to <= now);
+  if (!seen.length) return null;
+  return (
+    <div className="clip-strip">
+      <span className="caps">{t('live.clips')}</span>
+      {seen.map((c) => (
+        <button key={c.step} className={`clip ${c.kind} ${c.side === me ? 'me' : ''}`} title={t('live.replayThis', { what: t(`clip.${c.kind}`), n: c.min })} onClick={() => onReplay(c)}>
+          {c.min}' {CLIP_ICON[c.kind]}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** in replay: la scritta sul campo e il tasto per tornare subito alla partita */
+export function ReplayTag({ onSkip }: { onSkip: () => void }) {
+  return (
+    <div className="replay-tag">
+      <Rewind size={14} /> <b>{t('live.replay')}</b>
+      <button className="btn small" onClick={onSkip}>{t('live.replaySkip')}</button>
     </div>
   );
 }

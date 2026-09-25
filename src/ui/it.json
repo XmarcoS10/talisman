@@ -1622,5 +1622,17 @@
   "fx.penalty": "RIGORE",
   "fx.save": "PARATA",
   "fx.parry": "RESPINTA",
-  "fx.goal": "GOL"
+  "fx.goal": "GOL",
+  "live.clips": "Salienti",
+  "live.replay": "REPLAY · RALLENTATORE",
+  "live.replaySkip": "Torna alla partita",
+  "live.replayThis": "Rivedi: {what} al {n}'",
+  "clip.goal": "gol",
+  "clip.penalty": "rigore",
+  "clip.red": "espulsione",
+  "clip.injury": "infortunio",
+  "clip.save": "parata",
+  "clip.chance": "occasione",
+  "clip.press": "pressione",
+  "clip.break": "ripartenza"
 }
