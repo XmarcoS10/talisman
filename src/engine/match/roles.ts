@@ -21,8 +21,9 @@ export interface Role {
   drain: number; // fatica: i ruoli che corrono di più si stancano prima
 }
 
-// nota di bilanciamento: hold > 1 (restare alti senza palla) si è rivelato un vantaggio, non un costo
-// (sbocco immediato per il contropiede): per ora i ruoli usano hold ≤ 1 e pagano con la fatica (drain)
+// nota di bilanciamento: hold > 1 (restare alti senza palla) dà uno sbocco al contropiede ma toglie un uomo alla
+// difesa. Lo usa solo l'ala del 4-3-3 e del 4-2-3-1 (1,2, intervento 9): con le ali che rientravano del tutto
+// il 4-3-3 batteva ogni modulo (1,66 punti a partita contro 1,2-1,4 degli altri)
 const base: Omit<Role, 'pos'> = { follow: 0.5, push: 0, maxX: 8.5, runs: false, dy: 0, hold: 1, shoot: 1, cross: 1, dribble: 0, direct: 0, press: 1, aerial: 0, baseX: 0, drain: 1 };
 const r = (pos: Position[], o: Partial<Role>): Role => ({ ...base, pos, ...o });
 const FB: Position[] = ['DL', 'DR'];
@@ -54,7 +55,7 @@ export const ROLES = {
   // esterni
   wideMid: r(WIDE, { follow: 0.7, push: 1.4, maxX: 10.2, runs: true }),
   winger: r(WIDE, { follow: 0.7, push: 1.6, maxX: 10.3, runs: true, dy: 0.4, cross: 1.3, dribble: 0.003, drain: 1.15 }),
-  wideForward: r(WING_AM, { follow: 0.5, maxX: 10.1, runs: true }),
+  wideForward: r(WING_AM, { follow: 0.5, maxX: 10.1, runs: true, hold: 1.2 }),
   defWinger: r(WIDE, { follow: 0.6, push: 0.6, maxX: 9.5, runs: false, hold: 0.9, press: 1.15 }),
   insideForward: r(WING_AM, { follow: 0.55, push: 0.3, maxX: 10.4, runs: true, dy: -0.8, shoot: 1.4, dribble: 0.004, cross: 0.8 }),
   // trequartisti
