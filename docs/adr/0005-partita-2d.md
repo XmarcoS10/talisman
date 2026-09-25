@@ -72,3 +72,26 @@ verità. La traccia densa si costruisce solo quando la partita è seguita dal vi
 | Ricongiungimento `u²` invece di posizioni intermedie autorevoli | 2,60 gol a partita invariati, bit per bit: una partita guardata è identica alla stessa partita simulata |
 | Traccia solo dal vivo | il sim-cli resta a 4,8 ms a partita; 7,6 MB di fotogrammi si tengono in memoria solo per la partita che si sta guardando |
 | 0,25 s per fotogramma | sotto mezza zona di spostamento per fotogramma anche per chi corre di più: nessun teletrasporto |
+
+---
+
+## Aggiornamento Blocco 3 (0.2.0) — la partita si capisce senza leggere
+
+**Data:** 25/09/2026 · **Stato:** accettato (bozzetti e scelte approvati da Marco: impaginazione A «Regia» e tutte
+le raccomandazioni)
+
+| Cosa | Dove | Scelta |
+|---|---|---|
+| Visione Salienti / Estesa / Completa | `ui/match/highlights.ts` | per esito: gol, rigori, rossi, infortuni, parate, tiri da xG 0,15; 8 s prima, 3 dopo; fra un saliente e l'altro 16 s di gioco al secondo, dentro 2. Test: 4-7 minuti reali (misurati 4,8-6,0), tutti i gol |
+| Telecamera | `renderer.ts` (`Camera`, `cameraZoom`) | Segui (zoom 1,3, ferma finché la palla resta nel riquadro centrale), Campo, Vicina (1,8 nei salienti); rigore con inquadratura dedicata |
+| Leggibilità | `renderer.ts`, `procgen/kit.ts` | nome sul portatore, ombra della palla alta (parabola in `playback.ts`), arco su chi pressa, maglie distinte in OKLab (seconda maglia, poi bordo) |
+| Momenti animati | `moments.ts` (quando), `fx.ts` (disegno) | dal registro del motore (`beats`): nessuna decisione nel 2D |
+| Replay | `screens/LiveLoop.ts` | automatico sui gol (12 s indietro, rallentatore), a richiesta dalla striscia dei salienti e dal tabellino |
+| Sovrapposizioni | `overlays.ts` | linea e baricentro, rete passaggi, heatmap, zone di pressing; il «prima» tratteggiato per 10' dopo un cambio |
+| Racconto | `commentary.ts` | 22 tipi, 5 frasi ciascuno; in Salienti niente passaggi riusciti |
+| Tabellino | `sheet.ts`, `screens/LiveSheet.tsx` | contato dal registro fino all'azione guardata; intervallo con pausa |
+| Suono | `audio.ts` (`crowdReact`) | «ooh», «aah», applauso sul volume del pubblico |
+
+Prestazioni: il campo (fasce, erba, linee) si disegna una volta in un'immagine e si copia con la telecamera.
+Con `tools/live-check.cjs` e il processore rallentato 4 volte (THROTTLE=4, come un portatile medio): 193 fps medi,
+lavoro per fotogramma 6,9 ms di mediana. Clip per il sito con `tools/clips.cjs` (in `site/clips/`).

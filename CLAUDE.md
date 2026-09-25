@@ -7,7 +7,8 @@ Marco non programma: fa collaudo, playtest e decisioni. Il codice lo scrive Clau
 - `src/engine/` — core di simulazione puro. NON importa React, DOM, Electron o `node:*` (lo verifica `engine.test.ts`).
 - `src/sim-cli/` — laboratorio di bilanciamento in Node (`pnpm sim`).
 - `src/ui/` — React. Stringhe in `it.json` via `t()`, colori solo dai token di `tokens.css`.
-- `src/ui/match/` — campo 2D: interpolazione dal registro del motore, disegno su canvas, regole dell'analista.
+- `src/ui/match/` — campo 2D: interpolazione dal registro del motore, disegno su canvas, regole dell'analista; salienti,
+  momenti animati, sovrapposizioni, racconto e tabellino (Blocco 3, `docs/adr/0005-partita-2d.md`).
 - `electron/main.cjs` — guscio desktop.
 
 ## Regole
@@ -24,7 +25,8 @@ Marco non programma: fa collaudo, playtest e decisioni. Il codice lo scrive Clau
 `pnpm dist:win` (installer Windows in `release/`; ferma prima `pnpm dev`, che tiene aperta la cartella) · `pnpm dist:linux` (solo su Linux)
 `pnpm sim -- --seasons 10 --seed 42` · `pnpm sim -- --matches 3000` (bilanciamento motore partita)
 `pnpm sim -- --dev 10` (curve di sviluppo) · `pnpm sim -- --psych 20` (A/B della psicologia, ~5 min)
-`pnpm bench` (ms a partita del motore, guardia nella CI) · `GOLDEN=update pnpm vitest run golden` (golden master del motore:
+`pnpm bench` (ms a partita del motore, guardia nella CI) · `pnpm build && npx electron tools/live-check.cjs` (partita 2D nell'app
+vera: fps, foto; THROTTLE=4 = portatile medio) · `npx electron tools/clips.cjs` (clip del sito) · `GOLDEN=update pnpm vitest run golden` (golden master del motore:
 si aggiorna solo apposta, con il motivo nel commit)
 
 ## Persone (F5)
