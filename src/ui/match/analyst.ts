@@ -45,7 +45,7 @@ export function context(run: MatchRun, me: 0 | 1, frames: TraceStep[], morale: n
   const by = (f: (m: MP) => number) => (on.length ? on.reduce((a, b) => (f(b) > f(a) ? b : a)) : null);
   const goals = run.events.filter((e) => e.type === 'goal' || e.type === 'penGoal');
   const last = goals[goals.length - 1];
-  const poss = my.possession + opp.possession > 0 ? (100 * my.possession) / (my.possession + opp.possession) : 50;
+  const poss = my.passes + opp.passes > 0 ? (100 * my.passes) / (my.passes + opp.passes) : 50; // come Opta: quota dei passaggi
   const bestM = by((m) => run.rating(m));
   return {
     min: run.minute(),

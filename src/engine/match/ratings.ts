@@ -17,8 +17,9 @@ export function rate(m: MP, goalDiff: number, conceded: number): number {
 
 export function finish(st: MatchState) {
   const { teams, score } = st;
-  const total = teams[0].stats.possession + teams[1].stats.possession || 1;
-  const poss0 = Math.round((teams[0].stats.possession / total) * 100);
+  // possesso come Opta: la quota dei passaggi (non il tempo con palla, che conterebbe anche il gioco fermo)
+  const total = teams[0].stats.passes + teams[1].stats.passes || 1;
+  const poss0 = Math.round((teams[0].stats.passes / total) * 100);
   teams[0].stats.possession = poss0;
   teams[1].stats.possession = 100 - poss0;
   for (const tm of teams) tm.stats.xg = Math.round(tm.stats.xg * 100) / 100;

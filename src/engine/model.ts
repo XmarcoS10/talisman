@@ -275,7 +275,7 @@ export type MatchEvent = {
 };
 
 export interface SideStats {
-  possession: number; // %
+  possession: number; // % dei passaggi della partita, come Opta (fino al 25/09/2026: % del tempo con palla)
   shots: number;
   onTarget: number;
   xg: number;

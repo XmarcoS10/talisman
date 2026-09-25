@@ -70,9 +70,8 @@ function step(st: MatchState) {
   else if (closest && st.rng.next() < challengeP(closest, c, pressure)) challenge(st, closest); // gli porta via palla
   else act(st, att, def, c, choose(st.rng, options(view), st.carrier, pressure));
 
-  // tempo che passa: possesso, stanchezza (applicata a blocchi di un minuto), momentum
+  // tempo che passa: stanchezza (applicata a blocchi di un minuto), momentum
   const dt = st.t - t0;
-  att.stats.possession += dt;
   st.pendingDrain[st.s] += dt;
   st.pendingDrain[st.s === 0 ? 1 : 0] += dt * PRESS[def.tactic.pressing]!; // chi pressa si stanca di più
   if (st.pendingDrain[0] + st.pendingDrain[1] >= 120) drain(st);
