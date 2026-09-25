@@ -346,7 +346,7 @@ compresa**. Risultato al rovescio: la squadra forte (mentalità 4) pressa meno d
 | Linea e blocco senza palla | bassa, corta: anche le punte rientrano, pochi spazi fra le linee | come oggi | alta, uomini avanti |
 | Pressione | solo nella propria metà campo | come oggi | anche alta, più intensa (non meno, come oggi) |
 | In possesso | palla lunga presto verso chi attacca la profondità, poca costruzione dal basso | come oggi | costruzione paziente: il possesso vale di più **nella propria metà** (dove perderla costa), non vicino all'area |
-| Rischio | contropiede subito dietro al blocco? No: chi si chiude rischia poco, ma crea poco | | chi sale lascia spazio alle spalle: contropiedi subiti |
+| Prezzo della scelta | rischia poco dietro, ma crea poco e concede il possesso | | crea di più, ma chi sale lascia spazio alle spalle: contropiedi subiti |
 
 L'impegno difensivo (`cover`) continua a scendere con la mentalità offensiva, ma solo per **rientri e marcature**,
 non per la pressione. Quello che cambia davvero per il gioco: davanti a un blocco basso e corto le linee di passaggio
