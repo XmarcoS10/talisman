@@ -235,7 +235,7 @@ export const MATCH = {
 
   // condizione fisica
   drainBase: 0.22, // energia persa al minuto
-  drainStamina: 0.25, // in più con Resistenza bassa
+  drainStamina: 0.5, // in più con Resistenza bassa (era 0,25: al 75' erano tutti fra 76 e 80 di energia)
   energySkill: 0.012, // logit perso per ogni punto di energia sotto 100
   fitnessRecoveryPerDay: 12,
   subMinutes: [58, 68, 78],
