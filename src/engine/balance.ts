@@ -233,7 +233,7 @@ export const MATCH = {
   crossPress: 0.5,
   crossAtt: 0.25, // stima del duello nella scelta: per attaccante in area…
   crossDef: 0.2, // …e per difensore in area
-  duelBase: -0.9, // logit che l'attaccante vinca il duello aereo a pari forza
+  duelBase: -1.1, // logit che l'attaccante vinca il duello aereo a pari forza
   duelSkill: 0.12, // per punto di differenza nel gioco aereo (aerial.ts)
   lowBase: -0.3, // logit che la palla bassa trovi il compagno a pari anticipo
   lowPressure: 0.6, // pressione su chi tira dopo la palla bassa
