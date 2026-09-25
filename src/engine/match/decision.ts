@@ -40,7 +40,7 @@ export type Option =
   | { kind: 'pass'; to: OnPitch; tx: number; ty: number; p: number; off: number; u: number; w: number; deep: boolean } // w: intesa (chem); deep: in profondità
   | { kind: 'dribble'; tx: number; ty: number; p: number; tackler: OnPitch | undefined; u: number }
   | { kind: 'shot'; xg: number; u: number }
-  | { kind: 'cross'; p: number; u: number };
+  | { kind: 'cross'; p: number; u: number; low: boolean }; // p: che arrivi; low: palla bassa all'indietro dal fondo
 
 const a = (pl: OnPitch, k: keyof Player['attrs']) => pl.p.attrs[k] - 11; // attributo centrato su 11
 const NO_REL: Record<number, number> = {};
@@ -153,15 +153,22 @@ function shot(v: View, x: Ctx, out: Option[]) {
   out.push({ kind: 'shot', xg, u: xg * (1 + MATCH.shotSkill * skill) * MATCH.shotBias * c.role.shoot * (1 + MATCH.mentalityShot * mm) - (1 - xg) * x.keep * 0.5 });
 }
 
-/** 4) CROSS dal fondo */
+/** xG del tiro dopo la palla bassa all'indietro: sempre dallo stesso punto, si calcola una volta */
+const LOW_XG = xG(10.2, 4, MATCH.lowPressure);
+
+/** 4) CROSS dalla fascia (alto) e, dal fondo, palla bassa all'indietro */
 function cross(v: View, x: Ctx, out: Option[]) {
   const { carrier: c, bx, by, pressure } = v;
-  if (!(bx >= MATCH.crossMinX && (by < 2 || by > 6))) return;
+  if (!(bx >= MATCH.crossMinX && (by < MATCH.crossWide || by > 8 - MATCH.crossWide))) return;
   let attBox = 0, defBox = 0;
   for (const m of v.mates) if (m !== c && m.x >= 9.8 && m.y > 2 && m.y < 6) attBox++;
   for (let i = 0; i < v.defX.length; i++) if (v.defX[i]! >= 9.8 && v.defY[i]! > 2 && v.defY[i]! < 6) defBox++;
-  const p = sigmoid(MATCH.crossBase + MATCH.crossSkill * a(c, 'crossing') + MATCH.crossAtt * attBox - MATCH.crossDef * defBox - MATCH.crossPress * pressure + v.bonus);
-  out.push({ kind: 'cross', p, u: p * MATCH.headerXg * 1.1 * c.role.cross - (1 - p) * x.loss });
+  const p = sigmoid(MATCH.crossBase + MATCH.crossSkill * a(c, 'crossing') - MATCH.crossPress * pressure + v.bonus);
+  // stima del duello: quanti dei miei e dei loro ci sono in area
+  const win = sigmoid(MATCH.duelBase + MATCH.crossAtt * attBox - MATCH.crossDef * defBox);
+  const value = (w: number, xg: number) => p * (w * xg + (1 - w) * MATCH.secondValue) * c.role.cross - (1 - p) * x.loss * MATCH.crossLoss;
+  out.push({ kind: 'cross', p, low: false, u: value(win, MATCH.headerXg) });
+  if (bx >= MATCH.lowMinX) out.push({ kind: 'cross', p, low: true, u: value(sigmoid(MATCH.lowBase + MATCH.crossAtt * attBox - MATCH.crossDef * defBox), LOW_XG) });
 }
 
 /** le opzioni del portatore, nell'ordine in cui le valuta: passaggi, profondità, dribbling, tiro, cross */

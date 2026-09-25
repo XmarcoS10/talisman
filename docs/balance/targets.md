@@ -44,7 +44,7 @@ Verifica: `pnpm sim -- --match-stats 4000`. Fonti e correzioni ai target propost
 
 | Metrica (per squadra a partita) | Target | Serie A reale | Prima di 2b (24/09) |
 |---|---|---|---|
-| Passaggi tentati · precisione | 380-520 · 80-86% | 433 · 83,6% | 410 · 78,7% ❌ |
+| Passaggi tentati · precisione | 380-520 · 80-86% | 433 · 83,6% | 410 · 78,7% ❌ (con i cross veri, dal 25/09: ~77,8%; si recupera con la fase di costruzione, motore-v2.md §9) |
 | Cross tentati · riusciti | 12-18 · 20-30% | ~4,3 riusciti | 7,2 · 49% ❌ |
 | Dribbling tentati · riusciti | 11-17 · 40-55% | ~6,1 riusciti | 3,9 · 34% ❌ |
 | Contrasti vinti (intercetti a parte) | 13-18 | 15,0 | 1,7 ❌ |

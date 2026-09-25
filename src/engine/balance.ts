@@ -200,16 +200,31 @@ export const MATCH = {
   blockedShare: 0.25,
 
   // cross e piazzati
-  crossMinX: 8.3,
-  crossBase: 0.2,
-  crossSkill: 0.1,
-  crossAtt: 0.35, // per attaccante in area
-  crossDef: 0.25, // per difensore in area
+  // cross e duelli aerei (Blocco 2b, intervento 4, match/aerial.ts): il cross arriva (Cross, pressione), il portiere
+  // può uscire, poi si contende la palla; cross "riuscito" = trova un compagno, come Opta
+  crossMinX: 7.8, // dalla trequarti in su, anche il cross anticipato
+  crossWide: 2.2, // zone dalla linea laterale entro cui si crossa
+  lowMinX: 9.5, // da qui, sul fondo, anche la palla bassa all'indietro
+  crossBase: 0.9, // logit che il cross arrivi in area
+  crossSkill: 0.1, // per punto di Cross sopra/sotto 11 (arrivo e duello)
   crossPress: 0.5,
+  crossAtt: 0.25, // stima del duello nella scelta: per attaccante in area…
+  crossDef: 0.2, // …e per difensore in area
+  duelBase: -0.9, // logit che l'attaccante vinca il duello aereo a pari forza
+  duelSkill: 0.12, // per punto di differenza nel gioco aereo (aerial.ts)
+  lowBase: -0.3, // logit che la palla bassa trovi il compagno a pari anticipo
+  lowPressure: 0.6, // pressione su chi tira dopo la palla bassa
   headerXg: 0.1,
+  headerMargin: 0.05, // xG del colpo di testa in più per punto di duello vinto
+  claimBase: 0.08, // il portiere esce e blocca il cross alto…
+  claimSkill: 0.015, // …in più per punto di Uscite alte e Comando dell'area sopra 11
+  crossClearCorner: 0.1, // respinta in corner
+  secondBall: 0.3, // seconda palla ripresa dall'attacco al limite dell'area
+  crossBlockCorner: 0.2, // cross che non arriva: respinto in corner
+  secondValue: 0.05, // valore, nella scelta, di una respinta che resta a chi attacca
+  crossLoss: 0.0, // un cross perso costa meno di un passaggio perso: la palla va lontano
   cornerAfterSave: 0.45,
   cornerAfterBlock: 0.5,
-  cornerAfterClear: 0.6,
   cornerHeader: 0.3,
   cornerHeaderXg: 0.07,
   fkShot: 0.4,

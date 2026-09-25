@@ -68,6 +68,19 @@ traiettoria dell'azione nella prima parte dell'intervallo e poi aspetta. Decisio
   del portatore. Vinto: palla al difensore dove si trova.
 - Misura: 15,7 dribbling tentati a squadra, 43% riusciti, 15,3 contrasti vinti (Serie A: ~6 riusciti, 15 contrasti).
 
+## Cross e duelli aerei (Blocco 2b, intervento 4, `aerial.ts`)
+- **Due cross**: alto dalla fascia (da `crossMinX`, entro `crossWide` zone dalla linea laterale) e, dal fondo
+  (`lowMinX`), palla bassa all'indietro. Arriva con `σ(crossBase + crossSkill·Cross − crossPress·pressione + bonus)`;
+  se no è respinto (in corner con `crossBlockCorner`) o fuori.
+- **Portiere**: sul cross alto esce e blocca con `claimBase + claimSkill·(Uscite alte + Comando dell'area)/2`.
+- **Duello aereo**: forza aerea `0,45·Colpo di testa + 0,15·Coraggio + 0,15·Forza + 0,25·altezza` (182 cm = 11) più il
+  bonus del ruolo; vince l'attaccante con `σ(duelBase + duelSkill·(attaccante − marcatore) + crossSkill·Cross)`. Vinto:
+  colpo di testa con xG `headerXg × (1 + headerMargin·margine)`. Sulla palla bassa decide l'anticipo (Movimento senza
+  palla e Primo controllo contro Anticipo e Posizionamento) e il tiro è di piede dal dischetto.
+- **Respinta**: in corner (`crossClearCorner`), seconda palla ripresa al limite dall'attacco (`secondBall`), o palla alla difesa.
+- **Statistiche**: il cross riuscito è quello che trova un compagno, come Opta; conta anche fra i passaggi, e per
+  questo la precisione complessiva scende di circa un punto e mezzo.
+
 ## Fatica
 Energia persa al minuto: `drain del ruolo × (drainBase + drainStamina·(1 − Resistenza/20))`, più per chi pressa. Con
 `drainStamina` 0,5 chi ha poca Resistenza arriva davvero stanco (prima al 75' erano tutti fra 76 e 80). L'energia

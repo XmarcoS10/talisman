@@ -7,14 +7,12 @@ import { foul } from './events.ts';
 import { inBox, len, segDist, shotGeometry } from './pitch.ts';
 import { kickoff } from './positioning.ts';
 import { PRESS } from './pressure.ts';
+import { cross } from './aerial.ts';
 import { corner } from './setpieces.ts';
 import { best, ev, gain, gx, gy, minute, nearest, type MatchState, type MP, type Origin, type Team, type TraceStep } from './state.ts';
 
 const TEMPO = [1.2, 1, 0.85];
 type ShotKind = 'open' | 'header' | 'pen' | 'fk';
-
-/** chi va a prendere un cross: testa, coraggio, e la punta di peso ha la precedenza */
-const aerialScore = (m: MP) => m.p.attrs.heading + m.p.attrs.bravery / 2 + m.role.aerial;
 
 function shotSkill(st: MatchState, sh: MP, kind: ShotKind) {
   const a = sh.p.attrs;
@@ -155,20 +153,10 @@ function doCross(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option,
   att.stats.passes++; c.st.passes++;
   att.log.crosses++;
   st.t += MATCH.passTime;
-  if (st.rng.next() < o.p) {
-    att.stats.passesOk++; c.st.passesOk++;
-    att.log.crossesOk++;
-    if (f) f.ok = true;
-    const inBoxMates = att.on.filter((m) => m !== c && m.pos !== 'GK' && m.x >= 9.5);
-    const header = inBoxMates.length
-      ? inBoxMates.reduce((a, b) => (aerialScore(b) > aerialScore(a) ? b : a))
-      : best(att, (m) => m.p.attrs.heading, (m) => m !== c && m.pos !== 'GK');
-    const dh = best(def, (m) => m.p.attrs.heading, (m) => m.pos !== 'GK');
-    st.lastPass = c;
-    st.bx = 10.8; st.by = 4;
-    shoot(st, header, MATCH.headerXg * (1 + 0.06 * (header.p.attrs.heading - 11)) * (1 - 0.04 * (dh.p.attrs.heading - 11)), 'header', 'cross');
-  } else if (st.rng.next() < MATCH.cornerAfterClear) corner(st);
-  else gain(st, def, nearest(def, 1.5, 4, true));
+  if (!cross(st, att, def, c, o.p, o.low)) return;
+  att.stats.passesOk++; c.st.passesOk++;
+  att.log.crossesOk++;
+  if (f) f.ok = true;
 }
 
 /** esegue l'opzione scelta dal portatore */
