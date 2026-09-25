@@ -1,6 +1,10 @@
 # Motore partita L2 (fase F3)
 
-File: `src/engine/match/` — `engine.ts` (ciclo), `decision.ts` (scelte), `pitch.ts` (geometria, xT, xG), `tactics.ts` (moduli).
+File: `src/engine/match/` — `engine.ts` (ciclo), `state.ts` (stato della partita), `positioning.ts` (posizioni),
+`pressure.ts` (pressione e vista del portatore), `decision.ts` (opzioni e scelta), `execute.ts` (esecuzione e tiri),
+`events.ts` (falli, contrasti, infortuni, fatica), `setpieces.ts`, `subs.ts`, `ratings.ts`, `pitch.ts` (xT, xG), `tactics.ts`.
+Controlli: `golden.test.ts` (le partite non cambiano senza volerlo), `structure.test.ts` (funzioni corte),
+`sense.test.ts` (buon senso tattico), `pnpm sim -- --match-stats` (statistiche per partita).
 Punto d'ingresso: `playMatch()` in `src/engine/match.ts`. Costanti: `MATCH` in `src/engine/balance.ts`.
 
 ## Il campo
@@ -54,6 +58,21 @@ di tutti in coordinate globali (la squadra ospite gioca a specchio), palla, port
 `ui/match/playback.ts` interpola: i giocatori corrono verso la posizione del fotogramma successivo, la palla percorre la
 traiettoria dell'azione nella prima parte dell'intervallo e poi aspetta. Decisioni in `docs/adr/0005-partita-2d.md`.
 
+## Dribbling e 1 contro 1 (Blocco 2b, intervento 3)
+- **Chi punta l'uomo**: abilità `0,4·Dribbling + 0,2·(Tecnica + Agilità + Accelerazione)`; **chi difende**: `0,4·Contrasto +
+  0,3·(Posizionamento + Anticipo)` (tutti centrati su 11). Riuscita `σ(dribBase + dribSkill·att − vicinanza·dribDef·dif
+  − dribPress·pressione + stanchezza del difensore + bonus)`. Esiti: uomo saltato (avanza di `dribGain`), fallo subito,
+  palla persa (contrasto vinto). Saltare un uomo vicino vale `dribBeat × vicinanza` oltre alla zona guadagnata.
+- **Contrasto sul portatore pressato**, prima che giochi: probabilità `pressTackle · pressione · max(0,2, 1 + tackleSkill·Δ)`,
+  con Δ = `0,4·Contrasto + 0,3·(Posizionamento + Anticipo)` del difensore meno `0,5·Tecnica + 0,25·(Compostezza + Equilibrio)`
+  del portatore. Vinto: palla al difensore dove si trova.
+- Misura: 15,7 dribbling tentati a squadra, 43% riusciti, 15,3 contrasti vinti (Serie A: ~6 riusciti, 15 contrasti).
+
+## Fatica
+Energia persa al minuto: `drain del ruolo × (drainBase + drainStamina·(1 − Resistenza/20))`, più per chi pressa. Con
+`drainStamina` 0,5 chi ha poca Resistenza arriva davvero stanco (prima al 75' erano tutti fra 76 e 80). L'energia
+toglie `energySkill` di logit per punto sotto 100 al portatore e, nei dribbling, al difensore.
+
 ## Voti
 Base 6,2 + gol, assist, passaggi chiave, tiri in porta, recuperi, dribbling, precisione passaggi, parate,
 porta inviolata/gol subiti per i difensori, risultato; − cartellini. Media ≈ 6,65, 5% sopra l'8.
@@ -63,7 +82,6 @@ porta inviolata/gol subiti per i difensori, risultato; − cartellini. Media ≈
 Si cambia una costante di `MATCH` alla volta e si rilancia.
 
 ## Limiti noti
-- 5-3-2 più debole degli altri moduli (~0,5 punti/partita contro 1,1-1,6): da rivedere con ruoli e istruzioni (F4).
-- Il possesso è poco legato alla qualità della squadra (la dominante ha ~53%, reale ~58%).
-- Velocità: ~4,8 ms a partita → giornata ~100 ms, stagione ~4 s (ok), ma 10.000 partite ~48 s (target 20 s).
-  Se serve: `worker_threads` nel sim-cli, o il motore in un Web Worker per la UI.
+- Moduli: 4-3-3 1,44 punti a partita, 4-2-3-1 1,18 (misura del 24/09, stessa rosa): da equilibrare (intervento 9).
+- Il possesso è poco legato alla qualità (la più forte ha ~51%): serve la difesa che si disordina (`docs/design/motore-v2.md` §7).
+- Velocità: ~3,8 ms a partita su un thread; `pnpm sim` gioca in parallelo (10.000 partite in ~6 s).
