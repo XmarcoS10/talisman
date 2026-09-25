@@ -174,7 +174,7 @@ export const MATCH = {
   // dribbling e 1 contro 1 (Blocco 2b, intervento 3): chi punta (Dribbling 0,4, Tecnica, Agilità, Accelerazione 0,2)
   // contro chi difende (Contrasto 0,4, Posizionamento e Anticipo 0,3). Saltare un uomo vicino vale più della zona
   // guadagnata: ci si libera della pressione (dribBeat)
-  dribBase: 0.5,
+  dribBase: 0.46,
   dribSkill: 0.12, // per punto di abilità di chi punta, sopra/sotto 11
   dribDef: 0.1, // per punto di abilità del difensore, pesato da quanto è vicino
   dribPress: 0.9,
