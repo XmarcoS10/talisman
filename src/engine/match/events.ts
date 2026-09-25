@@ -18,6 +18,7 @@ export function injure(st: MatchState, tm: Team, m: MP, ctx: PStats['injuryCtx']
   m.st.injured = true;
   m.st.injuryCtx = ctx;
   ev(st, 'injury', tm.side, m);
+  beat(st, 'injury', m);
   if (!substitute(st, tm, m)) removeFromPitch(st, tm, m);
 }
 

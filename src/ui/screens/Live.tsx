@@ -4,14 +4,17 @@ import { awayWearsAlt, kitBase } from '../procgen/kit.ts';
 import type { Tactic, WorldState } from '../../engine/model.ts';
 import type { LiveDay } from '../../engine/world.ts';
 import { context, pick } from '../match/analyst.ts';
-import { atMinute, duration, ensure, matchMinutes, sample, SPEEDS, SPEED_LABELS } from '../match/playback.ts';
+import { atMinute, duration, ensure, matchMinutes, sample, SPEED_LABELS } from '../match/playback.ts';
 import { lines } from '../match/commentary.ts';
-import { Camera, draw, resetTrail, type Look } from '../match/renderer.ts';
+import { resetTrail, type CameraMode, type Look } from '../match/renderer.ts';
+import type { ViewMode } from '../match/highlights.ts';
+import { settings, updateSettings } from '../settings.ts';
+import { useLiveLoop } from './LiveLoop.ts';
 import { Pause, Play, SkipForward, SlidersHorizontal } from 'lucide-react';
 import { Hint } from '../Hint.tsx';
 import { crowdIntensity, crowdStart, crowdStop, playUi } from '../audio.ts';
 import { shortName } from '../bits.tsx';
-import { Inertia, Scoreboard, Shouts, Ticker } from './LiveParts.tsx';
+import { Inertia, Scoreboard, Shouts, SkipCard, Ticker, ViewBar } from './LiveParts.tsx';
 import { t } from '../i18n.ts';
 import { LiveAnalyst } from './LiveAnalyst.tsx';
 import { LiveBench } from './LiveBench.tsx';
@@ -24,12 +27,11 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   const me: 0 | 1 = fx.home === world.manager.clubId ? 0 : 1;
   const clubs = [world.clubs[fx.home]!, world.clubs[fx.away]!] as const;
   const canvas = useRef<HTMLCanvasElement>(null);
-  const T = useRef(0);
-  const cam = useRef(new Camera());
   const said = useRef(new Map<string, number>());
   const [playing, setPlaying] = useState(true);
   const [speed, setSpeed] = useState(0);
-  const [follow, setFollow] = useState(false); // di default si vede tutto il campo
+  const [view, setView] = useState<ViewMode>(settings().view);
+  const [camera, setCamera] = useState<CameraMode>(settings().camera);
   const [pause, setPause] = useState(false); // pausa tattica
   const [phrase, setPhrase] = useState<{ id: string; vars: Record<string, string | number> } | null>(null);
   const [, rerender] = useReducer((x: number) => x + 1, 0);
@@ -44,37 +46,8 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
     look.names.set(m.p.id, shortName(m.p));
   }));
 
-  // ciclo di disegno: la simulazione avanza quanto basta a stare davanti alla riproduzione
-  useEffect(() => {
-    let raf = 0, last = performance.now(), acc = 0;
-    const style = getComputedStyle(document.documentElement);
-    const css = (v: string) => style.getPropertyValue(v) || '#123';
-    const loop = (now: number) => {
-      const dt = Math.min(0.1, (now - last) / 1000);
-      last = now;
-      if (playing && !pause) {
-        T.current += dt * SPEEDS[speed]!;
-        ensure(run, T.current);
-      }
-      const el = canvas.current;
-      if (el) {
-        const dpr = Math.min(2, window.devicePixelRatio || 1);
-        const w = el.clientWidth * dpr, h = el.clientHeight * dpr;
-        if (el.width !== w || el.height !== h) { el.width = w; el.height = h; }
-        const ctx = el.getContext('2d');
-        const st = sample(run, T.current, mirror);
-        if (ctx) {
-          if (st) cam.current.step(st.bx, st.by, dt, follow, w, h);
-          draw(ctx, w, h, st, look, cam.current, css);
-        }
-      }
-      acc += dt;
-      if (acc > 0.4) { acc = 0; rerender(); }
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
-  }, [playing, pause, speed, follow, run, look, mirror]);
+  const { T, reel } = useLiveLoop(run, canvas, look, mirror, { playing: playing && !pause, speed, view, camera }, rerender);
+  const clip = view === 'full' ? null : reel.current.at(T.current);
 
   const st = sample(run, T.current, mirror);
   const min = st?.min ?? 0;
@@ -105,6 +78,8 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
     if (a !== null) { T.current = a; resetTrail(); }
   };
   const nextEvent = () => {
+    const c = reel.current.clips.find((x) => x.from > T.current + 0.5);
+    if (view !== 'full' && c) { T.current = c.from; resetTrail(); return; }
     const n = run.events.length;
     let guard = 0;
     while (!run.done && run.events.length === n && guard++ < 4000) ensure(run, duration(run) + 30);
@@ -131,11 +106,12 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
           <div className="seg-tabs">{SPEED_LABELS.map((l, i) => <button key={l} className={i === speed ? 'active hot' : ''} onClick={() => setSpeed(i)}>{l}</button>)}</div>
           <button className="btn" onClick={nextEvent} disabled={over}><SkipForward size={14} /> {t('live.nextEvent')}</button>
           <button className={`btn ${pause ? 'primary' : ''}`} onClick={() => setPause(!pause)}><SlidersHorizontal size={14} /> {t('live.tacticalPause')}</button>
-          <button className="btn" onClick={() => setFollow(!follow)}>{t(follow ? 'live.wide' : 'live.follow')}</button>
           <button className="btn" onClick={toEnd} disabled={over}>{t('live.toEnd')}</button>
           {over && <button className="btn primary big" onClick={onFinish}>{t('live.report')}</button>}
-          <span className="muted small">{t('live.duration', { n: matchMinutes(speed) })}</span>
+          {view === 'full' && <span className="muted small">{t('live.duration', { n: matchMinutes(speed) })}</span>}
         </div>
+        <ViewBar view={view} camera={camera}
+          onView={(v) => { setView(v); updateSettings({ view: v }); }} onCamera={(c) => { setCamera(c); updateSettings({ camera: c }); }} />
         <Inertia run={run} me={me} min={min} onJump={jumpTo} />
       </div>
 
@@ -150,6 +126,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
           <div className="pitch-wrap">
             <canvas ref={canvas} className="pitch2d" />
             <span className="attack-dir">{t('live.attackRight', { club: clubs[me].shortName })}</span>
+            {view !== 'full' && !clip && !over && <SkipCard min={min} />}
           </div>
           <div className="panel say">
             {lines(run.frames, st?.i ?? 0, look.names).map((l, i, a) => (

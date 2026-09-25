@@ -1,5 +1,7 @@
 // Impostazioni del giocatore: interfaccia, valuta e data, schermo, audio, manutenzione e diagnostica.
 import { useReducer, useState } from 'react';
+import { VIEW_MODES } from '../match/highlights.ts';
+import { CAMERA_MODES } from '../match/renderer.ts';
 import { Bug, Maximize, SlidersHorizontal, Users, Volume2, Whistle, Wrench, MousePointerClick } from 'lucide-react';
 import { version } from '../../../package.json';
 import { SCHEMA_VERSION, integrity } from '../../engine/save.ts';
@@ -43,6 +45,14 @@ export function SettingsPanel({ world, onChange }: { world: WorldState; onChange
         <span className="caps">{t('settings.currency')}</span>
         <div className="seg-tabs" style={{ alignSelf: 'stretch' }}>
           {(['EUR', 'USD', 'GBP'] as const).map((c) => <button key={c} className={s.currency === c ? 'active hot' : ''} onClick={() => set({ currency: c })}>{t(`settings.cur.${c}`)}</button>)}
+        </div>
+        <span className="caps">{t('settings.view')}</span>
+        <div className="seg-tabs" style={{ alignSelf: 'stretch' }}>
+          {VIEW_MODES.map((v) => <button key={v} className={s.view === v ? 'active hot' : ''} title={t(`view.${v}.hint`)} onClick={() => set({ view: v })}>{t(`view.${v}`)}</button>)}
+        </div>
+        <span className="caps">{t('settings.camera')}</span>
+        <div className="seg-tabs" style={{ alignSelf: 'stretch' }}>
+          {CAMERA_MODES.map((c) => <button key={c} className={s.camera === c ? 'active hot' : ''} onClick={() => set({ camera: c })}>{t(`camera.${c}`)}</button>)}
         </div>
         <div className="grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
           <label className="field"><span className="caps">{t('settings.dateFmt')}</span>

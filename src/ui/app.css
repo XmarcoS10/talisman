@@ -226,6 +226,11 @@ select:focus, input:focus { outline: none; border-color: var(--data-1); box-shad
 .network circle { fill: var(--surface-3); stroke: var(--accent); stroke-width: 1.5; }
 .network text { font: 9px var(--font-ui); fill: var(--text-2); }
 .pitch-wrap { position: relative; }
+.view-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--s-2) var(--s-3); }
+/* fra un saliente e l'altro (Blocco 3): il campo si scurisce e il cronometro corre */
+.skip-card { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: var(--s-3);
+  background: rgb(10 14 24 / 0.62); border-radius: var(--r-2); color: var(--text-1); pointer-events: none; }
+.skip-card .num { font: 700 34px var(--font-num); color: var(--accent); }
 .attack-dir { position: absolute; top: 8px; left: 10px; font: 600 11px var(--font-ui); letter-spacing: 0.04em;
   background: rgb(0 0 0 / 0.45); color: var(--text-1); padding: 2px 8px; border-radius: var(--r-1); }
 .say { gap: 2px; padding: var(--s-2) var(--s-3); min-height: 62px; justify-content: center; }

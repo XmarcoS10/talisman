@@ -126,7 +126,12 @@ il portatore prima che giochi; `high` se la palla è alta (cross, rinvio lungo).
 ognuno con chi (`who`), contro chi (`vs`), dove era la palla e se era alta: intercetto, fuorigioco, uomo saltato,
 contrasto, fallo, giallo, rosso, corner, punizione, barriera, rigore, colpo di testa, respinta della difesa, seconda
 palla, uscita alta, uscita in profondità, parata, respinta del portiere, ribattuta, tiro murato, fuori, gol, rinvio
-lungo. Le posizioni dei 22 ogni 0,25 s restano in `run.track`. Col registro spento `beat()` non fa niente.
+lungo, tiro (con il suo xG) e infortunio. Le posizioni dei 22 ogni 0,25 s restano in `run.track`. Col registro spento
+`beat()` non fa niente.
+
+I **salienti** (Blocco 3) si leggono da questi momenti: la regola sta in `ui/match/highlights.ts` (gol, rigori, rossi,
+infortuni, parate, tiri da xG 0,15 in su; in Estesa anche pressione che diventa tiro o cross e ripartenze), con 8 s
+prima e 3 dopo. `highlights.test.ts` controlla che una partita in Salienti duri 4-7 minuti reali e contenga ogni gol.
 
 ## Fatica
 Energia persa al minuto: `drain del ruolo × (drainBase + drainStamina·(1 − Resistenza/20))`, più per chi pressa. Con

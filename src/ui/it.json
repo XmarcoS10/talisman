@@ -1600,5 +1600,19 @@
   "settings.volume.crowd": "Volume dello stadio e dei cori",
   "settings.diag": "Esporta diagnostica",
   "settings.diagSaved": "Salvata: {file}",
-  "settings.diagHint": "Se qualcosa non va, esporta la diagnostica e mandala a chi ti aiuta: contiene versioni, errori recenti ed elenco dei salvataggi, non la carriera. Nessun dato parte da solo."
+  "settings.diagHint": "Se qualcosa non va, esporta la diagnostica e mandala a chi ti aiuta: contiene versioni, errori recenti ed elenco dei salvataggi, non la carriera. Nessun dato parte da solo.",
+  "live.view": "Visione",
+  "live.camera": "Telecamera",
+  "view.highlights": "Salienti",
+  "view.extended": "Estesa",
+  "view.full": "Completa",
+  "view.highlights.hint": "Solo le azioni che portano a gol, tiri pericolosi, parate, rigori, espulsioni e infortuni: una partita dura 4-7 minuti",
+  "view.extended.hint": "I salienti più le fasi di pressione e le ripartenze",
+  "view.full.hint": "Tutta la partita, azione per azione",
+  "camera.wide": "Campo",
+  "camera.follow": "Segui",
+  "camera.close": "Vicina",
+  "live.skip": "avanti veloce fino alla prossima azione",
+  "settings.view": "Partita: visione",
+  "settings.camera": "Partita: telecamera"
 }

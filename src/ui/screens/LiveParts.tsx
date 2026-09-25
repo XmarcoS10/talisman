@@ -7,6 +7,9 @@ import { Crest } from '../Crest.tsx';
 import { shortName } from '../bits.tsx';
 import { t } from '../i18n.ts';
 import { lines } from '../match/commentary.ts';
+import { VIEW_MODES, type ViewMode } from '../match/highlights.ts';
+import { CAMERA_MODES, type CameraMode } from '../match/renderer.ts';
+import { FastForward } from 'lucide-react';
 
 const EV_ICON: Record<string, string> = { goal: '⚽', penGoal: '⚽', penMiss: '✖', chance: '◎', yellow: '🟨', red: '🟥', injury: '✚', sub: '⇄', plan: '📋' };
 
@@ -77,6 +80,29 @@ export function Ticker({ frames, i, names, world, run }: { frames: TraceStep[]; 
       {evs.map((e, k) => (
         <span key={k} className="muted small">→ {e.min}' {EV_ICON[e.type]} {e.type === 'plan' ? t('live.planFired', { name: e.plan ?? '' }) : world.players[e.playerId] ? shortName(world.players[e.playerId]!) : ''}</span>
       ))}
+    </div>
+  );
+}
+
+/** visione (Salienti, Estesa, Completa) e telecamera: si scelgono anche in Impostazioni */
+export function ViewBar({ view, camera, onView, onCamera }: { view: ViewMode; camera: CameraMode; onView: (v: ViewMode) => void; onCamera: (c: CameraMode) => void }) {
+  return (
+    <div className="view-bar">
+      <span className="caps">{t('live.view')}</span>
+      <div className="seg-tabs">{VIEW_MODES.map((v) => <button key={v} className={v === view ? 'active hot' : ''} title={t(`view.${v}.hint`)} onClick={() => onView(v)}>{t(`view.${v}`)}</button>)}</div>
+      <span className="caps">{t('live.camera')}</span>
+      <div className="seg-tabs">{CAMERA_MODES.map((c) => <button key={c} className={c === camera ? 'active hot' : ''} onClick={() => onCamera(c)}>{t(`camera.${c}`)}</button>)}</div>
+    </div>
+  );
+}
+
+/** fra un saliente e l'altro: il campo si scurisce e il cronometro corre */
+export function SkipCard({ min }: { min: number }) {
+  return (
+    <div className="skip-card">
+      <FastForward size={18} />
+      <b className="num">{min}'</b>
+      <span className="muted small">{t('live.skip')}</span>
     </div>
   );
 }

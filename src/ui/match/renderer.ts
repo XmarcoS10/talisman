@@ -5,7 +5,10 @@ import type { Live } from './playback.ts';
 import { art } from '../assets-manifest.ts';
 
 export const PITCH_X = 12, PITCH_Y = 8;
-const FOLLOW_ZOOM = 1.2;
+export type CameraMode = 'wide' | 'follow' | 'close';
+export const CAMERA_MODES: CameraMode[] = ['wide', 'follow', 'close'];
+/** zoom della telecamera: campo intero fermo, segui la palla, ravvicinata (solo dentro un saliente) */
+export const cameraZoom = (mode: CameraMode, inClip: boolean) => (mode === 'wide' ? 1 : mode === 'close' && inClip ? 1.8 : 1.3);
 
 export interface Look {
   colors: [string, string]; // maglia squadra 0 e squadra 1
@@ -18,15 +21,20 @@ export class Camera {
   cx = PITCH_X / 2;
   cy = PITCH_Y / 2;
   zoom = 1;
-  /** di norma sta ferma sul campo intero; se insegue, si muove piano e non esce dal campo */
-  step(bx: number, by: number, dt: number, follow: boolean, w: number, h: number) {
+  /**
+   * zoom 1: ferma sul campo intero. Oltre: insegue la palla piano, senza uscire dal campo; finché la palla resta
+   * nel riquadro centrale la telecamera non si muove (niente tremolii a ogni passaggio corto)
+   */
+  step(bx: number, by: number, dt: number, zoom: number, w: number, h: number) {
     const k = Math.min(1, dt * 1.25);
-    this.zoom += ((follow ? FOLLOW_ZOOM : 1) - this.zoom) * k;
+    const follow = zoom > 1;
+    this.zoom += (zoom - this.zoom) * k;
     const scale = Math.min(w / PITCH_X, h / PITCH_Y) * this.zoom;
     const halfX = Math.min(PITCH_X, w / scale) / 2;
     const halfY = Math.min(PITCH_Y, h / scale) / 2;
-    const tx = follow ? Math.max(halfX, Math.min(PITCH_X - halfX, bx)) : PITCH_X / 2;
-    const ty = follow ? Math.max(halfY, Math.min(PITCH_Y - halfY, by)) : PITCH_Y / 2;
+    const hold = (c: number, b: number, half: number) => (Math.abs(b - c) < half * 0.3 ? c : b - Math.sign(b - c) * half * 0.3);
+    const tx = follow ? Math.max(halfX, Math.min(PITCH_X - halfX, hold(this.cx, bx, halfX))) : PITCH_X / 2;
+    const ty = follow ? Math.max(halfY, Math.min(PITCH_Y - halfY, hold(this.cy, by, halfY))) : PITCH_Y / 2;
     this.cx += (tx - this.cx) * k;
     this.cy += (ty - this.cy) * k;
   }

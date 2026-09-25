@@ -64,6 +64,7 @@ export function shoot(st: MatchState, sh: MP, xg: number, kind: ShotKind, origin
   const att = st.teams[st.s], def = st.teams[1 - st.s]!;
   const gk = def.on.find((m) => m.pos === 'GK');
   att.stats.shots++; sh.st.shots++; att.stats.xg += xg;
+  beat(st, 'shot', sh, undefined, kind === 'header', xg);
   if (kind === 'header') att.log.headers++;
   const skill = shotSkill(st, sh, kind);
   const gkSkill = keeperSkill(gk, kind === 'pen', xg);

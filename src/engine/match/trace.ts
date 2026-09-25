@@ -7,10 +7,10 @@ import { gx, gy, minute, type MatchState, type MP, type TraceStep } from './stat
 export type BeatKind =
   | 'intercept' | 'offside' | 'beat' | 'tackle' | 'foul' | 'yellow' | 'red'
   | 'corner' | 'freeKick' | 'wall' | 'penalty' | 'header' | 'clear' | 'secondBall'
-  | 'claim' | 'sweep' | 'save' | 'parry' | 'rebound' | 'block' | 'miss' | 'goal' | 'longKick';
+  | 'claim' | 'sweep' | 'save' | 'parry' | 'rebound' | 'block' | 'miss' | 'goal' | 'longKick' | 'shot' | 'injury';
 
 /** un momento dell'azione: chi (e contro chi), dove era la palla (coordinate globali), se la palla era alta */
-export interface Beat { kind: BeatKind; who: number; vs?: number; x: number; y: number; high?: boolean }
+export interface Beat { kind: BeatKind; who: number; vs?: number; x: number; y: number; high?: boolean; xg?: number }
 
 type Extra = Pick<TraceStep, 'tx' | 'ty' | 'p' | 'xg' | 'to' | 'high'>;
 
@@ -34,8 +34,8 @@ export function frame(st: MatchState, kind: TraceStep['kind'], extra: Partial<Ex
 }
 
 /** aggiunge un momento all'azione in corso (niente, se il registro è spento) */
-export function beat(st: MatchState, kind: BeatKind, who: MP, vs?: MP, high?: boolean) {
+export function beat(st: MatchState, kind: BeatKind, who: MP, vs?: MP, high?: boolean, xg?: number) {
   const f = st.curFrame;
   if (!f) return;
-  (f.beats ??= []).push({ kind, who: who.p.id, ...(vs ? { vs: vs.p.id } : {}), x: gx(st, st.bx), y: gy(st, st.by), ...(high ? { high } : {}) });
+  (f.beats ??= []).push({ kind, who: who.p.id, ...(vs ? { vs: vs.p.id } : {}), x: gx(st, st.bx), y: gy(st, st.by), ...(high ? { high } : {}), ...(xg !== undefined ? { xg } : {}) });
 }
