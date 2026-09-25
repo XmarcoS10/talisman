@@ -132,7 +132,10 @@ tr.sep td { height: 28px; font: 600 10px var(--font-num); text-transform: upperc
 
 .slot.unavailable .slot-dot { background: var(--negative); color: var(--text-1); }
 .slot-name { font-size: 11px; font-weight: 600; background: rgb(0 0 0 / 0.55); padding: 0 6px; border-radius: var(--r-1); white-space: nowrap; }
-.slot-role { font-size: 10px; background: rgb(0 0 0 / 0.55); color: var(--text-2); border: 0; border-radius: var(--r-1); max-width: 104px; }
+.slot-role { position: relative; display: block; font-size: 10px; line-height: 1.15; text-align: center; background: rgb(0 0 0 / 0.55); color: var(--text-2);
+  border-radius: var(--r-1); max-width: 104px; padding: 2px 5px; cursor: pointer; }
+.slot-role select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.slot-role:focus-within { outline: 2px solid var(--accent); }
 select, input[type=text], input[type=number], input:not([type]) { background: var(--input); color: var(--text-1); border: 1px solid rgb(255 255 255 / 0.1); border-radius: var(--r-2); padding: 6px 8px; font: inherit; }
 select:focus, input:focus { outline: none; border-color: var(--data-1); box-shadow: 0 0 0 2px rgb(6 182 212 / 0.35); }
 .seg-row { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); }

@@ -51,9 +51,13 @@ export function Pitch({ world, club, selected, onSelect, onAssign, onRole }: Pro
             </button>
             </span>
             <div className="slot-name">{p ? shortName(p) : t(`pos.${slot.pos}`)}</div>
-            <select className="slot-role" value={role} onChange={(e) => onRole(i, e.target.value)} aria-label={t('tactics.role')}>
-              {rolesFor(slot.pos).map((r) => <option key={r} value={r}>{t(`role.${r}`)}</option>)}
-            </select>
+            {/* il nome del ruolo va a capo invece di essere tagliato; sopra c'è la tendina vera, trasparente */}
+            <label className="slot-role">
+              <span>{t(`role.${role}`)} ▾</span>
+              <select value={role} onChange={(e) => onRole(i, e.target.value)} aria-label={t('tactics.role')}>
+                {rolesFor(slot.pos).map((r) => <option key={r} value={r}>{t(`role.${r}`)}</option>)}
+              </select>
+            </label>
           </div>
         );
       })}
