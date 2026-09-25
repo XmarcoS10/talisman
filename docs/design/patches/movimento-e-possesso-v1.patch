@@ -1,0 +1,249 @@
+diff --git a/src/engine/balance.ts b/src/engine/balance.ts
+index ec9bc61..d651d76 100644
+--- a/src/engine/balance.ts
++++ b/src/engine/balance.ts
+@@ -136,7 +136,13 @@ export const MATCH = {
+   passLane: 0.8, // difensori vicini alla linea di passaggio
+   passMark: 0.9, // difensori vicini al ricevitore
+   passPress: 0.35,
+-  passSkill: 0.06, // per punto di Passaggio sopra/sotto 11
++  // qualità del passaggio (Blocco 2b, intervento 2): Passaggi, Tecnica e Visione del portatore, e la Compostezza che
++  // toglie peso alla pressione. Chi è più bravo sbaglia meno, soprattutto quando lo aggrediscono, e tiene più palla
++  passSkill: 0.06, // per punto di qualità sopra/sotto 11
++  passTechnique: 0.3, // quota della Tecnica nella qualità (il resto: Passaggi 1 − tecnica − visione)
++  passVisionMix: 0.2, // quota della Visione
++  passComposure: 0.04, // pressione che conta in meno per punto di Compostezza sopra 11
++  keepQuality: 0.45, // valore del possesso in più per punto di qualità: chi sa gestire palla la fa girare, chi no verticalizza
+   passVision: 0.05, // Visione, solo sui passaggi lunghi
+   passTouch: 0.06, // Primo controllo del ricevitore
+   laneRadius: 0.9,
+@@ -149,6 +155,14 @@ export const MATCH = {
+   deadSpeed: 8, // il gioco fermo (rimesse, esultanza) scorre più in fretta nella riproduzione
+   deadFrom: 12, // oltre questi secondi un intervallo è gioco fermo
+   offBallMove: 1.2, // ampiezza (zone) degli smarcamenti casuali di chi attacca
++  // movimento senza palla (Blocco 2b, intervento 7): corse scelte a ogni azione, con probabilità × Movimento senza palla/10
++  runBehind: 0.3, // la punta attacca la profondità, sul filo della linea difensiva
++  runInsert: 0.12, // chi ha gli inserimenti nel ruolo (mezzali, trequartisti, esterni) fa lo stesso dalla trequarti
++  runDrop: 0.25, // la punta viene incontro (× 2 per falso nove e centravanti di peso)
++  runOverlap: 0.35, // il terzino sovrappone quando la palla è sul suo lato, dalla metà campo in su
++  runShoulder: 0.25, // zone tenute prima della linea difensiva da chi la attacca (per restare in gioco)
++  runOverlapAhead: 1.3, // zone oltre la palla del terzino che sovrappone
++  throughChem: 0.4, // logit in più di una palla in profondità fra due che si intendono (relazione 100)
+   patience: 0.0015, // voglia di verticalizzare in più per ogni passaggio consecutivo oltre il 5°
+   boxRun: 0.6, // zone di inserimento in area (× Inserimenti/20) per centrocampisti e trequartisti
+   defCompact: 0.75, // senza palla: quanto si accorcia il modulo verso la propria porta (1 = per niente)
+diff --git a/src/engine/match/decision.ts b/src/engine/match/decision.ts
+index 922a167..6a16f79 100644
+--- a/src/engine/match/decision.ts
++++ b/src/engine/match/decision.ts
+@@ -33,6 +33,7 @@ export interface View {
+   tactic: Tactic;
+   mentality: number;
+   bonus: number; // logit comune: casa, momentum, stanchezza del portatore
++  oppQ: number; // qualità media di palleggio degli avversari (passQuality)
+   chain: number; // passaggi consecutivi in questo possesso
+ }
+ 
+@@ -43,35 +44,46 @@ export type Option =
+   | { kind: 'cross'; p: number; u: number };
+ 
+ const a = (pl: OnPitch, k: keyof Player['attrs']) => pl.p.attrs[k] - 11; // attributo centrato su 11
++
++/** qualità di palleggio, centrata su 11: Passaggi, Tecnica e Visione (Blocco 2b, intervento 2) */
++export const passQuality = (p: Player) =>
++  (1 - MATCH.passTechnique - MATCH.passVisionMix) * (p.attrs.passing - 11) + MATCH.passTechnique * (p.attrs.technique - 11) + MATCH.passVisionMix * (p.attrs.vision - 11);
+ const NO_REL: Record<number, number> = {};
+ /** moltiplicatore del peso di scelta di un passaggio dalla relazione tra i due (−100…100): ±8% al massimo */
+ export const chem = (s: number | undefined) => (s === undefined ? 1 : 1 + (Math.max(-100, Math.min(100, s)) / 100) * MATCH.chemPass);
+ 
+ /** quello che serve a tutte le opzioni: quanto vale tenere palla, quanto costa perderla, la voglia di verticalizzare */
+-interface Ctx { keep: number; loss: number; direct: number; vision: number; rel: Record<number, number> }
++interface Ctx { keep: number; loss: number; keepP: number; lossP: number; direct: number; vision: number; quality: number; press: number; rel: Record<number, number> }
+ 
+ function context(v: View): Ctx {
+   const { carrier: c, bx, by, tactic } = v;
+   const mm = v.mentality - 3; // −2 … +2
+   const riskW = 1 - MATCH.mentalityRisk * mm; // mentalità offensiva = meno paura di perdere palla
++  const quality = passQuality(c.p);
+   // perdere palla costa il valore regalato all'avversario + il valore del possesso stesso (K)
+   const keep = MATCH.possessionValue * riskW;
+   const loss = lossCost(bx, by) * riskW + keep;
++  // fra un passaggio e l'altro chi palleggia meglio degli avversari sceglie quello sicuro: la squadra più forte fa
++  // girare palla. Il tiro si confronta col possesso normale, così quando l'occasione arriva si tira come prima
++  const keepP = keep * (1 + MATCH.keepQuality * Math.max(0, quality - v.oppQ));
++  const lossP = loss - keep + keepP;
+   // verticalità: istruzione tattica + impazienza dopo una lunga serie di passaggi
+   const direct = MATCH.directnessK * tactic.directness + MATCH.patience * Math.max(0, v.chain - 5) + c.role.direct;
+   // spogliatoio in campo (§7.3): tra amici ci si cerca un po' di più, tra nemici un po' di meno
+-  return { keep, loss, direct, vision: MATCH.passVision * a(c, 'vision'), rel: FLAGS.psychology ? c.p.rel : NO_REL };
++  // pressione percepita: la Compostezza fa sentire meno l'avversario addosso
++  const press = v.pressure * Math.max(0.3, 1 - MATCH.passComposure * a(c, 'composure'));
++  return { keep, loss, keepP, lossP, direct, vision: MATCH.passVision * a(c, 'vision'), quality, press, rel: FLAGS.psychology ? c.p.rel : NO_REL };
+ }
+ 
+ /** 1) PASSAGGI a ogni compagno (è il ciclo più caldo del gioco: niente allocazioni qui dentro) */
+ function passes(v: View, x: Ctx, out: Option[]) {
+-  const { carrier: c, bx, by, tactic, pressure } = v;
+-  const { keep, loss, direct, vision, rel } = x;
++  const { carrier: c, bx, by, tactic } = v;
++  const { keepP: keep, lossP: loss, direct, vision, rel } = x;
+   const tempoMod = (1 - tactic.tempo) * 0.15; // ritmo alto = più errori
+   const nd = v.defX.length;
+   const lr = MATCH.laneRadius, mr = MATCH.markRadius;
+   // parte del logit che dipende solo dal portatore
+-  const passLogit0 = MATCH.passBase - MATCH.passPress * pressure + MATCH.passSkill * a(c, 'passing') + tempoMod + v.bonus;
++  const passLogit0 = MATCH.passBase - MATCH.passPress * x.press + MATCH.passSkill * x.quality + tempoMod + v.bonus;
+   for (const m of v.mates) {
+     if (m === c) continue;
+     const dx = m.x - bx, dy = m.y - by;
+@@ -104,8 +116,8 @@ function passes(v: View, x: Ctx, out: Option[]) {
+ 
+ /** 1b) PALLA IN PROFONDITÀ nello spazio tra la linea difensiva e il portiere: punisce le linee alte */
+ function throughBalls(v: View, x: Ctx, out: Option[]) {
+-  const { carrier: c, bx, by, pressure } = v;
+-  const { keep, loss, direct, vision, rel } = x;
++  const { carrier: c, bx, by } = v;
++  const { keepP: keep, lossP: loss, direct, vision, rel } = x;
+   const space = MATCH.gkLineX - v.offsideLine;
+   if (!(space > 1 && bx < v.offsideLine - 0.5)) return;
+   const tx = v.offsideLine + Math.min(space, MATCH.throughDepth);
+@@ -115,9 +127,10 @@ function throughBalls(v: View, x: Ctx, out: Option[]) {
+     if (m === c || m.x < v.offsideLine - 1.5 || m.x <= bx) continue; // solo chi è già vicino alla linea
+     const dist = len(tx - bx, m.y - by);
+     const race = (m.p.attrs.pace + m.p.attrs.acceleration) / 2 - defPace; // corsa uomo contro uomo
+-    const p = sigmoid(MATCH.throughBase + MATCH.throughRace * race - MATCH.passDist * 0.6 * dist - MATCH.passPress * pressure
+-      + MATCH.passSkill * a(c, 'passing') + 2 * vision + v.bonus);
+-    const off = MATCH.throughOffside * (1 - (m.p.attrs.offTheBall - 11) * 0.04);
++    // Intesa: fra due che si capiscono la palla arriva dove serve; Gioco di squadra e Movimento senza palla: la corsa parte al momento giusto
++    const p = sigmoid(MATCH.throughBase + MATCH.throughRace * race - MATCH.passDist * 0.6 * dist - MATCH.passPress * x.press
++      + MATCH.passSkill * x.quality + 2 * vision + MATCH.throughChem * Math.max(-1, Math.min(1, (rel[m.p.id] ?? 0) / 100)) + v.bonus);
++    const off = MATCH.throughOffside * (1 - (m.p.attrs.offTheBall - 11) * 0.04 - (m.p.attrs.teamwork - 11) * 0.02);
+     const pe = p * (1 - off);
+     out.push({ kind: 'pass', to: m, tx, ty: m.y, p, off, u: pe * (xT(tx, m.y) + keep) - (1 - pe) * loss + direct * (tx - bx), w: chem(rel[m.p.id]), deep: true });
+   }
+diff --git a/src/engine/match/positioning.ts b/src/engine/match/positioning.ts
+index fa473c5..6221753 100644
+--- a/src/engine/match/positioning.ts
++++ b/src/engine/match/positioning.ts
+@@ -20,19 +20,55 @@ function runTo(m: MP, x: number, y: number, dt: number) {
+   if (d <= max) { m.x = x; m.y = y; } else { m.x += (dx * max) / d; m.y += (dy * max) / d; }
+ }
+ 
++/** corse senza palla (intervento 7): scelte una volta per azione, come gli smarcamenti */
++export const RUN = { none: 0, behind: 1, drop: 2, overlap: 3, cutIn: 4 } as const;
++const WIDE_ATT = new Set(['AML', 'AMR', 'ML', 'MR']);
++const lado = (y: number) => (y > 4.3 ? 1 : y < 3.7 ? -1 : 0); // da che lato del campo
++
++/** la corsa di un attaccante in questa azione: dipende dal ruolo, dalla palla e dal suo Movimento senza palla */
++function pickRun(st: MatchState, m: MP): number {
++  const otb = m.p.attrs.offTheBall / 10; // 1 = giocatore medio
++  const r = st.rng.next();
++  const { bx, by } = st;
++  const fullBack = m.pos === 'DL' || m.pos === 'DR' || m.roleId === 'wingBack';
++  if (fullBack) return bx >= 6 && lado(m.hy) !== 0 && lado(m.hy) === lado(by) && r < MATCH.runOverlap * otb ? RUN.overlap : RUN.none;
++  if (m.pos === 'ST') {
++    const holdUp = m.roleId === 'falseNine' || m.roleId === 'targetMan';
++    if (r < MATCH.runBehind * otb * (holdUp ? 0.4 : 1)) return RUN.behind;
++    return r > 1 - MATCH.runDrop * (holdUp ? 2 : 1) ? RUN.drop : RUN.none;
++  }
++  return m.role.runs && bx >= 5 && r < MATCH.runInsert * otb ? RUN.behind : RUN.none;
++}
++
+ /** gli smarcamenti si estraggono una volta per azione: dentro l'azione il movimento è continuo, non nervoso */
+ function jitter(st: MatchState) {
+-  for (const m of st.teams[st.s].on) {
++  const on = st.teams[st.s].on;
++  let overlap = 0; // lati (−1, +1) dove un terzino sta sovrapponendo: lì l'esterno stringe
++  for (const m of on) {
++    m.run = RUN.none;
+     if (m === st.carrier || m.pos === 'GK') continue;
+     m.jx = (st.rng.next() - 0.5) * MATCH.offBallMove;
+     m.jy = (st.rng.next() - 0.5) * MATCH.offBallMove * 1.5;
++    m.run = pickRun(st, m);
++    if (m.run === RUN.overlap) overlap = lado(m.hy);
+   }
++  if (overlap) for (const m of on) if (m.run === RUN.none && m !== st.carrier && WIDE_ATT.has(m.pos) && lado(m.hy) === overlap) m.run = RUN.cutIn;
++}
++
++/** dove porta la corsa: `line` è la linea difensiva avversaria vista da chi attacca */
++function runTarget(m: MP, bx: number, by: number, line: number) {
++  if (m.run === RUN.behind) { m.tx = clamp(Math.max(m.tx, line - MATCH.runShoulder), 0.3, 11.2); return; }
++  if (m.run === RUN.drop) { m.tx = clamp(Math.max(bx + 1, m.hx - 2.2), 0.3, 11); m.ty += (by - m.ty) * 0.5; return; }
++  if (m.run === RUN.overlap) { m.tx = clamp(bx + MATCH.runOverlapAhead, 0.3, 11); m.ty = m.hy > 4 ? 7.5 : 0.5; return; }
++  if (m.run === RUN.cutIn) { m.ty = 4 + (m.ty - 4) * 0.4; m.tx = Math.min(11, m.tx + 0.3); }
+ }
+ 
+ function aimAtt(st: MatchState) {
+   const att = st.teams[st.s];
+   const { bx, by } = st;
+   const mmA = att.mentality - 3, wf = WIDTH[att.tactic.width]!;
++  let line = 6; // la linea difensiva avversaria, dove si spinge chi attacca la profondità
++  for (const d of st.teams[1 - st.s]!.on) if (d.pos !== 'GK') line = Math.max(line, 12 - d.x);
+   for (const m of att.on) {
+     if (m === st.holder) {
+       if (st.snap) { m.x = bx; m.y = by; }
+@@ -55,6 +91,7 @@ function aimAtt(st: MatchState) {
+     const side = m.hy > 4.3 ? 1 : m.hy < 3.7 ? -1 : 0; // da che lato gioca, per allargarsi o stringere
+     m.tx = clamp(x + m.jx * mv, 0.3, rl.maxX);
+     m.ty = clamp(4 + (m.hy - 4) * wf + rl.dy * side + (by - 4) * 0.25 + m.jy * mv, 0.2, 7.8);
++    if (m.run) runTarget(m, bx, by, line);
+   }
+ }
+ 
+diff --git a/src/engine/match/pressure.ts b/src/engine/match/pressure.ts
+index 941008c..6498f8b 100644
+--- a/src/engine/match/pressure.ts
++++ b/src/engine/match/pressure.ts
+@@ -39,6 +39,7 @@ export function readPlay(st: MatchState): { view: View; pressure: number; closes
+     bonus: (st.s === 0 ? MATCH.homeBoost : 0) + (sign * st.momentum / 100) * MATCH.momentumK * (1 - c.p.attrs.composure / 25)
+       - (100 - c.energy) * MATCH.energySkill + c.mod,
+     chain: st.chain,
++    oppQ: def.q,
+   };
+   return { view, pressure, closest };
+ }
+diff --git a/src/engine/match/state.ts b/src/engine/match/state.ts
+index 7e07ac3..998b003 100644
+--- a/src/engine/match/state.ts
++++ b/src/engine/match/state.ts
+@@ -3,7 +3,7 @@
+ import { FLAGS, MATCH } from '../balance.ts';
+ import type { Club, MatchEvent, MatchEventType, MatchResult, Player, Position, SideStats, Tactic } from '../model.ts';
+ import type { Rng } from '../rng.ts';
+-import type { OnPitch } from './decision.ts';
++import { passQuality, type OnPitch } from './decision.ts';
+ import { len } from './pitch.ts';
+ import { ROLES, type RoleId } from './roles.ts';
+ import type { Slot } from './tactics.ts';
+@@ -26,6 +26,7 @@ export interface MP extends OnPitch {
+   ty: number;
+   jx: number; // smarcamento casuale dell'azione in corso (estratto una volta per azione)
+   jy: number;
++  run: number; // corsa senza palla dell'azione in corso (RUN in positioning.ts), 0 nessuna
+   on: boolean;
+   st: PStats;
+ }
+@@ -73,6 +74,7 @@ export interface Team {
+   stats: SideStats;
+   fam: number;
+   auto: boolean; // false = i cambi li fa l'utente dalla panchina (F6)
++  q: number; // qualità media di palleggio dell'undici di partenza, portiere escluso (passQuality)
+   log: MatchLog;
+ }
+ 
+@@ -189,12 +191,13 @@ const dayMod = (p: Player, fam: number) =>
+   - MATCH.famK * Math.max(0, 1 - fam / 90);
+ export const mp = (player: Player, slot: Slot, role: RoleId, fam: number, from = 0): MP =>
+   ({ p: player, pos: slot.pos, hx: slot.x, hy: slot.y, roleId: role, role: ROLES[role], marked: 0, x: slot.x, y: slot.y, tx: slot.x, ty: slot.y,
+-    jx: 0, jy: 0, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from) });
++    jx: 0, jy: 0, run: 0, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from) });
+ 
+ export function createState(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: TraceStep[]): MatchState {
+   const teams = setups.map((s, i) => {
+     const on = s.xi.map((e) => mp(e.player, e.slot, e.role, s.familiarity));
+-    return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity, auto: s.auto !== false, log: newLog() };
++    return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity, auto: s.auto !== false, log: newLog(),
++      q: on.filter((m) => m.pos !== 'GK').reduce((t, m, _, l) => t + passQuality(m.p) / l.length, 0) };
+   }) as [Team, Team];
+   return {
+     rng, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, momentum: 0,

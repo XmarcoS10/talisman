@@ -212,3 +212,21 @@ Tutte le varianti che danno il possesso giusto tolgono i tiri alla squadra forte
 non crea occasioni, perché senza movimento senza palla i passaggi sicuri vanno indietro e di lato e la difesa non si
 apre. Il lavoro è salvato in `docs/design/patches/possesso-qualita-v1.patch` (qualità di palleggio, Compostezza contro
 la pressione, valore del possesso relativo all'avversario) per riprenderlo dopo l'intervento 7.
+
+### Intervento 7 (movimento senza palla) anticipato — 25/09, fermo
+
+Corse scelte a ogni azione nel motore (`positioning.ts`): la punta attacca la profondità o viene incontro, chi ha gli
+inserimenti nel ruolo attacca la linea, il terzino sovrappone sul lato della palla, l'esterno davanti a lui stringe;
+Intesa e Gioco di squadra nelle palle in profondità. Patch: `docs/design/patches/movimento-e-possesso-v1.patch`.
+
+| Variante (4.000 partite, stagioni seme 42) | Gol | Possesso della più forte | Correlazione | Altro |
+|---|---|---|---|---|
+| Prima | 2,68 | 50,4% | 0,80 | |
+| Solo corse | **3,03** | 50,2% | — | palle in profondità ancora 0,1 riuscite a partita (test della linea alta: t 1,5); test della stanchezza da t 4,4 a **1,8** |
+| Corse + possesso (valore relativo, solo fra passaggi) 0,35 | 2,51 | 55,8% | — | precisione 82,6% |
+| Corse + possesso 0,45 | 2,35 (stagioni 2,37) | 56,7% | **0,28** | contropiede 0,4%, xG 1,18 |
+
+Conclusione: le corse creano occasioni ma la difesa non le segue (i gol salgono), e il possesso ottenuto alzando il
+valore di tenere palla spezza il legame fra forza e risultati. In questo motore un'occasione vale solo per quanto la
+palla avanza in un'azione: far girare palla non disordina la difesa, quindi non rende. Serve un meccanismo nuovo
+(la difesa che si disordina durante il possesso e che segue le corse), da progettare prima di riprendere 7 e 2.
