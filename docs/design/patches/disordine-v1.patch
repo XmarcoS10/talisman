@@ -1,0 +1,209 @@
+diff --git a/src/engine/balance.ts b/src/engine/balance.ts
+index 4a29b9c..2657e57 100644
+--- a/src/engine/balance.ts
++++ b/src/engine/balance.ts
+@@ -149,6 +149,15 @@ export const MATCH = {
+   deadSpeed: 8, // il gioco fermo (rimesse, esultanza) scorre più in fretta nella riproduzione
+   deadFrom: 12, // oltre questi secondi un intervallo è gioco fermo
+   offBallMove: 1.2, // ampiezza (zone) degli smarcamenti casuali di chi attacca
++  // la difesa che si disordina (Blocco 2b, docs/design/motore-v2.md §7): disordine 0-1 della squadra senza palla
++  disSwitch: 0.15, // cambio di gioco riuscito (≥ 3 zone in larghezza), × qualità di Visione e Passaggi
++  disLine: 0.1, // per difensore scavalcato da un passaggio riuscito
++  disDribble: 0.2, // uomo saltato
++  disTau: 8, // secondi in cui il disordine cala a 1/e (la difesa si riorganizza)…
++  disOrg: 0.04, // …più in fretta per punto di Concentrazione e Posizionamento medi sopra 11
++  disK: 0.3, // efficacia persa su intercetti e pressione a disordine pieno
++  disXg: 0.0, // logit in più dei tiri a disordine pieno (c'è spazio)
++  disValue: 0.02, // quanto vale, nella scelta del passaggio, il disordine che produce
+   patience: 0.0015, // voglia di verticalizzare in più per ogni passaggio consecutivo oltre il 5°
+   boxRun: 0.6, // zone di inserimento in area (× Inserimenti/20) per centrocampisti e trequartisti
+   defCompact: 0.75, // senza palla: quanto si accorcia il modulo verso la propria porta (1 = per niente)
+diff --git a/src/engine/match/decision.ts b/src/engine/match/decision.ts
+index 3e7c65a..525ab69 100644
+--- a/src/engine/match/decision.ts
++++ b/src/engine/match/decision.ts
+@@ -34,10 +34,11 @@ export interface View {
+   mentality: number;
+   bonus: number; // logit comune: casa, momentum, stanchezza del portatore
+   chain: number; // passaggi consecutivi in questo possesso
++  dis: number; // disordine della difesa avversaria, 0-1 (motore-v2.md §7)
+ }
+ 
+ export type Option =
+-  | { kind: 'pass'; to: OnPitch; tx: number; ty: number; p: number; off: number; u: number; w: number; deep: boolean } // w: intesa (chem); deep: in profondità
++  | { kind: 'pass'; to: OnPitch; tx: number; ty: number; p: number; off: number; u: number; w: number; deep: boolean; dg: number } // w: intesa (chem); deep: in profondità; dg: disordine prodotto se riesce
+   | { kind: 'dribble'; tx: number; ty: number; p: number; tackler: OnPitch | undefined; u: number }
+   | { kind: 'shot'; xg: number; u: number }
+   | { kind: 'cross'; p: number; u: number };
+@@ -79,9 +80,10 @@ function passes(v: View, x: Ctx, out: Option[]) {
+     if (dist < 0.5 || dist > 7 || dx < -4) continue; // nessuno gioca lanci di 60 m o retropassaggi di 35 m
+     const minX = Math.min(bx, m.x) - lr, maxX = Math.max(bx, m.x) + lr;
+     const minY = Math.min(by, m.y) - lr, maxY = Math.max(by, m.y) + lr;
+-    let lane = 0, mark = 0;
++    let lane = 0, mark = 0, over = 0; // over: difensori scavalcati (fra la palla e chi riceve)
+     for (let i = 0; i < nd; i++) {
+       const X = v.defX[i]!, Y = v.defY[i]!;
++      if (X > bx + 0.3 && X < m.x - 0.3) over++;
+       const ex = X - m.x, ey = Y - m.y;
+       if (ex > -mr && ex < mr && ey > -mr && ey < mr) {
+         const dm = len(ex, ey);
+@@ -98,7 +100,9 @@ function passes(v: View, x: Ctx, out: Option[]) {
+     const edge = v.offsideLine - MATCH.offsideWindow;
+     const off = dx > 1 && m.x > edge ? Math.min(0.6, MATCH.offsideBase + MATCH.offsidePerZone * (m.x - edge)) : 0;
+     const pe = p * (1 - off);
+-    out.push({ kind: 'pass', to: m, tx: m.x, ty: m.y, p, off, u: pe * (xT(m.x, m.y) + keep) - (1 - pe) * loss + direct * dx, w: chem(rel[m.p.id]), deep: false });
++    // il disordine che questo passaggio crea se riesce: cambio di gioco (secondo Visione e Passaggi) e linee saltate
++    const dg = (Math.abs(dy) >= 3 ? MATCH.disSwitch * Math.max(0.5, 1 + 0.05 * (a(c, 'vision') + a(c, 'passing'))) : 0) + MATCH.disLine * over;
++    out.push({ kind: 'pass', to: m, tx: m.x, ty: m.y, p, off, u: pe * (xT(m.x, m.y) + keep + MATCH.disValue * dg) - (1 - pe) * loss + direct * dx, w: chem(rel[m.p.id]), deep: false, dg });
+   }
+ }
+ 
+@@ -119,7 +123,7 @@ function throughBalls(v: View, x: Ctx, out: Option[]) {
+       + MATCH.passSkill * a(c, 'passing') + 2 * vision + v.bonus);
+     const off = MATCH.throughOffside * (1 - (m.p.attrs.offTheBall - 11) * 0.04);
+     const pe = p * (1 - off);
+-    out.push({ kind: 'pass', to: m, tx, ty: m.y, p, off, u: pe * (xT(tx, m.y) + keep) - (1 - pe) * loss + direct * (tx - bx), w: chem(rel[m.p.id]), deep: true });
++    out.push({ kind: 'pass', to: m, tx, ty: m.y, p, off, u: pe * (xT(tx, m.y) + keep) - (1 - pe) * loss + direct * (tx - bx), w: chem(rel[m.p.id]), deep: true, dg: 0 });
+   }
+ }
+ 
+@@ -145,7 +149,7 @@ function dribble(v: View, x: Ctx): Option {
+ function shot(v: View, x: Ctx, out: Option[]) {
+   const { carrier: c, bx, by, pressure } = v;
+   if (bx < MATCH.shotMinX) return;
+-  const xg = xG(bx, by, pressure);
++  const xg = xG(bx, by, pressure, false, MATCH.disXg * v.dis); // una difesa in disordine lascia spazio
+   if (!(xg > 0.015)) return;
+   const skill = bx < 10 ? a(c, 'longShots') : a(c, 'finishing');
+   const mm = v.mentality - 3;
+diff --git a/src/engine/match/execute.ts b/src/engine/match/execute.ts
+index be3354e..0625b86 100644
+--- a/src/engine/match/execute.ts
++++ b/src/engine/match/execute.ts
+@@ -109,6 +109,7 @@ function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option,
+     att.stats.passesOk++; c.st.passesOk++;
+     if (o.deep) att.log.deepOk++;
+     if (late) late[1]++;
++    st.dis = Math.min(1, st.dis + o.dg);
+     if (f) f.ok = true;
+     st.lastPass = c;
+     st.chain++;
+@@ -138,6 +139,7 @@ function doDribble(st: MatchState, def: Team, c: MP, o: Extract<Option, { kind:
+   else if (st.rng.next() < o.p) {
+     c.st.dribbles++;
+     st.teams[st.s].log.dribblesOk++;
++    st.dis = Math.min(1, st.dis + MATCH.disDribble); // uomo saltato
+     if (f) f.ok = true;
+     st.bx = o.tx; st.by = o.ty;
+     st.lastPass = null;
+diff --git a/src/engine/match/pitch.ts b/src/engine/match/pitch.ts
+index 2a862bc..3db49cf 100644
+--- a/src/engine/match/pitch.ts
++++ b/src/engine/match/pitch.ts
+@@ -31,9 +31,10 @@ export function shotGeometry(x: number, y: number) {
+   return { dist, angle: angle < 0 ? angle + Math.PI : angle };
+ }
+ 
+-export function xG(x: number, y: number, pressure: number, header = false): number {
++/** `extra`: logit in più, per esempio lo spazio lasciato da una difesa in disordine */
++export function xG(x: number, y: number, pressure: number, header = false, extra = 0): number {
+   const { dist, angle } = shotGeometry(x, y);
+-  return sigmoid(MATCH.xgBase + MATCH.xgAngle * angle - MATCH.xgDist * dist - MATCH.xgPress * pressure + (header ? MATCH.xgHeader : 0));
++  return sigmoid(MATCH.xgBase + MATCH.xgAngle * angle - MATCH.xgDist * dist - MATCH.xgPress * pressure + (header ? MATCH.xgHeader : 0) + extra);
+ }
+ 
+ /** distanza del punto (px,py) dal segmento (ax,ay)-(bx,by) */
+diff --git a/src/engine/match/positioning.ts b/src/engine/match/positioning.ts
+index fa473c5..f44c9f0 100644
+--- a/src/engine/match/positioning.ts
++++ b/src/engine/match/positioning.ts
+@@ -250,7 +250,7 @@ function replay(st: MatchState) {
+ export const settle = (st: MatchState) => (st.trace ? replay(st) : place(st));
+ 
+ export function kickoff(st: MatchState, side: 0 | 1) {
+-  st.s = side; st.bx = 6; st.by = 4; st.lastPass = null; st.chain = 0; st.poss = { t: st.t, half: st.half, x: 6, acts: 0 };
++  st.s = side; st.bx = 6; st.by = 4; st.lastPass = null; st.chain = 0; st.poss = { t: st.t, half: st.half, x: 6, acts: 0 }; st.dis = 0;
+   const tm = st.teams[side];
+   st.carrier = tm.on.find((m) => m.pos === 'ST' || m.pos === 'AMC') ?? tm.on[tm.on.length - 1]!;
+   settle(st);
+diff --git a/src/engine/match/pressure.ts b/src/engine/match/pressure.ts
+index 941008c..d305df0 100644
+--- a/src/engine/match/pressure.ts
++++ b/src/engine/match/pressure.ts
+@@ -3,7 +3,7 @@
+ import { MATCH } from '../balance.ts';
+ import type { View } from './decision.ts';
+ import { len } from './pitch.ts';
+-import { cover, type MatchState, type MP } from './state.ts';
++import { cover, settleDisorder, type MatchState, type MP } from './state.ts';
+ 
+ export const PRESS = [0.8, 1, 1.25];
+ const FAR = MATCH.pressRadius * MATCH.pressRadius * 1.001;
+@@ -12,7 +12,8 @@ const FAR = MATCH.pressRadius * MATCH.pressRadius * 1.001;
+ export function readPlay(st: MatchState): { view: View; pressure: number; closest: MP | undefined } {
+   const att = st.teams[st.s], def = st.teams[1 - st.s]!;
+   const { bx, by, defX, defY, defAnt } = st;
+-  const cv = cover(def);
++  settleDisorder(st);
++  const cv = cover(def) * (1 - MATCH.disK * st.dis); // una difesa in disordine chiude peggio linee e portatore
+   defX.length = defY.length = defAnt.length = def.on.length;
+   for (let i = 0; i < def.on.length; i++) {
+     const m = def.on[i]!;
+@@ -39,6 +40,7 @@ export function readPlay(st: MatchState): { view: View; pressure: number; closes
+     bonus: (st.s === 0 ? MATCH.homeBoost : 0) + (sign * st.momentum / 100) * MATCH.momentumK * (1 - c.p.attrs.composure / 25)
+       - (100 - c.energy) * MATCH.energySkill + c.mod,
+     chain: st.chain,
++    dis: st.dis,
+   };
+   return { view, pressure, closest };
+ }
+diff --git a/src/engine/match/state.ts b/src/engine/match/state.ts
+index 7e07ac3..dd5d276 100644
+--- a/src/engine/match/state.ts
++++ b/src/engine/match/state.ts
+@@ -73,6 +73,7 @@ export interface Team {
+   stats: SideStats;
+   fam: number;
+   auto: boolean; // false = i cambi li fa l'utente dalla panchina (F6)
++  org: number; // media di Concentrazione e Posizionamento dell'undici di partenza, portiere escluso: quanto si riorganizza
+   log: MatchLog;
+ }
+ 
+@@ -149,6 +150,8 @@ export interface MatchState {
+   lastPass: MP | null;
+   chain: number; // passaggi consecutivi nel possesso attuale
+   poss: { t: number; half: number; x: number; acts: number }; // come è cominciato il possesso in corso (contropiede)
++  dis: number; // disordine della squadra che difende, 0-1 (motore-v2.md §7): cala col tempo, a zero a palla recuperata
++  disT: number; // clock() dell'ultimo aggiornamento del disordine
+   momentum: number; // + casa, − ospiti
+   half: number;
+   t: number;
+@@ -194,10 +197,11 @@ export const mp = (player: Player, slot: Slot, role: RoleId, fam: number, from =
+ export function createState(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: TraceStep[]): MatchState {
+   const teams = setups.map((s, i) => {
+     const on = s.xi.map((e) => mp(e.player, e.slot, e.role, s.familiarity));
+-    return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity, auto: s.auto !== false, log: newLog() };
++    return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity, auto: s.auto !== false, log: newLog(),
++      org: on.filter((m) => m.pos !== 'GK').reduce((t, m, _, l) => t + (m.p.attrs.concentration + m.p.attrs.positioning) / 2 / l.length, 0) };
+   }) as [Team, Team];
+   return {
+-    rng, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, momentum: 0,
++    rng, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, dis: 0, disT: 0, momentum: 0,
+     half: 1, t: 0, length: 0, scheduled: [], lastPlace: 0, markStamp: 0, holder: null, meet: null, snap: true,
+     trace, track: [], playAt: 0, lastBall: { x: 6, y: 4 }, lastStep: -1, ids0: [], idsDirty: true,
+     defX: [], defY: [], defAnt: [], pendingDrain: [0, 0], subIdx: 0, shoutAt: [0, 0], output: null,
+@@ -236,4 +240,14 @@ export function gain(st: MatchState, tm: Team, m: MP) {
+   st.lastPass = null;
+   st.chain = 0;
+   st.poss = { t: st.t, half: st.half, x: m.x, acts: 0 };
++  st.dis = 0; // chi recupera palla trova una difesa ordinata
++}
++
++/** il disordine della difesa cala col tempo: si riorganizza, più in fretta se è concentrata e ben posizionata */
++export function settleDisorder(st: MatchState) {
++  const now = clock(st), dt = now - st.disT;
++  st.disT = now;
++  if (st.dis <= 0 || dt <= 0 || dt > 5000) { if (dt > 5000) st.dis = 0; return; } // cambio di tempo: tutto in ordine
++  const tau = MATCH.disTau / Math.max(0.5, 1 + MATCH.disOrg * (st.teams[1 - st.s]!.org - 11));
++  st.dis *= Math.exp(-dt / tau);
+ }

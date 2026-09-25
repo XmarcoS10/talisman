@@ -297,3 +297,27 @@ Anticipo contro Tecnica, Compostezza, Equilibrio). Patch: `docs/design/patches/d
 Più contrasti → più falli (realistici) → più infortuni da contatto, con la stessa probabilità per fallo di prima. La
 stanchezza era già un effetto di un solo punto di precisione (tutti fra 76 e 80 di energia al 75'): con più
 turnover la nasconde il rumore.
+
+### La difesa che si disordina (§7), primo passo — 25/09, fermo
+
+Patch: `docs/design/patches/disordine-v1.patch` (disordine 0-1 della squadra senza palla, alzato da cambi di gioco,
+linee saltate e dribbling, calo col tempo secondo Concentrazione e Posizionamento, effetti su intercetti, pressione e xG).
+
+| Variante (4.000 partite) | Gol | Precisione | Fuorigioco | Possesso della più forte |
+|---|---|---|---|---|
+| Prima | 2,62 | 79,0% | 2,4 ✅ | 51% |
+| Disordine (xG 0,6, efficacia 0,5) | **2,98** | 77,5% | **2,8** | 51,1% |
+| Disordine (xG 0,2, efficacia 0,2) | 2,72 | 77,3% | **2,7** | 50,8% |
+| Disordine senza effetto sull'xG | 2,65 | 77,4% | **2,8** | 50,9% |
+
+Il disordine non sposta il possesso e, premiando i passaggi che tagliano le linee, rende il gioco più verticale:
+precisione giù, fuorigioco su (verde → rosso). Fermo al primo passo.
+
+**La misura che spiega tutto** (`tools/diag-possession.ts`, 2ª contro 19ª della A, 400 partite): possesso a tempo
+51,2%, ma **a quota di passaggi (come Opta) 41,1%**: la forte fa 306 passaggi e **29 tiri**, la debole 439 e 9.
+Due prove che non cambiano niente: la mentalità che non tocca la pressione (51,0%), una soglia di xG minima per tirare
+0,03 / 0,05 / 0,07 (la forte tira ancora 28 / 26 / 23 volte, possesso Opta 41-42%, gol fino a 2,36).
+
+Conclusione: la squadra forte non tira per disperazione, **arriva in zona tiro troppo facilmente**, perché la debole
+non si chiude in un blocco basso e compatto; e quando ha palla la debole la fa girare con calma nella sua metà invece
+di giocare lungo. Nel motore la mentalità prudente vuol dire "attento a non perderla", non "chiuditi e riparti".
