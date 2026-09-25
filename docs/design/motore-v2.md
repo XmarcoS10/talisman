@@ -230,3 +230,47 @@ Conclusione: le corse creano occasioni ma la difesa non le segue (i gol salgono)
 valore di tenere palla spezza il legame fra forza e risultati. In questo motore un'occasione vale solo per quanto la
 palla avanza in un'azione: far girare palla non disordina la difesa, quindi non rende. Serve un meccanismo nuovo
 (la difesa che si disordina durante il possesso e che segue le corse), da progettare prima di riprendere 7 e 2.
+
+---
+
+## 7. Proposta: la difesa che si disordina (da approvare prima di riprendere 7 e 2)
+
+**Il pezzo che manca.** Oggi un'occasione vale solo per quanto la palla avanza in un'azione. Nel calcio vero il giro
+palla serve a spostare la difesa: un cambio di gioco la fa scivolare, un passaggio che taglia una linea la scavalca,
+un uomo saltato o un marcatore trascinato via da una corsa aprono uno spazio. Il vantaggio dura pochi secondi, poi la
+difesa si riorganizza.
+
+**Il meccanismo.** Ogni squadra che difende ha un **disordine** `dis` fra 0 e 1, che vive dentro il possesso
+dell'avversario:
+
+| Cosa lo alza | Di quanto (da tarare) |
+|---|---|
+| Passaggio riuscito che cambia lato (spostamento laterale ≥ 3 zone) | + 0,15 × (Visione e Passaggi del portatore) |
+| Passaggio riuscito che supera almeno un difensore (linea saltata) | + 0,10 per difensore superato |
+| Dribbling riuscito (uomo saltato) | + 0,20 |
+| Corsa senza palla vinta: l'attaccante batte in velocità (Accelerazione, Velocità, Movimento senza palla) chi lo segue (Posizionamento, Anticipo, Velocità) | + 0,15 |
+
+| Cosa lo abbassa | |
+|---|---|
+| Il tempo: la difesa si riorganizza | × e^(−t/τ), τ ≈ 8 s, più veloce con Concentrazione e Posizionamento alti |
+| La palla recuperata | a zero |
+
+**Gli effetti.** Il disordine riduce l'efficacia dei difensori sulle linee di passaggio e sulla marcatura
+(`defAnt × (1 − k·dis)`), la pressione sul portatore e la precisione dei loro interventi, e aumenta l'xG dei tiri
+(spazio: `+ xgDis · dis` sul logit). Nell'utilità di un passaggio entra il disordine che produce: così chi sa
+palleggiare fa girare palla **perché rende**, non perché gliel'abbiamo detto con una costante. Le corse
+(intervento 7) diventano duelli di velocità con chi le segue: vinte creano disordine e palle in profondità vere,
+perse non fanno danno. La linea alta contro punte veloci perde più duelli: è il test che oggi fallisce.
+
+**Perché dovrebbe tenere i numeri.** La squadra più forte palleggia meglio (precisione) e crea più disordine; la
+debole fa pochi passaggi riusciti di fila e il disordine che crea svanisce prima. Il possesso si sposta verso chi è
+più bravo **e** si trasforma in occasioni, quindi la correlazione forza↔punti non dovrebbe scendere.
+
+**Come lo misuro, in quest'ordine**, fermandomi se un target verde diventa rosso:
+1. Solo il disordine (senza corse né possesso): gol, xG, correlazione sulle stagioni, `--match-stats`.
+2. Più le corse (patch dell'intervento 7) con i difensori che le seguono: test della linea alta, gol, fuorigioco.
+3. Più la qualità del passaggio (patch dell'intervento 2, **senza** il valore del possesso gonfiato): possesso della
+   più forte, precisione, correlazione.
+
+**Rischio**: alto, tocca il cuore del modello. **Costo**: un giorno di lavoro, circa +10% di tempo per partita
+(budget 15%).
