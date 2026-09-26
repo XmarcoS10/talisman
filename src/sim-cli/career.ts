@@ -17,7 +17,7 @@ const median = (a: number[]) => [...a].sort((x, y) => x - y)[a.length >> 1] ?? 0
 
 export interface SeasonRow {
   season: number; corr: number; top60: number; a: number; b: number; players: number; retired: number;
-  inDebt: number; wageShare: number; sanctions: number; champion: string; ageAvg: number;
+  inDebt: number; wageShare: number; sanctions: number; champion: string; ageAvg: number; cashA: number; cashB: number;
 }
 
 /** fotografia del mondo a fine stagione, prima che endSeason la cambi */
@@ -39,6 +39,7 @@ function snapshot(world: WorldState, strength: Map<number, number>): Omit<Season
     wageShare: median(clubs.map((c) => wageBill(world, c) / Math.max(1, revenue(world, c)))),
     sanctions: clubs.filter((c) => c.sanction.kind !== 'none').length,
     champion: world.clubs[table[0]!.clubId]!.name,
+    cashA: avg(a.clubIds.map((id) => world.clubs[id]!.balance)) / 1e6, cashB: avg(b.clubIds.map((id) => world.clubs[id]!.balance)) / 1e6,
   };
 }
 
@@ -79,9 +80,9 @@ export function careerReport(seed: number, seasons: number): string[] {
     `| Distacco Serie A – Serie B: scarto massimo dalla prima stagione | ${f1(gapDrift)} | ≤ 5 | ${ok(gapDrift <= 5)} |`,
     `| Campioni diversi | ${new Set(rows.map((r) => r.champion)).size} | | |`,
     `| Tempo per stagione (s) | ${f1((performance.now() - t0) / 1000 / seasons)} | | |`, '',
-    '| Stagione | Corr. | 60 migliori | XI Serie A | XI Serie B | Distacco | Giocatori | Età media | Ritirati | Club in rosso | Ingaggi/fatturato | Sanzioni FFP | Campione |',
-    '|---|---|---|---|---|---|---|---|---|---|---|---|---|',
-    ...rows.map((r) => `| ${r.season} | ${f2(r.corr)} | ${f1(r.top60)} | ${f1(r.a)} | ${f1(r.b)} | ${f1(gap(r))} | ${r.players} | ${f1(r.ageAvg)} | ${r.retired} | ${r.inDebt} | ${f2(r.wageShare)} | ${r.sanctions} | ${r.champion} |`),
+    '| Stagione | Corr. | 60 migliori | XI Serie A | XI Serie B | Distacco | Giocatori | Età media | Ritirati | Club in rosso | Ingaggi/fatturato | Sanzioni FFP | Saldo medio A · B (M) | Campione |',
+    '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|',
+    ...rows.map((r) => `| ${r.season} | ${f2(r.corr)} | ${f1(r.top60)} | ${f1(r.a)} | ${f1(r.b)} | ${f1(gap(r))} | ${r.players} | ${f1(r.ageAvg)} | ${r.retired} | ${r.inDebt} | ${f2(r.wageShare)} | ${r.sanctions} | ${r.cashA.toFixed(0)} · ${r.cashB.toFixed(0)} | ${r.champion} |`),
     '', `Prima → ultima: 60 migliori ${f1(first.top60)} → ${f1(last.top60)}, distacco ${f1(gap(first))} → ${f1(gap(last))}.`,
   ];
 }
