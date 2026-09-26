@@ -1,0 +1,215 @@
+{
+  "crisis.open": [
+    "{n_w} games without a win: {club} are in [crisis|real trouble|an open crisis]. #stampa# [are starting to do the maths|are asking questions|talk of a delicate moment].",
+    "[The wind has changed|Something has broken|The mood has turned heavy] around {club}: {n_w} games without three points and #tifosi# [are starting to grumble|want explanations|can't hide their worry].",
+    "[Alarm bells|Warning signs|Worrying signs] for {club}, without a win in {n_w} games. #mister_dice#.",
+    "{club} haven't won in {n_w} matchdays and #ambiente# [is wondering why|is getting nervous|wants a reaction]. [A response is needed|A sign is needed] #domenica#.",
+    "[It's a crisis|There's already talk of a crisis] for {club}: {n_w} games in a row without a win, and the fixture list isn't helping."
+  ],
+  "crisis.next": [
+    "The count reaches {n_w} games without a win and [things are getting serious|patience is running out|nobody talks about bad luck any more]. #dicono# the club is [thinking things over|weighing every option|losing its cool].",
+    "{n_w} games without a win: for {club} [the tunnel gets longer|the darkness goes on|the crisis becomes a story]. #tifosi# [are protesting|whistle at the final whistle|are staying away].",
+    "[The worst moment of the season|A drought that weighs like a stone]: {club} have stalled for {n_w} rounds. #stampa# [want a turnaround|talk of a manager under pressure|are no longer holding back]."
+  ],
+  "crisis.won": [
+    "[At last|About time|What a relief]: {club} win again after {n_w} games and #ambiente# [breathes again|heaves a sigh of relief|smiles again].",
+    "The crisis is behind them: [a win worth more than three points|three points that taste of freedom|a victory that chases the ghosts away] for {club}.",
+    "{club} end the drought. [Now they need to keep it going|The hard part is doing it again|This is where they start again], but for now #ambiente# [celebrates|finds its confidence again]."
+  ],
+  "crisis.lost": [
+    "{n_w} games without a win: {club_s} season [risks taking an irreversible turn|has become a nightmare|has got very hard]. #stampa# [aren't mincing their words|openly talk of failure].",
+    "[The tunnel doesn't end|No light at the end of the tunnel]: {club} reach {n_w} games without a win and #tifosi# [want heads to roll|have lost patience]."
+  ],
+  "crisis.faded": [
+    "There's less and less talk of {club_s} crisis: [the results still aren't brilliant|they're not yet the side of early season], but the emergency seems to be over."
+  ],
+  "winStreak.open": [
+    "{n_w} wins in a row: {club} [can't be stopped|are flying|have found the right gear]. #stampa# [are starting to dream|call them the team to beat|name them the league's form side].",
+    "[A winning run|A string of wins] for {club}: {n_w} victories in a row and [football that convinces|impressive solidity|the feeling they can't lose].",
+    "{club} make it {n_w} wins in a row. #tifosi# [are singing|are filling the stadium|are enjoying the moment], {mister} [preaches calm|doesn't want to hear about dreams]."
+  ],
+  "winStreak.next": [
+    "{n_w} wins in a row: {club_s} run [is now a triumphal march|is no longer a surprise|is one to remember]. #chiaro#: anyone who wants to go far has to reckon with them.",
+    "Here comes the {n_a} win in a row, and {club} [make club history|rewrite their own records|are frightening everyone]."
+  ],
+  "winStreak.lost": [
+    "{club_s} winning run [ends|is halted] at {n_w}. [Still a run to remember|No drama, but the dream takes a knock|The season is still long].",
+    "After {n_w} straight wins {club} [fail to win again|stall|taste the bitterness of a setback once more]."
+  ],
+  "unbeaten.open": [
+    "{n_w} games without defeat: {club} [don't lose any more|have become unbeatable|have built a wall]. #numeri# tell the story of a side that is [solid|compact|able to suffer].",
+    "[Unbeatable|Nobody can beat them]: {club} reach {n_w} games without defeat, and #stampa# [are starting to notice|hold them up as a model of consistency]."
+  ],
+  "unbeaten.next": [
+    "{n_w} games unbeaten: {club} [have exceeded every forecast|are no longer a surprise but a certainty|are writing an important chapter]."
+  ],
+  "unbeaten.lost": [
+    "{club_s} unbeaten run ends after {n_w} games. [It remains an extraordinary run|A defeat that doesn't erase what they've done|They go again, with a few more certainties]."
+  ],
+  "titleRace.open": [
+    "A two-horse title race: {club} and {rival}, {distacco}, {fine}. [From here on every game is a final|There's no room for mistakes|The league is coming to the boil].",
+    "{fine} the title is between {club} and {rival}, {distacco}. #stampa# [are already doing the sums|disagree on the favourites|are counting the matchdays].",
+    "[A sprint for the title|Neck and neck at the top]: {club} ahead, {rival} chasing, {distacco}. [Who will crack first?|It'll be won by the strongest nerves|The details will decide it]."
+  ],
+  "titleRace.won": [
+    "{club} are champions! [At the end of a duel that went to the wire|After a nail-biting run-in] with {rival}, the title [is theirs|heads to {club}].",
+    "[Big celebrations|A party] in {club}: the title belongs to {club}. {rival} [only gave in at the very end|go out with their heads held high]."
+  ],
+  "titleRace.lost": [
+    "[Overtaken at the finish|Pipped on the final bend]: the title goes to {rival}, and {club} [are left empty-handed|have to settle for second|are left with a bitter taste]."
+  ],
+  "relegation.open": [
+    "{club} are {pos_o} and [the relegation zone is frightening|the risk of going down is real|the table is a serious worry]. {fine}, [they need to change gear|there's no more time to waste].",
+    "[A relegation battle|A fight to stay up]: {club} are {pos_o} and #ambiente# [is starting to tremble|wants a change of pace]."
+  ],
+  "relegation.next": [
+    "[A breath of fresh air|An important step forward]: {club} climb out of the drop zone and are now {pos_o}. [But there's still a long way to go|No time to relax|The hardest part is still to come]."
+  ],
+  "relegation.won": [
+    "[Safe!|They've survived.|Mission accomplished.] {club} finish {pos_o} and stay up. [A season of suffering, but with a happy ending|They can finally breathe]."
+  ],
+  "relegation.lost": [
+    "[It's relegation.|A bitter verdict:] {club} [go down|drop out of the division] after finishing {pos_o}. #tifosi# [are in tears|want to bounce straight back]."
+  ],
+  "surprise.open": [
+    "[The fairy tale of the season|The surprise package of the season] is {club}: {pos_o} place, #sorpresa#. #stampa# [wonder how far they can go|talk of a sporting miracle].",
+    "Nobody would have bet on it, and yet {club} are {pos_o}. [Clear ideas|A united group|A clear identity] and [plenty of enthusiasm|no fear]."
+  ],
+  "surprise.won": [
+    "{club} finish {pos_o}: [the fairy tale has come true|a season to frame|a result that will go down in the club's history]."
+  ],
+  "surprise.lost": [
+    "[The fairy tale ends|Back down to earth]: {club} slip to {pos_o}. [Still a first half of the season to remember|The dream didn't last long]."
+  ],
+  "giant.open": [
+    "[The giant is on its knees|A big club in crisis]: {club} are {pos_o}, in the bottom half of the table. #stampa# [can't believe it|talk of a season that started wrong|are looking for culprits].",
+    "Who would have thought it: {club} in {pos_o} place. [Prestige isn't enough|Names don't win matches], and #tifosi# [are furious|want explanations]."
+  ],
+  "giant.won": [
+    "[The big club is back|Comeback complete]: {club} climb back up to {pos_o} and [put things back in order|silence the critics]."
+  ],
+  "giant.lost": [
+    "A season to forget for {club}, who finish {pos_o}. [There'll be a revolution in the summer|Tough decisions will be needed]."
+  ],
+  "fortress.open": [
+    "[An impregnable fortress|Nobody gets through at home]: {n_w} wins in a row in front of their own fans for {club}.",
+    "{club_s} ground has become a no-go zone: {club} have won their last {n_w} home games."
+  ],
+  "fortress.lost": [
+    "The fortress falls: after {n_w} consecutive home wins, {club} [fail to win in front of their own fans|are caught out at home]."
+  ],
+  "awayCurse.open": [
+    "[Away from home it's a different sport|The curse of the away day]: {club} haven't won on the road in {n_w} games.",
+    "{n_w} away games without a win: {club} [suffer every time they leave home|lose their certainties on the road]."
+  ],
+  "awayCurse.won": [
+    "[The taboo is broken|The curse is lifted]: {club} win away again after {n_w} failed attempts."
+  ],
+  "drought.open": [
+    "[A toothless attack|The powder is damp]: {club} haven't scored in {n_w} games. [They need a goal to get going|The problem is in front of goal].",
+    "{n_w} games without scoring for {club}: [a drought that's starting to weigh|the goal seems bewitched]."
+  ],
+  "drought.won": [
+    "[Off the mark!|At last, a goal.] {club} score again after a long drought, and [a weight comes off their shoulders|smile again]."
+  ],
+  "leaky.open": [
+    "[A leaky defence|A back line in trouble]: {club} have conceded {ga_w} goals in their last four games. #stampa# [point the finger at the defence|want changes].",
+    "{ga_w} goals conceded in four games: at the back, {club} [are leaking|can't find balance|are dangerously shaky]."
+  ],
+  "leaky.won": [
+    "[The door is shut at last|A clean sheet]: {club} don't concede and [find their solidity again|patch up the defence]."
+  ],
+  "cleanRun.open": [
+    "{n_w} games without conceding: {club_s} defence [is a wall|gives nothing away|is the best around right now].",
+    "[Locked up tight|An unbreachable wall]: {club} haven't conceded in {n_w} games."
+  ],
+  "cleanRun.lost": [
+    "After {n_w} games without conceding, {club_s} goal [is breached again|finally gives way]."
+  ],
+  "nemesis.open": [
+    "[Them again|Always them]: {rival} beat {club} for the {n_a} time in a row. [They've become a bogey team|An opponent whose very name is frightening].",
+    "{n_w} straight defeats against {rival}: for {club} it's [a curse|an open score|a taboo to break]."
+  ],
+  "nemesis.next": [
+    "[That's {n_w}|The count rises to {n_w}]: {rival} remain {club_s} bogey team."
+  ],
+  "nemesis.won": [
+    "[Taboo broken!|At last.] {club} beat {rival} and settle [an old score|a run that had gone on far too long]. #ambiente# [lifts a huge weight|celebrates twice over]."
+  ],
+  "revenge.open": [
+    "[Out for revenge|A score to settle]: in the reverse fixture {rival} won {ga}-{gf}. {club} haven't forgotten.",
+    "#domenica# {rival} are the visitors, [the side who hammered them {ga}-{gf} earlier in the season|who humiliated {club} {ga}-{gf} in the first meeting]. [Will it be different this time?|A chance for redemption]."
+  ],
+  "revenge.won": [
+    "[Revenge is served|Score settled]: {club} beat {rival} {gf}-{ga} and wipe out the memory of the first game."
+  ],
+  "revenge.lost": [
+    "[No revenge|No redemption]: {rival} win again, {ga}-{gf}. [A lesson for {club}|Salt in the wound]."
+  ],
+  "comeback.open": [
+    "[A comeback to applaud|What a comeback!]: two goals down, {club} turn it all around and beat {rival} {gf}-{ga}.",
+    "{club} go two goals down against {rival}, then [turn the game around|find the strength to react] and win {gf}-{ga}. [Character to spare|A side that never dies].",
+    "[From fear to celebration|From the brink to triumph]: {club} come from two goals down against {rival} and win {gf}-{ga}."
+  ],
+  "showdown.open": [
+    "[A head-to-head|A must-win game]: {club} against {rival}, {distacco}, {fine}. [The winner takes a decisive step|No room for mistakes].",
+    "#domenica# it's {club} v {rival}: {distacco}, and it's the game that [could change the season|counts double|everyone is waiting for]."
+  ],
+  "showdown.won": [
+    "{club} win the head-to-head with {rival}, {gf}-{ga}: [perhaps a decisive step|three points that count double|a win that matters]."
+  ],
+  "showdown.lost": [
+    "{rival} win the head-to-head: {ga}-{gf} against {club}. [A heavy blow|Now things get complicated]."
+  ],
+  "showdown.next": [
+    "{gf}-{ga} draw between {club} and {rival}: [nobody gets hurt|everything stays as it was|the verdict is postponed]."
+  ],
+  "thrashing.open": [
+    "[A night to forget|Dark times]: {club} are thrashed {ga}-{gf} by {rival}. #stampa# [talk of a humiliation|find no excuses].",
+    "{rival} [humiliate|crush|destroy] {club}: it ends {ga}-{gf}. [An immediate reaction is needed|A defeat that hurts]."
+  ],
+  "thrashing.won": [
+    "[An immediate reaction|Straight back up]: after the hammering by {rival}, {club} win again."
+  ],
+  "thrashing.lost": [
+    "[No reaction|It never rains but it pours]: after the heavy defeat to {rival}, {club} lose again."
+  ],
+  "ffp.open": [
+    "[Books under scrutiny|Financial trouble]: {club} have ended up in the sights of financial fair play. [The club will have to act|The transfer market will feel it]."
+  ],
+  "ffp.next": [
+    "[The sanctions get tougher|The penalty arrives]: {club} [are under a transfer embargo|have had points deducted]. [The accounts are affecting the pitch|A serious situation]."
+  ],
+  "ffp.won": [
+    "[Accounts in order|Finances restored]: {club} are free of financial fair play sanctions."
+  ],
+  "boardUnrest.open": [
+    "[A shaky seat|Talk of the sack]: the club's confidence in {mister} is at rock bottom. #dicono# that [the directors have already sounded out alternatives|results are needed right now].",
+    "The {club} board [aren't satisfied|are starting to lose patience]: {mister} [is under review|has to turn things around], and #stampa# [say so plainly|talk about it openly]."
+  ],
+  "boardUnrest.next": [
+    "[Last chance saloon|An ultimatum] for {mister}: #dicono# that the club [has already decided|is preparing a change|is just waiting for the next slip]."
+  ],
+  "boardUnrest.won": [
+    "[Confidence restored|A secure seat]: the results have brought calm back between {mister} and the club."
+  ],
+  "fans.open": [
+    "[The fans have turned|The relationship with the supporters is broken]: protest banners and whistles for {club}. #tifosi# [want respect for the shirt|want to see a different team]."
+  ],
+  "fans.won": [
+    "[Peace made|The crowd is back behind the team]: calm has returned between {club} and their fans."
+  ],
+  "administration.open": [
+    "[Starting from scratch|Year zero|A season to rebuild] for {club}: after the bankruptcy [the administrator has sold the best players|the strongest players have left] and they start on minus {n_w}. #tifosi# [are there anyway|won't abandon the team|still fill the stadium].",
+    "{club} [begin their season in administration|start again after the collapse]: a {n_w}-point deduction, [a squad full of kids|a team built from nothing] and [nobody betting a penny on survival|plenty of desire to prove everyone wrong]."
+  ],
+  "administration.next": [
+    "Halfway through the season {club} [are still paying for the deduction|are still in the middle of their hardest season]. #stampa# [describe a young side that won't give up|follow the rebuild day by day]."
+  ],
+  "administration.won": [
+    "[Mission accomplished|A survival story to tell|A small miracle]: {club}, starting from administration and minus {n_w}, [stay up|survive]. #tifosi# [celebrate like it's a title|will never forget this season]."
+  ],
+  "administration.lost": [
+    "[Too much to overcome|It wasn't enough]: {club}, starting from administration, [are relegated|go down a division]. [They start again from lower down|The rebuild goes on], with the kids who grew up this season."
+  ]
+}

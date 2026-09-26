@@ -138,7 +138,7 @@
   ],
   "revenge.open": [
     "[Voglia di rivincita|Conto da saldare]: all'andata {rival} aveva vinto {ga}-{gf}. {club} non ha dimenticato.",
-    "{domenica} arriva {rival}, [la squadra che all'andata aveva rifilato un pesante {ga}-{gf}|che all'andata aveva umiliato {club} per {ga}-{gf}]. [Stavolta sarà diverso?|Occasione di riscatto]."
+    "#domenica# arriva {rival}, [la squadra che all'andata aveva rifilato un pesante {ga}-{gf}|che all'andata aveva umiliato {club} per {ga}-{gf}]. [Stavolta sarà diverso?|Occasione di riscatto]."
   ],
   "revenge.won": [
     "[Rivincita servita|Conto saldato]: {club} batte {rival} {gf}-{ga} e cancella il ricordo dell'andata."
@@ -153,7 +153,7 @@
   ],
   "showdown.open": [
     "[Scontro diretto|Partita da dentro o fuori]: {club} contro {rival}, {distacco}, {fine}. [Chi vince fa un passo decisivo|Vietato sbagliare].",
-    "{domenica} c'è {club_nome}-{rival_nome}: {distacco}, ed è la partita che [può cambiare la stagione|vale doppio|tutti aspettano]."
+    "#domenica# c'è {club_nome}-{rival_nome}: {distacco}, ed è la partita che [può cambiare la stagione|vale doppio|tutti aspettano]."
   ],
   "showdown.won": [
     "{club} vince lo scontro diretto con {rival}, {gf}-{ga}: [passo forse decisivo|tre punti che valgono doppio|una vittoria che pesa]."

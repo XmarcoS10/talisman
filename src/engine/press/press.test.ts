@@ -1,5 +1,6 @@
 // La conferenza stampa: domande dalle storie, effetti dichiarati e applicati esattamente, Causal Log aggiornato.
 import { describe, expect, it } from 'vitest';
+import { render } from '../narrative/say.ts';
 import { PRESS } from '../balance.ts';
 import { Rng } from '../rng.ts';
 import { advance, isSeasonOver, newWorld } from '../world.ts';
@@ -28,7 +29,11 @@ describe('conferenze stampa (F8)', { timeout: 60000 }, () => {
       expect(arc.subject.club === world.manager.clubId || arc.subject.rival === world.manager.clubId).toBe(true);
       expect(q.options.length).toBeGreaterThanOrEqual(4);
       expect(q.options.length).toBeLessThanOrEqual(6);
-      expect(q.text).not.toMatch(/[{}[\]#]/);
+      for (const lang of ['it', 'en'] as const) {
+        expect(render(q.text, lang)).not.toMatch(/[{}[\]#]/);
+        expect(render(q.asker, lang).length).toBeGreaterThan(3);
+        for (const o of q.options) expect(render(o.text, lang).length).toBeGreaterThan(3);
+      }
       for (const o of q.options) expect(o.effects.length).toBeGreaterThan(0);
       // ogni risposta ha il suo tipo, e dentro una domanda non se ne ripete nessuno (prima: tre «Motivante»)
       expect(new Set(q.options.map((o) => o.key)).size).toBe(q.options.length);

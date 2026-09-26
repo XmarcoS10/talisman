@@ -2,6 +2,8 @@
 import en from './en.json';
 import it from './it.json';
 import { teamForms } from '../engine/narrative/italian.ts';
+import { render, unpack } from '../engine/narrative/say.ts';
+import type { Line } from '../engine/model.ts';
 import { settings, updateSettings, type Lang } from './settings.ts';
 
 const DICTS: Record<Lang, Record<string, string>> = { it, en };
@@ -49,9 +51,13 @@ export function t(key: string, vars?: Record<string, string | number>): string {
   return vars ? fill(s, vars) : s;
 }
 
+/** una frase delle storie o della conferenza stampa, scritta nella lingua in uso (Blocco 5) */
+export const sayLine = (l: Line) => render(l, lang());
+
 /** notizie e voci del Causal Log: le variabili che sono a loro volta chiavi (infortunio, attributo, cause) si traducono */
 export function tEvent(key: string, vars: Record<string, string | number>): string {
   const v = { ...vars };
+  for (const [k, x] of Object.entries(v)) if (typeof x === 'string' && x.startsWith('§')) v[k] = sayLine(unpack(x)); // frasi di storie e conferenze
   if (typeof v.injury === 'string') v.injury = t(`injury.${v.injury}`).toLowerCase();
   if (typeof v.attr === 'string') v.attr = t(`attr.${v.attr}`);
   if (typeof v.nation === 'string') v.nation = t(`nation.${v.nation}`);

@@ -7,7 +7,7 @@ import type { Arc, WorldState } from '../../engine/model.ts';
 import { age } from '../../engine/players.ts';
 import { Crest } from '../Crest.tsx';
 import { PosBadge, fullName } from '../bits.tsx';
-import { fmtDate, t } from '../i18n.ts';
+import { fmtDate, t, sayLine } from '../i18n.ts';
 import { PressRoom } from './PressRoom.tsx';
 
 const involves = (world: WorldState, a: Arc) => a.subject.club === world.manager.clubId || a.subject.rival === world.manager.clubId
@@ -41,7 +41,7 @@ export function ArcCard({ world, a, full = true }: { world: WorldState; a: Arc; 
         </span>
       </div>
       {shown.map((l, i) => (
-        <div key={i} className={i === 0 ? '' : 'muted'}><span className="num muted small">{fmtDate(l.season, l.day)}</span> {l.text}</div>
+        <div key={i} className={i === 0 ? '' : 'muted'}><span className="num muted small">{fmtDate(l.season, l.day)}</span> {sayLine(l.text)}</div>
       ))}
     </div>
   );
@@ -55,7 +55,7 @@ export function Stories({ world, onChange }: { world: WorldState; onChange: () =
   const told = world.arcs.filter((a) => a.lines.length > 0);
   const mine = told.filter((a) => involves(world, a));
   const match = (a: Arc) => (kind === 'all' || (KINDS[kind] as readonly string[]).includes(a.rule))
-    && (!q || `${t(`arc.${a.rule}`)} ${a.lines.map((l) => l.text).join(' ')}`.toLowerCase().includes(q.toLowerCase()));
+    && (!q || `${t(`arc.${a.rule}`)} ${a.lines.map((l) => sayLine(l.text)).join(' ')}`.toLowerCase().includes(q.toLowerCase()));
   const pool = (scope === 'mine' ? mine : told).filter(match);
   const open = pool.filter((a) => a.state === 'open').reverse();
   const closed = pool.filter((a) => a.state !== 'open').reverse().slice(0, 30);
@@ -103,8 +103,8 @@ export function Stories({ world, onChange }: { world: WorldState; onChange: () =
             {lead[0] ? <>
               {storyArt(lead[0].a.rule) && <img className="story-art" src={storyArt(lead[0].a.rule)!.src} alt="" />}
               <span className="caps pos-good">{t(`arc.${lead[0].a.rule}`)}</span>
-              <h1 className="headline">{lead[0].l.text}</h1>
-              {lead.slice(1, 3).map((x, i) => <p key={i} className="muted serif">«{x.l.text}»</p>)}
+              <h1 className="headline">{sayLine(lead[0].l.text)}</h1>
+              {lead.slice(1, 3).map((x, i) => <p key={i} className="muted serif">«{sayLine(x.l.text)}»</p>)}
             </> : <span className="muted">{t('stories.noPaper')}</span>}
           </div>
 
@@ -127,7 +127,7 @@ export function Stories({ world, onChange }: { world: WorldState; onChange: () =
               return (
                 <div key={i} className="feed-row">
                   <span className="num muted small">{fmtDate(l.season, l.day).split(' ').slice(1, 3).join(' ')}</span>
-                  <div><b className="pos-good small">{c?.name ?? t(`arc.${a.rule}`)}</b><div>{l.text}</div></div>
+                  <div><b className="pos-good small">{c?.name ?? t(`arc.${a.rule}`)}</b><div>{sayLine(l.text)}</div></div>
                 </div>
               );
             })}

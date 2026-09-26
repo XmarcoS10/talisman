@@ -1,6 +1,7 @@
 // Report narrativo (GUIDA §13, P8): quanti archi distinti in una stagione, quante frasi ripetute,
 // e un campione di testi da far leggere a un revisore umano.
 import { Rng } from '../engine/rng.ts';
+import { render } from '../engine/narrative/say.ts';
 import { advance, isSeasonOver, newWorld } from '../engine/world.ts';
 
 export function storiesReport(seed: number, seasons: number): string[] {
@@ -14,7 +15,7 @@ export function storiesReport(seed: number, seasons: number): string[] {
     world.manager.clubId = [...comp.clubIds].sort((a, b) => world.clubs[b]!.reputation - world.clubs[a]!.reputation)[9]!;
     world.manager.name = 'Marco Talisman';
     while (!isSeasonOver(world)) advance(world);
-    const lines = world.arcs.flatMap((a) => a.lines.map((l) => l.text));
+    const lines = world.arcs.flatMap((a) => a.lines.map((l) => render(l.text)));
     const count = new Map<string, number>();
     for (const l of lines) count.set(l, (count.get(l) ?? 0) + 1);
     rows.push({

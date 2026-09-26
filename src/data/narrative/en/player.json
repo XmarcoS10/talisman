@@ -1,0 +1,140 @@
+{
+  "redemption.open": [
+    "[From darkness to light|The rebirth|The redemption] of {nome}: after difficult weeks, [a brace that changes everything|two goals worth far more than the points|the answer comes on the pitch].",
+    "They had written him off, and yet {cognome} [responds with a brace|steals the show with two goals|silences everyone by scoring twice]. #stampa# [talk of a rebirth|are rediscovering him].",
+    "{nome} [had been in the critics' sights|had seemed lost] for weeks. Now [he scores twice|he bags a brace] and [a weight comes off his shoulders|he's smiling again]."
+  ],
+  "redemption.won": [
+    "It wasn't a flash in the pan: {cognome} [scores again|confirms it|can't stop now]. [The rebirth is complete|The dark days really are behind him]."
+  ],
+  "redemption.faded": [
+    "After the brace that redeemed him, {cognome} [has faded back into the shadows|hasn't found consistency]. [He's still a player to rediscover|The talent is there, the consistency isn't yet]."
+  ],
+  "hotStreak.open": [
+    "{nome} [can't stop scoring|is in a purple patch|sees the goal like no one else]: on target in {n_w} games in a row.",
+    "[Who can stop him?|A magic moment:] {cognome} has scored in {n_w} consecutive matchdays, and {club} [are cherishing him|are grateful]. #stampa# [put him on the front page|call him the man of the moment].",
+    "{n_w} games, {n_w} times on the scoresheet: {cognome} [is at the best moment of his career|is carrying {club}|doesn't miss]."
+  ],
+  "hotStreak.next": [
+    "[It's a record-breaking run|Impressive numbers]: {cognome} scores in a {n_a} consecutive game. [Some are starting to talk about the national team|His name is on everyone's lips]."
+  ],
+  "hotStreak.lost": [
+    "{cognome_s} run ends at {n_w} games. [Still a spell to remember|Even the best go without a goal now and then]."
+  ],
+  "predestined.open": [
+    "[Remember this name:|Is a star being born?] {nome}, {age_w} years old, makes his debut for {club}. Those who watched him grow up [swear he's special|talk of a rare talent].",
+    "A debut for {nome}, aged {age_w}: #dicono# that {club} haven't seen a kid like this in [years|decades|living memory].",
+    "{club} throw in {nome}, just {age_w} years old. [The future is already here|A chosen one?|The academy produces a gem]."
+  ],
+  "predestined.next": [
+    "[First goal|Off the mark] for {nome}: the kid [is living up to the hype|is growing before our eyes|doesn't feel the pressure].",
+    "{cognome} is no longer just a prospect: [the big clubs' scouts|the richest clubs] [have started following him|are taking notes]. #dicono# the first offers have already arrived."
+  ],
+  "predestined.won": [
+    "[The prophecy has come true|The chosen one has become a champion]: {nome} is now [one of the best in the league|the finished article|an automatic starter for {club}]."
+  ],
+  "predestined.lost": [
+    "[Lost talent|Unfulfilled promise]: {nome} never became the champion everyone was waiting for. [Football can be cruel|It happens more often than you'd think]."
+  ],
+  "talisman.open": [
+    "{nome} has scored {g_w} of {club_s} {team_w} goals: [without him|take him away and] {club} [would be a different team|would struggle to win].",
+    "[Talisman|The driving force]: {cognome} has scored almost half of {club_s} goals, {g_w} out of {team_w}. #chiaro#: everything goes through him."
+  ],
+  "scorerRace.open": [
+    "[The golden boot race|The hunt for the top scorer's crown]: {cognome} is on {g}, the leader has {top}. [It's getting serious|Every goal counts double].",
+    "{nome} [is chasing|has his eye on] the top scorer title: {g_w} goals, one step from the top."
+  ],
+  "scorerRace.won": [
+    "{nome} is the league's top scorer with {g_w} goals. [A season to frame|The reward for an extraordinary year|His name goes into the record books]."
+  ],
+  "scorerRace.lost": [
+    "The golden boot slips away from {cognome}, [pipped at the post|overtaken at the end]. [Still a season to remember|He'll try again]."
+  ],
+  "keeper.open": [
+    "[Brick wall|A wall called] {cognome}: {club} haven't conceded in four games, and much of the credit is his.",
+    "[He saves everything|Unbeatable]: {nome} keeps a clean sheet for the fourth game in a row."
+  ],
+  "keeper.lost": [
+    "After weeks without conceding, {cognome} [has to pick the ball out of the net again|is finally beaten]."
+  ],
+  "comebackKid.open": [
+    "[The return|Welcome back]: {nome} returns after {days_w} days out injured and [scores straight away|finds the net on his comeback]. [A story of patience and hard work|The tears after the goal say it all].",
+    "{days_w} days on the sidelines, then the comeback and the goal: {cognome} [couldn't have imagined a better return|gets his revenge on bad luck]."
+  ],
+  "slump.open": [
+    "[A bad patch|A loss of form] for {nome}: five below-par games, and #stampa# [wonder what's happening to him|are starting to criticise him].",
+    "Where has the best {cognome} gone? [Five dull performances|A month to forget] and {club} [are feeling it|are waiting for him]."
+  ],
+  "slump.won": [
+    "[He's back|There he is]: {cognome} plays a starring role and shakes off weeks of difficulty."
+  ],
+  "slump.faded": [
+    "{cognome_s} bad patch [dragged on for a long time|isn't completely behind him yet], but there's less and less talk of it."
+  ],
+  "wantsOut.open": [
+    "[Unsettled|A rift]: {nome} has asked to leave. #dicono# that [his relationship with the club is at rock bottom|he no longer feels valued].",
+    "{cognome} [wants out|has asked to be sold], and the news [unsettles the dressing room|doesn't go unnoticed]. {mister} [will have to manage the situation|is called on to patch things up]."
+  ],
+  "wantsOut.won": [
+    "[Peace made|Case closed]: {cognome} [is settled again|has decided to stay|no longer wants to leave]."
+  ],
+  "wantsOut.lost": [
+    "[Farewell|The split is complete]: {nome} leaves {club}. [A chapter closes|A story that ended badly]."
+  ],
+  "feud.open": [
+    "[Tension in the dressing room|A chill in the squad]: {nome} and {other} are no longer speaking. #dicono# that [the row started in training|the rift runs deep].",
+    "{cognome} and {other}: [a feud that risks splitting the group|two team-mates turned rivals|the case that has the dressing room on edge]."
+  ],
+  "feud.won": [
+    "[A handshake|Clearing the air]: {cognome} and {other} [have made peace|have put the tension behind them]. #ambiente# [is grateful|breathes again]."
+  ],
+  "mentor.open": [
+    "[Master and apprentice|Football school]: {nome} scores, and the first to hug him is {mentor}, who has been guiding him for months [like a big brother|step by step].",
+    "A goal from {cognome}, dedicated to {mentor}: [the veteran teaching him the trade|the team-mate who took him under his wing]."
+  ],
+  "debut.open": [
+    "[A debut|A first time] for {nome}, {age_w} years old: [a day he'll never forget|a dream come true].",
+    "{club} hand a debut to {nome}, aged {age_w}. [The academy keeps doing good work|Another homegrown kid in the first team]."
+  ],
+  "veteran.open": [
+    "[Age is just a number|Evergreen]: at {age_w} {nome} is still scoring, and [with the hunger of a youngster|showing he still has plenty to give].",
+    "{age_w} and not feeling it: {cognome} [is still scoring|is still getting on the scoresheet|is still decisive]."
+  ],
+  "newSigning.open": [
+    "[Instant impact|Straight on the scoresheet]: {nome}, just arrived from {rival}, [scores in his first games for {club}|introduces himself with a goal].",
+    "{cognome} [didn't take long|didn't need time to settle]: [a few days|a few games] in the new shirt and he's already scoring."
+  ],
+  "flop.open": [
+    "[The mystery man|A disappointment]: {nome}, signed in the summer, still hasn't convinced after {apps_w} games. #stampa# [are starting to talk of a flop|wonder whether he was worth the money].",
+    "{cognome} [is struggling to settle|can't make an impact]: {apps_w} appearances and [not one performance to match the price|the feeling of a bad signing]."
+  ],
+  "flop.won": [
+    "[At last, the real {cognome}|That's why they signed him]: a starring performance silences the critics."
+  ],
+  "flop.lost": [
+    "[Chapter closed|A story that never took off]: {nome} leaves {club} without ever convincing."
+  ],
+  "formerClub.open": [
+    "[Never score against your old club|The ex strikes]: {nome} scores against {rival}, his old team. [No celebration, out of respect|He celebrates wildly|A goal with a special flavour].",
+    "{cognome} [punishes his past|shows his old club no mercy]: a goal against {rival}, who [let him go|didn't believe in him]."
+  ],
+  "hatTrick.open": [
+    "[Hat-trick|Three goals and the match ball]: {nome} [carries {club}|steals the show] against {rival}.",
+    "{cognome} [scores three|bags a hat-trick|is unstoppable] against {rival}. [A perfect afternoon|A performance to frame].",
+    "[A show from|A magical night for] {nome}: three goals against {rival}, and the match ball [goes home with him|is his]."
+  ],
+  "hothead.open": [
+    "[Hothead|Frayed nerves]: {nome} picks up his {n_o} red card of the season. {mister} [isn't happy|wants more self-control]."
+  ],
+  "preSigned.open": [
+    "[It's official|A farewell foretold]: {nome} has signed for {rival} and will leave {club} on a free at the end of the season.",
+    "{cognome} [has already chosen his future|will leave in June]: [the deal is done|the signature is already in] with {rival}. #tifosi# [aren't taking it well|feel betrayed]."
+  ],
+  "preSigned.lost": [
+    "{nome} [says goodbye to|leaves] {club} and [joins|goes to pull on the shirt of] {rival}, as expected."
+  ],
+  "lateWinner.open": [
+    "[At the death|On the stroke of full time|Deep into stoppage time]: {nome} scores in the {min}th minute and gives {club} the win against {rival}.",
+    "{cognome}, minute {min}: [the goal worth three points|the strike that decides the game|the stadium explodes]. {club} beat {rival} [at the wire|at the very end]."
+  ]
+}

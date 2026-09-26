@@ -1,0 +1,111 @@
+{
+  "askers": [
+    "The {club_nome} Courier",
+    "The {club_nome} Gazette",
+    "Radio {club_nome} Sport",
+    "The Sports Daily",
+    "City TV",
+    "The Voice of Sport",
+    "The {club_nome} Journal"
+  ],
+  "q.playerGood": [
+    "Boss, {cognome} is having an extraordinary spell. [How important is he to this team?|Did you expect this?|How far can he go?]",
+    "[Everyone is talking about|All anyone talks about is] {nome}: [is this his best spell since he arrived?|are you worried all this attention could distract him?]",
+    "What [did you say|will you say] to {cognome} after a game like that?"
+  ],
+  "q.playerBad": [
+    "Boss, {cognome} [doesn't look himself any more|has been struggling for weeks|is dividing opinion]. [What's going on?|Will you keep backing him?|Is there a problem?]",
+    "[Let me ask you about|I'd like you to talk to us about] {nome}: [is it a technical problem or a mental one?|is the situation under control?]",
+    "{cognome_s} name [is on everyone's lips, and not in a good way|divides the fans]. [What's your position?|Do you back him?]"
+  ],
+  "q.clubGood": [
+    "Boss, [things are going very well|everything's going smoothly|the team is flying]. [How far can {club} go?|What's the secret?|Are you allowed to dream now?]",
+    "[The numbers say|After this spell you could say] {club} are one of the most in-form teams. [Do you feel like favourites?|Do the targets change?]"
+  ],
+  "q.clubBad": [
+    "Boss, [it's a difficult moment|the results aren't coming|the team seems to be struggling]. [Who is responsible?|How do you get out of it?|Do you feel under pressure?]",
+    "[The fans are worried: what would you say to them?|The supporters are restless: what do you want to tell them?|The mood is tense: how do you plan to turn things around?]",
+    "[Some are already talking of a crisis|Some are questioning your work]. [How do you respond?|Is that an unfair verdict?]"
+  ],
+  "q.titleRace": [
+    "Boss, [{fine}|at this point of the season], {club} and {rival} are {distacco}. [Who are the favourites?|Do you really believe?|How much does the pressure weigh?]"
+  ],
+  "q.relegation": [
+    "Boss, {club} are in the relegation zone. [Are you afraid of going down?|What do you need to stay up?|Does the team have the character to get out of it?]"
+  ],
+  "q.nemesis": [
+    "Boss, {rival} have beaten you [yet again|once more|again]. [Have they become a bogey team?|How do you explain it?]"
+  ],
+  "q.boardUnrest": [
+    "Boss, [there's talk of|there are rumours about] you possibly being sacked. [Do you still feel you're the right man?|Have you spoken to the club?|Are you worried about your job?]"
+  ],
+  "q.wantsOut": [
+    "Boss, {cognome} has asked to leave. [Will he stay?|How do you handle a situation like this?|Have you tried to convince him?]"
+  ],
+  "q.feud": [
+    "Boss, [there's talk of tension|there are rumours of a row] between {cognome} and {other}. [Can you confirm it?|How do you plan to step in?]"
+  ],
+  "q.predestined": [
+    "Boss, everyone is talking about {nome}. [Is he really the talent they say?|How do you protect a {age_w}-year-old from so much attention?]"
+  ],
+  "a.praise": [
+    "{cognome} [deserves it|is reaping what he's sown|is an example to everyone]. [I'm proud of him|I'll say it plainly: he's vital to us].",
+    "[We're talking about a special player|Few have his quality]: {cognome} [is showing what he's worth|is carrying us]."
+  ],
+  "a.keepCalm": [
+    "[Easy on the praise|Let's leave him to work in peace]: {cognome} [still has a lot to improve|has to keep his feet on the ground].",
+    "I don't want to put pressure on {cognome}. [The pitch will do the talking|Let's think about the next game]."
+  ],
+  "a.group": [
+    "[The credit goes to the whole group|Nobody wins on their own]: {cognome} is good, but there's a team working for him.",
+    "[I'd rather talk about the team|The collective is what counts here]. One man's goals are everyone's work."
+  ],
+  "a.demand": [
+    "[I expect even more from {cognome}|{cognome} can do better than this]. [I tell him all the time|He knows it too].",
+    "Good, but not enough: {cognome} [has to be decisive every week|has what it takes to do much more]."
+  ],
+  "a.defend": [
+    "{cognome} [has my complete trust|remains a cornerstone|is not in question]. [Those who criticise him don't see the work he does|He'll come through this].",
+    "[I back him without hesitation|I'm with him]: {cognome} is a professional and [he'll be back to his best|deserves respect]."
+  ],
+  "a.challenge": [
+    "[{cognome} has to give more|This isn't good enough], and he knows it. [Nobody's place is guaranteed|I expect a reaction].",
+    "I've been clear with {cognome}: [he needs to step it up|his performances have to improve right now]."
+  ],
+  "a.internal": [
+    "[These are things we sort out in the dressing room|These things stay between us]. I won't say any more.",
+    "[I'll talk to him directly|Things are cleared up in private, not in the press room]."
+  ],
+  "a.humble": [
+    "[Let's keep our feet on the ground|Let's not get carried away]: [the season is long|we haven't achieved anything yet].",
+    "[One game at a time|Let's think about the next one]. The targets don't change."
+  ],
+  "a.ambition": [
+    "[Why not dream?|We're not afraid of anyone.] [This team can go a long way|We want to fight right to the end].",
+    "[Yes, we believe|I'll say it clearly]: [we can aim high|we're not settling for less]."
+  ],
+  "a.credit": [
+    "[The credit goes to the lads|All the credit goes to the team]: [they're doing something extraordinary|they deserve the applause].",
+    "[I've got a fantastic group|They work like few others]: these results are theirs."
+  ],
+  "a.responsibility": [
+    "[The responsibility is mine|I'll take the blame]: [the lads are giving everything|it's up to me to find solutions].",
+    "[If things aren't working, it's the manager's fault|I'll put my face to it], not the players'."
+  ],
+  "a.blame": [
+    "[Some aren't giving their all|Not everyone is up to it], and [they know it|we'll talk about it]. [I expect more|This isn't enough].",
+    "[I'm disappointed with some performances|I need more commitment from everyone]: [whoever isn't up for it can step aside|I'll make decisions]."
+  ],
+  "a.reaction": [
+    "[I promise you a reaction|We'll get out of this]: [this team has character|the fans will see a different side].",
+    "[I'm asking the fans to stay with us|We need our people]: [the answer will come on the pitch|we'll get back up]."
+  ],
+  "a.luck": [
+    "[Everything's going against us|Luck isn't on our side], and [some refereeing decisions have hurt us|the key moments have gone against us].",
+    "[We didn't deserve these results|We've played better than the numbers say]: [the wheel will turn|it's all about the key moments]."
+  ],
+  "a.noComment": [
+    "[I have nothing to add|I'd rather not answer|No comment].",
+    "[Next question|I'm not talking about that]."
+  ]
+}

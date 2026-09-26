@@ -431,6 +431,14 @@ export interface StorySubject {
  * arco narrativo: nasce da una regola, attraversa tappe, si chiude con un esito o sfuma.
  * Resta nel mondo dopo la chiusura: è la memoria che sopravvive alle stagioni.
  */
+/**
+ * una frase da scrivere al momento della lettura, nella lingua di chi legge (Blocco 5): il testo `key` fra quelli
+ * della narrativa, i dati neutri `v` (città, nomi, numeri) e il seme delle scelte. Le frasi dei salvataggi di prima
+ * sono ancora stringhe già scritte.
+ */
+export interface Said { key: string; seed: number; v: Record<string, string | number> }
+export type Line = string | Said;
+
 export interface Arc {
   id: number;
   rule: string;
@@ -440,7 +448,7 @@ export interface Arc {
   opened: number; // giorno assoluto (stagione × 1000 + giorno)
   until: number; // scade qui se nessuno lo chiude prima
   data: Record<string, string | number>; // dati catturati al rilevamento e lungo la strada
-  lines: { season: number; day: number; text: string }[];
+  lines: { season: number; day: number; text: Line }[];
 }
 
 /** effetto dichiarato di una risposta in conferenza stampa: si vede prima di scegliere (§7.4) */
@@ -453,14 +461,14 @@ export interface PressEffect {
 export interface PressOption {
   /** che risposta è (elogio, difesa, pungolo…): dà l'etichetta, sempre diversa dentro una domanda */
   key: string;
-  text: string;
+  text: Line;
   effects: PressEffect[];
 }
 
 export interface PressQuestion {
   arcId: number | null; // la storia da cui nasce la domanda
-  asker: string; // la testata
-  text: string;
+  asker: Line; // la testata
+  text: Line;
   options: PressOption[];
   answered: number | null;
 }

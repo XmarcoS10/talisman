@@ -1,58 +1,34 @@
 // Lo scanner narrativo (GUIDA §7.4): ogni settimana valuta le regole sui fatti, fa avanzare gli archi aperti,
 // ne apre di nuovi e scrive le tappe. I testi escono da template a grammatica, mai da un modello a runtime.
-import CLUB_T from '../../data/narrative/club.json' with { type: 'json' };
-import FRAG from '../../data/narrative/fragments.json' with { type: 'json' };
-import PLAYER_T from '../../data/narrative/player.json' with { type: 'json' };
-import type { Arc, Position, WorldState } from '../model.ts';
+import type { Arc, WorldState } from '../model.ts';
 import { addNews } from '../news.ts';
 import type { Rng } from '../rng.ts';
 import { arcKey, type Rule, type Step } from './arc.ts';
 import { facts } from './facts.ts';
-import { article, numWord, ordinal, teamForms } from './italian.ts';
 import { CLUB_RULES } from './rules/club.ts';
 import { PLAYER_RULES } from './rules/player.ts';
-import { write, type Grammar, type Vars } from './text.ts';
+import { compose, GRAMMARS, pack, rawVars, render, TEXTS } from './say.ts';
+import type { Grammar } from './text.ts';
 
 export const RULES: Rule[] = [...CLUB_RULES, ...PLAYER_RULES];
 const BY_ID = new Map(RULES.map((r) => [r.id, r]));
-export const TEMPLATES: Record<string, string[]> = { ...CLUB_T, ...PLAYER_T };
-export const GRAMMAR: Grammar = FRAG;
+/** i testi italiani (gli inglesi stanno accanto, in say.ts: TEXTS.en) */
+export const TEMPLATES: Record<string, string[]> = TEXTS.it;
+export const GRAMMAR: Grammar = GRAMMARS.it;
 
 const MAX_NEW = 3; // storie nuove a settimana: il feed deve restare leggibile
 const MEMORY = 150; // archi chiusi che si ricordano
 
-const ROLE: Record<Position, [string, 'm' | 'f']> = {
-  GK: ['portiere', 'm'], DL: ['terzino', 'm'], DR: ['terzino', 'm'], DC: ['difensore', 'm'], DM: ['mediano', 'm'],
-  ML: ['esterno', 'm'], MR: ['esterno', 'm'], MC: ['centrocampista', 'm'], AMC: ['trequartista', 'm'],
-  AML: ['ala', 'f'], AMR: ['ala', 'f'], ST: ['attaccante', 'm'],
-};
-
-/** tutte le variabili di un arco: squadre flesse, giocatore, numeri in lettere, allenatore */
-export function varsFor(world: WorldState, arc: Arc): Vars {
-  const v: Vars = { ...arc.data };
-  const s = arc.subject;
-  if (s.club !== undefined && world.clubs[s.club]) Object.assign(v, teamForms('club', world.clubs[s.club]!.city));
-  if (s.rival !== undefined && world.clubs[s.rival]) Object.assign(v, teamForms('rival', world.clubs[s.rival]!.city));
-  const p = s.player !== undefined ? world.players[s.player] : undefined;
-  if (p) {
-    const [role, g] = ROLE[p.position];
-    Object.assign(v, { nome: `${p.firstName} ${p.lastName}`, cognome: p.lastName, ruolo: role, ruolo_art: `${article(role, g)}${article(role, g).endsWith("'") ? '' : ' '}${role}` });
-  }
-  for (const [k, x] of Object.entries(arc.data)) {
-    if (typeof x !== 'number') continue;
-    v[`${k}_w`] = numWord(x);
-    v[`${k}_o`] = ordinal(x, 'm');
-    v[`${k}_a`] = ordinal(x, 'f');
-  }
-  // l'allenatore ha un nome solo se è l'utente: degli altri club si parla di "l'allenatore"
-  v.mister = involvesMe(world, arc) && world.manager.name ? world.manager.name : "l'allenatore";
-  return v;
-}
+export { rawVars as varsFor };
 
 /** frasi già scritte in questa stagione: nessuna può ripetersi più di tre volte */
 function seenThisSeason(world: WorldState): Map<string, number> {
   const seen = new Map<string, number>();
-  for (const a of world.arcs) for (const l of a.lines) if (l.season === world.season) seen.set(l.text, (seen.get(l.text) ?? 0) + 1);
+  for (const a of world.arcs) for (const l of a.lines) {
+    if (l.season !== world.season) continue;
+    const text = render(l.text);
+    seen.set(text, (seen.get(text) ?? 0) + 1);
+  }
   return seen;
 }
 
@@ -63,12 +39,12 @@ const involvesMe = (world: WorldState, a: Arc) => {
 
 function tell(world: WorldState, arc: Arc, kind: 'open' | Step | 'faded', rng: Rng, seen: Map<string, number>) {
   const key = kind === 'next' ? `${arc.rule}.next` : `${arc.rule}.${kind}`;
-  const tpl = TEMPLATES[key];
-  if (!tpl?.length) return;
-  const text = write(tpl, varsFor(world, arc), GRAMMAR, rng, seen);
+  if (!TEMPLATES[key]?.length) return;
+  // si salva la frase da scrivere, non la frase scritta: la scrive chi legge, nella sua lingua
+  const text = compose(key, rawVars(world, arc), rng, seen);
   arc.lines.push({ season: world.season, day: world.day, text });
   // notifiche non invasive: in notizia solo quello che riguarda te o fa prima pagina
-  if (involvesMe(world, arc) || (BY_ID.get(arc.rule)?.priority ?? 0) >= 5) addNews(world, 'news.story', { text });
+  if (involvesMe(world, arc) || (BY_ID.get(arc.rule)?.priority ?? 0) >= 5) addNews(world, 'news.story', { text: pack(text) });
 }
 
 /** la settimana delle storie */

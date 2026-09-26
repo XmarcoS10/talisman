@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Mic, Send } from 'lucide-react';
 import type { PressEffect, WorldState } from '../../engine/model.ts';
 import { answerPress } from '../../engine/press/press.ts';
-import { t } from '../i18n.ts';
+import { t, sayLine } from '../i18n.ts';
 
 function Effect({ world, e }: { world: WorldState; e: PressEffect }) {
   const d = `${e.delta > 0 ? '+' : ''}${e.delta}`;
@@ -31,7 +31,7 @@ export function PressRoom({ world, onChange }: { world: WorldState; onChange: ()
         <>
           <div className="question-card">
             <span className="initials"><Mic size={16} /></span>
-            <div><span className="muted small">{q.asker}</span><div className="q-text">«{q.text}»</div></div>
+            <div><span className="muted small">{sayLine(q.asker)}</span><div className="q-text">«{sayLine(q.text)}»</div></div>
           </div>
           <div className="stack" style={{ gap: 8 }}>
             {q.options.map((o, oi) => (
@@ -39,7 +39,7 @@ export function PressRoom({ world, onChange }: { world: WorldState; onChange: ()
                 <span className="radio" />
                 <span className="stack" style={{ gap: 6 }}>
                   <b>{t('press.option', { l: 'ABCDEF'[oi] ?? '' })}: {t(`press.kind.${o.key}`)}</b>
-                  <span className="muted">«{o.text}»</span>
+                  <span className="muted">«{sayLine(o.text)}»</span>
                   <span className="row wrap">{o.effects.map((e, i) => <Effect key={i} world={world} e={e} />)}</span>
                 </span>
               </button>

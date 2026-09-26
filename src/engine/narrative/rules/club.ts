@@ -2,7 +2,6 @@
 import { BOARD } from '../../balance.ts';
 import { expected, fairPosition } from '../../board/board.ts';
 import type { ClubId } from '../../model.ts';
-import { numWord } from '../italian.ts';
 import type { Hit, Rule } from '../arc.ts';
 import { justPlayed, lastN, lost, streak, won, type Facts, type MatchFact } from '../facts.ts';
 
@@ -18,10 +17,6 @@ const each = (f: Facts, test: (c: ClubId) => Record<string, number | string> | n
   return out;
 };
 const pts = (f: Facts, c: ClubId) => f.table.find((r) => r.clubId === c)?.pts ?? 0;
-/** il distacco a parole, già concordato: "un solo punto", "tre punti", "a pari punti" */
-const distacco = (gap: number) => (gap === 0 ? 'a pari punti' : gap === 1 ? 'a un solo punto' : `a ${numWord(gap)} punti`);
-/** quanto manca a parole: "all'ultima giornata", "a cinque giornate dalla fine" */
-const fine = (left: number) => (left === 1 ? "all'ultima giornata" : `a ${numWord(left)} giornate dalla fine`);
 /** la rimonta: sotto di due gol e poi vinta, ricostruita dagli eventi della partita */
 function cameBack(m: MatchFact): boolean {
   if (!won(m) || !m.fx.result) return false;
@@ -88,7 +83,7 @@ export const CLUB_RULES: Rule[] = [
     detect: (f) => {
       const [a, b] = f.table;
       if (!a || !b || f.left > 8 || f.left === 0 || a.pts - b.pts > 3) return [];
-      return [{ subject: { club: a.clubId, rival: b.clubId }, data: { gap: a.pts - b.pts, distacco: distacco(a.pts - b.pts), fine: fine(f.left) } }];
+      return [{ subject: { club: a.clubId, rival: b.clubId }, data: { gap: a.pts - b.pts, gapPts: a.pts - b.pts, left: f.left } }]; // le parole le mette la lingua (say.ts)
     },
     step: (arc, f) => {
       if (f.left > 0) return { step: 'stay' };
@@ -102,7 +97,7 @@ export const CLUB_RULES: Rule[] = [
       const p = f.pos.get(f.me) ?? 1;
       const n = f.table.length;
       if (f.round < 10 || f.comp.relegate === 0 || p <= n - f.comp.relegate) return [];
-      return [{ subject: { club: f.me }, data: { pos: p, fine: fine(f.left) } }];
+      return [{ subject: { club: f.me }, data: { pos: p, left: f.left } }];
     },
     step: (arc, f) => {
       const p = f.pos.get(f.me) ?? 1;
@@ -249,7 +244,7 @@ export const CLUB_RULES: Rule[] = [
         const [pa, pb] = [pts(f, fx.home), pts(f, fx.away)];
         const [ra, rb] = [f.pos.get(fx.home)!, f.pos.get(fx.away)!];
         const stakes = Math.max(ra, rb) <= 4 || Math.min(ra, rb) > f.table.length - 5;
-        if (Math.abs(pa - pb) <= 2 && stakes) out.push({ subject: { club: fx.home, rival: fx.away }, data: { distacco: distacco(Math.abs(pa - pb)), fine: fine(f.left), zona: Math.max(ra, rb) <= 4 ? 'alta' : 'bassa' } });
+        if (Math.abs(pa - pb) <= 2 && stakes) out.push({ subject: { club: fx.home, rival: fx.away }, data: { gapPts: Math.abs(pa - pb), left: f.left, high: Math.max(ra, rb) <= 4 ? 1 : 0 } });
       }
       return out;
     },

@@ -11,7 +11,7 @@ export type Vars = Record<string, string | number>;
 export type Grammar = Record<string, string[]>;
 
 /** sceglie fra alternative con peso opzionale "^n" in coda */
-function pick(rng: Rng, options: string[]): string {
+export function pick(rng: Rng, options: string[]): string {
   const parsed = options.map((o) => {
     const m = /\^(\d+)$/.exec(o);
     return m ? { s: o.slice(0, m.index), w: Number(m[1]) } : { s: o, w: 1 };
@@ -59,8 +59,8 @@ function expandRaw(t: string, vars: Vars, g: Grammar, rng: Rng, depth: number): 
   return out;
 }
 
-/** espande un template in una frase italiana finita */
-export const expand = (t: string, vars: Vars, g: Grammar, rng: Rng) => tidy(expandRaw(t, vars, g, rng, 0));
+/** espande un template in una frase finita; `finish` è la pulizia della lingua (italiano di default) */
+export const expand = (t: string, vars: Vars, g: Grammar, rng: Rng, finish: (s: string) => string = tidy) => finish(expandRaw(t, vars, g, rng, 0));
 
 /**
  * sceglie un template e lo espande evitando le frasi già dette troppe volte (`seen`): la stessa riga

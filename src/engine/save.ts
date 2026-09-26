@@ -10,7 +10,7 @@ import { assignAgents } from './transfers/agents.ts';
 import { makeScouts } from './scouting/scouts.ts';
 import { newBoard } from './board/board.ts';
 
-export const SCHEMA_VERSION = 26;
+export const SCHEMA_VERSION = 27;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -135,6 +135,9 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
   },
   // 25 → 26 (0.2.0, bancarotte): nessun club in crisi, nessun avviso dato
   (w) => { for (const c of Object.values(w.clubs as Obj)) c.crisis ??= { below: 0, warned: 0, since: null, penalty: 0 }; },
+  // 26 → 27 (0.2.0, storie nella lingua di chi legge): le frasi nuove si salvano come {key, seed, v}; quelle già
+  // scritte restano stringhe e si leggono così come sono. Niente da convertire.
+  () => {},
 ];
 
 export function serialize(world: WorldState): string {

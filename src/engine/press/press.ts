@@ -1,16 +1,14 @@
 // Conferenze stampa (GUIDA §7.4, P8 punto 5): le domande nascono dalle storie aperte, non dal caso.
 // Ogni risposta dichiara i suoi effetti prima che tu la scelga — su giocatori con nome e cognome, sul gruppo,
 // su dirigenza, tifosi e stampa — e quello che tocca un giocatore finisce nel suo Causal Log.
-import PRESS_T from '../../data/narrative/press.json' with { type: 'json' };
 import { PRESS } from '../balance.ts';
 import type { Arc, PressEffect, PressOption, PressQuestion, WorldState } from '../model.ts';
 import { addCause } from '../news.ts';
 import type { Rng } from '../rng.ts';
-import { GRAMMAR, varsFor } from '../narrative/scanner.ts';
-import { expand } from '../narrative/text.ts';
+import { pack, rawVars, said, TEXTS } from '../narrative/say.ts';
 import { clamp } from '../util.ts';
 
-const T: Record<string, string[]> = PRESS_T;
+const T: Record<string, string[]> = TEXTS.it; // le chiavi sono le stesse in ogni lingua
 
 // che tipo di domanda fa una storia: sul giocatore o sulla squadra, bella o brutta
 const PLAYER_GOOD = new Set(['redemption', 'hotStreak', 'predestined', 'talisman', 'scorerRace', 'keeper', 'comebackKid',
@@ -73,13 +71,15 @@ export function weekPress(world: WorldState, rng: Rng) {
   if (!arcs.length) { world.press = null; return; }
   const questions: PressQuestion[] = arcs.map((a) => {
     const kind = kindOf(a);
-    const vars = varsFor(world, a);
-    const q = T[`q.${a.rule}`] ?? T[`q.${kind}`]!;
+    // domande e risposte si scrivono al momento della lettura, nella lingua di chi legge (say.ts)
+    const raw = rawVars(world, a);
+    const seed = () => rng.int(1, 2 ** 31 - 1);
+    const qKey = T[`q.${a.rule}`] ? `q.${a.rule}` : `q.${kind}`;
     return {
       arcId: a.id,
-      asker: expand(rng.pick(T.askers!), vars, GRAMMAR, rng),
-      text: expand(rng.pick(q), vars, GRAMMAR, rng),
-      options: options(world, a, kind).map((o): PressOption => ({ key: o.key.slice(2), text: expand(rng.pick(T[o.key]!), vars, GRAMMAR, rng), effects: o.effects })),
+      asker: said('askers', raw, seed()),
+      text: said(qKey, raw, seed()),
+      options: options(world, a, kind).map((o): PressOption => ({ key: o.key.slice(2), text: said(o.key, raw, seed()), effects: o.effects })),
       answered: null,
     };
   });
@@ -99,7 +99,7 @@ export function answerPress(world: WorldState, qi: number, oi: number): boolean 
       const p = world.players[e.playerId];
       if (!p) continue;
       p.psych.morale = clamp(p.psych.morale + e.delta, 0, 100);
-      addCause(world, p, e.delta >= 0 ? 'cause.pressUp' : 'cause.pressDown', { text: o.text });
+      addCause(world, p, e.delta >= 0 ? 'cause.pressUp' : 'cause.pressDown', { text: pack(o.text) });
     } else if (e.target === 'squad') {
       for (const id of club.playerIds) world.players[id]!.psych.morale = clamp(world.players[id]!.psych.morale + e.delta, 0, 100);
     } else if (e.target !== 'player') {
