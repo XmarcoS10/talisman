@@ -673,20 +673,16 @@ export const NATIONAL = {
   squad: 23,
   windows: [56, 98, 168, 224] as const, // pause per le nazionali, in giorni dall'inizio stagione
   matchesPerWindow: 2,
-  fatigue: 4, // affaticamento per chi risponde alla convocazione
-  injuryP: 0.012, // rischio di infortunio per convocato a finestra
-  morale: 3, // essere convocati fa piacere
-  goalP: 0.12, // gol a partita per un attaccante titolare (le altre posizioni meno)
+  morale: 3, // essere convocati fa piacere (per partita giocata)
   tournamentFatigue: 9, // l'estate con un torneo si paga in preparazione
-  goalShare: { ST: 1, AM: 0.6, other: 0.2 }, // chi segna in nazionale: punte, trequartisti, il resto
-  tournamentCaps: { group: 3, quarter: 4, semi: 5, final: 6, winner: 6 }, // presenze a seconda di dove si arriva
+  familiarity: 75, // quanto una nazionale conosce il proprio modulo (si allena poco, ma gioca semplice)
   emptyStrength: 60, // forza di una nazionale senza giocatori
   penaltyScale: 200, // ai rigori la forza conta poco: differenza / questo
   // valore: presenze e titoli contano sul mercato
   capsValue: 0.002, // per presenza, fino a capsValueMax
   capsValueMax: 0.15,
   titleValue: 0.05,
-  // simulazione dei tornei: gol di Poisson dalla differenza di forza (media CA dei migliori undici)
+  // risultato veloce fra due forze (Primavera): gol di Poisson. Le nazionali giocano col motore vero.
   goalsBase: 1.25,
   strengthScale: 38,
 } as const;

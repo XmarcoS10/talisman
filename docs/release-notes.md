@@ -1,5 +1,13 @@
 # Note di rilascio
 
+## In arrivo
+
+- **Le partite delle nazionali si giocano davvero.** Prima erano un risultato calcolato da una formula: adesso passano
+  dal motore del gioco, con formazione, cambi, cartellini e infortuni. Ogni gol ha un nome e un minuto, le presenze
+  sono quelle vere e la fatica è quella dei minuti giocati. Nel Vivaio, sotto «I nostri in nazionale», c'è l'elenco
+  delle ultime partite coi marcatori.
+- Le partite delle nazionali restano fuori dalle statistiche di campionato, come prima.
+
 ## 0.2.0 — la partita
 
 Le carriere della 0.1.x si aprono: passano da sole al formato 27. Le storie scritte prima restano in italiano, quelle
@@ -45,6 +53,13 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## Coming next (English)
+
+- **International matches are actually played.** They used to be a formula: now they go through the match engine, with
+  line-ups, substitutions, cards and injuries. Every goal has a name and a minute, caps are real appearances, and the
+  fatigue is the one from the minutes played. The Academy screen lists the latest matches with their scorers.
+- International matches still stay out of league statistics.
 
 ## 0.2.0 — the match (English)
 

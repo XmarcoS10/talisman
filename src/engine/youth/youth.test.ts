@@ -63,6 +63,32 @@ describe('nazionali (F8)', () => {
     expect(world.nations.ITA!.callups).toHaveLength(NATIONAL.squad);
   });
 
+  it('le partite si giocano col motore vero: si registrano coi marcatori, e restano fuori dal campionato', () => {
+    const world = newWorld(5);
+    const apps = Object.values(world.players).reduce((n, p) => n + p.stats.apps, 0);
+    internationalBreak(world, new Rng(3));
+    expect(world.intl.length).toBeGreaterThan(0);
+    for (const m of world.intl) {
+      expect(m.kind).toBe('break');
+      expect(m.scorers).toHaveLength(m.ga + m.gb); // ogni gol ha un nome e un minuto
+      for (const s of m.scorers) {
+        expect(world.players[s.playerId]).toBeDefined();
+        expect(s.min).toBeGreaterThan(0);
+      }
+    }
+    // i gol in nazionale contano fra le presenze in nazionale, non fra quelle di campionato
+    const goals = world.intl.reduce((n, m) => n + m.ga + m.gb, 0);
+    expect(Object.values(world.players).reduce((n, p) => n + p.intl.goals, 0)).toBe(goals);
+    expect(Object.values(world.players).reduce((n, p) => n + p.stats.apps, 0)).toBe(apps);
+  });
+
+  it('stesso seme, stesse partite delle nazionali', () => {
+    const a = newWorld(5), b = newWorld(5);
+    internationalBreak(a, new Rng(9));
+    internationalBreak(b, new Rng(9));
+    expect(a.intl).toEqual(b.intl);
+  });
+
   it('un torneo ha un vincitore solo, e l\'Europeo è solo europeo', () => {
     const world = newWorld(5);
     const euro = tournament(world, new Rng(4), 'euro');

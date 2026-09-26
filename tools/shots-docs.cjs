@@ -50,6 +50,12 @@ app.on('browser-window-created', async (_e, win) => {
       await click(nav);
       await shot(name);
     }
+    // le partite delle nazionali stanno in fondo alla colonna del Vivaio
+    await click('Vivaio');
+    await wait(600);
+    await js(`(() => { const h = [...document.querySelectorAll('h2')].find((x) => /nazionali/i.test(x.textContent)); h?.scrollIntoView({ block: 'center' }); })()`);
+    await shot('18-nazionali');
+
     // scheda giocatore: dalla rosa, il primo nome della tabella
     await click('Rosa');
     await wait(600);

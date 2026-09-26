@@ -102,7 +102,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
   const world: WorldState = {
     schemaVersion: SCHEMA_VERSION, seed, rng: rng.s, season, day: 0,
     manager: { name: '', clubId: 0, kept: 0, broken: 0, board: newBoard(), h2h: {}, style: 'none' }, players: {}, clubs: {}, competitions: {}, history: [], news: [],
-    causal: [], promises: [], talks: [], offers: [], arcs: [], press: null, nations: {}, cup: null, playoffs: null, rules: { playoffs: true }, cupWinners: [], friendlies: null, intake: [], nextArcId: 1, nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
+    causal: [], promises: [], talks: [], offers: [], arcs: [], press: null, nations: {}, intl: [], cup: null, playoffs: null, rules: { playoffs: true }, cupWinners: [], friendlies: null, intake: [], nextArcId: 1, nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
   };
   const cities = [...CITIES];
   for (const lg of LEAGUES) {

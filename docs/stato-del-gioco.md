@@ -4,10 +4,10 @@ Questo documento racconta **tutto quello che il gioco fa oggi e come lo fa**, co
 numeri di taratura e i limiti noti. Serve a decidere il prossimo aggiornamento: in fondo ci sono le proposte, con la
 stima di lavoro.
 
-- **Versione**: 0.2.0 (installer Windows) · formato dei salvataggi **27**
+- **Versione**: 0.2.0 «la partita» (installer Windows) · formato dei salvataggi **28**
 - **Codice**: <https://github.com/XmarcoS10/talisman> (GPL-3.0) · **Sito**: <https://xmarcos10.github.io/talisman/>
-- **Qualità**: 190 test verdi, controllo dei tipi pulito, CI su ogni modifica
-- **Misura**: ~13.000 righe di TypeScript (motore + interfaccia), 1.525 stringhe di testo italiano
+- **Qualità**: 253 test verdi, tipi puliti, CI su ogni modifica, golden master del motore e guardia sulle prestazioni
+- **Misura**: ~16.000 righe di TypeScript (motore + interfaccia), 1.805 stringhe per lingua (italiano e inglese)
 
 ---
 
@@ -42,8 +42,8 @@ misurare il bilanciamento e di rigenerare le stesse immagini o gli stessi risult
 
 ## 3. Il mondo
 
-Alla creazione (`newWorld`) nascono **2 campionati da 20 club** (Serie A e Serie B inventate), **1.000 giocatori**,
-**86 agenti** e **132 osservatori**. Nessun nome reale: club, città e persone escono da liste di nomi comuni
+Alla creazione (`newWorld`) nascono **3 campionati da 20 club** (Serie A, Serie B e una Serie C di contorno),
+**1.500 giocatori**, **132 agenti** e **192 osservatori**. Nessun nome reale: club, città e persone escono da liste di nomi comuni
 (`names.ts`), e il formato del mondo è pensato perché un domani l'utente carichi i propri dati.
 
 **I club** hanno nome, città, tre colori, anno di fondazione (1890-1960), reputazione 1-100, filosofia (giovani,
@@ -315,9 +315,21 @@ alzano chiedendo investimenti alla dirigenza.
 Il **campionato Primavera** esiste ma non si salva: ogni risultato nasce da un seme fisso e dalla forza del vivaio, così
 è sempre lo stesso senza occupare spazio nel salvataggio.
 
-**Nazionali**: convocazioni decise dall'IA (23 per nazionale), quattro pause che stancano (4 di affaticamento) e a volte
-fanno male (1,2%), Europeo negli anni divisibili per quattro e Mondiale due anni dopo. Presenze e titoli in nazionale
-alzano il valore di mercato (fino al 15% per le presenze, 5% per un titolo).
+**Nazionali**: il ct convoca 23 giocatori (i migliori della sua nazione fra chi ha una squadra e sta bene), e nelle
+quattro pause si giocano **due partite vere, col motore del gioco**: formazione scelta sui convocati, chi è più debole
+si chiude e chi è più forte spinge, cambi, cartellini, infortuni. Ogni gol ha un nome e un minuto, le presenze sono
+quelle effettive, la fatica è quella dei minuti giocati. Le partite delle nazionali **non entrano nelle statistiche di
+campionato**: restano in un archivio a parte (le ultime 60), che la schermata mostra.
+
+D'estate si gioca l'**Europeo** negli anni divisibili per quattro e il **Mondiale** due anni dopo: gironi da quattro,
+poi eliminazione diretta, rigori se finisce pari. Presenze e titoli in nazionale alzano il valore di mercato (fino al
+15% per le presenze, 5% per un titolo).
+
+![Le partite delle nazionali](img/18-nazionali.jpg)
+
+Una nazionale non è un club del mondo: la sua squadra si costruisce al momento (modulo scelto dal ct sui convocati,
+modulo conosciuto al 75%) e non si salva. Le partite sono più aperte di quelle di club — 3,9 gol contro 2,5 — perché in
+questo mondo il talento è concentrato in una nazione sola e i divari fra nazionali sono enormi.
 
 ---
 
@@ -453,100 +465,105 @@ l'interfaccia, aggiorna il registro delle licenze e controlla pesi ed EXIF.
 
 ## 18. Qualità, bilanciamento, prestazioni
 
-**190 test** in 24 file: motore partita, mondo, salvataggi e migrazioni, mercato, contratti, agenti, offerte, finanze,
-dirigenza, psicologia, sviluppo, narrativa, grammatica italiana, coppa, vivaio, riproduzione 2D, chiavi dei testi,
-stemmi, maglie, volti, pipeline degli asset. Ogni modifica passa dalla CI (tipi + test su Linux).
+**253 test** in 37 file: motore partita (compreso un **golden master** che dice subito se una modifica cambia le
+partite, e un test di struttura che fa fallire la build se una funzione del motore supera le 80 righe), mondo,
+salvataggi e 28 migrazioni, mercato, contratti, agenti, offerte, finanze, dirigenza, psicologia, sviluppo, narrativa,
+grammatica italiana e inglese, coppa, playoff, bancarotte, vivaio, nazionali, riproduzione e sovrapposizioni del campo
+2D, piani partita, chiavi dei testi nelle due lingue, stemmi, maglie, volti, pipeline degli asset. Ogni modifica passa
+dalla CI (tipi + test su Linux).
 
-**Bilanciamento** (`pnpm sim -- --seasons 10 --seed 42`, 22/09/2026):
+**Bilanciamento** (`pnpm sim -- --seasons 10 --seed 42`, 26/09/2026):
 
 | Metrica | Target | Valore |
 |---|---|---|
-| Gol per partita | 2,5 – 2,9 | 2,60 ✅ |
-| Vittorie in casa | 42 – 46% | 44,5% ✅ |
-| Pareggi | 22 – 30% | 23,2% ✅ |
-| xG per squadra | 1,2 – 1,5 | 1,41 ✅ |
-| Tiri / in porta | 10-15 / 3,5-5,5 | 14,6 / 5,0 ✅ |
-| Falli · gialli · rossi | 22-30 · 3,5-5,5 · 0,1-0,3 | 22,6 · 3,7 · 0,14 ✅ |
-| Correlazione forza ↔ punti | 0,75 – 0,85 | 0,81 ✅ (su 25 stagioni scende a 0,61-0,70 ❌) |
-| Campioni diversi in 10 stagioni | ≥ 4 | 6 ✅ |
-| Infortuni per squadra/stagione | 12 – 18 | 17,9 ✅ |
-| Acquisti per finestra estiva | 20 – 90 | 77 ✅ (il target «90-160 trasferimenti» della GUIDA valeva per un mondo con più leghe) |
-| Top 50 nei dieci club più blasonati | 40 – 95% | 76% ✅ |
-| 10.000 partite simulate | < 20 s | ~41 s ❌ |
-| Avanzamento di un giorno | < 400 ms | ~113 ms (peggiore 234) ✅ |
+| Gol per partita | 2,5 – 2,9 | 2,51 ✅ |
+| Vittorie in casa | 42 – 46% | 42,8% ✅ |
+| Pareggi | 22 – 30% | 23,8% ✅ |
+| Tiri per squadra | 10 – 15 | 13,2 ✅ |
+| Correlazione forza ↔ punti | 0,75 – 0,85 | 0,87 sul seme 42 ⚠️, 0,80 e 0,82 sui semi 7 e 99 (il seme sposta ±0,03) |
+| Campioni diversi in 10 stagioni | ≥ 4 | 5 ✅ |
+| Infortuni per squadra/stagione | 12 – 18 | 13,7 ✅ |
+| Gol per partita delle nazionali | ~2,9 | 3,9 ⚠️ (divari enormi fra nazionali in questo mondo) |
+| 10.000 partite simulate | < 20 s | 6,5 s ✅ |
+| Motore su un thread (`pnpm bench`) | ≤ 4,2 ms a partita | 3,85 ms ✅ |
+| Avanzamento di un giorno (interfaccia) | < 400 ms | ~150 ms ✅ |
 
-**Prestazioni**: un salvataggio da 100 MB (63.000 giocatori) si legge in 0,5 s e si scrive in 0,7 s. Una stagione
-simulata da riga di comando richiede ~4 s.
+**Carriere da 25 stagioni** (`pnpm sim -- --career 25`, tre semi): correlazione media 0,79 / 0,77 / 0,80 ✅, i 60
+migliori crescono di 1,3-2 punti in 25 stagioni (prima si gonfiavano di 13), 1,6-2 bancarotte ogni 10 stagioni ✅,
+i conti dei club restano fra 50 e 60 milioni invece di salire a 400. Resta fuori bersaglio il **distacco fra Serie A e
+Serie B** nelle prime 5-10 stagioni (`docs/balance/2026-09-26.md`).
+
+**Prestazioni**: un salvataggio da 100 MB si legge in 0,5 s e si scrive in 0,7 s; una stagione simulata da riga di
+comando richiede ~7 s; la giornata gira in un thread a parte, quindi l'interfaccia non si blocca mai.
 
 ---
 
 ## 19. Distribuzione
 
-Installer Windows NSIS (113 MB, si installa nella cartella utente, senza permessi di amministratore, aggiornamento
-automatico spento), versione Linux AppImage configurata ma da costruire su Linux. Il sito è pubblicato con GitHub
-Pages e si aggiorna da solo a ogni modifica; il pulsante di download punta sempre all'ultima versione pubblicata.
-Licenze di tutto quello che usiamo e non abbiamo scritto in `assets/LICENSES.md`, immagini generate comprese (modello,
-seed, data).
+Installer Windows NSIS (123 MB, si installa nella cartella utente, senza permessi di amministratore, aggiornamento
+automatico spento), versione Linux AppImage configurata ma da costruire su Linux. Il **sito** è in italiano e in
+inglese, si pubblica da solo a ogni modifica con GitHub Pages, e il pulsante di download punta sempre all'ultima
+versione. Note di rilascio nelle due lingue, testo pronto per itch.io (`docs/itch.md`), storyboard del video
+(`docs/trailer.md`), istruzioni per i collaudatori (`docs/collaudo.md`). Licenze di tutto quello che usiamo e non
+abbiamo scritto in `assets/LICENSES.md`, immagini generate comprese (modello, seed, data).
 
 ---
 
 ## 20. Cosa manca, oggi
 
-### Limiti noti
+### Tocca a Marco (non è codice)
 
-1. **Carriere lunghe**: dopo 10-15 stagioni il talento del mondo si gonfia (i 60 migliori passano da 166 a 173 di
-   abilità in 12 stagioni, la Serie B da 113 a 128 mentre la A resta a 145) e le squadre si somigliano: la correlazione
-   fra forza e punti scende sotto il target. Analisi in `docs/balance/2026-09-22.md`.
-2. **Bancarotte**: sono una regola del gioco ma non succedono mai, perché l'IA è prudente e accumula cassa.
-3. **Playoff e playout** in Serie B: scelta di regolamento mai presa.
-4. **Linux**: l'AppImage va costruita su una macchina Linux.
-5. **Partita 2D**: duelli, parate e piazzati non hanno una rappresentazione propria; niente sovrapposizioni tattiche
-   sul campo (rete dei passaggi, zone di pressing, baricentro).
-6. **Nazionali**: le loro partite si calcolano con un modello semplificato, non si guardano.
-7. **Velocità**: 10.000 partite in 41 secondi contro un obiettivo di 20 (non si nota giocando).
-8. **Installer non firmato**: Windows mostra «editore sconosciuto» finché non si compra un certificato.
-9. **Collaudo esterno mai fatto**: tre persone devono giocare una stagione intera senza chiedere aiuto (è il criterio
-   di «fatto» della fase 9).
+1. **Collaudo esterno**: tre persone, una stagione intera, senza chiedere aiuto. È il criterio di «fatto» della fase 9.
+2. **Pagina itch.io** e **annuncio**: testi pronti, pubblicazione dal suo account.
+3. **Video**: storyboard e clip pronti, registrazione e montaggio no.
+4. **Firma dell'installer**: serve un certificato a pagamento.
+5. **Versione Linux**: va costruita su un computer Linux.
+
+### Limiti noti del gioco
+
+1. **Partite delle nazionali in diretta**: si giocano col motore vero e se ne vedono risultati e marcatori, ma non si
+   seguono sul campo 2D (la diretta è legata al club dell'utente).
+2. **Gol delle nazionali**: 3,9 a partita contro i 2,5 dei club, perché il mondo concentra il talento in una nazione.
+   Si sistema nella generazione del mondo, dando più peso alle altre nazioni.
+3. **Distacco Serie A – Serie B**: oscilla nelle prime 5-10 stagioni prima di assestarsi attorno a 24 punti di forza.
+4. **Installer non firmato**: Windows mostra «editore sconosciuto».
 
 ### Debito tecnico aperto (`docs/tech-debt.md`)
 
-`runMatch` è una chiusura da 623 righe (funziona ed è veloce, ma ogni modifica al motore passa di lì); `options()` ha
-complessità 52 ed è il ciclo più caldo; i test completi impiegano ~45 s; non ci sono test dell'interfaccia.
+Nessun test sull'interfaccia (il motore è coperto, le schermate no); `App.tsx` è il crocevia di tutto e andrebbe
+spezzato; la suite completa impiega ~4 minuti; `balance.ts` e `world.ts` stanno crescendo.
 
 ---
 
 ## 21. Proposte per il prossimo aggiornamento
 
-Tre strade possibili, con la stima di lavoro. Si possono anche mescolare.
+Tre strade, con la stima di lavoro. Si possono mescolare.
 
-### A — «Il mondo invecchia bene» (bilanciamento e profondità, ~1 settimana)
+### A — «Un mondo più largo» (contenuti, ~2 settimane)
 
-Il problema numero uno delle carriere lunghe. Si rivedono la qualità delle annate del vivaio rispetto ai ritiri, il
-legame fra strutture e reputazione, e l'economia degli stipendi, così dopo 20 stagioni la gerarchia del campionato
-resta credibile. Si aggiungono bancarotte vere (un club che fallisce, riparte dai giovani) e il regolamento dei playoff
-e playout in Serie B, se lo vuoi.
-**Perché**: chi gioca davvero una carriera lunga oggi trova un campionato che si appiattisce.
+Coppe europee semplificate fra i club, altre nazioni con vivai propri (che risolve anche i gol delle nazionali),
+editor del mondo nel gioco (rinominare club e giocatori, cambiare colori, stemmi), import di un database della
+community.
+**Perché**: allunga la vita di una carriera e apre la porta a chi vuole i nomi veri.
 
-### B — «La partita si vede» (2D e presentazione, ~1-2 settimane)
+### B — «Il gioco si spiega» (rifinitura e fiducia, ~1 settimana)
 
-Duelli, parate e piazzati con una rappresentazione propria sul campo; sovrapposizioni tattiche da accendere (rete dei
-passaggi, zone di pressing, baricentro, heatmap); replay dell'azione del gol; tabellino a fine tempo più ricco; le
-illustrazioni delle storie anche nelle schede, non solo in prima pagina.
-**Perché**: è la parte che si mostra in un video o in uno screenshot, e oggi è la più essenziale.
+Test di montaggio sulle schermate principali, tutorial rivisto sui punti che i collaudatori sbagliano, statistiche
+storiche di carriera (albo d'oro, record personali), esportazione in CSV.
+**Perché**: è la strada giusta subito dopo il collaudo esterno, quando si sa cosa non si capisce.
 
-### C — «Più mondo» (contenuti, ~2 settimane)
+### C — «La panchina viva» (profondità di gioco, ~1-2 settimane)
 
-Un terzo campionato (Serie C) con le sue regole, coppe europee semplificate, editor del mondo nel gioco (rinominare
-club e giocatori, cambiare colori), import di un database della community.
-**Perché**: allunga la vita del gioco e apre la porta a chi vuole i nomi veri.
+Allenatori dell'IA con carriera e reputazione (esoneri, panchine che cambiano), arbitri con personalità, meteo e
+terreno, cronaca radiofonica testuale delle partite che non guardi.
+**Perché**: dà al mondo attorno alla tua squadra la stessa cura che oggi ha la tua squadra.
 
 ### Prima di tutto, comunque
 
-- **Collaudo esterno** con tre persone e una stagione intera: è l'unica cosa che dice davvero cosa non si capisce.
-- **Pubblicare la 0.1.1** con quello che è entrato dopo il collaudo interno (offerte di mercato, grafica generata,
-  correzioni di bilanciamento).
+- **Collaudo esterno** con tre persone e una stagione intera.
+- **Pubblicare la 0.2.1** con le nazionali giocate dal motore e le correzioni che il collaudo farà uscire.
 
 ---
 
-*Aggiornato il 24/09/2026. Le foto sono della versione di oggi, scattate dal gioco vero con*
+*Aggiornato il 26/09/2026. Le foto sono della versione di oggi, scattate dal gioco vero con*
 `node tools/docs-world.ts && pnpm build && npx electron tools/shots-docs.cjs`.

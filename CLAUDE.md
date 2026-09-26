@@ -53,6 +53,11 @@ Stemmi, maglie e volti sono procedurali in `src/ui/procgen/` (GP1-GP3), determin
 distribuire. Le immagini generate con ComfyUI passano da `pnpm assets` (`tools/assets/`, Blocco C §4) e arrivano al
 gioco dal manifest generato `src/ui/assets-manifest.ts` (non si modifica a mano); `src/ui/art.ts` le usa se esistono.
 
+## Nazionali (§7.8)
+Convocazioni e forza in `engine/nations/squad.ts`, partite col motore vero in `engine/nations/match.ts`: la nazionale
+è un `Club` costruito al momento (id negativo) e non salvato, e le sue partite non toccano `p.stats` — restano in
+`world.intl` (schema 28), che la schermata Vivaio mostra. `playIntl` (Poisson) resta solo per la Primavera.
+
 ## Motore partita
 Spiegato in `docs/03-match-engine.md`, decisioni in `docs/adr/0002-motore-l2.md` e `docs/adr/0005-partita-2d.md`.
 Moduli con stato esplicito (`match/state.ts`), nessuna funzione oltre 80 righe o complessità 20 (`structure.test.ts`);

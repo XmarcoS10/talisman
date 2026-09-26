@@ -84,7 +84,8 @@ export function userXI(world: WorldState, club: Club, opponent?: ClubId): Lineup
   return xi;
 }
 
-function setup(world: WorldState, club: Club, xi: LineupSlot[], mentality: number, opponent?: ClubId): TeamSetup {
+/** la squadra pronta per il motore: titolari coi loro ruoli, panchina, familiarità, rischio di infortunio */
+export function teamSetup(world: WorldState, club: Club, xi: LineupSlot[], mentality: number, opponent?: ClubId): TeamSetup {
   const inXI = new Set(xi.map((e) => e.player.id));
   const bench = club.playerIds.map((id) => world.players[id]!)
     .filter((p) => !inXI.has(p.id) && canPlay(club, p, opponent))
@@ -98,7 +99,7 @@ function setup(world: WorldState, club: Club, xi: LineupSlot[], mentality: numbe
 }
 
 /** mentalità dell'IA: prudente se più debole, propositiva se più forte (in casa conta un po') */
-function aiMentality(mine: number, theirs: number, home: boolean) {
+export function aiMentality(mine: number, theirs: number, home: boolean) {
   const diff = mine - theirs + (home ? 3 : -3);
   return diff > 8 ? 4 : diff < -8 ? 2 : 3;
 }
@@ -112,7 +113,7 @@ export function matchSetups(world: WorldState, fx: Fixture, live = false): [Team
   return clubs.map((c, i) => {
     const mine = c.id === me;
     const mentality = mine ? c.tactic.mentality : aiMentality(str[i]!, str[1 - i]!, i === 0);
-    return { ...setup(world, c, xis[i]!, mentality, clubs[1 - i]!.id), auto: !(mine && live) };
+    return { ...teamSetup(world, c, xis[i]!, mentality, clubs[1 - i]!.id), auto: !(mine && live) };
   }) as [TeamSetup, TeamSetup];
 }
 

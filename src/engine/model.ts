@@ -323,6 +323,20 @@ export interface MatchResult {
   ratings: Record<PlayerId, number>; // voto di chi è sceso in campo
 }
 
+/** una partita di nazionale giocata col motore vero (§7.8): si conserva per la schermata, non per le statistiche */
+export interface IntlMatch {
+  season: number;
+  day: number; // giorno della stagione in cui si è giocata (i tornei estivi: -1)
+  kind: 'break' | 'euro' | 'world'; // amichevole di pausa, Europeo, Mondiale
+  stage?: 'group' | 'quarter' | 'semi' | 'final';
+  a: string; // codice della nazione di casa
+  b: string;
+  ga: number;
+  gb: number;
+  pens?: [number, number];
+  scorers: { playerId: PlayerId; min: number; side: 0 | 1 }[];
+}
+
 export interface Fixture {
   day: number; // giorni dall'inizio stagione
   home: ClubId;
@@ -507,6 +521,7 @@ export interface WorldState {
   arcs: Arc[]; // storie aperte e ricordate (§7.4)
   press: PressRoom | null; // la conferenza stampa della settimana
   nations: Record<string, National>;
+  intl: IntlMatch[]; // le partite delle nazionali già giocate, le più recenti in fondo
   cup: Cup | null;
   playoffs: Playoffs | null; // spareggi della Serie B di questa stagione
   rules: { playoffs: boolean }; // regole della carriera: playoff e playout in Serie B

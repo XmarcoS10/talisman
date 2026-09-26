@@ -1,64 +1,58 @@
-# Debito tecnico — revisione dopo F6, F7, F8 (P12)
+# Debito tecnico — revisione del 26/09/2026 (dopo i Blocchi 1-6 e le nazionali)
 
-Revisione di salute del codice, senza funzioni nuove. Priorità = impatto × rischio (1-5 ciascuno).
-Stima in ore di lavoro di Claude, test compresi.
+Salute del codice, senza funzioni nuove. Priorità = impatto × rischio (1-5 ciascuno); stima in ore di lavoro di
+Claude, test compresi. La revisione precedente (dopo F6-F8) è in fondo.
 
-## Numeri
+## Numeri di oggi
 
-**I dieci file più lunghi** (senza test): `match/engine.ts` 793 · `balance.ts` 530 · `model.ts` 438 · `world.ts` 384 ·
-`narrative/rules/club.ts` 307 · `transfers/contracts.ts` 259 · `narrative/rules/player.ts` 235 · `transfers/market.ts` 198 ·
-`match.ts` 183 · `morale.ts` 178.
+**I dieci file più lunghi** (senza test): `engine/balance.ts` 688 · `engine/model.ts` 535 · `engine/world.ts` 496 ·
+`engine/narrative/rules/club.ts` 312 · `engine/match/positioning.ts` 271 · `engine/match/state.ts` 260 ·
+`engine/transfers/contracts.ts` 259 · `ui/match/renderer.ts` 255 · `engine/narrative/rules/player.ts` 235 ·
+`engine/match/decision.ts` 214.
 
-**Le funzioni più complesse** (punti di decisione: if, cicli, case, && || ?? e ternari):
+**Le funzioni con più punti di decisione** (if, cicli, case, `&&`, `||`, `??`, ternari):
 
-| Funzione | Complessità | Righe |
+| Funzione | Punti di decisione | Righe |
 |---|---|---|
-| `match/engine.ts: runMatch` | 203 | 623 — è un modulo a chiusure: la contano tutte le funzioni interne |
-| `match/decision.ts: options` | 52 | 102 |
-| `ui/App.tsx: App` | 43 | 112 |
-| `social.ts: weekSocial` | 37 | 46 |
-| `match/engine.ts: act` | 29 | 74 |
-| `development.ts: developPlayer` | 28 | 57 |
-| `match/engine.ts: shoot` | 26 | 36 |
-| `ui/match/renderer.ts: draw` | 25 | 91 |
-| `ui/match/analyst.ts: context` | 23 | 43 |
-| `narrative/scanner.ts: weekStories` | 22 | 50 |
+| `ui/App.tsx: App` | 55 | 136 |
+| `ui/screens/Live.tsx: Live` | 46 | 150 |
+| `ui/screens/Tables.tsx: Tables` | 46 | 115 |
+| `ui/screens/PlayerView.tsx: PlayerView` | 43 | 151 |
+| `ui/screens/Market.tsx: Market` | 38 | 129 |
+| `engine/social.ts: weekSocial` | 36 | 47 |
+| `ui/screens/LiveLoop.ts: useLiveLoop` | 34 | 83 |
+| `ui/match/overlays.ts: drawOverlays` | 32 | 61 |
 
-**Pulito:** nessun `any` fuori dalle migrazioni (dove è giustificato), nessun TODO o FIXME aperto, tutti i `as unknown as`
-(5) sono nelle migrazioni dei salvataggi con commento. Il motore gira in Node puro (`pnpm sim`) e `engine.test.ts`
-blocca gli import proibiti.
+**Cambiato in meglio dalla revisione precedente**: il motore partita non è più una chiusura da 623 righe con
+complessità 203, ma un insieme di moduli con stato esplicito (`match/state.ts`); `structure.test.ts` fa fallire la
+build se una funzione del motore supera le 80 righe o i 20 punti di decisione, e `golden.test.ts` dice subito se una
+modifica cambia le partite. Le dieci funzioni più intricate sono oggi tutte componenti React, dove i punti di
+decisione sono soprattutto rami di JSX.
+
+**Pulito**: nessun `any` fuori dalle migrazioni, nessun TODO aperto, nessuna costante di taratura fuori da
+`balance.ts`, motore eseguibile in Node puro (`engine.test.ts` blocca gli import proibiti).
 
 ## Registro
 
 | # | Voce | Impatto | Rischio | Priorità | Stima |
 |---|---|---|---|---|---|
-| 1 | **Salvataggi vicino al limite del `localStorage`, e il fallimento è silenzioso.** Uno slot pesa ~2,7 milioni di caratteri dopo cinque stagioni e cresce; tre slot sono ~8 milioni, oltre il limite di circa 5 milioni per l'intera app. Quando si sfora, il salvataggio automatico restituisce `false` e finisce in `console.error`: nessuno lo vede, e si perdono partite giocate. | 5 | 5 | **25** | 3 h |
-| 2 | **Funzioni copiate in più file.** `clamp` è definita 13 volte, l'età 4 volte, i punti a partita nelle ultime cinque 2 volte (`board.ts` e `finance/ledger.ts`, identiche). Una correzione fatta in un posto non arriva negli altri. | 3 | 4 | **12** | 1 h |
-| 3 | **Costanti di taratura fuori da `balance.ts`** nelle parti nuove, contro la regola 3 del progetto: effetto spogliatoio degli acquisti (0,4 · 12 · 20 · 13 · 0,3 · 0,05), probabilità degli agenti (0,2) e del parametro zero (0,3), accettazione del rinnovo (95 · 6 · ×3), gol in nazionale per ruolo (0,6 · 0,2), presenze nei tornei (3/4/5/6), soglia dei minuti degli agenti (0,25). Più due costanti morte (`revenuePerSeat`, `revenuePerRep2`) rimaste dopo F8, con un commento `ponytail` ormai falso. | 3 | 3 | **9** | 1 h |
-| 4 | **`runMatch` è una chiusura da 623 righe.** Funziona ed è veloce, ma ogni modifica al motore passa di lì. Spezzarla in un modulo con stato esplicito renderebbe il motore leggibile, ma tocca il cuore del bilanciamento. | 3 | 2 | 6 | 6 h |
-| 5 | **Benchmark delle 10.000 partite** a ~47 s contro un obiettivo di 20 s (aperto da F5). Il ciclo caldo è `options()`. | 2 | 2 | 4 | 4 h |
-| 6 | **Test lenti**: la suite completa impiega ~46 s perché diversi test giocano stagioni intere. Va bene oggi; con altre fasi diventerà un freno. | 2 | 2 | 4 | 2 h |
-| 7 | **Nessun test sull'interfaccia.** I percorsi critici del motore (salvataggio, migrazioni, mercato, finanze) sono coperti; le schermate no, e gli errori di interfaccia li trova solo il collaudo a mano. | 2 | 2 | 4 | 5 h |
-| 8 | **`options()` in `decision.ts` ha complessità 52** su 102 righe: è il ciclo più caldo, commentato, e toccarlo senza benchmark è rischioso. | 2 | 1 | 2 | 3 h |
+| 1 | **Nessun test sull'interfaccia.** I percorsi critici del motore sono coperti; le schermate no. Un errore in una schermata lo trova solo chi gioca. Basterebbero pochi test di montaggio sulle cinque schermate più usate. | 3 | 3 | **9** | 5 h |
+| 2 | **`App.tsx` è il crocevia di tutto** (55 punti di decisione): navigazione, modali, giornata, partita dal vivo, avvisi. Si può spezzare in un router e due o tre contenitori senza cambiare comportamento. | 2 | 3 | 6 | 3 h |
+| 3 | **Test lenti**: la suite completa impiega ~4 minuti, perché parecchi test giocano stagioni intere. Va bene oggi; con altri sistemi diventerà un freno. Si può marcare la parte lenta e lasciarla alla CI. | 2 | 2 | 4 | 2 h |
+| 4 | **`balance.ts` è arrivato a 688 righe.** Resta leggibile perché è diviso in sezioni commentate, ma conviene spezzarlo per sistema (partita, mercato, persone, società) quando si toccherà di nuovo. | 1 | 2 | 2 | 2 h |
+| 5 | **`world.ts` fa da direttore d'orchestra** (496 righe): calendario, avanzamento, fine stagione, promozioni. Ogni sistema nuovo aggiunge una riga lì. Da guardare se cresce ancora. | 2 | 1 | 2 | 3 h |
 
-## Risolte in questa revisione
+Niente di urgente: nessuna voce tocca la correttezza, e le prime due si possono fare in una sessione tranquilla.
 
-Come chiede P12, **solo le prime tre voci**, ognuna in un commit separato, senza toccare i test esistenti. Dopo ogni
-commit: stessi test verdi, e gli stessi numeri nei report di stagione e di mercato (2,61 gol, correlazione 0,76,
-4 campioni; 60 acquisti, inflazione 1,01×).
+---
 
-1. **Salvataggi** — in Electron gli slot sono file nella cartella dati dell'app, scritti in modo atomico; alla prima
-   lettura si copiano dal localStorage, che resta come riserva. Un salvataggio fallito mostra un avviso e "Salva ed
-   esci" non esce. Provato aprendo il gioco vero: lo slot esistente è stato copiato su file e si legge.
-   Nel browser di sviluppo (`pnpm dev`) resta il localStorage, col limite: lì l'avviso è l'unica difesa.
-2. **Funzioni condivise** in `engine/util.ts`: `clamp`, `age`, `pointsPerGame`.
-3. **Costanti in `balance.ts`**, con gli stessi valori; tolte le due morte.
+## Revisione precedente (dopo F6, F7, F8)
 
-Restano aperte le voci 4-8, da riprendere alla prossima revisione.
+Erano aperte otto voci. Le tre più gravi furono risolte allora (salvataggi su file con avviso, funzioni condivise in
+`engine/util.ts`, costanti riportate in `balance.ts`). Delle altre, oggi sono chiuse:
 
-## Controlli di P12, punto 5
+- **`runMatch` da 623 righe** → spezzata nei moduli di `match/` con `structure.test.ts` a guardia.
+- **Benchmark delle 10.000 partite** a 47 s → oggi 6,5 s (e `pnpm bench` misura il motore su un thread solo).
+- **`options()` con complessità 52** → rientrata nei limiti del test di struttura.
 
-- Il motore gira in Node puro: `pnpm sim` lo esegue senza bundler, compresi i JSON dei testi (importati con
-  `with { type: 'json' }`).
-- `engine.test.ts` controlla ogni file del motore: nessun import di React, DOM, Electron o `node:*`, nessun caso nativo,
-  nessuna data reale. Il file nuovo `util.ts` è coperto dallo stesso test.
+Restano, riportate qui sopra: i test dell'interfaccia e la lentezza della suite.

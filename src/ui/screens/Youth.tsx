@@ -10,6 +10,7 @@ import { intakePreview, youthTable } from '../../engine/youth/primavera.ts';
 import { youngsters } from '../../engine/youth/intake.ts';
 import { PosBadge, Stars, fullName } from '../bits.tsx';
 import { t } from '../i18n.ts';
+import { IntlMatches } from './IntlMatches.tsx';
 
 const level = (v: number) => (v >= 16 ? 'top' : v >= 11 ? 'good' : v >= 6 ? 'ok' : 'low');
 /** il responsabile del vivaio: un nome stabile per club, la sua bravura è il reclutamento del club */
@@ -107,6 +108,8 @@ export function Youth({ world, onPlayer, onChange }: { world: WorldState; onPlay
             {honours.length === 0 && <span className="muted small">{t('intl.noHonours')}</span>}
             {honours.map((h) => <span key={`${h.season}${h.tournament}`} className="small">{t(`intl.${h.tournament}`, { season: h.season, nation: t(`nation.${h.code}`) })}</span>)}
           </div>
+
+          <IntlMatches world={world} nations={new Set(club.playerIds.map((id) => world.players[id]!.nation))} onPlayer={onPlayer} />
 
           <div className="panel">
             <div className="row" style={{ justifyContent: 'space-between' }}><h2><Building2 size={18} /> {t('youth.invest')}</h2><span className="tag num">{t('youth.capital', { n: Math.round(b.capital) })}</span></div>

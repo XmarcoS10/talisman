@@ -27,6 +27,7 @@ Report completi in questa cartella (`f5-*.md`, `development.md`, `psychology.md`
 | Età media del picco | 27 – 30 | ✅ 27,1 (al limite) |
 | Impatto del morale sui punti (pessimo vs ottimo) | 6 – 15% | ✅ 13,0% |
 | Niente cicli esplosivi del morale | media lontana da 0 e 100 | ✅ media 56, 10°-90° percentile 46-66 |
+| Gol per partita delle nazionali | ~2,9 | ⚠️ 3,9 (divari enormi fra nazionali, `2026-09-26.md`) |
 | Trasferimenti per finestra (Serie A) | 90 – 160 | — (F7) |
 | Monte ingaggi / fatturato | 55 – 80% | — (F8) |
 | Voto medio in pagella | ~6,6-6,8 | ✅ 6,65 (F4) |
