@@ -31,7 +31,7 @@ export const DAYS_BETWEEN_ROUNDS = 7;
 
 const LEAGUES = [
   { id: 'ITA1', name: 'Serie A', level: 1, promote: 0, relegate: 3, rep: [55, 90] },
-  { id: 'ITA2', name: 'Serie B', level: 2, promote: 3, relegate: 0, rep: [30, 58] },
+  { id: 'ITA2', name: 'Serie B', level: 2, promote: 3, relegate: 0, rep: [36, 60] }, // Blocco 4 (scelta 2A): era [30, 58], una B più debole di quanto il mondo sostiene
 ] as const;
 
 function addPlayer(world: WorldState, rng: Rng, club: Club, pos: Position, ageRange?: [number, number]): Player {
