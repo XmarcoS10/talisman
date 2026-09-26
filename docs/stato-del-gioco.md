@@ -43,7 +43,7 @@ misurare il bilanciamento e di rigenerare le stesse immagini o gli stessi risult
 ## 3. Il mondo
 
 Alla creazione (`newWorld`) nascono **3 campionati da 20 club** (Serie A, Serie B e una Serie C di contorno),
-**1.500 giocatori**, **132 agenti** e **192 osservatori**. Nessun nome reale: club, città e persone escono da liste di nomi comuni
+**1.500 giocatori**, **~130 agenti** e **192 osservatori**. Nessun nome reale: club, città e persone escono da liste di nomi comuni
 (`names.ts`), e il formato del mondo è pensato perché un domani l'utente carichi i propri dati.
 
 **I club** hanno nome, città, tre colori, anno di fondazione (1890-1960), reputazione 1-100, filosofia (giovani,
@@ -220,7 +220,7 @@ Sul tavolo ci sono contanti, rate (ogni anno di dilazione sconta il 7%), bonus p
 incassano forse), percentuale sulla rivendita, contropartite tecniche, prestito con diritto o obbligo di riscatto.
 Servono **due sì**: quello del club e quello del giocatore sullo stipendio.
 
-**Agenti** (86 nel mondo): hanno personalità, commissione e **memoria per club**. Propongono assistiti, chiedono
+**Agenti** (~130 nel mondo): hanno personalità, commissione e **memoria per club**. Propongono assistiti, chiedono
 rinnovi, spingono per uscire. Trattali male e te lo ricordano.
 
 **Contratti**: durata 5 anni sotto i 24, 4 nel picco, 2 sopra i 31. Un quarto dei contratti ha una clausola
