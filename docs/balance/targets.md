@@ -54,3 +54,13 @@ Verifica: `pnpm sim -- --match-stats 4000`. Fonti e correzioni ai target propost
 | Gol da piazzato (corner, punizione, rigore) | 25-35% | ~30% | 26,8% ✅ |
 | Gol in contropiede | 5-10% | 7,1% (record Premier) | 2,7% ❌ |
 | Possesso della nettamente più forte (CA medio +15) | 57-63% | 59,8% (Inter) | 50,4% ❌ |
+
+## Carriere lunghe (Blocco 4, `pnpm sim -- --career 25 --seed 42`, semi 42 / 7 / 99)
+| Metrica | Target |
+|---|---|
+| Correlazione forza ↔ punti, media di 25 stagioni | 0,75 – 0,85 |
+| 60 migliori: crescita massima sulla prima stagione | ≤ 3 punti di abilità |
+| Distacco fra XI medi di Serie A e Serie B: scarto massimo dalla prima stagione | ≤ 5 |
+| Commissariamenti ogni 10 stagioni | 1 – 3 |
+
+Risultati e leve in `2026-09-26.md`.
