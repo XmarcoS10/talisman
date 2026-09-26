@@ -37,7 +37,7 @@ app.on('browser-window-created', async (_e, win) => {
     await loaded();
     win.setContentSize(1440, 900);
     win.show();
-    const s = { hints: false, seen: [], visited: ['board', 'squad', 'tactics', 'training', 'live'], guideDone: true, volume: { ui: 0, crowd: 0, fx: 0 },
+    const s = { lang: 'it', hints: false, seen: [], visited: ['board', 'squad', 'tactics', 'training', 'live'], guideDone: true, volume: { ui: 0, crowd: 0, fx: 0 },
       view: 'full', camera: 'follow', overlays: [] };
     await js(`localStorage.setItem('talisman-settings', ${JSON.stringify(JSON.stringify(s))}); location.reload();`);
     await loaded();

@@ -68,7 +68,7 @@ app.on('browser-window-created', async (_e, win) => {
     win.webContents.setBackgroundThrottling(false);
     await loaded();
     win.show();
-    await js(`localStorage.setItem('talisman-settings', JSON.stringify({ hints: false, seen: [], visited: ['board', 'squad', 'tactics', 'training', 'live'], guideDone: true, volume: { ui: 0, crowd: 0, fx: 0 } })); location.reload();`);
+    await js(`localStorage.setItem('talisman-settings', JSON.stringify({ lang: 'it', hints: false, seen: [], visited: ['board', 'squad', 'tactics', 'training', 'live'], guideDone: true, volume: { ui: 0, crowd: 0, fx: 0 } })); location.reload();`);
     await loaded();
     for (const [w, h] of [[1280, 800], [1920, 1080]]) {
       win.setMinimumSize(800, 600);

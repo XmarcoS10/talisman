@@ -20,7 +20,7 @@ app.on('browser-window-created', async (_e, win) => {
   const loaded = () => new Promise((r) => win.webContents.once('did-finish-load', r));
   const js = (code) => win.webContents.executeJavaScript(code);
   const click = (text) => js(`(() => { const b = [...document.querySelectorAll('button')].find((b) => b.textContent.includes(${JSON.stringify(text)})); if (b) b.click(); return !!b; })()`);
-  const shot = async (name, ms = 900) => {
+  const shot = async (name, ms = 1600) => { // le schermate pesanti (classifiche) finiscono il disegno dopo più di un secondo
     await wait(ms);
     // la finestra deve ridisegnarsi davvero, se no la foto è quella di prima
     win.webContents.invalidate();
@@ -36,7 +36,7 @@ app.on('browser-window-created', async (_e, win) => {
     win.show();
     win.focus();
     // niente suggerimenti né guida nelle foto, audio spento
-    await js(`localStorage.setItem('talisman-settings', JSON.stringify({ hints: false, seen: [], visited: ['board', 'squad', 'tactics', 'training', 'live'], guideDone: true, volume: { ui: 0, crowd: 0, fx: 0 } })); location.reload();`);
+    await js(`localStorage.setItem('talisman-settings', JSON.stringify({ lang: 'it', hints: false, seen: [], visited: ['board', 'squad', 'tactics', 'training', 'live'], guideDone: true, volume: { ui: 0, crowd: 0, fx: 0 }, view: 'full', camera: 'follow', overlays: [] })); location.reload();`);
     await loaded();
     await wait(800);
     await shot('inizio', 300);
@@ -46,7 +46,20 @@ app.on('browser-window-created', async (_e, win) => {
       await click(nav);
       await shot(name);
     }
-    if (await click('Guarda la partita')) await shot('partita', 14000);
+    if (await click('Guarda la partita')) {
+      // la partita si gioca tutta, poi si torna a 4 secondi prima di una grande occasione del secondo tempo: a metà
+      // di un'azione vera, con il punteggio e il racconto già pieni (all'inizio il campo è vuoto e scorre veloce)
+      const until = async (cond, ms = 15000) => { for (let t = 0; t < ms; t += 100) { if (await js(cond)) return true; await wait(100); } return false; };
+      await until('!!window.talismanLive');
+      await js(`(() => { const L = window.talismanLive; L.run.result(); L.seek(L.run.track[L.run.track.length - 1].at); return true; })()`);
+      for (const b of ['Riprendi il secondo tempo', 'Torna al campo']) { await until(`[...document.querySelectorAll('button')].some((b) => b.textContent.includes(${JSON.stringify(b)}))`, 4000); await click(b); await wait(300); }
+      const at = await js(`(() => { const L = window.talismanLive; const half = L.run.track[L.run.track.length - 1].at / 2;
+        const ok = (f) => (f.beats ?? []).some((b) => b.kind === 'shot' && (b.xg ?? 0) >= 0.15);
+        const t = L.run.frames.map((f, k) => ok(f) ? L.run.track.find((p) => p.step === k)?.at : null).filter((x) => x != null && x > half);
+        return t[0] ?? half; })()`);
+      await js(`window.talismanLive.speed = 1; window.talismanLive.seek(${at - 4}); true`);
+      await shot('partita', 3200);
+    }
   } catch (e) {
     console.error(e);
   }
