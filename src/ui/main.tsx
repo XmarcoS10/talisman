@@ -16,10 +16,12 @@ import '@fontsource/space-grotesk/600.css';
 import './app.css';
 import { installDiagnostics } from './diag.ts';
 import { setLang } from './i18n.ts';
-import { settings } from './settings.ts';
+import { applyTheme, settings } from './settings.ts';
 import { LanguageGate } from './screens/LanguageGate.tsx';
 
 installDiagnostics(); // gli errori non gestiti si tengono per la diagnostica
+applyTheme();
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
 
 /** la lingua prima di tutto: alla prima apertura la si sceglie; cambiandola dalle Impostazioni si ridisegna tutto */
 function Root() {

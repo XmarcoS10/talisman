@@ -8,7 +8,7 @@ import { SCHEMA_VERSION, integrity } from '../../engine/save.ts';
 import { applyVolumes, playUi } from '../audio.ts';
 import { exportDiagnostics } from '../diag.ts';
 import { t, locale, lang, setLang } from '../i18n.ts';
-import { DEFAULTS, WIN_SIZES, applyWin, settings, updateSettings, type Settings, LANGS } from '../settings.ts';
+import { DEFAULTS, WIN_SIZES, applyTheme, applyWin, settings, updateSettings, type Settings, LANGS } from '../settings.ts';
 import type { WorldState } from '../../engine/model.ts';
 
 function Check({ on, set, title, sub }: { on: boolean; set: (v: boolean) => void; title: string; sub: string }) {
@@ -47,6 +47,11 @@ export function SettingsPanel({ world, onChange }: { world: WorldState; onChange
         <span className="caps">{t('settings.lang')}</span>
         <div className="seg-tabs" style={{ alignSelf: 'stretch' }}>
           {LANGS.map((l) => <button key={l} className={lang() === l ? 'active hot' : ''} onClick={() => { setLang(l); refresh(); }}>{t(`lang.${l}`)}</button>)}
+        </div>
+        <span className="caps">{t('settings.theme')}</span>
+        <div className="seg-tabs" style={{ alignSelf: 'stretch' }}>
+          {([['dark', t('settings.themeDark')], ['light', t('settings.themeLight')], ['system', t('settings.themeSystem')]] as const).map(([k, label]) => (
+            <button key={k} className={s.theme === k ? 'active hot' : ''} onClick={() => { set({ theme: k }); applyTheme(); }}>{label}</button>))}
         </div>
         <span className="caps">{t('settings.currency')}</span>
         <div className="seg-tabs" style={{ alignSelf: 'stretch' }}>
@@ -104,7 +109,7 @@ export function SettingsPanel({ world, onChange }: { world: WorldState; onChange
         <span className="muted small">{t('settings.diagHint')}</span>
         <div className="grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
           <button className="btn" onClick={async () => { const f = await exportDiagnostics(); setMsg(f ? t('settings.diagSaved', { file: f }) : null); }}><Bug size={14} /> {t('settings.diag')}</button>
-          <button className="btn" onClick={() => { if (confirm(t('settings.resetConfirm'))) { updateSettings({ ...DEFAULTS, seen: s.seen, visited: s.visited, guideDone: s.guideDone }); applyVolumes(); refresh(); } }}>{t('settings.reset')}</button>
+          <button className="btn" onClick={() => { if (confirm(t('settings.resetConfirm'))) { updateSettings({ ...DEFAULTS, seen: s.seen, visited: s.visited, guideDone: s.guideDone }); applyVolumes(); applyTheme(); refresh(); } }}>{t('settings.reset')}</button>
         </div>
         {msg && <span className="muted small">{msg}</span>}
       </div>

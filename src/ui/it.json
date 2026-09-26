@@ -1841,5 +1841,9 @@
   "rec.cupRoll": "Coppa nazionale",
   "csv.export": "Esporta in CSV (si apre con Excel)",
   "fin.projShort": "previsione",
-  "fin.cashMonthly": "Cassa a fine mese"
+  "fin.cashMonthly": "Cassa a fine mese",
+  "settings.theme": "Tema",
+  "settings.themeDark": "Scuro",
+  "settings.themeLight": "Chiaro",
+  "settings.themeSystem": "Come il sistema"
 }

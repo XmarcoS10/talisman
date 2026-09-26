@@ -25,12 +25,13 @@ export interface Settings {
   camera: CameraMode; // partita: campo intero, segui la palla, ravvicinata sui salienti
   overlays: OverlayKind[]; // partita: sovrapposizioni tattiche accese
   lang: Lang | ''; // lingua (Blocco 5); vuota finché non la si sceglie alla prima apertura
+  theme: 'dark' | 'light' | 'system'; // tema (0.3.0); «system» segue il sistema operativo
 }
 
 const KEY = 'talisman-settings';
 export const DEFAULTS: Settings = { hints: true, seen: [], visited: [], guideDone: false, volume: { ui: 0.5, crowd: 0.4, fx: 0.65 },
   muteOnBlur: true, autosave: true, pauseNews: true, currency: 'EUR', dateFmt: 'long', win: '', rail: false,
-  view: 'highlights', camera: 'follow', overlays: [], lang: '' };
+  view: 'highlights', camera: 'follow', overlays: [], lang: '', theme: 'dark' };
 
 let cache: Settings | null = null;
 
@@ -53,6 +54,13 @@ export function updateSettings(patch: Partial<Settings>) {
 
 declare global { interface Window { talismanWin?: { size(w: number, h: number): void } } }
 /** misure della finestra offerte nelle impostazioni (solo app desktop) */
+/** il tema sulla radice del documento (tokens.css); con «come il sistema» si richiama a ogni cambio del sistema */
+export function applyTheme() {
+  const th = settings().theme;
+  const light = th === 'light' || (th === 'system' && !window.matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.dataset.theme = light ? 'light' : 'dark';
+}
+
 export const WIN_SIZES = ['1280x800', '1440x900', '1600x1000', '1920x1080', '2560x1440'];
 export const applyWin = (v: string) => { const [w, h] = v.split('x').map(Number); if (w && h) window.talismanWin?.size(w, h); };
 

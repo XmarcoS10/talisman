@@ -1841,5 +1841,9 @@
   "rec.cupRoll": "National cup",
   "csv.export": "Export as CSV (opens in Excel)",
   "fin.projShort": "projection",
-  "fin.cashMonthly": "Cash at the end of each month"
+  "fin.cashMonthly": "Cash at the end of each month",
+  "settings.theme": "Theme",
+  "settings.themeDark": "Dark",
+  "settings.themeLight": "Light",
+  "settings.themeSystem": "Follow system"
 }

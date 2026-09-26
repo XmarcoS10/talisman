@@ -26,6 +26,10 @@
   --gold: #eab308;
   --blue: #3b82f6;
   --emerald: #10b981;
+  /* testo dei ruoli per reparto: più chiaro del colore di fondo del distintivo */
+  --badge-def: #60a5fa;
+  --badge-mid: #34d399;
+  --badge-att: #f87171;
   /* vetro (DESIGN.md, elevazione): livello 1 carte, livello 2 popover e modali */
   --glass-1: rgb(23 27 38 / 0.75);
   --glass-2: rgb(26 34 52 / 0.88);
@@ -44,5 +48,56 @@
   --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
   --font-ui: 'Hanken Grotesk', 'Inter', system-ui, sans-serif;
   --font-num: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, monospace;
+  color-scheme: dark;
+}
+
+/* Tema chiaro (0.3.0, Impostazioni): stessi nomi, altri valori; contrasto controllato da tokens.test.ts */
+:root[data-theme='light'] {
+  --bg-0: #eef1f5;
+  --bg-1: #e3e7ee;
+  --surface-1: #ffffff;
+  --surface-2: #f7f8fb;
+  --surface-3: #e7eaf0;
+  --border: rgb(15 23 42 / 0.1);
+  --border-2: rgb(15 23 42 / 0.18);
+  --text-1: #111827;
+  --text-2: #475569;
+  --text-3: #5f6b7d;
+  --accent: #007a52;
+  --accent-ink: #ffffff;
+  --positive: #007a52;
+  --warning: #a3480a;
+  --negative: #c81e1e;
+  --data-1: #0e7490;
+  --data-2: #007a52;
+  --data-3: #a3480a;
+  --data-4: #c81e1e;
+  --cyan-soft: #0369a1;
+  --gold: #8a5a00;
+  --blue: #2563eb;
+  --emerald: #059669;
+  --badge-def: #1d4ed8;
+  --badge-mid: #047857;
+  --badge-att: #b91c1c;
+  --glass-1: rgb(255 255 255 / 0.82);
+  --glass-2: rgb(255 255 255 / 0.94);
+  --input: #ffffff;
+  --shadow-1: 0 1px 2px rgb(15 23 42 / 0.08);
+  --shadow-2: 0 4px 16px rgb(15 23 42 / 0.1);
+  --shadow-3: 0 8px 32px -4px rgb(15 23 42 / 0.16), 0 0 1px 1px rgb(14 116 144 / 0.15);
+  --glow: 0 0 24px rgb(0 122 82 / 0.18);
+  color-scheme: light;
+}
+/* il campo resta erba scura anche col tema chiaro: dentro, i colori del tema scuro */
+:root[data-theme='light'] :is(.pitch, .pitch-wrap, .shot-map) {
+  --bg-1: #0a0e18;
+  --surface-3: #262a35;
+  --border: rgb(255 255 255 / 0.08);
+  --text-1: #dfe2f1;
+  --text-2: #94a3b8;
+  --text-3: #5b6577;
+  --accent: #00f59b;
+  --accent-ink: #0b0f19;
+  color: var(--text-1); /* il colore ereditato è già quello chiaro calcolato fuori: va ridetto qui */
   color-scheme: dark;
 }
