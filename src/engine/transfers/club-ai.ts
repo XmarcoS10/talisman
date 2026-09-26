@@ -62,8 +62,11 @@ export function taste(club: Club, p: Player, season: number): number {
 export function sellWillingness(world: WorldState, club: Club, p: Player, buyer?: Club): number {
   const base = baseWillingness(world, club, p);
   const gap = buyer ? buyer.reputation - club.reputation - CLUB_AI.pullFrom : 0;
-  if (gap <= 0 || base <= CLUB_AI.sellStripped) return base;
-  return Math.max(base, Math.min(CLUB_AI.pullMax, base + gap * CLUB_AI.pullPerRep * (p.personality.ambition / 10)));
+  // salire di categoria è un richiamo a parte: tiene i migliori della B in A (Blocco 4)
+  const up = buyer && (world.competitions[buyer.compId]?.level ?? 1) < (world.competitions[club.compId]?.level ?? 1) ? CLUB_AI.pullLeague : 0;
+  if ((gap <= 0 && !up) || base <= CLUB_AI.sellStripped) return base;
+  const pull = (Math.max(0, gap) * CLUB_AI.pullPerRep + up) * (p.personality.ambition / 10);
+  return Math.max(base, Math.min(CLUB_AI.pullMax + up, base + pull));
 }
 
 function baseWillingness(world: WorldState, club: Club, p: Player): number {

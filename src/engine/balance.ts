@@ -474,6 +474,7 @@ export const CLUB_AI = {
   pullFrom: 8, // punti di reputazione in più del venditore da cui il richiamo comincia a contare
   pullPerRep: 0.02, // disponibilità in più per ogni punto oltre, con ambizione 10
   pullMax: 0.6,
+  pullLeague: 0.3, // chi gioca in B e lo chiama la A spinge ancora di più (Blocco 4), con ambizione 10
   contractYears: [3, 5] as const,
 } as const;
 
