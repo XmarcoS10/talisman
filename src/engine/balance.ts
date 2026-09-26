@@ -671,6 +671,9 @@ export const YOUTH = {
 // --- nazionali (GUIDA §7.8) ---
 export const NATIONAL = {
   squad: 23,
+  // convocati per reparto (0.4.0): prima erano i 23 migliori e basta, e c'era chi restava senza portiere
+  shape: { gk: 3, def: 8, mid: 7, att: 5 },
+  restDays: 3, // giorni di recupero prima di ogni partita della pausa (senza, si giocava col fiato della giornata appena finita)
   windows: [56, 98, 168, 224] as const, // pause per le nazionali, in giorni dall'inizio stagione
   matchesPerWindow: 2,
   morale: 3, // essere convocati fa piacere (per partita giocata)

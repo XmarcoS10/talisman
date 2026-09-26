@@ -49,13 +49,18 @@ describe('vivaio (F8)', () => {
 });
 
 describe('nazionali (F8)', () => {
-  it('il ct convoca i migliori della sua nazione, e la pausa stanca e dà presenze', () => {
+  it('il ct convoca i migliori di ogni reparto della sua nazione, e la pausa stanca e dà presenze', () => {
     const world = newWorld(5);
     const squad = callUp(world, 'ITA');
     expect(squad.length).toBe(NATIONAL.squad);
     expect(squad.every((p) => p.nation === 'ITA')).toBe(true);
+    expect(squad.filter((p) => p.position === 'GK')).toHaveLength(NATIONAL.shape.gk); // mai senza portiere
     const others = Object.values(world.players).filter((p) => p.nation === 'ITA' && !squad.includes(p) && p.clubId !== null);
-    expect(Math.min(...squad.map((p) => p.ca))).toBeGreaterThanOrEqual(Math.max(...others.map((p) => p.ca)));
+    for (const pos of ['GK', 'ST', 'DC'] as const) { // in ogni reparto, chi resta a casa non è più forte dei convocati
+      const inSquad = squad.filter((p) => p.position === pos).map((p) => p.ca);
+      const home = others.filter((p) => p.position === pos).map((p) => p.ca);
+      if (inSquad.length && home.length) expect(Math.min(...inSquad)).toBeGreaterThanOrEqual(Math.max(...home));
+    }
     const fatigue = squad[0]!.condition.fatigue;
     internationalBreak(world, new Rng(2));
     expect(squad[0]!.intl.caps).toBeGreaterThan(0);

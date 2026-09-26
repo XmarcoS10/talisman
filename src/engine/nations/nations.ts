@@ -1,7 +1,7 @@
 // Nazionali (GUIDA §7.8): convocazioni decise dall'IA, pause internazionali che stancano e a volte fanno male,
 // tornei estivi (Europeo negli anni divisibili per quattro, Mondiale due anni dopo) che muovono il valore.
 // Le partite si giocano col motore vero (`nations/match.ts`): gol, cartellini e infortuni sono quelli della partita.
-import { NATIONAL } from '../balance.ts';
+import { MATCH, NATIONAL } from '../balance.ts';
 import type { IntlMatch, National, WorldState } from '../model.ts';
 import { addNews } from '../news.ts';
 import { NATIONS } from '../names.ts';
@@ -26,6 +26,11 @@ export function internationalBreak(world: WorldState, rng: Rng) {
   // Alla seconda giornata la fascia scorre di uno, così non si rigioca la stessa partita.
   const pots = [...codes].sort((x, y) => strength(world, y) - strength(world, x));
   for (let round = 0; round < NATIONAL.matchesPerWindow; round++) {
+    // fra la giornata di campionato (o la partita prima) e questa passano alcuni giorni: i convocati recuperano
+    for (const code of codes) for (const p of callUp(world, code)) {
+      const rec = NATIONAL.restDays * MATCH.fitnessRecoveryPerDay * (1 - p.condition.fatigue / 200);
+      p.condition.fitness = Math.round(Math.min(100, p.condition.fitness + rec));
+    }
     const draw = round % 2 === 0 ? pots : [pots[0]!, ...pots.slice(2), pots[1]!];
     for (let i = 0; i + 1 < draw.length; i += 2) {
       const [x, y] = rng.next() < 0.5 ? [draw[i]!, draw[i + 1]!] : [draw[i + 1]!, draw[i]!]; // chi gioca in casa
