@@ -1,6 +1,8 @@
 # Note di rilascio
 
-## In arrivo
+## 0.2.1 — le nazionali
+
+Le carriere della 0.2.0 si aprono da sole (passano al formato 28).
 
 - **Le partite delle nazionali si giocano davvero.** Prima erano un risultato calcolato da una formula: adesso passano
   dal motore del gioco, con formazione, cambi, cartellini e infortuni. Ogni gol ha un nome e un minuto, le presenze
@@ -54,7 +56,9 @@ nuove si scrivono nella lingua che scegli.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
 
-## Coming next (English)
+## 0.2.1 — the national teams (English)
+
+Careers from 0.2.0 open on their own (they move to save format 28).
 
 - **International matches are actually played.** They used to be a formula: now they go through the match engine, with
   line-ups, substitutions, cards and injuries. Every goal has a name and a minute, caps are real appearances, and the

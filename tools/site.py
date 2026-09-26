@@ -6,9 +6,9 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'site')
 REPO = 'https://github.com/XmarcoS10/talisman'
 SITE = 'https://xmarcos10.github.io/talisman/'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
-VERSION = '0.2.0'
+VERSION = '0.2.1'
 SIZE = '123 MB'
-SHA = 'b50b101800b54cc643d5fdb5a25e3cb0217adbb9c0fa8f62bfc2f860becf3610'
+SHA = '435b51bcdf0b19e76fa473bc63f40cf0d225c9e0cb19c310f3228fa445ad14f8'
 # pnpm sim -- --seasons 10 --seed 42 con la 0.2.0
 SIM_GOALS = {'it': '2,56', 'en': '2.56'}
 SIM_DRAWS = {'it': '23,2%', 'en': '23.2%'}
@@ -543,6 +543,7 @@ def download():
         <div class="panel">
           <h3>{x('Novità della', 'New in')} {VERSION}</h3>
           <ul class="checks">
+            <li>{x('<b>Le nazionali giocano davvero</b>: partite col motore del gioco, marcatori e presenze vere.', '<b>National teams really play</b>: matches run by the game engine, real scorers and caps.')}</li>
             <li>{x('<b>La partita in 2D rifatta</b>: salienti, replay, sovrapposizioni tattiche, tre telecamere.', '<b>The 2D match rebuilt</b>: highlights, replays, tactical overlays, three cameras.')}</li>
             <li>{x('<b>Un motore più ricco</b>: dribbling, cross e duelli aerei, portiere, piazzati con schemi, fatica vera.', '<b>A richer engine</b>: dribbles, crosses and aerial duels, goalkeepers, set-piece routines, real fatigue.')}</li>
             <li>{x('<b>Istruzioni individuali</b> e <b>piani partita</b> che scattano da soli.', '<b>Player instructions</b> and <b>match plans</b> that kick in on their own.')}</li>
@@ -688,7 +689,7 @@ def community():
         </div>
       </div>
     </section>
-{cta(x('Scendi in campo.', 'Take the field.'), x('Scarica la 0.2.0 e dicci cosa ne pensi.', 'Download 0.2.0 and tell us what you think.'))}'''
+{cta(x('Scendi in campo.', 'Take the field.'), x(f'Scarica la {VERSION} e dicci cosa ne pensi.', f'Download {VERSION} and tell us what you think.'))}'''
     page('community.html', x('Community e note — Tactic F.C. Manager', 'Community and notes — Tactic F.C. Manager'),
          x('Tactic F.C. Manager è aperto (GPL-3.0), offline e senza telemetria. Roadmap, formato del mondo e come partecipare.',
            'Tactic F.C. Manager is open (GPL-3.0), offline and without telemetry. Roadmap, world format and how to get involved.'), body)
