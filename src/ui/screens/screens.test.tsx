@@ -3,7 +3,9 @@
 import { describe, expect, it } from 'vitest';
 import type { ReactElement } from 'react';
 import { renderToString } from 'react-dom/server';
-import type { WorldState } from '../../engine/model.ts';
+import type { Player, WorldState } from '../../engine/model.ts';
+import { range } from '../../engine/scouting/fog.ts';
+import { fullName } from '../bits.tsx';
 import { advance, newWorld } from '../../engine/world.ts';
 import { BoardView } from './BoardView.tsx';
 import { ClubView } from './ClubView.tsx';
@@ -57,5 +59,24 @@ for (let i = 0; i < 6; i++) advance(midSeason);
 describe.each([['mondo nuovo', fresh], ['metà stagione', midSeason]])('schermate su %s', (_, w) => {
   it.each(screens(w))('%s si disegna', (_name, el) => {
     expect(renderToString(el).length).toBeGreaterThan(100);
+  });
+});
+
+describe('nebbia nella rosa degli altri (§7.6)', () => {
+  it("l'ordine segue le stime, non l'abilità vera", () => {
+    const w = fresh;
+    const center = (p: Player) => { const [lo, hi] = range(w, p, 'ca'); return (lo + hi) / 2; };
+    let differs = 0;
+    for (const club of Object.values(w.clubs).filter((c) => c.id !== w.manager.clubId).slice(0, 10)) {
+      const html = renderToString(<Squad world={w} clubId={club.id} onPlayer={nop} />);
+      const players = club.playerIds.map((id) => w.players[id]!);
+      for (const pos of new Set(players.map((p) => p.position))) {
+        const group = players.filter((p) => p.position === pos);
+        const shown = [...group].sort((a, b) => html.indexOf(`>${fullName(a)}<`) - html.indexOf(`>${fullName(b)}<`)).map((p) => p.id);
+        expect(shown).toEqual([...group].sort((a, b) => center(b) - center(a)).map((p) => p.id));
+        if (shown.join() !== [...group].sort((a, b) => b.ca - a.ca).map((p) => p.id).join()) differs++;
+      }
+    }
+    expect(differs).toBeGreaterThan(0); // la prova ha senso solo se stime e verità non coincidono sempre
   });
 });

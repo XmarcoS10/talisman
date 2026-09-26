@@ -3,7 +3,7 @@ import { ATTR_GROUPS, POSITIONS, type AttrKey, type Player, type WorldState } fr
 import { age } from '../../engine/players.ts';
 import { value } from '../../engine/transfers/valuation.ts';
 import { PosBadge, Stars, attrClass, fullName } from '../bits.tsx';
-import { estimate } from '../../engine/scouting/fog.ts';
+import { estimate, range } from '../../engine/scouting/fog.ts';
 import { Ability, Est } from '../fog.tsx';
 import { Download } from 'lucide-react';
 import { downloadCsv } from '../csv.ts';
@@ -31,12 +31,19 @@ type Group = keyof typeof GROUPS;
 const inGroup = (p: Player, g: Group, season: number) =>
   g === 'all' ? true : g === 'expiring' ? p.contract.until <= season : (GROUPS[g] as readonly string[]).includes(p.position);
 
+/** abilità su cui si ordina: la vera per i tuoi, il centro della stima per gli altri (§7.6: l'ordine non deve rivelarla) */
+const seenCa = (world: WorldState, p: Player, own: boolean, which: 'ca' | 'pa' = 'ca') => {
+  if (own) return which === 'ca' ? p.ca : p.pa;
+  const [lo, hi] = range(world, p, which);
+  return (lo + hi) / 2;
+};
+
 function columns(view: View, season: number, rep: number, world: WorldState, own: boolean): Col[] {
   const avg = (p: Player) => (p.stats.apps ? p.stats.ratingSum / p.stats.apps : 0);
   if (view === 'general') return [
     { key: 'age', label: t('col.age'), num: true, value: (p) => age(p, season) },
-    { key: 'ca', label: t('col.ability'), value: (p) => p.ca, cell: (p) => (own ? <Stars world={world} ca={p.ca} /> : <Ability world={world} p={p} which="ca" />) },
-    { key: 'pa', label: t('col.potential'), value: (p) => p.pa, cell: (p) => (own ? <Stars world={world} ca={p.pa} /> : <Ability world={world} p={p} which="pa" />) },
+    { key: 'ca', label: t('col.ability'), value: (p) => seenCa(world, p, own), cell: (p) => (own ? <Stars world={world} ca={p.ca} /> : <Ability world={world} p={p} which="ca" />) },
+    { key: 'pa', label: t('col.potential'), value: (p) => seenCa(world, p, own, 'pa'), cell: (p) => (own ? <Stars world={world} ca={p.pa} /> : <Ability world={world} p={p} which="pa" />) },
     { key: 'fit', label: t('col.fitness'), num: true, value: (p) => p.condition.fitness, cell: (p) => `${p.condition.fitness}%` },
     // il morale di uno spogliatoio che non è il tuo non lo puoi sapere
     { key: 'morale', label: t('col.morale'), num: true, value: (p) => (own ? p.psych.morale : 0),
@@ -75,7 +82,7 @@ function columns(view: View, season: number, rep: number, world: WorldState, own
   ];
   return (ATTR_GROUPS[view] as readonly AttrKey[]).map((k) => ({
     key: k, label: t(`attr.${k}`).slice(0, 4), title: t(`attr.${k}`), num: true,
-    value: (p: Player) => p.attrs[k],
+    value: (p: Player) => (own ? p.attrs[k] : estimate(world, p, k).mid),
     cell: (p: Player) => (own ? <b className={attrClass(p.attrs[k])}>{p.attrs[k]}</b> : <Est b={estimate(world, p, k)} />),
   }));
 }
@@ -105,7 +112,7 @@ export function Squad({ world, clubId, onPlayer, title }: { world: WorldState; c
   players.sort((a, b) => {
     const x = byKey.value(a), y = byKey.value(b);
     const c = typeof x === 'string' && typeof y === 'string' ? x.localeCompare(y) : (x as number) - (y as number);
-    return (c || b.ca - a.ca) * sort.dir;
+    return (c || seenCa(world, b, own) - seenCa(world, a, own)) * sort.dir;
   });
   const clickSort = (k: string) => setSort((s) => (s.key === k ? { key: k, dir: s.dir === 1 ? -1 : 1 } : { key: k, dir: k === 'pos' || k === 'name' ? 1 : -1 }));
 
