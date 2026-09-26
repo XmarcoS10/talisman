@@ -25,6 +25,7 @@ import { yearlyIntake, youthPa } from './youth/intake.ts';
 import { afterCupDay, cupFixtures, makeCup } from './cup.ts';
 import { afterPlayoffDay, makePlayoffs, playoffFixtures, serieB } from './playoffs.ts';
 import { preseason } from './friendlies.ts';
+import { endSeasonRecords } from './records.ts';
 import { seasonAdministration, weekDistress } from './finance/administration.ts';
 import { checkFFP, estimate, gate, payBonuses, seasonIncome, settleInstalments, trimWages, weekCosts } from './finance/ledger.ts';
 import { defaultTraining, trainWeek } from './training.ts';
@@ -101,7 +102,7 @@ export function newWorld(seed: number, season = 2026): WorldState {
   const rng = new Rng(seed);
   const world: WorldState = {
     schemaVersion: SCHEMA_VERSION, seed, rng: rng.s, season, day: 0,
-    manager: { name: '', clubId: 0, kept: 0, broken: 0, board: newBoard(), h2h: {}, style: 'none' }, players: {}, clubs: {}, competitions: {}, history: [], news: [],
+    manager: { name: '', clubId: 0, kept: 0, broken: 0, board: newBoard(), h2h: {}, style: 'none', seasons: [] }, players: {}, clubs: {}, competitions: {}, history: [], records: {}, news: [],
     causal: [], promises: [], talks: [], offers: [], arcs: [], press: null, nations: {}, intl: [], cup: null, playoffs: null, rules: { playoffs: true }, cupWinners: [], friendlies: null, intake: [], nextArcId: 1, nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
   };
   const cities = [...CITIES];
@@ -440,6 +441,7 @@ export function endSeason(world: WorldState): SeasonSummary {
     p.caLog = [p.ca];
     p.condition.fatigue = Math.round(p.condition.fatigue * 0.3); // vacanze
   }
+  endSeasonRecords(world, comps, tables); // record e storia, prima dei ritiri e del calendario nuovo
   world.season++;
 
   for (const club of Object.values(world.clubs)) {

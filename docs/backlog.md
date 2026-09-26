@@ -15,7 +15,12 @@ Quello che manca o che si vuole fare, in ordine di priorità. Le idee nuove vann
 
 ## Prima della 1.0
 
-- **Test dell'interfaccia**: oggi il motore è coperto, le schermate no (`docs/tech-debt.md`, voce 1).
+- **Test dell'interfaccia**: prova di montaggio di 17 schermate fatta nella 0.3.0 (`src/ui/screens/screens.test.tsx`);
+  i clic non sono ancora provati.
+- **Gol troppo concentrati sulle punte migliori** (trovato con i record della 0.3.0): il capocannoniere della Serie A
+  fa 42-65 gol in una stagione (semi 42 e 7), contro i 25-30 di un campionato vero (il record storico è 36). I gol
+  totali sono giusti (2,5 a partita), è la loro distribuzione a non esserlo. Serve un target in
+  `docs/balance/targets.md` e una taratura del motore partita: da fare insieme agli interventi sul motore della 0.5.0.
 - **Distacco fra Serie A e Serie B**: oscilla nelle prime 5-10 stagioni prima di assestarsi
   (`docs/balance/2026-09-26.md`). Da riguardare con una taratura dedicata, non è un errore.
 - **Partite delle nazionali in diretta**: si giocano col motore vero e se ne vedono risultati e marcatori, ma non si

@@ -13,6 +13,7 @@ import { Finance } from './Finance.tsx';
 import { Fixtures } from './Fixtures.tsx';
 import { Market } from './Market.tsx';
 import { PlayerView } from './PlayerView.tsx';
+import { Records } from './Records.tsx';
 import { Scouts } from './Scouts.tsx';
 import { Squad } from './Squad.tsx';
 import { Stories } from './Stories.tsx';
@@ -44,6 +45,7 @@ function screens(w: WorldState): [string, ReactElement][] {
     ['Calendario', <Fixtures world={w} clubId={me} onPlayer={nop} />],
     ['Giocatore mio', <PlayerView world={w} playerId={mine} onBack={nop} onClub={nop} onChange={nop} onPlayer={nop} />],
     ['Giocatore altrui', <PlayerView world={w} playerId={theirs} onBack={nop} onClub={nop} onChange={nop} onPlayer={nop} />],
+    ['Record', <Records world={w} onPlayer={nop} />],
     ['Club', <ClubView world={w} clubId={other.id} onPlayer={nop} onBack={nop} />],
   ];
 }

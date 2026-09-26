@@ -2,19 +2,19 @@
 import { useEffect, useReducer } from 'react';
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { settings, updateSettings } from './settings.ts';
-import { ArrowLeftRight, BriefcaseBusiness, CalendarDays, ChartColumn, Dumbbell, GraduationCap, Landmark, LayoutDashboard, LogOut,
+import { ArrowLeftRight, BriefcaseBusiness, CalendarDays, ChartColumn, Dumbbell, GraduationCap, Landmark, LayoutDashboard, LogOut, Medal,
   Network, Newspaper, Route, ScanSearch, Settings, Users, type LucideIcon } from 'lucide-react';
 import type { WorldState } from '../engine/model.ts';
 import { Crest } from './Crest.tsx';
 import { fmtSeason, t } from './i18n.ts';
 
-export type NavName = 'desk' | 'stories' | 'squad' | 'tactics' | 'training' | 'dressing' | 'youth' | 'market' | 'scouts' | 'finance' | 'board' | 'tables' | 'fixtures' | 'saves';
+export type NavName = 'desk' | 'stories' | 'squad' | 'tactics' | 'training' | 'dressing' | 'youth' | 'market' | 'scouts' | 'finance' | 'board' | 'tables' | 'fixtures' | 'records' | 'saves';
 
 const GROUPS: [string, [NavName, LucideIcon][]][] = [
   ['main', [['desk', LayoutDashboard], ['stories', Newspaper], ['squad', Users], ['tactics', Route]]],
   ['manage', [['training', Dumbbell], ['dressing', Network], ['youth', GraduationCap]]],
   ['market', [['market', ArrowLeftRight], ['scouts', ScanSearch], ['finance', Landmark], ['board', BriefcaseBusiness]]],
-  ['comps', [['tables', ChartColumn], ['fixtures', CalendarDays]]],
+  ['comps', [['tables', ChartColumn], ['fixtures', CalendarDays], ['records', Medal]]],
 ];
 
 interface Props { world: WorldState; active: string; onNav: (n: NavName) => void; onQuit: () => void }

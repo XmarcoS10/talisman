@@ -3,6 +3,7 @@ import { standings } from '../../engine/world.ts';
 import { Crest } from '../Crest.tsx';
 import { Kit } from '../Kit.tsx';
 import { fmtMoney, t, locale } from '../i18n.ts';
+import { ClubRecordsPanel } from './RecordsParts.tsx';
 import { Squad } from './Squad.tsx';
 
 export function ClubView({ world, clubId, onPlayer, onBack }: { world: WorldState; clubId: number; onPlayer: (id: number) => void; onBack: () => void }) {
@@ -29,6 +30,7 @@ export function ClubView({ world, clubId, onPlayer, onBack }: { world: WorldStat
         </div>
       </div>
       <Squad world={world} clubId={clubId} onPlayer={onPlayer} title={t('club.squad')} />
+      <ClubRecordsPanel world={world} clubId={clubId} onPlayer={onPlayer} />
     </div>
   );
 }

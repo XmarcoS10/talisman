@@ -13,6 +13,7 @@ import { ClubView } from './screens/ClubView.tsx';
 import { Desk } from './screens/Desk.tsx';
 import { Dressing } from './screens/Dressing.tsx';
 import { Fixtures } from './screens/Fixtures.tsx';
+import { Records } from './screens/Records.tsx';
 import { Live } from './screens/Live.tsx';
 import { MatchModal } from './screens/MatchReport.tsx';
 import { SeasonModal } from './screens/Modals.tsx';
@@ -187,6 +188,7 @@ export function App(_: { lang: string }) { // `lang`: cambiando lingua l'app si 
         {screen.name === 'board' && <BoardView world={world} onChange={changed} />}
         {screen.name === 'tables' && <Tables world={world} clubId={club.id} onPlayer={openPlayer} onClub={openClub} />}
         {screen.name === 'fixtures' && <Fixtures world={world} clubId={club.id} onPlayer={openPlayer} />}
+        {screen.name === 'records' && <Records world={world} onPlayer={openPlayer} />}
         {screen.name === 'saves' && <Saves world={world} onLoad={open} />}
         {screen.name === 'player' && <PlayerView key={screen.id} startDeal={screen.deal} world={world} playerId={screen.id} onBack={() => setScreen(screen.back)} onClub={openClub} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'club' && <ClubView world={world} clubId={screen.id} onPlayer={openPlayer} onBack={() => setScreen(screen.back)} />}

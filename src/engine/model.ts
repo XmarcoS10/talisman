@@ -384,6 +384,29 @@ export interface SeasonRecord {
   topScorer: { playerId: PlayerId; goals: number } | null;
 }
 
+/** record di un club (0.3.0): partite, miglior stagione e i primi di sempre per gol e presenze */
+export interface ClubRecords {
+  bigWin: MatchRecord | null;
+  bigLoss: MatchRecord | null;
+  best: { season: number; compId: CompId; level: number; pos: number; pts: number } | null;
+  scorers: Legend[];
+  apps: Legend[];
+}
+/** una partita di campionato vista dal club: gf sono i suoi gol */
+export interface MatchRecord { season: number; opp: ClubId; gf: number; ga: number; home: boolean }
+/** il nome si salva: chi si ritira esce dal mondo ma resta nei record */
+export interface Legend { playerId: PlayerId; name: string; apps: number; goals: number }
+/** una stagione dell'allenatore; nelle carriere nate prima della 0.3.0 campionato e punti non ci sono */
+export interface ManagerSeason {
+  season: number;
+  clubId: ClubId;
+  compId: CompId | null;
+  pos: number;
+  pts: number | null;
+  cup: { round: number; of: number; won: boolean } | null; // ultimo turno giocato in coppa (indice) su quanti
+  sacked: boolean;
+}
+
 /** l'offerta, con tutti i parametri della specifica */
 export interface Offer {
   fee: number; // parte fissa
@@ -505,7 +528,7 @@ export interface WorldState {
   rng: RngState;
   season: number; // anno di inizio stagione (2026 = 2026/27)
   day: number; // prossimo giorno da giocare
-  manager: { name: string; clubId: ClubId; kept: number; broken: number; board: Board; h2h: Record<ClubId, string>; style: ManagerStyle }; // promesse mantenute/rotte e testa a testa: memoria pluriennale
+  manager: { name: string; clubId: ClubId; kept: number; broken: number; board: Board; h2h: Record<ClubId, string>; style: ManagerStyle; seasons: ManagerSeason[] }; // promesse mantenute/rotte e testa a testa: memoria pluriennale
   players: Record<PlayerId, Player>;
   clubs: Record<ClubId, Club>;
   agents: Record<AgentId, Agent>;
@@ -513,6 +536,7 @@ export interface WorldState {
   known: Record<PlayerId, Known>; // la nebbia: solo quello che l'utente ha scoperto
   competitions: Record<CompId, Competition>;
   history: SeasonRecord[];
+  records: Record<ClubId, ClubRecords>; // record dei club, scritti a fine stagione (0.3.0)
   news: NewsItem[]; // notizie per l'utente, le più recenti in fondo
   causal: CausalEvent[]; // registro delle cause per i giocatori dell'utente, i più recenti in fondo
   promises: PlayerPromise[]; // promesse attive dell'utente

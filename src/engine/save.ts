@@ -10,7 +10,7 @@ import { assignAgents } from './transfers/agents.ts';
 import { makeScouts } from './scouting/scouts.ts';
 import { newBoard } from './board/board.ts';
 
-export const SCHEMA_VERSION = 28;
+export const SCHEMA_VERSION = 29;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -140,6 +140,24 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
   () => {},
   // 27 → 28 (nazionali col motore vero): l'archivio delle partite delle nazionali parte vuoto
   (w) => { w.intl = []; },
+  // 28 → 29 (0.3.0, record e storia): le stagioni dell'allenatore dai verdetti della dirigenza (senza campionato né
+  // punti, che non si sapevano); i primi di sempre di ogni club dalla storia dei giocatori ancora nel mondo
+  (w) => {
+    w.manager.seasons = ((w.manager.board?.verdicts ?? []) as Obj[]).map((v) => ({ season: v.season, clubId: w.manager.clubId, compId: null, pos: v.position, pts: null, cup: null, sacked: false }));
+    w.records = {};
+    for (const p of Object.values(w.players as Obj)) {
+      if (p.clubId === null) continue;
+      const rows = (p.history as Obj[]).filter((h) => h.clubId === p.clubId);
+      const l = { playerId: p.id, name: `${p.firstName} ${p.lastName}`, apps: rows.reduce((s, h) => s + h.apps, 0), goals: rows.reduce((s, h) => s + h.goals, 0) };
+      const r = (w.records[p.clubId] ??= { bigWin: null, bigLoss: null, best: null, scorers: [], apps: [] });
+      if (l.goals > 0) r.scorers.push(l);
+      if (l.apps > 0) r.apps.push(l);
+    }
+    for (const r of Object.values(w.records as Obj)) {
+      r.scorers = (r.scorers as Obj[]).sort((a, b) => b.goals - a.goals || b.apps - a.apps).slice(0, 10);
+      r.apps = (r.apps as Obj[]).sort((a, b) => b.apps - a.apps).slice(0, 10);
+    }
+  },
 ];
 
 export function serialize(world: WorldState): string {
