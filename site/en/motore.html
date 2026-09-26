@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2D engine and match — Tactic F.C. Manager</title>
+  <meta name="description" content="Tactic F.C. Manager's 2D match: every move calculated by the engine, highlights and replays, tactical overlays, the bench, the analyst and instant simulation." />
+  <meta name="theme-color" content="#0f131d" />
+  <meta property="og:title" content="2D engine and match — Tactic F.C. Manager" />
+  <meta property="og:description" content="Tactic F.C. Manager's 2D match: every move calculated by the engine, highlights and replays, tactical overlays, the bench, the analyst and instant simulation." />
+  <meta property="og:image" content="../img/partita.jpg" />
+  <link rel="alternate" hreflang="it" href="https://xmarcos10.github.io/talisman/motore.html" />
+  <link rel="alternate" hreflang="en" href="https://xmarcos10.github.io/talisman/en/motore.html" />
+  <link rel="icon" href="../favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html"><img src="../favicon.png" alt="" width="32" height="32" /><span>TFM <b>27</b><small>TACTIC F.C. MANAGER</small></span></a>
+      <nav id="nav">
+        <a href="index.html">Home</a>
+        <a href="caratteristiche.html">Features</a>
+        <a href="motore.html" class="on" aria-current="page">2D engine and match</a>
+        <a href="download.html">Download and guide</a>
+        <a href="community.html">Community and notes</a>
+      </nav>
+      <div class="actions">
+        <div class="lang" role="group" aria-label="Lingua / Language"><a href="../motore.html" hreflang="it" lang="it" title="Italiano" aria-label="Italiano"><svg viewBox="0 0 3 2" aria-hidden="true"><rect width="1" height="2" fill="#009246"/><rect x="1" width="1" height="2" fill="#fff"/><rect x="2" width="1" height="2" fill="#ce2b37"/></svg></a><a href="motore.html" hreflang="en" lang="en" class="on" aria-current="true" title="English" aria-label="English"><svg viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><clipPath id="uk"><path d="M30,15h30v15zv15h-30zh-30v-15zv-15h30z"/></clipPath><path d="M0,0v30h60v-30z" fill="#012169"/><path d="M0,0L60,30M60,0L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0L60,30M60,0L0,30" clip-path="url(#uk)" stroke="#c8102e" stroke-width="4"/><path d="M30,0v30M0,15h60" stroke="#fff" stroke-width="10"/><path d="M30,0v30M0,15h60" stroke="#c8102e" stroke-width="6"/></svg></a></div>
+        <a class="btn sm gh" href="https://github.com/XmarcoS10/talisman" title="GitHub" aria-label="GitHub"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg></a>
+        <a class="btn sm primary dl" href="https://github.com/XmarcoS10/talisman/releases/latest/download/TFM27-Setup.exe"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Download for Windows <small>123 MB</small></a>
+      </div>
+      <button class="btn sm menu" aria-controls="nav" aria-expanded="false" onclick="var n=document.getElementById('nav');this.setAttribute('aria-expanded',n.classList.toggle('open'))">Menu</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="wrap">
+        <span class="pill g">Match engine · move by move</span>
+        <h1>The 2D match:<br /><span class="hl">all the cards on the table.</span></h1>
+        <p class="lead">No cosmetic animation on top of a result already decided. Every pass, every press, every ball over the top you see is the one the engine has just calculated.</p>
+        <div class="stats">
+          <div class="stat"><span>Pitch</span><b>12 × 8</b><p>continuous zones: every player runs, nobody teleports</p></div>
+          <div class="stat"><span>Views</span><b class="cy">3</b><p>Highlights (4–7 minutes), Extended, Full; three cameras</p></div>
+          <div class="stat"><span>Decisions</span><b>On every move</b><p>pass, through ball, dribble, shot or cross</p></div>
+          <div class="stat"><span>Simulation</span><b class="cy">Instant</b><p>if you don't want to watch, the result in a moment</p></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="alt">
+      <div class="wrap">
+        <div class="head"><div class="kicker">Watch · new in 0.2.0</div><h2>Three moves, recorded from the game</h2>
+          <p>No editing: it's the 2D pitch as you see it when you play, with the camera following the ball.</p></div>
+        <div class="grid g3">
+          <div class="shot"><div class="bar">open-play goal<span>clip</span></div><video data-src="../clips/gol-azione.webm" muted loop playsinline preload="none" aria-label="A goal from open play"></video></div>
+          <div class="shot"><div class="bar">corner goal<span>clip</span></div><video data-src="../clips/gol-corner.webm" muted loop playsinline preload="none" aria-label="A goal from a corner"></video></div>
+          <div class="shot"><div class="bar">save<span>clip</span></div><video data-src="../clips/parata.webm" muted loop playsinline preload="none" aria-label="A save"></video></div>
+        </div>
+        <div class="grid g4" style="margin-top:28px">
+          <div class="panel"><span class="icon "><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg></span><h3>Replays</h3><p>Goals and big chances come back in slow motion. Every highlight can be watched again with one click.</p></div>
+          <div class="panel"><span class="icon cy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span><h3>Animated moments</h3><p>Dribble, tackle, header, save, keeper coming out, parry, offside: each with its own movement.</p></div>
+          <div class="panel"><span class="icon am"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg></span><h3>Overlays</h3><p>Line and shape, passing network, heatmap, pressing. Change an instruction and the old shape stays dashed.</p></div>
+          <div class="panel"><span class="icon "><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><h3>Readable</h3><p>The ball carrier's name, the high ball's shadow, who is pressing. Kits that never clash, a crowd that reacts.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="head"><div class="kicker">The live match</div><h2>The dugout console</h2>
+          <p>The pitch, the match stats, the commentary, the momentum and the analyst, all on one screen. The substitutions and instructions you decide really count: the engine only simulates a little ahead of what you're watching.</p></div>
+        <div class="shot"><div class="bar">live match<span>L2 engine</span></div><img src="../img/partita.jpg" alt="A live match: the 2D pitch, the bench and the analyst" loading="lazy" /></div>
+      </div>
+    </section>
+
+    <section class="alt">
+      <div class="wrap">
+        <div class="head"><div class="kicker cy">The analyst</div><h2>What's happening, and why</h2>
+          <p>For 90 minutes the analyst reads the data for you and turns it into advice: where you're losing the ball, who is tired, which channel you're leaving open.</p></div>
+        <div class="grid g4">
+          <div class="panel"><span class="icon "><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span><h3>Momentum</h3><p>Who's pushing and for how long: the chart fills up minute by minute.</p></div>
+          <div class="panel"><span class="icon cy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><h3>xG and shots</h3><p>The quality of chances, not just the count: a shot from distance isn't worth a tap-in.</p></div>
+          <div class="panel"><span class="icon am"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg></span><h3>Passes and channels</h3><p>Where the play goes through and where you lose it. Passing maps and heatmaps.</p></div>
+          <div class="panel"><span class="icon "><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg></span><h3>Duels and pressing</h3><p>Tackles, recoveries, pressure on the ball carrier. Who's holding up and who's giving way.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap split">
+        <div class="text">
+          <div class="kicker">Tactical changes</div>
+          <h2>Tactical pause: <span class="hl">change the game without stopping it for good.</span></h2>
+          <p>One pause and everything is in front of you: mentality, pressing, width, defensive line, directness. Substitutions, roles, player instructions, and play resumes.</p>
+          <div class="points">
+            <div class="point"><i><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg></i><div><b>Quick adjustments</b><p>Five team instructions and the mentality, without opening the full tactics screen.</p></div></div>
+            <div class="point"><i><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></i><div><b>Five substitutions and match plans</b><p>With condition, rating and cards in front of you. Plans prepared beforehand kick in on their own, and your assistant tells you.</p></div></div>
+            <div class="point"><i><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></i><div><b>Touchline instructions</b><p>Encourage, demand more, calm down. Players who handle pressure badly play worse if you demand more.</p></div></div>
+          </div>
+        </div>
+        <div class="shot"><div class="bar">console · quick adjustments<span>paused</span></div>
+          <pre class="code"><span class="c">// what you change here applies from the next move</span>
+<span class="k">mentality</span>       <span class="n">4</span>  <span class="s">attacking</span>
+<span class="k">pressing</span>        <span class="n">2</span>  <span class="s">high</span>
+<span class="k">width</span>           <span class="n">2</span>  <span class="s">wide</span>
+<span class="k">defensive line</span>  <span class="n">1</span>  <span class="s">medium</span>
+<span class="k">directness</span>      <span class="n">2</span>  <span class="s">direct</span>
+
+<span class="c">// substitution</span>
+<span class="k">off</span> MC  <span class="n">62%</span> condition
+<span class="k">on</span>  AMC <span class="n">98%</span> condition</pre></div>
+      </div>
+    </section>
+
+    <section class="alt">
+      <div class="wrap split rev">
+        <div class="text">
+          <div class="kicker am">In a hurry?</div>
+          <h2>Instant simulation and final report</h2>
+          <p>Would you rather focus on transfers, the dressing room and the books? Simulate the match in a moment: it's the same engine, with the same statistics.</p>
+          <ul class="checks">
+            <li><b>Player of the match</b> and colour-coded ratings for everyone (above 8 in green, below 6 in red).</li>
+            <li><b>Side-by-side stats</b>: possession, shots, xG, passes, tackles, fouls, corners.</li>
+            <li><b>Timeline</b> of goals, cards, substitutions and injuries.</li>
+          </ul>
+        </div>
+        <div class="shot"><div class="bar">before the match<span></span></div><img src="../img/tattica.jpg" alt="Tactics, with formation and roles" loading="lazy" /></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="head"><div class="kicker">Under the bonnet</div><h2>How a player on the ball thinks</h2></div>
+        <div class="grid g4">
+          <div class="panel step"><span class="n">01</span><h3>Positions</h3><p>Everyone runs towards his ideal spot — formation, role, ball — at a speed limited by Pace, Acceleration and energy.</p></div>
+          <div class="panel step"><span class="n">02</span><h3>Pressure</h3><p>Nearby defenders press the ball carrier, according to Work Rate, energy and instructions.</p></div>
+          <div class="panel step"><span class="n">03</span><h3>Options</h3><p>A pass to each team-mate, through ball, dribble, shot, cross: each with a chance of success and a value.</p></div>
+          <div class="panel step"><span class="n">04</span><h3>Choice</h3><p>Players with high Decisions almost always choose well. Under pressure and with little Composure, they get it wrong more often.</p></div>
+        </div>
+        <p style="margin-top:22px">Morale, condition and friendships come onto the pitch: between two friends the pass arrives a little more often. The full explanation (in Italian) is in
+          <a href="https://github.com/XmarcoS10/talisman/blob/main/docs/03-match-engine.md">docs/03-match-engine.md</a>.</p>
+      </div>
+    </section>
+    <section>
+      <div class="wrap">
+        <div class="cta-box">
+          <div><div class="kicker">Ready for the dugout?</div><h2>Live the match first-hand.</h2><p>Free under the GPL-3.0 licence, for 64-bit Windows 10 and 11.</p></div>
+          <div class="row"><a class="btn" href="download.html">How to install</a><a class="btn primary big" href="https://github.com/XmarcoS10/talisman/releases/latest/download/TFM27-Setup.exe"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Download TFM 27</a></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="cols">
+        <div>
+          <a class="brand" href="index.html"><img src="../favicon.png" alt="" width="32" height="32" /><span>Tactic F.C. Manager</span></a>
+          <p>A free football management game, in English and Italian. A living dressing room, 2D matches, stories that grow out of the league.</p>
+          <p><span class="tag">GPL-3.0</span> <span class="tag cy">v0.2.0</span></p>
+        </div>
+        <div><h4>The site</h4><ul><li><a href="index.html">Home</a></li><li><a href="caratteristiche.html">Features</a></li><li><a href="motore.html">2D engine and match</a></li><li><a href="download.html">Download and guide</a></li><li><a href="community.html">Community and notes</a></li></ul></div>
+        <div><h4>Documents</h4><ul>
+          <li><a href="https://github.com/XmarcoS10/talisman/blob/main/docs/release-notes.md">Release notes</a></li>
+          <li><a href="https://github.com/XmarcoS10/talisman/blob/main/docs/03-match-engine.md">How the engine works</a></li>
+          <li><a href="https://github.com/XmarcoS10/talisman/blob/main/assets/LICENSES.md">Licences</a></li>
+          <li><a href="https://github.com/XmarcoS10/talisman/blob/main/LICENSE">GPL-3.0 licence</a></li>
+        </ul></div>
+        <div><h4>Project</h4><ul>
+          <li><a href="https://github.com/XmarcoS10/talisman">Source code</a></li>
+          <li><a href="https://github.com/XmarcoS10/talisman/releases">All versions</a></li>
+          <li><a href="https://github.com/XmarcoS10/talisman/issues">Report a problem</a></li>
+          <li><a href="https://github.com/XmarcoS10/talisman/discussions">Discussions</a></li>
+        </ul></div>
+      </div>
+      <div class="legal"><span>© 2026 Tactic F.C. Manager · code under the GNU GPL v3.0 licence</span><span>Invented clubs and players · no data collected</span></div>
+    </div>
+  </footer>
+<script>
+const clips = new IntersectionObserver((es) => es.forEach((e) => { const v = e.target;
+  if (e.isIntersecting) { if (!v.src) v.src = v.dataset.src; v.play().catch(() => {}); } else v.pause(); }), { threshold: 0.3 });
+document.querySelectorAll('video[data-src]').forEach((v) => clips.observe(v));
+</script>
+</body>
+</html>

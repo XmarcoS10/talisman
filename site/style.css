@@ -42,8 +42,16 @@ p { margin: 0; color: var(--text-2); }
 .top nav { display: flex; gap: 22px; margin-left: 12px; flex: 1; }
 .top nav a { color: var(--text-2); font-size: 14px; white-space: nowrap; } .top nav a:hover { color: var(--text); text-decoration: none; }
 .top nav a.on { color: var(--green); font-weight: 600; }
-.top .actions { display: flex; gap: 10px; }
+.top .actions { display: flex; gap: 10px; align-items: center; }
+.top .brand { flex: none; }
 .btn.menu { display: none; }
+/* cambio di lingua: bandiere */
+.lang { display: flex; border: 1px solid var(--line-2); border-radius: 8px; overflow: hidden; flex: none; }
+.lang a { display: flex; align-items: center; padding: 7px 9px; opacity: 0.45; }
+.lang a:hover { opacity: 0.8; }
+.lang a.on { background: rgb(0 245 155 / 0.1); opacity: 1; }
+.lang svg { width: 20px; height: 14px; border-radius: 2px; flex: none; }
+.shot video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; background: var(--bg-low); }
 @media (max-width: 1200px) { .top nav { gap: 16px; } .top nav a { font-size: 13px; } .top .actions .dl small { display: none; } }
 
 /* bottoni */
@@ -179,7 +187,8 @@ footer .legal { margin-top: 36px; padding-top: 18px; border-top: 1px solid var(-
   .top nav.open { display: flex; position: absolute; top: 68px; left: 0; right: 0; flex-direction: column; gap: 0; margin: 0;
     background: var(--bg); border-bottom: 1px solid var(--line); padding: 8px 24px 16px; }
   .top nav.open a { padding: 10px 0; }
-  .btn.menu { display: inline-flex; margin-left: auto; }
+  .btn.menu { display: inline-flex; }
+  .top .actions { margin-left: auto; }
   .top .actions .gh { display: none; }
   .split, .hero .split { grid-template-columns: 1fr; gap: 36px; }
   .split.rev > :first-child { order: 0; }
@@ -191,8 +200,8 @@ footer .legal { margin-top: 36px; padding-top: 18px; border-top: 1px solid var(-
   .wrap { padding: 0 16px; }
   section { padding: 60px 0; }
   .g2, .g4 { grid-template-columns: 1fr; }
-  .top .actions .dl small { display: none; }
-  .top .actions .dl { padding: 8px 12px; }
+  .top .wrap { gap: 12px; }
+  .top .actions .dl { display: none; } /* su telefono il pulsante grande è subito sotto, nella testata della pagina */
   .cta-box { padding: 26px 22px; }
   footer .cols { grid-template-columns: 1fr; }
   table { font-size: 13px; } th, td { padding: 10px; }
