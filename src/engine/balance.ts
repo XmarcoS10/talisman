@@ -572,7 +572,7 @@ export const FIN = {
   fillRep: 0.0035, // per punto di reputazione dell'avversario
   fillMin: 0.25,
   // diritti tv e sponsor, a fine stagione
-  tvBase: [48_000_000, 7_000_000, 1_500_000] as const, // per livello di campionato (A, B, C), a chi arriva primo
+  tvBase: [48_000_000, 7_000_000, 4_000_000] as const, // per livello di campionato (A, B, C), a chi arriva primo (C: Blocco 4, 1,5 -> 4 milioni)
   tvLast: 0.55, // quota che tocca all'ultima in classifica
   sponsorPerRep2: 2200, // sponsor sulla reputazione al quadrato: non è lineare
   merchPerRep2: 1300,
