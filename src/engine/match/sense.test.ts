@@ -95,8 +95,9 @@ describe('buon senso tattico', { timeout: 120_000 }, () => {
   });
 
   it('"tira di più" fa tirare di più quel giocatore', () => {
-    // la punta di A (il primo attaccante della rosa): i suoi tiri a partita, con e senza l'istruzione
-    const striker = (w: WorldState, a: number) => w.clubs[a]!.playerIds.find((id) => w.players[id]!.position === 'ST')!;
+    // la punta titolare di A (la più forte della rosa): i suoi tiri a partita, con e senza l'istruzione
+    const striker = (w: WorldState, a: number) => w.clubs[a]!.playerIds.filter((id) => w.players[id]!.position === 'ST')
+      .sort((x, y) => w.players[y]!.ca - w.players[x]!.ca)[0]!;
     let who = 0;
     const shots = (o: SimOutput, a: 0 | 1) => o.played[a].find((m) => m.p.id === who)?.st.shots ?? null;
     const ins = (v: number) => (w: WorldState, a: number) => { who = striker(w, a); w.clubs[a]!.tactic.players = { [who]: { shoot: v } }; };

@@ -663,12 +663,19 @@ export const YOUTH = {
   paSigma: 16,
   jackpotP: 0.012, // il colpo di fortuna: un potenziale da campione in qualunque club, anche piccolo
   jackpotPa: [172, 192] as const,
-  foreignPerRecruitment: 0.025, // quota di stranieri per punto di reclutamento
+  foreignBase: 0.4, // stranieri del vivaio = quota della categoria × (base + reclutamento × questo)
+  foreignPerRecruitment: 0.06,
   facilityRequest: 2, // strutture guadagnate con una richiesta accolta dalla dirigenza
   trimTo: 27, // dopo l'estate le rose tornano qui, lasciando andare i ragazzi meno promettenti
 } as const;
 
 // --- nazionali (GUIDA §7.8) ---
+/** nazionalità dei giocatori (0.4.0, scelta di Marco: come la Serie A vera). Quota di italiani per categoria:
+ * in Serie A 2024-25 gli stranieri sono circa il 60%, in B circa il 35%, in C circa il 15% */
+export const NATIONALITY = {
+  italian: [0.4, 0.65, 0.85] as const,
+};
+
 export const NATIONAL = {
   squad: 23,
   // convocati per reparto (0.4.0): prima erano i 23 migliori e basta, e c'era chi restava senza portiere

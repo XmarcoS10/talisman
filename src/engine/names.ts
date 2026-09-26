@@ -2,7 +2,7 @@
 
 export const NATIONS: Record<string, { w: number; first: string[]; last: string[] }> = {
   ITA: {
-    w: 62,
+    w: 0, // gli italiani non si pescano coi pesi: la quota è in NATIONALITY (balance.ts), per categoria
     first: ['Marco', 'Luca', 'Andrea', 'Matteo', 'Lorenzo', 'Davide', 'Simone', 'Federico', 'Riccardo', 'Alessio', 'Nicolò', 'Tommaso', 'Gabriele', 'Emanuele', 'Stefano', 'Filippo', 'Edoardo', 'Samuele', 'Mattia', 'Leonardo', 'Pietro', 'Giacomo', 'Daniele', 'Christian', 'Manuel', 'Cristian', 'Alberto', 'Michele', 'Giorgio', 'Enrico'],
     last: ['Rossi', 'Bianchi', 'Ferraro', 'Esposito', 'Romano', 'Colombo', 'Ricci', 'Marino', 'Greco', 'Bruno', 'Gallo', 'Conti', 'De Luca', 'Mancini', 'Costa', 'Giordano', 'Rizzo', 'Lombardi', 'Moretti', 'Barbieri', 'Fontana', 'Santoro', 'Mariani', 'Rinaldi', 'Caruso', 'Ferrara', 'Galli', 'Martini', 'Leone', 'Longo', 'Gentile', 'Martinelli', 'Vitale', 'Serra', 'Coppola', 'De Santis', 'Neri', 'Villa', 'Parisi', 'Fabbri', 'Sala', 'Pellegrini', 'Monti', 'Cattaneo', 'Orlando', 'Testa', 'Marchetti', 'Grasso', 'Palumbo', 'Bellini'],
   },

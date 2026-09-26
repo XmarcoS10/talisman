@@ -1,5 +1,5 @@
 // Abilità (CA) per ruolo, generazione giocatori, valore. Lo sviluppo è in development.ts.
-import { ADJACENT, BALANCE } from './balance.ts';
+import { ADJACENT, BALANCE, NATIONALITY } from './balance.ts';
 import { ALL_ATTRS, ATTR_GROUPS, type AttrKey, type Attributes, type Personality, type Player, type Position } from './model.ts';
 import { NATIONS } from './names.ts';
 import type { Rng } from './rng.ts';
@@ -58,9 +58,12 @@ function personality(rng: Rng): Personality {
   return { ambition: axis(), professionalism: axis(), loyalty: axis(), temperament: axis(), sociability: axis(), pressureTolerance: axis() };
 }
 
-export function pickNation(rng: Rng) {
-  const keys = Object.keys(NATIONS);
-  return keys[rng.weighted(keys.map((k) => NATIONS[k]!.w))]!;
+const FOREIGN = Object.keys(NATIONS).filter((k) => k !== 'ITA');
+
+/** nazionalità: italiano con probabilità `italian`, altrimenti uno straniero secondo i pesi di names.ts */
+export function pickNation(rng: Rng, italian: number) {
+  if (rng.next() < italian) return 'ITA';
+  return FOREIGN[rng.weighted(FOREIGN.map((k) => NATIONS[k]!.w))]!;
 }
 
 /** distribuisce un CA obiettivo sugli attributi secondo il profilo di ruolo (GUIDA §5.2 punto 3) */
@@ -82,7 +85,7 @@ function distribute(rng: Rng, pos: Position, targetCA: number): Attributes {
 }
 
 export function makePlayer(rng: Rng, id: number, pos: Position, meanCA: number, season: number, ageRange?: [number, number], nationOf?: string): Player {
-  const nation = nationOf ?? pickNation(rng);
+  const nation = nationOf ?? pickNation(rng, NATIONALITY.italian[0]!);
   const names = NATIONS[nation]!;
   const a = ageRange ? rng.int(ageRange[0], ageRange[1]) : Math.round(clamp(rng.gauss(BALANCE.ageMean, BALANCE.ageSigma), 17, 36));
   let ca = meanCA + rng.gauss(0, BALANCE.caSpread) - Math.max(0, 22 - a) * BALANCE.youthPenaltyPerYear;

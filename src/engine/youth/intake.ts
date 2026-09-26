@@ -1,7 +1,7 @@
 // Il vivaio (GUIDA §7.8): ogni estate arriva un'annata di ragazzi. Quanti e quanto buoni dipende da
 // strutture, reclutamento, blasone e un po' di fortuna — con il colpo raro: un potenziale da campione
 // anche in un club piccolo, la storia che racconterai agli amici.
-import { BALANCE, YOUTH } from '../balance.ts';
+import { BALANCE, NATIONALITY, YOUTH } from '../balance.ts';
 import type { Club, Player, Position, WorldState } from '../model.ts';
 import { addNews, pName } from '../news.ts';
 import { makePlayer, pickNation } from '../players.ts';
@@ -27,10 +27,12 @@ export function youthPa(club: Club, rng: Rng): { pa: number; jackpot: boolean } 
 export function intake(world: WorldState, rng: Rng, club: Club): Player[] {
   const out: Player[] = [];
   const n = intakeSize(club, rng);
-  const foreign = club.youth.recruitment * YOUTH.foreignPerRecruitment;
+  // stranieri come nella prima squadra della sua categoria, di più con un buon reclutamento (0.4.0)
+  const level = Math.min(world.competitions[club.compId]?.level ?? 1, 3);
+  const foreign = Math.min(0.9, (1 - NATIONALITY.italian[level - 1]!) * (YOUTH.foreignBase + club.youth.recruitment * YOUTH.foreignPerRecruitment));
   for (let i = 0; i < n; i++) {
     const pos = rng.pick(ROLES);
-    const nation = rng.next() < foreign ? pickNation(rng) : 'ITA';
+    const nation = pickNation(rng, 1 - foreign);
     const p = makePlayer(rng, world.nextPlayerId++, pos, BALANCE.caFromReputation(club.reputation), world.season, [YOUTH.age[0], YOUTH.age[1]], nation);
     const { pa, jackpot } = youthPa(club, rng);
     p.pa = Math.max(p.ca, pa);

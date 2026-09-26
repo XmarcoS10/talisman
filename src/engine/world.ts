@@ -1,5 +1,5 @@
 // Mondo: generazione, calendario, avanzamento, classifiche, cambio stagione.
-import { BALANCE, FIN, MARKET, MATCH, NATIONAL, PLAYOFF, SQUAD_TEMPLATE, TRAIN, YOUTH } from './balance.ts';
+import { BALANCE, FIN, MARKET, MATCH, NATIONAL, NATIONALITY, PLAYOFF, SQUAD_TEMPLATE, TRAIN, YOUTH } from './balance.ts';
 import { heal } from './injuries.ts';
 import { aiSetFormation, applyMatch, matchSetups, pickXI, playMatch, xiStrength } from './match.ts';
 import { runMatch, type MatchRun, type SimOutput } from './match/engine.ts';
@@ -9,7 +9,7 @@ import { CITIES, CITIES_C, CLUB_PREFIX, KIT_COLORS, NATIONS } from './names.ts';
 import { seedMinutes, weekPsych } from './morale.ts';
 import { newBoard, endSeasonBoard, weekBoard } from './board/board.ts';
 import { addNews, pName } from './news.ts';
-import { age, emptyStats, makePlayer } from './players.ts';
+import { age, emptyStats, makePlayer, pickNation } from './players.ts';
 import { Rng, type RngState } from './rng.ts';
 import { SCHEMA_VERSION } from './save.ts';
 import { dropRelations, initRelations } from './social.ts';
@@ -40,7 +40,9 @@ export const LEAGUES = [
 ] as const;
 
 function addPlayer(world: WorldState, rng: Rng, club: Club, pos: Position, ageRange?: [number, number]): Player {
-  const p = makePlayer(rng, world.nextPlayerId++, pos, BALANCE.caFromReputation(club.reputation), world.season, ageRange);
+  const level = world.competitions[club.compId]?.level ?? 1;
+  const nation = pickNation(rng, NATIONALITY.italian[Math.min(level, 3) - 1]!); // più stranieri in alto, come in Italia
+  const p = makePlayer(rng, world.nextPlayerId++, pos, BALANCE.caFromReputation(club.reputation), world.season, ageRange, nation);
   p.clubId = club.id;
   world.players[p.id] = p;
   club.playerIds.push(p.id);
@@ -109,8 +111,8 @@ export function newWorld(seed: number, season = 2026): WorldState {
   for (const lg of LEAGUES) {
     if (lg.level === 3) continue; // la C si aggiunge dopo, con le sue città: A e B restano quelle di sempre
     const comp: Competition = { id: lg.id, name: lg.name, level: lg.level, clubIds: [], fixtures: [], promote: lg.promote, relegate: lg.relegate };
+    world.competitions[comp.id] = comp; // prima dei club: addPlayer guarda la categoria per la nazionalità
     for (let i = 0; i < 20; i++) makeClub(world, rng, comp, i, cities.splice(rng.int(0, cities.length - 1), 1)[0]!);
-    world.competitions[comp.id] = comp;
   }
   ensureSerieC(world, rng);
   scheduleSeason(world, rng);

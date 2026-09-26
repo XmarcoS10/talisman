@@ -68,6 +68,7 @@ describe('contratti (F7)', () => {
     const p = someone(club, world);
     p.psych.morale = 80;
     p.psych.wantsOut = false;
+    p.personality.ambition = 10; // un ambizioso potrebbe rifiutare un club di B: qui si prova solo che può firmare
     release(world, club, p);
     expect(isFree(p)).toBe(true);
     expect(club.playerIds).not.toContain(p.id);

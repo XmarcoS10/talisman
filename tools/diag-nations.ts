@@ -27,8 +27,11 @@ const step = (str: Map<string, number>, f: () => void) => {
 };
 for (let s = 0; s < seasons; s++) {
   const str = new Map(codes.map((c) => [c, strength(w, c)]));
-  const foreign = Object.values(w.players).filter((p) => p.clubId !== null && p.nation !== 'ITA').length / Object.values(w.players).filter((p) => p.clubId !== null).length;
-  console.log(`${w.season}: stranieri ${(foreign * 100).toFixed(0)}% · ` + codes.map((c) => `${c} ${str.get(c)!.toFixed(0)}`).join(' '));
+  const share = (lv: number) => {
+    const ps = Object.values(w.players).filter((p) => p.clubId !== null && w.competitions[w.clubs[p.clubId]!.compId]?.level === lv);
+    return `${(ps.filter((p) => p.nation !== 'ITA').length / ps.length * 100).toFixed(0)}%`;
+  };
+  console.log(`${w.season}: stranieri A ${share(1)} B ${share(2)} C ${share(3)} · ` + codes.map((c) => `${c} ${str.get(c)!.toFixed(0)}`).join(' '));
   while (!isSeasonOver(w)) step(str, () => advance(w));
   step(str, () => endSeason(w)); // il torneo estivo
 }

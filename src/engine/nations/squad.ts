@@ -2,6 +2,7 @@
 // (`nations.ts`) sia le partite vere (`nations/match.ts`), senza che i due si importino a vicenda.
 import { NATIONAL } from '../balance.ts';
 import type { National, Player, Position, WorldState } from '../model.ts';
+import { isAvailable } from '../match.ts';
 import type { Rng } from '../rng.ts';
 
 export const nationOf = (world: WorldState, code: string): National =>
@@ -17,7 +18,7 @@ const unit = (pos: Position): Unit =>
  */
 export function callUp(world: WorldState, code: string): Player[] {
   const pool = Object.values(world.players)
-    .filter((p) => p.nation === code && p.clubId !== null && p.condition.injuryDays === 0)
+    .filter((p) => p.nation === code && p.clubId !== null && isAvailable(p)) // come l'undici: senza, uno squalificato lasciava la nazionale in dieci
     .sort((a, b) => b.ca - a.ca || a.id - b.id);
   const left = { ...NATIONAL.shape };
   const picked = pool.filter((p) => left[unit(p.position)]-- > 0);
