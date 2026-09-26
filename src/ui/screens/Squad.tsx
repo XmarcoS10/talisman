@@ -7,7 +7,7 @@ import { estimate, range } from '../../engine/scouting/fog.ts';
 import { Ability, Est } from '../fog.tsx';
 import { Download } from 'lucide-react';
 import { downloadCsv } from '../csv.ts';
-import { fmtMoney, t } from '../i18n.ts';
+import { fmtMoney, natName, t } from '../i18n.ts';
 import { moraleClass } from './Graph.tsx';
 
 /** segnali di indisponibilità accanto al nome */
@@ -100,7 +100,7 @@ export function Squad({ world, clubId, onPlayer, title }: { world: WorldState; c
   const fixed: Col[] = [
     { key: 'pos', label: t('col.pos'), value: (p) => POSITIONS.indexOf(p.position), cell: (p) => <PosBadge pos={p.position} /> },
     { key: 'name', label: t('col.name'), value: (p) => p.lastName, cell: (p) => <>{fullName(p)} <Status p={p} out={world.clubs[clubId]!.excluded.includes(p.id)} /></> },
-    { key: 'nat', label: t('col.nat'), value: (p) => p.nation, cell: (p) => <span className="muted" title={t(`nat.${p.nation}`)}>{p.nation}</span> },
+    { key: 'nat', label: t('col.nat'), value: (p) => p.nation, cell: (p) => <span className="muted" title={natName(p.nation)}>{p.nation}</span> },
   ];
   const all = [...fixed, ...cols];
   const byKey = all.find((c) => c.key === sort.key) ?? fixed[0]!;

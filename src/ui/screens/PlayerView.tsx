@@ -11,7 +11,7 @@ import { Face } from '../Face.tsx';
 import { Radar } from '../Radar.tsx';
 import { PosBadge, Rating, Stars, attrClass, fullName, personalityKey, standoutTraits } from '../bits.tsx';
 import { Ability, Est, Known } from '../fog.tsx';
-import { fmtMoney, fmtSeason, t } from '../i18n.ts';
+import { fmtMoney, fmtSeason, natName, t } from '../i18n.ts';
 import { ContractPanel } from './ContractPanel.tsx';
 import { Deal } from './Deal.tsx';
 import { DevPanel, PeoplePanel } from './PlayerPeople.tsx';
@@ -57,7 +57,7 @@ export function PlayerView({ startDeal = false, world, playerId, onBack, onClub,
           <span className="row wrap"><PosBadge pos={p.position} />{club && <><Crest club={club} size={20} /><button className="link" onClick={() => onClub(club.id)}>{club.name}</button></>}<Status p={p} /></span>
           <h1 className="dossier-name" style={{ fontSize: 40 }}>{fullName(p)}</h1>
           <span className="row wrap muted">
-            <span>{t('player.age', { age: age(p, world.season) })}</span><span>{t(`nat.${p.nation}`)}</span>
+            <span>{t('player.age', { age: age(p, world.season) })}</span><span>{natName(p.nation)}</span>
             <span><Ruler size={13} /> {t('player.height', { cm: p.heightCm })}</span><span><Footprints size={13} /> {t(`player.foot.${p.foot}`)}</span>
             {secondary.length > 0 && <span>{t('player.positions')}: {secondary.map(([pos]) => t(`pos.${pos}`)).join(', ')}</span>}
           </span>

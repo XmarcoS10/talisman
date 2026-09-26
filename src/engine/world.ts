@@ -50,7 +50,8 @@ function addPlayer(world: WorldState, rng: Rng, club: Club, pos: Position, ageRa
 }
 
 /** un club nuovo nella lega `comp`, `i`-esimo per blasone (0 = il più grande) */
-function makeClub(world: WorldState, rng: Rng, comp: Competition, i: number, city: string): Club {
+/** `fill` riempie la rosa al posto del modello di rosa generato (il database della community) */
+export function makeClub(world: WorldState, rng: Rng, comp: Competition, i: number, city: string, fill?: (club: Club) => void): Club {
   const lg = LEAGUES.find((l) => l.id === comp.id)!;
   const rep = Math.round(lg.rep[1] - (i / 19) * (lg.rep[1] - lg.rep[0]) + rng.gauss(0, 3));
   const [c1, c2, c3] = rng.shuffle(KIT_COLORS);
@@ -65,7 +66,8 @@ function makeClub(world: WorldState, rng: Rng, comp: Competition, i: number, cit
     youth: { facilities: Math.round(YOUTH.facilitiesFromRep[0] + rep / YOUTH.facilitiesFromRep[1]), recruitment: Math.round(YOUTH.recruitmentFromRep[0] + rep / YOUTH.recruitmentFromRep[1]) },
   };
   world.clubs[club.id] = club; // prima dei giocatori: addPlayer lo cerca già nel mondo
-  for (const [pos, n] of Object.entries(SQUAD_TEMPLATE) as [Position, number][])
+  if (fill) fill(club);
+  else for (const [pos, n] of Object.entries(SQUAD_TEMPLATE) as [Position, number][])
     for (let k = 0; k < n; k++) addPlayer(world, rng, club, pos);
   comp.clubIds.push(club.id);
   return club;
@@ -100,13 +102,19 @@ function rescaleWages(world: WorldState, club: Club) {
 /** Serie C senza il club dell'utente: non si gioca, la classifica a fine stagione si calcola dalla forza */
 export const isShadow = (world: WorldState, comp: Competition) => comp.level === 3 && !comp.clubIds.includes(world.manager.clubId);
 
-export function newWorld(seed: number, season = 2026): WorldState {
+/** il mondo senza campionati né club: il punto di partenza di `newWorld` e del database della community */
+export function emptyWorld(seed: number, season = 2026): { world: WorldState; rng: Rng } {
   const rng = new Rng(seed);
   const world: WorldState = {
     schemaVersion: SCHEMA_VERSION, seed, rng: rng.s, season, day: 0,
     manager: { name: '', clubId: 0, kept: 0, broken: 0, board: newBoard(), h2h: {}, style: 'none', seasons: [] }, players: {}, clubs: {}, competitions: {}, history: [], records: {}, news: [],
     causal: [], promises: [], talks: [], offers: [], arcs: [], press: null, nations: {}, intl: [], cup: null, playoffs: null, rules: { playoffs: true }, cupWinners: [], friendlies: null, intake: [], nextArcId: 1, nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
   };
+  return { world, rng };
+}
+
+export function newWorld(seed: number, season = 2026): WorldState {
+  const { world, rng } = emptyWorld(seed, season);
   const cities = [...CITIES];
   for (const lg of LEAGUES) {
     if (lg.level === 3) continue; // la C si aggiunge dopo, con le sue città: A e B restano quelle di sempre
@@ -114,6 +122,11 @@ export function newWorld(seed: number, season = 2026): WorldState {
     world.competitions[comp.id] = comp; // prima dei club: addPlayer guarda la categoria per la nazionalità
     for (let i = 0; i < 20; i++) makeClub(world, rng, comp, i, cities.splice(rng.int(0, cities.length - 1), 1)[0]!);
   }
+  return finishWorld(world, rng);
+}
+
+/** dopo i club: Serie C se manca, calendario, spogliatoi, stipendi, agenti e osservatori */
+export function finishWorld(world: WorldState, rng: Rng): WorldState {
   ensureSerieC(world, rng);
   scheduleSeason(world, rng);
   for (const club of Object.values(world.clubs)) {

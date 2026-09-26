@@ -1845,5 +1845,14 @@
   "settings.theme": "Tema",
   "settings.themeDark": "Scuro",
   "settings.themeLight": "Chiaro",
-  "settings.themeSystem": "Come il sistema"
+  "settings.themeSystem": "Come il sistema",
+  "db.generated": "Mondo generato (nomi inventati)",
+  "db.load": "Carica un database",
+  "db.export": "Esporta questo mondo",
+  "db.exportHint": "Salva il mondo generato come database, da riscrivere e condividere",
+  "db.exportName": "Mondo generato da TFM 27",
+  "db.hint": "Il gioco non contiene nomi né stemmi reali: un database della community li porta sul tuo computer. Formato in docs/database.md.",
+  "db.tooBig": "Il file è troppo grande (massimo 40 MB).",
+  "db.notJson": "Il file non è un JSON leggibile.",
+  "db.invalid": "Il database non si può caricare: {n} problemi"
 }

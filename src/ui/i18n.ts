@@ -82,4 +82,6 @@ export const fmtDate = (season: number, day: number) =>
   gameDate(season, day).toLocaleDateString(locale(), settings().dateFmt === 'short'
     ? { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' }
     : { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+/** nome di una nazione; quelle che arrivano da un database e il gioco non conosce restano col loro codice */
+export const natName = (code: string) => { const k = `nat.${code}`; const s = t(k); return s === k ? code : s; };
 export const fmtSeason = (season: number) => `${season}/${String(season + 1).slice(2)}`;

@@ -89,6 +89,12 @@ capocannonieri da 40-65 gol (nel backlog, per la 0.5.0) e un ordinamento della R
 
 ## 0.4.0 — un mondo più largo
 
+**Stato (27/09/2026)**: 4.1 fatto in modo diverso dal previsto, perché le misure hanno cambiato la diagnosi: i gol
+delle nazionali venivano dalla stanchezza dei convocati e da convocazioni senza portiere, non dal divario (gol da 3,9 a
+2,75-3,13). Poi, scelta di Marco, nazionalità come la Serie A vera (60% di stranieri in A, 35% in B, 15% in C) e vivai
+coerenti: le nazionali restano forti per tutta la carriera. 4.2 fatto come **mondo intero** (scelta di Marco): formato in
+`docs/database.md`, import ed export dalla nuova carriera, controllo severo del file.
+
 ### 4.1 Altre nazioni con vivai propri
 - `newWorld`: la quota di italiani scende (oggi 62%); le altre nazioni hanno abbastanza giocatori forti da fare un
   undici credibile. Opzione pulita: ogni nazione ha una «riserva» di giocatori nei club stranieri costruiti al volo

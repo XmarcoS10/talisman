@@ -8,6 +8,7 @@ import { fmtDate, fmtMoney, fmtSeason, t } from '../i18n.ts';
 import { SLOTS, loadFrom, setCurrentSlot, slotInfo, type Slot } from '../storage.ts';
 import { ClubDossier } from './ClubDossier.tsx';
 import { ClubPicker, code } from './ClubPicker.tsx';
+import { DbImport } from './DbImport.tsx';
 
 /** obiettivo stagionale della dirigenza in base alla reputazione nel proprio campionato */
 export function boardGoal(world: WorldState, clubId: number): string {
@@ -24,7 +25,8 @@ export function Start({ onLoad, onStart }: { onLoad: (w: WorldState) => void; on
   const saves = infos.filter((s) => s !== null);
   const [mode, setMode] = useState<'menu' | 'club' | 'dossier'>(saves.length ? 'menu' : 'club');
   // il seed viene dall'orologio solo qui, nella UI: il motore resta deterministico
-  const world = useMemo(() => newWorld(Date.now() >>> 0), []);
+  const [world, setWorld] = useState(() => newWorld(Date.now() >>> 0));
+  const [dbName, setDbName] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [style, setStyle] = useState<ManagerStyle>('none');
   const [clubId, setClubId] = useState<number | null>(null);
@@ -81,7 +83,7 @@ export function Start({ onLoad, onStart }: { onLoad: (w: WorldState) => void; on
     <div className="setup">
       <header className="setup-top">
         <div className="brand"><img src="icon-64.png" alt="" width={30} height={30} /><div>TFM <b>27</b><small>{t('start.setup')}</small></div></div>
-        <span className="tag"><span className="live-dot" />{t('start.newWorld')}</span>
+        <span className="tag"><span className="live-dot" />{dbName ?? t('start.newWorld')}</span>
         <div className="seg-tabs">
           <button className={mode === 'club' ? 'active hot' : ''} onClick={() => setMode('club')}>1. {t('start.step1')}</button>
           <button className={mode === 'dossier' ? 'active hot' : ''} disabled={clubId === null} onClick={() => setMode('dossier')}>2. {t('start.step2')}</button>
@@ -96,6 +98,7 @@ export function Start({ onLoad, onStart }: { onLoad: (w: WorldState) => void; on
             <div><span className="caps pos-good">{t('start.kicker', { s: fmtSeason(world.season) })}</span><h1 className="setup-title">{t('start.assign')}</h1></div>
             <span className="seg-tabs"><button className="active hot"><Check size={13} /> {t('start.step1')}</button><button disabled>{t('start.step2')}</button></span>
           </div>
+          <DbImport world={world} dbName={dbName} onWorld={(w, n) => { setWorld(w); setDbName(n); setClubId(null); }} />
           <ClubPicker world={world} selected={clubId} onPick={setClubId} />
         </> : club && <>
           <button className="link" onClick={() => setMode('club')}><ArrowLeft size={14} /> {t('start.backToClubs')}</button>

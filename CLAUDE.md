@@ -59,6 +59,11 @@ gioco dal manifest generato `src/ui/assets-manifest.ts` (non si modifica a mano)
 giocatori sono derivati. Schermata `ui/screens/Records.tsx`, CSV con `ui/csv.ts`. Tema chiaro: `data-theme` sulla
 radice (`settings.applyTheme`), token in `tokens.css`; il campo (`.pitch`, `.pitch-wrap`, `.shot-map`) resta scuro.
 
+## Database della community (0.4.0)
+`engine/database.ts`: formato `talisman-db` v1 (documentato in `docs/database.md`), `validateDb` (il file arriva da
+fuori: tutto controllato, stemmi solo PNG/JPEG/WebP), `worldFromDb` (stessa costruzione di `newWorld`: `emptyWorld` →
+`makeClub` con `fill` → `finishWorld`), `worldToDb`. UI in `ui/screens/DbImport.tsx`. Nel repository mai dati reali.
+
 ## Nazionali (§7.8)
 Convocazioni e forza in `engine/nations/squad.ts`, partite col motore vero in `engine/nations/match.ts`: la nazionale
 è un `Club` costruito al momento (id negativo) e non salvato, e le sue partite non toccano `p.stats` — restano in
