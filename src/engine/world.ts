@@ -24,7 +24,7 @@ import { internationalBreak, summerTournament } from './nations/nations.ts';
 import { yearlyIntake, youthPa } from './youth/intake.ts';
 import { afterCupDay, cupFixtures, makeCup } from './cup.ts';
 import { preseason } from './friendlies.ts';
-import { checkFFP, estimate, gate, seasonIncome, settleInstalments, trimWages, weekCosts } from './finance/ledger.ts';
+import { checkFFP, estimate, gate, payBonuses, seasonIncome, settleInstalments, trimWages, weekCosts } from './finance/ledger.ts';
 import { defaultTraining, trainWeek } from './training.ts';
 
 export const DAYS_BETWEEN_ROUNDS = 7;
@@ -335,6 +335,7 @@ export function endSeason(world: WorldState): SeasonSummary {
 
   const tables = comps.map((c) => standings(world, c));
   comps.forEach((comp, i) => seasonIncome(world, comp, tables[i]!)); // tv, sponsor, premi
+  payBonuses(world); // chi ha messo da parte troppo paga i premi ai giocatori
   endSeasonBoard(world); // il verdetto della dirigenza, prima che cambino le categorie
   settleInstalments(world); // le rate dei trasferimenti
   checkFFP(world); // fair play finanziario: richiamo, blocco, penalizzazione

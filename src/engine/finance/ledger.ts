@@ -147,7 +147,7 @@ export function seasonIncome(world: WorldState, comp: Competition, table: { club
 export function checkFFP(world: WorldState) {
   for (const club of Object.values(world.clubs)) {
     const rev = Math.max(1, revenue(world, club));
-    const over = wageBill(world, club) / rev > FIN.ffpWageCap || club.balance / rev < FIN.ffpDebtCap;
+    const over = wageBill(world, club) > wageCap(world, club, FIN.ffpWageCap) || club.balance / rev < FIN.ffpDebtCap;
     const s = club.sanction;
     s.seasons = over ? s.seasons + 1 : Math.max(0, s.seasons - 1);
     s.kind = s.seasons === 0 ? 'none' : s.seasons === 1 ? 'warning' : s.seasons === 2 ? 'freeze' : 'points';
@@ -165,7 +165,7 @@ export function checkFFP(world: WorldState) {
 export function trimWages(world: WorldState, release: (club: Club, playerId: number) => void): number {
   let n = 0;
   for (const club of Object.values(world.clubs)) {
-    const cap = revenue(world, club) * FIN.ffpWageCap;
+    const cap = wageCap(world, club, FIN.ffpWageCap);
     let guard = 0;
     while (wageBill(world, club) > cap && club.playerIds.length > FIN.minSquad && guard++ < 6) {
       // il più pagato fra quelli che non sono il migliore del proprio ruolo
@@ -181,6 +181,22 @@ export function trimWages(world: WorldState, release: (club: Club, playerId: num
     }
   }
   return n;
+}
+
+/** soldi oltre la riserva (un anno di fatturato): quelli che un club può permettersi di spendere (Blocco 4) */
+export const surplus = (world: WorldState, club: Club) => Math.max(0, club.balance - revenue(world, club) * FIN.reserveOfRevenue);
+
+/** monte ingaggi sostenibile: una quota del fatturato, più una parte dei soldi messi da parte */
+export const wageCap = (world: WorldState, club: Club, share: number) => revenue(world, club) * share + surplus(world, club) * FIN.wageFromSurplus;
+
+/** premi di fine stagione: chi ha messo da parte più della riserva ne gira una parte ai giocatori (voce stipendi) */
+export function payBonuses(world: WorldState) {
+  for (const club of Object.values(world.clubs)) {
+    const bonus = Math.round(surplus(world, club) * FIN.bonusFromSurplus);
+    if (bonus <= 0) continue;
+    books(club, world.season).wages += bonus;
+    club.balance -= bonus;
+  }
 }
 
 /** con la cassa a picco si vende per forza: lo decide il mercato, qui si dice solo che è ora */

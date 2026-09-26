@@ -443,6 +443,8 @@ export const CLUB_AI = {
   shortlistWill: 0.6, // peso della disponibilità a vendere nella lista dei nomi
   shortlistMinWill: 0.2, // sotto questa disponibilità non ci si prova nemmeno
   starterBonus: 15, // il titolare di un club sta sopra la media della sua rosa: è quello il livello da tenere
+  ambitionPerRevenue: 8, // un club coi soldi da parte punta più in alto: CA in più per ogni anno di fatturato di surplus…
+  ambitionMax: 15, // …fino a questo tetto
   needCount: 0.6, // urgenza per ogni uomo mancante rispetto alla rosa tipo
   needQuality: 0.05, // urgenza per punto di CA mancante
   buyFrom: 0.35, // urgenza minima per aprire una trattativa
@@ -579,6 +581,10 @@ export const FIN = {
   startWageShare: 0.55, // all'inizio del mondo il monte ingaggi è questa quota del fatturato stimato
   minSquad: 22, // sotto questa rosa non si taglia più
   fireSaleAt: -0.6, // cassa così negativa: si vende per forza
+  // i soldi da parte si spendono (Blocco 4): oltre una riserva la cassa allarga il monte ingaggi sostenibile
+  reserveOfRevenue: 1, // riserva che un club tiene da parte: un anno di fatturato
+  wageFromSurplus: 0.2, // quota del surplus oltre la riserva che si può mettere in stipendi ogni anno
+  bonusFromSurplus: 0.5, // premi di fine stagione ai giocatori: quota del surplus oltre la riserva
 } as const;
 
 // --- dirigenza e fiducia (GUIDA §7.7) ---

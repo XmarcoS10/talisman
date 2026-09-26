@@ -4,12 +4,12 @@
 import { BALANCE, CLUB_AI, SQUAD_TEMPLATE } from '../balance.ts';
 import type { Club, Player, Position, WorldState } from '../model.ts';
 import { abilityAt } from '../players.ts';
-import { mustSell, revenue, wageBill } from '../finance/ledger.ts';
+import { mustSell, revenue, surplus, wageBill, wageCap } from '../finance/ledger.ts';
 import { value } from './valuation.ts';
 
 /** quanto può ancora mettere in stipendi prima di sforare */
 export const wageRoom = (world: WorldState, club: Club) =>
-  revenue(world, club) * CLUB_AI.wageCapOfRevenue - wageBill(world, club);
+  wageCap(world, club, CLUB_AI.wageCapOfRevenue) - wageBill(world, club);
 
 /** quanto può spendere in cartellini in questa finestra */
 export const transferBudget = (world: WorldState, club: Club) =>
@@ -25,7 +25,9 @@ export interface Need {
 
 /** i buchi della rosa: pochi uomini in un ruolo, o uomini sotto il livello del club */
 export function needs(world: WorldState, club: Club): Need[] {
-  const target = BALANCE.caFromReputation(club.reputation) + CLUB_AI.starterBonus;
+  // chi ha soldi da parte alza l'asticella: così la cassa diventa qualità in campo (Blocco 4)
+  const rich = Math.min(CLUB_AI.ambitionMax, (surplus(world, club) / Math.max(1, revenue(world, club))) * CLUB_AI.ambitionPerRevenue);
+  const target = BALANCE.caFromReputation(club.reputation) + CLUB_AI.starterBonus + rich;
   const out: Need[] = [];
   for (const [pos, want] of Object.entries(SQUAD_TEMPLATE) as [Position, number][]) {
     const mine = club.playerIds.map((id) => world.players[id]!).filter((p) => (p.positions[pos] ?? 0) >= 4);
