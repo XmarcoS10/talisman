@@ -487,3 +487,35 @@ Il 4-3-3 batteva tutti (media 1,66 punti a partita), sia in attacco sia in difes
 delle ali non bastava (1,60); farle restare più alte senza palla (`wideForward` hold 1,2) sì: medie 1,29-1,47, nessun
 modulo sopra 1,5. Con hold 1,4 il 4-2-3-1 (che usa lo stesso ruolo) scendeva a 1,13. La stessa modifica riporta le
 mentalità fra 1,24 e 1,40 (la 1 era a 1,15). Resta il 5-3-2 al bordo basso (1,29).
+
+### Capocannonieri da 40-65 gol (0.3.0) — 27/09, fermo dopo 3 iterazioni
+
+Trovato con la schermata dei record: il capocannoniere della Serie A fa 42-68 gol a stagione (semi 42 e 7; reale
+22-36). I gol totali sono giusti, è la distribuzione a non esserlo. Strumento: `node tools/diag-scorers.ts [seme]
+[stagioni]` (una stagione di Serie A col motore, tiri e gol per giocatore, quota del miglior marcatore, tiri per
+reparto).
+
+**Diagnosi** (200-380 partite, seme 42):
+- le punte fanno l'**81% dei tiri** (reale ~45%), ali e trequartisti il 6%, centrocampisti il 6%; il miglior
+  marcatore segna in media il **56%** dei gol della sua squadra (reale 25-35%); il centravanti più forte tira 17 volte
+  a partita;
+- la punta tocca l'83% dei palloni in area e riceve il 52% dei passaggi nell'ultimo terzo (con lei riescono il 61%,
+  contro il 75% dei centrocampisti);
+- da fuori area (x 8-10) non tira nessuno (≤ 1% delle azioni; reale ~35-40% dei tiri);
+- il **60% dei tiri della punta arriva subito dopo un pallone perso dagli avversari**: l'impostazione dal basso
+  fallisce il 13-15% delle volte (reale ~5-8%) e 7 errori su 10 li raccoglie la punta avversaria, che pressa chi imposta
+  ed è la più vicina all'inizio della traiettoria.
+
+| Iterazione (seme 42, 1 stagione) | Gol/partita | Tiri/squadra | Capocannoniere | Quota miglior marcatore | Tiri delle punte |
+|---|---|---|---|---|---|
+| Prima | 2,64 | 13,3 | 74 | 56% | 79% |
+| 1. Tiro da fuori più appetibile (×2 / ×3 sull'utilità, solo fuori area) | 2,78 / 3,03 | 16,2 / 20,4 | 66 / 53 | — | tira da fuori sempre la punta |
+| 2. Ricevere marcati vale meno (xT × (1 − 0,3…0,9 · marcatura)) | 2,80 – 3,05 | 14,8 – 16,2 | 69 – 87 | — | invariato |
+| 3. Intercetta chi sta sulla seconda metà della traiettoria (dal 50% / 75%) | 2,28 / 2,10 | 11,6 / 11,4 | 48 / 41 | ~70% nelle squadre dei primi | invariato |
+| 3 + tiro da fuori ×2 (solo misura) | 2,39 | 14,6 | 40 | 53% | 81% |
+
+**Conclusione**: nessuna leva locale sposta la distribuzione, perché nelle zone di tiro con la palla ci arriva solo la
+punta. È il movimento senza palla (intervento 7, §6 e §9): inserimenti di mezzali e ali in area, e una difesa che li
+segue. La leva 3 è realistica e da tenere per quando si riprende: riduce i tiri «regalati» dall'impostazione, ma da
+sola toglie troppi gol. Patch non conservata (tre righe: `MATCH.longShotBias` in `shot()`, `MATCH.markedValue` sul
+valore del passaggio in `passes()`, `MATCH.interceptFrom` sull'intercetto in `doPass()`).

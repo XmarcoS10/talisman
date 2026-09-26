@@ -54,6 +54,15 @@ Verifica: `pnpm sim -- --match-stats 4000`. Fonti e correzioni ai target propost
 | Tiri di testa sul totale | 15-22% | gol di testa 13-16% | 34% ❌ |
 | Gol da piazzato (corner, punizione, rigore) | 25-35% | ~30% | 26,8% ✅ |
 | Gol in contropiede | 5-10% | 7,1% (record Premier) | 2,7% ❌ |
+
+**Distribuzione dei gol** (0.3.0, `node tools/diag-scorers.ts`; fonte: capocannonieri della Serie A 2014/15-2024/25)
+
+| Metrica | Target | Serie A reale | 27/09/2026 |
+|---|---|---|---|
+| Capocannoniere della Serie A | 22-32 gol | 22-36 | 42-74 ❌ |
+| Quota dei gol della squadra al suo miglior marcatore | 25-40% | ~30% | 56% ❌ |
+| Tiri delle punte sul totale | 35-50% | ~45% | 79-81% ❌ |
+| Tiri da fuori area sul totale | 30-40% | ~37% | ~1% ❌ |
 | Possesso della nettamente più forte (CA medio +15) | 57-63% | 59,8% (Inter) | 50,4% ❌ |
 
 ## Carriere lunghe (Blocco 4, `pnpm sim -- --career 25 --seed 42`, semi 42 / 7 / 99)
