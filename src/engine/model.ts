@@ -202,6 +202,8 @@ export interface Club {
   debts: Instalment[]; // rate ancora da pagare
   credits: Instalment[]; // rate ancora da incassare
   sanction: { kind: 'none' | 'warning' | 'freeze' | 'points'; seasons: number; points: number }; // fair play finanziario
+  // bancarotta (Blocco 4): stagioni di fila chiuse sotto la soglia, avvisi dati all'utente, stagione del commissariamento, punti di penalizzazione
+  crisis: { below: number; warned: number; since: number | null; penalty: number };
   compId: CompId;
   playerIds: PlayerId[];
   tactic: Tactic;

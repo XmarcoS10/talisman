@@ -16,7 +16,7 @@ const involves = (world: WorldState, a: Arc) => a.subject.club === world.manager
 // tipi di storia per i filtri rapidi
 const KINDS = {
   market: ['newSigning', 'flop', 'preSigned', 'formerClub', 'wantsOut'],
-  polemics: ['hothead', 'feud', 'boardUnrest', 'fans', 'ffp', 'crisis', 'thrashing', 'giant'],
+  polemics: ['hothead', 'feud', 'boardUnrest', 'fans', 'ffp', 'administration', 'crisis', 'thrashing', 'giant'],
   dressing: ['mentor', 'veteran', 'debut', 'predestined', 'talisman', 'redemption', 'comebackKid', 'slump'],
 } as const;
 type Kind = 'all' | keyof typeof KINDS;

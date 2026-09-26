@@ -589,6 +589,16 @@ export const FIN = {
   startWageShare: 0.55, // all'inizio del mondo il monte ingaggi è questa quota del fatturato stimato
   minSquad: 22, // sotto questa rosa non si taglia più
   fireSaleAt: -0.6, // cassa così negativa: si vende per forza
+  // bancarotta e commissariamento (Blocco 4)
+  bankruptAt: -0.6, // cassa sotto questa quota del fatturato a fine stagione: un anno per rientrare, poi commissariamento
+  warnAt: [-0.2, -0.4, -0.6] as const, // avvisi al club dell'utente
+  warnReset: -0.1, // sopra questa quota gli avvisi ripartono da capo
+  adminSell: 5, // i migliori che il commissario vende…
+  adminPrice: 0.6, // …a questa quota del valore
+  adminPoints: 8, // penalizzazione nella stagione dopo
+  adminRep: 15, // reputazione persa
+  adminRepMin: 5,
+  adminTrust: 25, // fiducia della dirigenza persa se tocca all'utente
   // i soldi da parte si spendono (Blocco 4): oltre una riserva la cassa allarga il monte ingaggi sostenibile
   reserveOfRevenue: 1, // riserva che un club tiene da parte: un anno di fatturato
   wageFromSurplus: 0.2, // quota del surplus oltre la riserva che si può mettere in stipendi ogni anno

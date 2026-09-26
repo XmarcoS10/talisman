@@ -15,9 +15,9 @@ const season = (seed: number) => {
 };
 
 describe('motore narrativo (F8)', { timeout: 60000 }, () => {
-  it('quaranta regole, ognuna con un id unico e almeno il testo di apertura', () => {
-    expect(RULES.length).toBe(40);
-    expect(new Set(RULES.map((r) => r.id)).size).toBe(40);
+  it('quarantuno regole (41ª: il commissariamento, Blocco 4), ognuna con un id unico e almeno il testo di apertura', () => {
+    expect(RULES.length).toBe(41);
+    expect(new Set(RULES.map((r) => r.id)).size).toBe(41);
     for (const r of RULES) expect(TEMPLATES[`${r.id}.open`]?.length ?? 0).toBeGreaterThan(0);
   });
 

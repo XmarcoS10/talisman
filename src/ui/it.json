@@ -1783,5 +1783,13 @@
   "settings.rules": "Regole della carriera",
   "settings.playoffs": "Playoff e playout in Serie B",
   "settings.playoffsSub": "Dalla 3ª all'8ª si gioca per l'ultimo posto in Serie A; 16ª e 17ª si giocano la salvezza se sono vicine. Spento: salgono le prime tre e scendono le ultime quattro.",
-  "tables.relegationPo": "Playout e retrocessione"
+  "tables.relegationPo": "Playout e retrocessione",
+  "arc.administration": "Commissariamento",
+  "news.distress.1": "Primo avviso della dirigenza: la cassa è in rosso del {pct}% del fatturato. Bisogna vendere o tagliare gli ingaggi.",
+  "news.distress.2": "Secondo avviso: il rosso è al {pct}% del fatturato. Se a fine stagione supera il 60%, il club avrà un anno per rientrare.",
+  "news.distress.3": "Ultimo avviso: il rosso ha superato il 60% del fatturato ({pct}%). Se a fine stagione è ancora così, parte l'anno per rientrare; poi il commissariamento.",
+  "news.distress.lastYear": "I conti hanno chiuso la stagione oltre il limite: abbiamo un anno per rientrare sotto il 60% di rosso, altrimenti il club verrà commissariato.",
+  "news.admin.mine": "Il club è stato commissariato: debiti cancellati, {sold} dei migliori venduti, {n} punti di penalizzazione nella prossima stagione.",
+  "news.admin.sold": "Il commissario ha venduto {name} a {to}.",
+  "news.admin.other": "{club} è stato commissariato: si riparte da zero, con {n} punti di penalizzazione."
 }

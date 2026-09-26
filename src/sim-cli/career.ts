@@ -17,11 +17,11 @@ const median = (a: number[]) => [...a].sort((x, y) => x - y)[a.length >> 1] ?? 0
 
 export interface SeasonRow {
   season: number; corr: number; top60: number; a: number; b: number; players: number; retired: number;
-  inDebt: number; wageShare: number; sanctions: number; champion: string; ageAvg: number; cashA: number; cashB: number;
+  inDebt: number; wageShare: number; sanctions: number; champion: string; ageAvg: number; cashA: number; cashB: number; bankrupt: string[];
 }
 
 /** fotografia del mondo a fine stagione, prima che endSeason la cambi */
-function snapshot(world: WorldState, strength: Map<number, number>): Omit<SeasonRow, 'retired'> {
+function snapshot(world: WorldState, strength: Map<number, number>): Omit<SeasonRow, 'retired' | 'bankrupt'> {
   const a = world.competitions.ITA1!, b = world.competitions.ITA2!;
   const table = standings(world, a);
   const cas = Object.values(world.players).filter((p) => p.clubId !== null).map((p) => p.ca).sort((x, y) => y - x);
@@ -52,7 +52,7 @@ export function careerRows(seed: number, seasons: number, onSeason?: (r: SeasonR
     while (!isSeasonOver(world)) advance(world);
     const snap = snapshot(world, strength);
     const sum = endSeason(world);
-    const row = { ...snap, retired: sum.retired };
+    const row = { ...snap, retired: sum.retired, bankrupt: sum.administered.map((id) => world.clubs[id]!.name) };
     rows.push(row);
     onSeason?.(row);
   }
@@ -79,10 +79,11 @@ export function careerReport(seed: number, seasons: number): string[] {
     `| 60 migliori: crescita massima sulla prima stagione | ${f1(drift)} | ≤ 3 | ${ok(drift <= 3)} |`,
     `| Distacco Serie A – Serie B: scarto massimo dalla prima stagione | ${f1(gapDrift)} | ≤ 5 | ${ok(gapDrift <= 5)} |`,
     `| Campioni diversi | ${new Set(rows.map((r) => r.champion)).size} | | |`,
+    `| Bancarotte ogni 10 stagioni | ${f1((rows.reduce((s, r) => s + r.bankrupt.length, 0) * 10) / seasons)} | 1 – 3 | ${ok(rows.reduce((s, r) => s + r.bankrupt.length, 0) * 10 / seasons >= 1 && rows.reduce((s, r) => s + r.bankrupt.length, 0) * 10 / seasons <= 3)} |`,
     `| Tempo per stagione (s) | ${f1((performance.now() - t0) / 1000 / seasons)} | | |`, '',
-    '| Stagione | Corr. | 60 migliori | XI Serie A | XI Serie B | Distacco | Giocatori | Età media | Ritirati | Club in rosso | Ingaggi/fatturato | Sanzioni FFP | Saldo medio A · B (M) | Campione |',
-    '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|',
-    ...rows.map((r) => `| ${r.season} | ${f2(r.corr)} | ${f1(r.top60)} | ${f1(r.a)} | ${f1(r.b)} | ${f1(gap(r))} | ${r.players} | ${f1(r.ageAvg)} | ${r.retired} | ${r.inDebt} | ${f2(r.wageShare)} | ${r.sanctions} | ${r.cashA.toFixed(0)} · ${r.cashB.toFixed(0)} | ${r.champion} |`),
+    '| Stagione | Corr. | 60 migliori | XI Serie A | XI Serie B | Distacco | Giocatori | Età media | Ritirati | Club in rosso | Ingaggi/fatturato | Sanzioni FFP | Saldo medio A · B (M) | Commissariati | Campione |',
+    '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|',
+    ...rows.map((r) => `| ${r.season} | ${f2(r.corr)} | ${f1(r.top60)} | ${f1(r.a)} | ${f1(r.b)} | ${f1(gap(r))} | ${r.players} | ${f1(r.ageAvg)} | ${r.retired} | ${r.inDebt} | ${f2(r.wageShare)} | ${r.sanctions} | ${r.cashA.toFixed(0)} · ${r.cashB.toFixed(0)} | ${r.bankrupt.join(', ')} | ${r.champion} |`),
     '', `Prima → ultima: 60 migliori ${f1(first.top60)} → ${f1(last.top60)}, distacco ${f1(gap(first))} → ${f1(gap(last))}.`,
   ];
 }

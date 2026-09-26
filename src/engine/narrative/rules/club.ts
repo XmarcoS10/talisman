@@ -286,6 +286,16 @@ export const CLUB_RULES: Rule[] = [
       return { step: 'stay' };
     },
   },
+  // 18b · COMMISSARIATO (Blocco 4): la stagione dopo la bancarotta, dall'inizio alla fine
+  {
+    id: 'administration', priority: 5, cooldown: 300, ttl: 400,
+    detect: (f) => each(f, (c) => (f.world.clubs[c]!.crisis.since === f.world.season && f.round >= 1 ? { n: f.world.clubs[c]!.crisis.penalty || 8 } : null)),
+    step: (arc, f) => {
+      if (f.left > 0) return f.round === 19 && arc.stage === 0 ? { step: 'next' } : { step: 'stay' };
+      const pos = f.pos.get(arc.subject.club!) ?? 1;
+      return pos > f.table.length - f.comp.relegate ? { step: 'lost' } : { step: 'won' };
+    },
+  },
   // 19 · PANCHINA IN BILICO: la fiducia della dirigenza sotto la soglia d'allarme
   {
     id: 'boardUnrest', priority: 5, cooldown: 90, ttl: 200,

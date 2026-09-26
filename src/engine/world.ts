@@ -25,12 +25,13 @@ import { yearlyIntake, youthPa } from './youth/intake.ts';
 import { afterCupDay, cupFixtures, makeCup } from './cup.ts';
 import { afterPlayoffDay, makePlayoffs, playoffFixtures, serieB } from './playoffs.ts';
 import { preseason } from './friendlies.ts';
+import { seasonAdministration, weekDistress } from './finance/administration.ts';
 import { checkFFP, estimate, gate, payBonuses, seasonIncome, settleInstalments, trimWages, weekCosts } from './finance/ledger.ts';
 import { defaultTraining, trainWeek } from './training.ts';
 
 export const DAYS_BETWEEN_ROUNDS = 7;
 
-const LEAGUES = [
+export const LEAGUES = [
   { id: 'ITA1', name: 'Serie A', level: 1, promote: 0, relegate: 3, rep: [55, 90] },
   { id: 'ITA2', name: 'Serie B', level: 2, promote: 3, relegate: 4, rep: [36, 60] }, // Blocco 4 (scelta 2A): era [30, 58], una B più debole di quanto il mondo sostiene
   // Serie C di contorno (Blocco 4, scelta 3A): rose vere, ma non si gioca partita per partita finché non c'è il club dell'utente
@@ -56,7 +57,7 @@ function makeClub(world: WorldState, rng: Rng, comp: Competition, i: number, cit
     colors: [c1!, c2!, c3!], crest: null, founded: rng.int(1890, 1960), reputation: rep, philosophy: rng.pick([...PHILOSOPHIES]),
     stadium: { name: `Stadio ${rng.pick(NATIONS.ITA!.last)}`, capacity: Math.round((5000 + rep * rep * 7) / 500) * 500 },
     balance: Math.round((rep * rep * 9000) / 100000) * 100000, books: [], debts: [], credits: [],
-    sanction: { kind: 'none', seasons: 0, points: 0 }, compId: comp.id, playerIds: [],
+    sanction: { kind: 'none', seasons: 0, points: 0 }, crisis: { below: 0, warned: 0, since: null, penalty: 0 }, compId: comp.id, playerIds: [],
     tactic: defaultTactic(), training: defaultTraining(), familiarity: {}, excluded: [], feuds: [], scoutIds: [],
     youth: { facilities: Math.round(YOUTH.facilitiesFromRep[0] + rep / YOUTH.facilitiesFromRep[1]), recruitment: Math.round(YOUTH.recruitmentFromRep[0] + rep / YOUTH.recruitmentFromRep[1]) },
   };
@@ -197,6 +198,7 @@ function passDays(world: WorldState, rng: Rng, days: number, weeks: number) {
       weekPsych(world, club, rng);
     }
     weekCosts(world, 1); // stipendi, staff, stadio
+    weekDistress(world); // gli avvisi al club dell'utente se la cassa va a picco
     weekBoard(world); // le quattro barre della fiducia
     weekScouting(world, rng); // gli osservatori diradano la nebbia
     weekStories(world, rng); // le storie della settimana (§7.4)
@@ -357,7 +359,7 @@ export function standings(world: WorldState, comp: Competition): TableRow[] {
     else if (hg < ag) { a.w++; h.l++; a.pts += 3; }
     else { h.d++; a.d++; h.pts++; a.pts++; }
   }
-  for (const row of rows.values()) row.pts -= world.clubs[row.clubId]!.sanction.points;
+  for (const row of rows.values()) row.pts -= world.clubs[row.clubId]!.sanction.points + world.clubs[row.clubId]!.crisis.penalty;
   return [...rows.values()].sort(
     (x, y) => y.pts - x.pts || y.gf - y.ga - (x.gf - x.ga) || y.gf - x.gf || world.clubs[x.clubId]!.name.localeCompare(world.clubs[y.clubId]!.name),
   );
@@ -371,7 +373,7 @@ export function topScorers(world: WorldState, comp: Competition, n = 10): Player
     .slice(0, n);
 }
 
-export type SeasonSummary = { season: number; champions: Record<string, ClubId>; promoted: ClubId[]; relegated: ClubId[]; retired: number; signings: number };
+export type SeasonSummary = { season: number; champions: Record<string, ClubId>; promoted: ClubId[]; relegated: ClubId[]; retired: number; signings: number; administered: ClubId[] };
 
 /** Serie C non giocata: la classifica è la forza degli XI più un po' di caso (niente partite, niente statistiche) */
 function shadowTable(world: WorldState, comp: Competition, rng: Rng): TableRow[] {
@@ -401,7 +403,7 @@ export function endSeason(world: WorldState): SeasonSummary {
   const rng = new Rng(world.rng);
   ensureSerieC(world, rng); // le carriere nate prima della 0.2.0 ricevono qui la Serie C
   const comps = Object.values(world.competitions).sort((a, b) => a.level - b.level);
-  const summary: SeasonSummary = { season: world.season, champions: {}, promoted: [], relegated: [], retired: 0, signings: 0 };
+  const summary: SeasonSummary = { season: world.season, champions: {}, promoted: [], relegated: [], retired: 0, signings: 0, administered: [] };
 
   const tables = comps.map((c) => (isShadow(world, c) ? shadowTable(world, c, rng) : standings(world, c)));
   comps.forEach((comp, i) => seasonIncome(world, comp, tables[i]!)); // tv, sponsor, premi
@@ -409,6 +411,7 @@ export function endSeason(world: WorldState): SeasonSummary {
   endSeasonBoard(world); // il verdetto della dirigenza, prima che cambino le categorie
   settleInstalments(world); // le rate dei trasferimenti
   checkFFP(world); // fair play finanziario: richiamo, blocco, penalizzazione
+  summary.administered = seasonAdministration(world, rng).map((c) => c.id); // chi non è rientrato: commissariamento
   comps.forEach((comp, i) => {
     const table = tables[i]!;
     const top = topScorers(world, comp, 1)[0];
