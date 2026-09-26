@@ -276,6 +276,9 @@ select:focus, input:focus { outline: none; border-color: var(--data-1); box-shad
 .shot-map .shot.goal { fill: var(--accent); fill-opacity: 1; stroke-width: 1; }
 .shot-map .shot.off, .shot-map .shot.blocked { fill-opacity: 0.35; }
 .sheet-advice { margin: 0; color: var(--text-1); }
+/* scelta della lingua alla prima apertura (Blocco 5) */
+.lang-gate { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-4); text-align: center; padding: var(--s-5); }
+.lang-gate h1 { font: 700 40px var(--font-title); margin: 0; }
 .view-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--s-2) var(--s-3); }
 /* fra un saliente e l'altro (Blocco 3): il campo si scurisce e il cronometro corre */
 .skip-card { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: var(--s-3);

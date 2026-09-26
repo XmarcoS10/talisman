@@ -8,7 +8,6 @@ import { abilityAt } from '../players.ts';
 import type { Rng } from '../rng.ts';
 import { dropRelations, initRelations } from '../social.ts';
 import { books } from '../finance/ledger.ts';
-import { teamForms } from '../narrative/italian.ts';
 import { agentOf, commission, remember, renewalWage } from './agents.ts';
 import { acceptsRenewal } from './contracts.ts';
 import { needs, plan, sellWillingness, shortlist } from './club-ai.ts';
@@ -71,9 +70,10 @@ export function transfer(world: WorldState, rng: Rng, p: Player, buyer: Club, of
   const a = agentOf(world, p);
   if (a) { remember(a, buyer.id, AGENT.soldWell); remember(a, seller.id, Math.round(AGENT.soldWell / 2)); }
   const me = world.manager.clubId;
-  if (buyer.id === me) addNews(world, 'news.signed', { name: pName(p), from: teamForms('x', seller.city).x_da!, fee: offer.fee });
-  else if (seller.id === me) addNews(world, 'news.sold', { name: pName(p), to: teamForms('x', buyer.city).x_a!, fee: offer.fee });
-  else if (p.ca >= CLUB_AI.newsCa) addNews(world, 'news.transfer', { name: pName(p), from: teamForms('x', seller.city).x_da!, to: teamForms('x', buyer.city).x_a!, fee: offer.fee });
+  // città, non forme italiane: la preposizione la mette il testo della lingua ({from|da} in it.json)
+  if (buyer.id === me) addNews(world, 'news.signed', { name: pName(p), from: seller.city, fee: offer.fee });
+  else if (seller.id === me) addNews(world, 'news.sold', { name: pName(p), to: buyer.city, fee: offer.fee });
+  else if (p.ca >= CLUB_AI.newsCa) addNews(world, 'news.transfer', { name: pName(p), from: seller.city, to: buyer.city, fee: offer.fee });
 }
 
 /** prova a comprare `p`: trattativa completa, dal primo contatto all'accordo o alla rottura */

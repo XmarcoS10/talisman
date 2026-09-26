@@ -5,7 +5,7 @@ import type { Fixture, WorldState } from '../../engine/model.ts';
 import { DAYS_BETWEEN_ROUNDS } from '../../engine/world.ts';
 import { Crest } from '../Crest.tsx';
 import { download, ical, isRivalry, kickoff } from '../calendar.ts';
-import { fmtDate, gameDate, t } from '../i18n.ts';
+import { fmtDate, gameDate, t, locale } from '../i18n.ts';
 import { CupView, Preseason } from './CupView.tsx';
 import { OpponentReport } from './OpponentReport.tsx';
 import { cupFixtures } from '../../engine/cup.ts';
@@ -70,7 +70,7 @@ export function Fixtures({ world, clubId, onPlayer }: { world: WorldState; clubI
         </div>
         <select value={mon} onChange={(e) => setMon(Number(e.target.value))} aria-label={t('fixtures.month')}>
           <option value={-1}>{t('fixtures.allMonths')}</option>
-          {months.map((m) => <option key={m} value={m}>{new Date(Date.UTC(2000, m, 1)).toLocaleDateString('it-IT', { month: 'long', timeZone: 'UTC' })}</option>)}
+          {months.map((m) => <option key={m} value={m}>{new Date(Date.UTC(2000, m, 1)).toLocaleDateString(locale(), { month: 'long', timeZone: 'UTC' })}</option>)}
         </select>
       </div>
 
@@ -145,7 +145,7 @@ function Featured({ world, fx, clubId, round }: { world: WorldState; fx: Fixture
         <span className="row muted wrap">
           <span><CalendarDays size={13} /> {fmtDate(world.season, fx.day)}</span>
           <span><Clock size={13} /> {t('fixtures.at', { time: kickoff(world, fx) })}</span>
-          <span><Landmark size={13} /> {t('fixtures.stadium', { name: h.stadium.name, cap: h.stadium.capacity.toLocaleString('it-IT') })}</span>
+          <span><Landmark size={13} /> {t('fixtures.stadium', { name: h.stadium.name, cap: h.stadium.capacity.toLocaleString(locale()) })}</span>
         </span>
       </div>
       <div className="countdown">

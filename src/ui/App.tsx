@@ -61,7 +61,7 @@ const saveSoon = (w: WorldState) => {
 // se la finestra si chiude prima del salvataggio differito, si salva adesso
 window.addEventListener('beforeunload', () => { if (pending && pendingWorld) autosave(pendingWorld); });
 
-export function App() {
+export function App(_: { lang: string }) { // `lang`: cambiando lingua l'app si ridisegna tutta
   const [world, setWorld] = useState<WorldState | null>(null);
   const [screen, setScreen] = useState<Screen>({ name: 'desk' });
   useEffect(() => { markVisited(screen.name); }, [screen.name]);

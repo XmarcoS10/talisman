@@ -5,6 +5,9 @@ import type { ViewMode } from './match/highlights.ts';
 import type { CameraMode } from './match/renderer.ts';
 import type { OverlayKind } from './match/overlays.ts';
 
+export type Lang = 'it' | 'en';
+export const LANGS: Lang[] = ['it', 'en'];
+
 export interface Settings {
   hints: boolean; // suggerimenti alla prima apertura di ogni schermata
   seen: string[]; // suggerimenti già letti
@@ -21,12 +24,13 @@ export interface Settings {
   view: ViewMode; // partita: Salienti, Estesa o Completa (Blocco 3)
   camera: CameraMode; // partita: campo intero, segui la palla, ravvicinata sui salienti
   overlays: OverlayKind[]; // partita: sovrapposizioni tattiche accese
+  lang: Lang | ''; // lingua (Blocco 5); vuota finché non la si sceglie alla prima apertura
 }
 
 const KEY = 'talisman-settings';
 export const DEFAULTS: Settings = { hints: true, seen: [], visited: [], guideDone: false, volume: { ui: 0.5, crowd: 0.4, fx: 0.65 },
   muteOnBlur: true, autosave: true, pauseNews: true, currency: 'EUR', dateFmt: 'long', win: '', rail: false,
-  view: 'highlights', camera: 'follow', overlays: [] };
+  view: 'highlights', camera: 'follow', overlays: [], lang: '' };
 
 let cache: Settings | null = null;
 

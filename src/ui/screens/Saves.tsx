@@ -2,7 +2,7 @@
 import { useReducer, useRef, useState } from 'react';
 import { Bookmark, Copy, Download, FolderOpen, HardDrive, Pencil, PlusCircle, RotateCcw, Save, Shield, Trash2, Upload } from 'lucide-react';
 import type { WorldState } from '../../engine/model.ts';
-import { fmtDate, fmtSeason, t } from '../i18n.ts';
+import { fmtDate, fmtSeason, t, locale } from '../i18n.ts';
 import { SettingsPanel } from './SettingsPanel.tsx';
 import { SLOTS, currentSlot, deleteSlot, exportFile, importFile, loadFrom, openSavesDir, playTime, renameSlot, saveTo, savesDir, setCurrentSlot, slotInfo, slotSize, type Slot } from '../storage.ts';
 
@@ -10,8 +10,8 @@ const hours = (ms: number) => { const m = Math.round(ms / 60000); return `${Math
 const mb = (b: number) => `${(b / 1048576).toFixed(1).replace('.', ',')} MB`;
 const when = (ts: number) => {
   const d = new Date(ts), now = new Date();
-  const time = d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-  return d.toDateString() === now.toDateString() ? t('saves.today', { time }) : `${d.toLocaleDateString('it-IT')} ${time}`;
+  const time = d.toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit' });
+  return d.toDateString() === now.toDateString() ? t('saves.today', { time }) : `${d.toLocaleDateString(locale())} ${time}`;
 };
 
 export function Saves({ world, onLoad }: { world: WorldState; onLoad: (w: WorldState) => void }) {

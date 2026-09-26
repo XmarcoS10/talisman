@@ -6,7 +6,6 @@ import type { Club, IncomingOffer, Offer, Player, WorldState } from '../model.ts
 import { addCause, addNews, pName } from '../news.ts';
 import { Rng } from '../rng.ts';
 import { clamp } from '../util.ts';
-import { teamForms } from '../narrative/italian.ts';
 import { agentOf, renewalWage } from './agents.ts';
 import { transfer } from './market.ts';
 import { value } from './valuation.ts';
@@ -59,7 +58,7 @@ export function rejectOffer(world: WorldState, o: IncomingOffer) {
   if (!p || !buyer || p.clubId !== world.manager.clubId || !keen(world, p, buyer)) return;
   p.psych.morale = clamp(p.psych.morale - OFFERS.blockedMorale, 0, 100);
   p.psych.trust = clamp(p.psych.trust - OFFERS.blockedTrust, 0, 100);
-  addCause(world, p, 'cause.offerBlocked', { club: teamForms('x', buyer.city).x_da ?? buyer.name });
+  addCause(world, p, 'cause.offerBlocked', { club: buyer.city });
 }
 
 export type CounterResult = 'accept' | 'raise' | 'walk';

@@ -6,7 +6,7 @@ import type { Books, WorldState } from '../../engine/model.ts';
 import { FIN } from '../../engine/balance.ts';
 import { costs, income, profit, projection, revenue, wageBill } from '../../engine/finance/ledger.ts';
 import { standings } from '../../engine/world.ts';
-import { fmtMoney, gameDate, t } from '../i18n.ts';
+import { fmtMoney, gameDate, t, locale } from '../i18n.ts';
 import { Instalments } from './FinanceParts.tsx';
 
 const IN: (keyof Books)[] = ['gate', 'tv', 'sponsor', 'merch', 'prize', 'transfersIn'];
@@ -116,7 +116,7 @@ function CashChart({ world, monthly }: { world: WorldState; monthly: number[] })
         return (
           <div key={i} className={`cash-col ${i === now ? 'now' : ''}`} title={v !== undefined ? fmtMoney(v) : ''}>
             <div className="cash-bar-wrap">{v !== undefined && <div className={`cash-bar ${v < 0 ? 'neg' : ''}`} style={{ height: `${Math.abs(v) / max * 100}%` }} />}</div>
-            <span className="caps">{gameDate(world.season, i * 30 + 15).toLocaleDateString('it-IT', { month: 'short', timeZone: 'UTC' })}</span>
+            <span className="caps">{gameDate(world.season, i * 30 + 15).toLocaleDateString(locale(), { month: 'short', timeZone: 'UTC' })}</span>
           </div>
         );
       })}

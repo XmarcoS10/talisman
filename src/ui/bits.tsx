@@ -1,7 +1,7 @@
 // Piccole primitive condivise tra le schermate.
 import type { Player, Position, WorldState } from '../engine/model.ts';
 import { toStars } from './stars.ts';
-import { t } from './i18n.ts';
+import { t, lang } from './i18n.ts';
 import { teamForms } from '../engine/narrative/italian.ts';
 
 /** abilità in stelle da ½ a 5, relative al campionato dell'utente (`stars.ts`) */
@@ -18,7 +18,7 @@ export const PosBadge = ({ pos }: { pos: Position }) => <span className={`badge 
 
 /** una squadra col suo articolo o preposizione: team(club, 'di') → "della Vignarola" */
 export const team = (c: { city: string } | undefined, form: '' | 'di' | 'a' | 'da' | 'in' | 'su' | 'con' | 'contro' = '') =>
-  c ? teamForms('x', c.city)[form ? `x_${form}` : 'x']! : '?';
+  !c ? '?' : lang() === 'en' ? c.city : teamForms('x', c.city)[form ? `x_${form}` : 'x']!;
 
 // attributi 1-20 (DESIGN.md): 16-20 smeraldo, 11-15 ambra, 8-10 neutro, 1-7 rosso
 export const attrClass = (v: number) => (v <= 7 ? 'a1' : v <= 10 ? 'a2' : v <= 15 ? 'a3' : 'a4');

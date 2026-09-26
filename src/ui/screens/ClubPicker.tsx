@@ -6,7 +6,7 @@ import { estimate, wageBill } from '../../engine/finance/ledger.ts';
 import { pickXI, xiStrength } from '../../engine/match.ts';
 import type { Club, WorldState } from '../../engine/model.ts';
 import { Stars } from '../bits.tsx';
-import { fmtMoney, t } from '../i18n.ts';
+import { fmtMoney, t, locale } from '../i18n.ts';
 import { boardGoal } from './Start.tsx';
 
 type Goal = 'all' | 'top' | 'middle' | 'survive';
@@ -90,7 +90,7 @@ export function ClubPicker({ world, selected, onPick }: { world: WorldState; sel
               </span>
               <span className="row">
                 <span className="club-code" style={{ color: c.colors[0] === '#FFFFFF' || c.colors[0] === '#111111' ? 'var(--accent)' : c.colors[0] }}>{code(c)}<small>{c.founded}</small></span>
-                <span><b className="club-name">{c.name}</b><div className="muted small">{t('start.stadium', { name: c.stadium.name, cap: c.stadium.capacity.toLocaleString('it-IT') })}</div></span>
+                <span><b className="club-name">{c.name}</b><div className="muted small">{t('start.stadium', { name: c.stadium.name, cap: c.stadium.capacity.toLocaleString(locale()) })}</div></span>
               </span>
               <span className="goal-row"><span className="caps">{t('start.boardGoal')}</span><span className={`tag ${g === 'top' ? '' : g === 'survive' ? 'bad' : 'cyan'}`}>{boardGoal(world, c.id)}</span></span>
               <span className="tile-stats">

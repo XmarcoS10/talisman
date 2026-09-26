@@ -2,7 +2,7 @@ import type { WorldState } from '../../engine/model.ts';
 import { standings } from '../../engine/world.ts';
 import { Crest } from '../Crest.tsx';
 import { Kit } from '../Kit.tsx';
-import { fmtMoney, t } from '../i18n.ts';
+import { fmtMoney, t, locale } from '../i18n.ts';
 import { Squad } from './Squad.tsx';
 
 export function ClubView({ world, clubId, onPlayer, onBack }: { world: WorldState; clubId: number; onPlayer: (id: number) => void; onBack: () => void }) {
@@ -17,7 +17,7 @@ export function ClubView({ world, clubId, onPlayer, onBack }: { world: WorldStat
         <Crest club={club} size={72} />
         <div style={{ flex: 1 }}>
           <h1>{club.name}</h1>
-          <div className="muted">{t('club.info', { city: club.city, founded: club.founded, stadium: club.stadium.name, cap: club.stadium.capacity.toLocaleString('it-IT') })}</div>
+          <div className="muted">{t('club.info', { city: club.city, founded: club.founded, stadium: club.stadium.name, cap: club.stadium.capacity.toLocaleString(locale()) })}</div>
         </div>
         <span className="row"><Kit club={club} size={56} title={t('club.kitHome')} /><Kit club={club} away size={56} title={t('club.kitAway')} /></span>
         <div className="grid" style={{ gridTemplateColumns: 'auto auto', gap: 'var(--s-1) var(--s-3)' }}>

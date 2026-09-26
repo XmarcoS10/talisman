@@ -9,7 +9,7 @@ import { MANAGER_STYLES, type ManagerStyle, type WorldState } from '../../engine
 import { value } from '../../engine/transfers/valuation.ts';
 import { Crest } from '../Crest.tsx';
 import { PosBadge, fullName } from '../bits.tsx';
-import { fmtMoney, t } from '../i18n.ts';
+import { fmtMoney, t, locale } from '../i18n.ts';
 import { challenge, strengthRank } from './ClubPicker.tsx';
 import { boardGoal } from './Start.tsx';
 
@@ -38,7 +38,7 @@ export function ClubDossier({ world, clubId, name, setName, style, setStyle, can
           <span className="row wrap">
             <span className="tag">{world.competitions[c.compId]!.name}</span>
             <span className="tag dim">{t('start.founded', { y: c.founded })}</span>
-            <span className="tag dim"><CalendarDays size={11} /> {t('start.stadium', { name: c.stadium.name, cap: c.stadium.capacity.toLocaleString('it-IT') })}</span>
+            <span className="tag dim"><CalendarDays size={11} /> {t('start.stadium', { name: c.stadium.name, cap: c.stadium.capacity.toLocaleString(locale()) })}</span>
           </span>
           <h1 className="dossier-name">{c.name}</h1>
           <span className="serif muted">“{lines.join(' ')}”</span>
@@ -71,7 +71,7 @@ export function ClubDossier({ world, clubId, name, setName, style, setStyle, can
           <div className="mini-card"><span className="row" style={{ justifyContent: 'space-between' }}><span className="caps">{t('youth.recruitment')}</span><b className="num pos-mid">{t('start.level', { n: c.youth.recruitment })}</b></span>
             <span className="segbar">{Array.from({ length: 10 }, (_, i) => <i key={i} className={i < c.youth.recruitment / 2 ? 'on warn' : ''} />)}</span></div>
           <div className="tile-facts">
-            <span><Landmark size={12} /> {t('start.stadiumLabel')}</span><span>{c.stadium.capacity.toLocaleString('it-IT')}</span>
+            <span><Landmark size={12} /> {t('start.stadiumLabel')}</span><span>{c.stadium.capacity.toLocaleString(locale())}</span>
             <span>{t('start.reputation')}</span><span>{c.reputation}/100</span>
             <span>{t('start.styleReq')}</span><span className="pos-good">{t(`start.style.${c.philosophy}`)}</span>
           </div>

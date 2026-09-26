@@ -7,8 +7,8 @@ import { version } from '../../../package.json';
 import { SCHEMA_VERSION, integrity } from '../../engine/save.ts';
 import { applyVolumes, playUi } from '../audio.ts';
 import { exportDiagnostics } from '../diag.ts';
-import { t } from '../i18n.ts';
-import { DEFAULTS, WIN_SIZES, applyWin, settings, updateSettings, type Settings } from '../settings.ts';
+import { t, locale, lang, setLang } from '../i18n.ts';
+import { DEFAULTS, WIN_SIZES, applyWin, settings, updateSettings, type Settings, LANGS } from '../settings.ts';
 import type { WorldState } from '../../engine/model.ts';
 
 function Check({ on, set, title, sub }: { on: boolean; set: (v: boolean) => void; title: string; sub: string }) {
@@ -44,6 +44,10 @@ export function SettingsPanel({ world, onChange }: { world: WorldState; onChange
         <Check on={s.pauseNews} set={(v) => set({ pauseNews: v })} title={t('settings.pauseNews')} sub={t('settings.pauseNewsSub')} />
         <span className="caps">{t('settings.rules')}</span>
         <Check on={world.rules.playoffs} set={(v) => { world.rules.playoffs = v; refresh(); }} title={t('settings.playoffs')} sub={t('settings.playoffsSub')} />
+        <span className="caps">{t('settings.lang')}</span>
+        <div className="seg-tabs" style={{ alignSelf: 'stretch' }}>
+          {LANGS.map((l) => <button key={l} className={lang() === l ? 'active hot' : ''} onClick={() => { setLang(l); refresh(); }}>{t(`lang.${l}`)}</button>)}
+        </div>
         <span className="caps">{t('settings.currency')}</span>
         <div className="seg-tabs" style={{ alignSelf: 'stretch' }}>
           {(['EUR', 'USD', 'GBP'] as const).map((c) => <button key={c} className={s.currency === c ? 'active hot' : ''} onClick={() => set({ currency: c })}>{t(`settings.cur.${c}`)}</button>)}
@@ -95,7 +99,7 @@ export function SettingsPanel({ world, onChange }: { world: WorldState; onChange
           <span className="caps">{t('settings.integrity')}</span>
           {check ? <b className={`num small ${check.problems.length ? 'pos-bad' : 'pos-good'}`}>{check.problems.length
             ? t('settings.integrityBad', { n: check.problems.length })
-            : t('settings.integrityOk', { pct: 100, n: check.checks.toLocaleString('it-IT') })}</b> : <span className="small pos-good">{t('settings.integrityRun')}</span>}
+            : t('settings.integrityOk', { pct: 100, n: check.checks.toLocaleString(locale()) })}</b> : <span className="small pos-good">{t('settings.integrityRun')}</span>}
         </button>
         <span className="muted small">{t('settings.diagHint')}</span>
         <div className="grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
