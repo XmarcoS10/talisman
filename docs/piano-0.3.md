@@ -28,6 +28,11 @@ Per ogni intervento: file toccati · migrazione · golden master · come si veri
 
 ## 0.3.0 — il gioco si spiega
 
+**Stato (26/09/2026)**: 3.1-3.4 fatti e committati (test 309 verdi, typecheck pulito, `--seasons 10 --seed 42`
+identico alla 0.2.1: le modifiche non pescano dal caso). Resta il 3.5, che aspetta il collaudo. Trovati per strada:
+capocannonieri da 40-65 gol (nel backlog, per la 0.5.0) e un ordinamento della Rosa altrui che segue la CA vera
+(attività separata).
+
 ### 3.1 Test di montaggio sulle schermate (debito voce 1)
 - **Come**: `renderToString` di `react-dom/server` su un mondo generato dal seme 42, in ambiente Node, **senza
   dipendenze nuove** (niente jsdom né testing-library). Prende le schermate che vanno in errore al primo disegno, che

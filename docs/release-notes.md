@@ -1,5 +1,17 @@
 # Note di rilascio
 
+## In arrivo (0.3.0)
+
+Le carriere della 0.2.x si aprono da sole (passano al formato 29).
+
+- **Record e storia**: una schermata nuova con i record del tuo club (vittoria e sconfitta più larghe, miglior stagione,
+  marcatori e presenze di sempre), la tua carriera stagione per stagione, le carriere dei giocatori della rosa e
+  l'albo d'oro di campionati e coppa. I record si vedono anche nella scheda degli altri club.
+- **Esportazione CSV** da Rosa, Classifiche, Finanze e Record: il file si apre in Excel con lettere accentate e
+  decimali giusti.
+- **Tema chiaro**: nelle Impostazioni, Scuro, Chiaro o Come il sistema. Il campo resta verde scuro.
+- Il grafico della cassa non mostra più dieci mesi piatti a inizio stagione.
+
 ## 0.2.1 — le nazionali
 
 Le carriere della 0.2.0 si aprono da sole (passano al formato 28).
@@ -55,6 +67,17 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## Coming next (0.3.0, English)
+
+Careers from 0.2.x open on their own (they move to save format 29).
+
+- **Records and history**: a new screen with your club's records (biggest win and heaviest defeat, best season,
+  all-time top scorers and appearances), your career season by season, your squad's careers and the roll of honour
+  for leagues and cup. Records also show on other clubs' pages.
+- **CSV export** from Squad, Tables, Finances and Records: the file opens in Excel with the right accents and decimals.
+- **Light theme**: in Settings, Dark, Light or Follow system. The pitch stays dark green.
+- The cash chart no longer shows ten flat months at the start of a season.
 
 ## 0.2.1 — the national teams (English)
 
