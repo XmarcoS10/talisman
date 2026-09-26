@@ -4,6 +4,7 @@
 // Statistiche per partita (Blocco 2b): pnpm sim -- --match-stats 4000
 // Mercato:  pnpm sim -- --market 5
 // Storie:   pnpm sim -- --stories 3
+// Carriera lunga (Blocco 4): pnpm sim -- --career 25 --seed 42
 // Persone:  pnpm sim -- --dev 10 · pnpm sim -- --psych 20 (people.ts)
 import { writeFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
@@ -15,12 +16,13 @@ import { advance, endSeason, isSeasonOver, newWorld, standings } from '../engine
 import { marketReport } from './market.ts';
 import { matchStatsReport } from './match-stats.ts';
 import { storiesReport } from './stories.ts';
+import { careerReport } from './career.ts';
 import { devReport, psychReport } from './people.ts';
 
 // pnpm 12 passa il `--` di `pnpm sim -- --seasons 10` così com'è
 const { values } = parseArgs({
   args: process.argv.slice(2).filter((a) => a !== '--'),
-  options: { seasons: { type: 'string' }, matches: { type: 'string' }, dev: { type: 'string' }, psych: { type: 'string' }, market: { type: 'string' }, 'match-stats': { type: 'string' }, stories: { type: 'string' }, seed: { type: 'string', default: '42' }, report: { type: 'string' } },
+  options: { seasons: { type: 'string' }, career: { type: 'string' }, matches: { type: 'string' }, dev: { type: 'string' }, psych: { type: 'string' }, market: { type: 'string' }, 'match-stats': { type: 'string' }, stories: { type: 'string' }, seed: { type: 'string', default: '42' }, report: { type: 'string' } },
 });
 const seed = Number(values.seed);
 const t0 = performance.now();
@@ -171,6 +173,7 @@ async function matchesReport(n: number) {
 const report = (values.dev ? devReport(seed, Number(values.dev)) : values.psych ? psychReport(seed, Number(values.psych))
   : values.market ? marketReport(seed, Number(values.market))
   : values.stories ? storiesReport(seed, Number(values.stories))
+  : values.career ? careerReport(seed, Number(values.career))
   : values['match-stats'] ? await matchStatsReport(seed, Number(values['match-stats']))
   : values.matches ? await matchesReport(Number(values.matches)) : seasonsReport(Number(values.seasons ?? 10))).join('\n');
 console.log(report);

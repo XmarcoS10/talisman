@@ -21,7 +21,7 @@ import { makeScouts, weekScouting } from './scouting/scouts.ts';
 import { weekStories } from './narrative/scanner.ts';
 import { weekPress } from './press/press.ts';
 import { internationalBreak, summerTournament } from './nations/nations.ts';
-import { yearlyIntake } from './youth/intake.ts';
+import { yearlyIntake, youthPa } from './youth/intake.ts';
 import { afterCupDay, cupFixtures, makeCup } from './cup.ts';
 import { preseason } from './friendlies.ts';
 import { checkFFP, estimate, gate, seasonIncome, settleInstalments, trimWages, weekCosts } from './finance/ledger.ts';
@@ -400,7 +400,11 @@ export function endSeason(world: WorldState): SeasonSummary {
     const youth: Player[] = [];
     for (const [pos, n] of Object.entries(SQUAD_TEMPLATE) as [Position, number][]) {
       let have = club.playerIds.filter((id) => world.players[id]!.position === pos).length;
-      while (have++ < n) youth.push(addPlayer(world, rng, club, pos, [16, 18]));
+      while (have++ < n) { // potenziale come un ragazzo del vivaio (Blocco 4: con quello dei giocatori generati un 17enne arrivava a 200)
+        const kid = addPlayer(world, rng, club, pos, [16, 18]);
+        kid.pa = Math.max(kid.ca, youthPa(club, rng).pa);
+        youth.push(kid);
+      }
     }
     initRelations(world, club, rng, youth);
   }
