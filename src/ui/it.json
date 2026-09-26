@@ -1838,5 +1838,8 @@
   "rec.caps": "Nazionale",
   "rec.playersHint": "Presenze e gol di campionato in tutta la carriera, stagione in corso compresa.",
   "rec.topScorer": "capocannoniere {name} ({n})",
-  "rec.cupRoll": "Coppa nazionale"
+  "rec.cupRoll": "Coppa nazionale",
+  "csv.export": "Esporta in CSV (si apre con Excel)",
+  "fin.projShort": "previsione",
+  "fin.cashMonthly": "Cassa a fine mese"
 }

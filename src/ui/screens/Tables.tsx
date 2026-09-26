@@ -6,6 +6,8 @@ import { expected } from '../../engine/board/board.ts';
 import { standings } from '../../engine/world.ts';
 import { Crest } from '../Crest.tsx';
 import { shortName } from '../bits.tsx';
+import { Download } from 'lucide-react';
+import { downloadCsv } from '../csv.ts';
 import { t } from '../i18n.ts';
 import { formOf, nextFixture, tableFor, type TableView } from '../league.ts';
 import { LeagueSide } from './TablesSide.tsx';
@@ -112,7 +114,13 @@ export function Tables({ world, clubId, onPlayer, onClub }: { world: WorldState;
 
       <div className="cols2">
         <div className="panel">
-          <h2>{t('tables.official', { name: comp.name })}</h2>
+          <div className="row" style={{ justifyContent: 'space-between' }}>
+            <h2>{t('tables.official', { name: comp.name })}</h2>
+            <button className="btn" title={t('csv.export')} onClick={() => downloadCsv(`classifica-${comp.id}-${view}-${world.season}.csv`, [
+              ['#', t('col.club'), t('col.p'), t('col.w'), t('col.d'), t('col.l'), t('col.gf'), t('col.ga'), t('col.gd'), t('col.pts'), t('col.xgf'), t('col.xga')],
+              ...rows.map((r, i) => [i + 1, world.clubs[r.clubId]!.name, r.p, r.w, r.d, r.l, r.gf, r.ga, r.gf - r.ga, r.pts, r.xgf, r.xga]),
+            ])}><Download size={15} /></button>
+          </div>
           <table className="league">
             <thead>
               <tr>

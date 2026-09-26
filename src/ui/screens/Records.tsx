@@ -1,7 +1,8 @@
 // Record e storia (0.3.0): il club, la carriera dell'allenatore, i giocatori della rosa e l'albo d'oro.
 import { useState } from 'react';
-import { BookOpen, Trophy } from 'lucide-react';
+import { BookOpen, Download, Trophy } from 'lucide-react';
 import type { Player, WorldState } from '../../engine/model.ts';
+import { downloadCsv } from '../csv.ts';
 import { fmtSeason, t } from '../i18n.ts';
 import { ClubRecordsPanel, cupLabel } from './RecordsParts.tsx';
 
@@ -100,13 +101,36 @@ function Roll({ world }: { world: WorldState }) {
   );
 }
 
+function exportRecords(world: WorldState) {
+  const club = (id: number) => world.clubs[id]?.name ?? '—';
+  const r = world.records[world.manager.clubId];
+  downloadCsv(`record-${world.season}.csv`, [
+    [t('rec.managerTitle', { name: world.manager.name })],
+    [t('rec.season'), t('col.club'), t('rec.league'), t('rec.finish'), t('col.pts'), t('rec.cup'), t('rec.sacked')],
+    ...world.manager.seasons.map((s) => [fmtSeason(s.season), club(s.clubId), s.compId ? world.competitions[s.compId]?.name ?? s.compId : '', s.pos, s.pts, cupLabel(s.cup), s.sacked ? '1' : '']),
+    [],
+    [t('rec.scorers'), t('col.goals'), t('col.apps')],
+    ...(r?.scorers ?? []).map((l) => [l.name, l.goals, l.apps]),
+    [],
+    [t('rec.apps'), t('col.apps'), t('col.goals')],
+    ...(r?.apps ?? []).map((l) => [l.name, l.apps, l.goals]),
+    [],
+    [t('rec.tabRoll'), t('rec.league'), t('rec.season'), t('col.goals')],
+    ...world.history.map((h) => [club(h.championId), world.competitions[h.compId]?.name ?? h.compId, fmtSeason(h.season), h.topScorer?.goals ?? null]),
+    ...world.cupWinners.map((c) => [club(c.clubId), t('rec.cupRoll'), fmtSeason(c.season), null]),
+  ]);
+}
+
 export function Records({ world, onPlayer }: { world: WorldState; onPlayer: (id: number) => void }) {
   const [tab, setTab] = useState<Tab>('club');
   const tabs: [Tab, string][] = [['club', t('rec.tabClub')], ['manager', t('rec.tabManager')], ['players', t('rec.tabPlayers')], ['roll', t('rec.tabRoll')]];
   return (
     <div className="grid">
+      <div className="row" style={{ justifyContent: 'space-between' }}>
       <div className="seg-tabs">
         {tabs.map(([k, label]) => <button key={k} className={tab === k ? 'active hot' : ''} onClick={() => setTab(k)}>{label}</button>)}
+      </div>
+      <button className="btn" title={t('csv.export')} onClick={() => exportRecords(world)}><Download size={15} /></button>
       </div>
       {tab === 'club' && <ClubRecordsPanel world={world} clubId={world.manager.clubId} onPlayer={onPlayer} />}
       {tab === 'manager' && <Manager world={world} />}

@@ -6,7 +6,7 @@ import { knowledge, metrics } from '../../engine/scouting/fog.ts';
 import { sellWillingness } from '../../engine/transfers/club-ai.ts';
 import { value } from '../../engine/transfers/valuation.ts';
 import { PosBadge, fullName } from '../bits.tsx';
-import { download } from '../calendar.ts';
+import { downloadCsv } from '../csv.ts';
 import { Ability } from '../fog.tsx';
 import { fmtMoney, t } from '../i18n.ts';
 
@@ -67,10 +67,10 @@ export function Market({ world, onPlayer, onOffer }: { world: WorldState; onPlay
   }, [world, f, sort, me.id, q]);
   const pages = Math.max(1, Math.ceil(rows.length / PAGE));
   const shown = rows.slice(page * PAGE, page * PAGE + PAGE);
-  const csv = () => download(`mercato-${world.season}.csv`, [
-    [t('col.pos'), t('col.name'), t('col.nat'), t('col.age'), t('market.club'), t('col.value'), t('col.wage'), t('col.contract')].join(';'),
-    ...rows.map((p) => [p.position, fullName(p), p.nation, world.season - p.birthYear, p.clubId !== null ? world.clubs[p.clubId]!.name : '', val(p), p.contract.wage, p.contract.until].join(';')),
-  ].join('\n'), 'text/csv');
+  const csv = () => downloadCsv(`mercato-${world.season}.csv`, [
+    [t('col.pos'), t('col.name'), t('col.nat'), t('col.age'), t('market.club'), t('col.value'), t('col.wage'), t('col.contract')],
+    ...rows.map((p) => [p.position, fullName(p), p.nation, world.season - p.birthYear, p.clubId !== null ? world.clubs[p.clubId]!.name : '', val(p), p.contract.wage, p.contract.until]),
+  ]);
 
   return (
     <div className="market-grid">

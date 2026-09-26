@@ -1838,5 +1838,8 @@
   "rec.caps": "Caps",
   "rec.playersHint": "League appearances and goals across the whole career, current season included.",
   "rec.topScorer": "top scorer {name} ({n})",
-  "rec.cupRoll": "National cup"
+  "rec.cupRoll": "National cup",
+  "csv.export": "Export as CSV (opens in Excel)",
+  "fin.projShort": "projection",
+  "fin.cashMonthly": "Cash at the end of each month"
 }

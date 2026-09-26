@@ -42,6 +42,10 @@ describe('record e storia', () => {
     expect(goals).toBeGreaterThan(5);
   });
 
+  it("la cassa mese per mese della stagione nuova non eredita l'estate", () => {
+    for (const c of Object.values(w.clubs)) expect(c.books.at(-1)!.monthly).toEqual([]);
+  });
+
   it('una carriera del formato 28 si apre coi primi di sempre ricostruiti', () => {
     const raw = JSON.parse(serialize(w));
     raw.schemaVersion = 28;
@@ -54,3 +58,4 @@ describe('record e storia', () => {
     expect(old.records[me]!.bigWin).toBeNull();
   });
 });
+

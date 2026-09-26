@@ -27,7 +27,7 @@ import { afterPlayoffDay, makePlayoffs, playoffFixtures, serieB } from './playof
 import { preseason } from './friendlies.ts';
 import { endSeasonRecords } from './records.ts';
 import { seasonAdministration, weekDistress } from './finance/administration.ts';
-import { checkFFP, estimate, gate, payBonuses, seasonIncome, settleInstalments, trimWages, weekCosts } from './finance/ledger.ts';
+import { books, checkFFP, estimate, gate, payBonuses, seasonIncome, settleInstalments, trimWages, weekCosts } from './finance/ledger.ts';
 import { defaultTraining, trainWeek } from './training.ts';
 
 export const DAYS_BETWEEN_ROUNDS = 7;
@@ -489,6 +489,8 @@ export function endSeason(world: WorldState): SeasonSummary {
   world.promises = world.promises.filter((pr) => world.players[pr.playerId]);
 
   passDays(world, rng, 90, 13); // pausa estiva e preparazione
+  // l'estate gira col calendario ancora al giorno 280: la cassa mese per mese della stagione nuova riparte da zero
+  for (const club of Object.values(world.clubs)) books(club, world.season).monthly = [];
   scheduleSeason(world, rng);
   rebaseSummerOffers(world); // le offerte dell'estate si contano dal primo giorno
   for (const p of Object.values(world.players)) p.condition.sharpness = TRAIN.sharpPreseason; // amichevoli estive

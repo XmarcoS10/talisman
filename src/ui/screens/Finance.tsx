@@ -1,13 +1,23 @@
 // Finanze del club (GUIDA §7.7): riquadri, conto economico per stagione (quella in corso è una proiezione), rate,
 // andamento della cassa mese per mese.
 import { useState } from 'react';
-import { ArrowDownLeft, ArrowUpRight, ChartColumn, PiggyBank, ReceiptText, ShieldCheck, TrendingUp } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight, ChartColumn, Download, PiggyBank, ReceiptText, ShieldCheck, TrendingUp } from 'lucide-react';
 import type { Books, WorldState } from '../../engine/model.ts';
 import { FIN } from '../../engine/balance.ts';
 import { costs, income, profit, projection, revenue, wageBill } from '../../engine/finance/ledger.ts';
 import { standings } from '../../engine/world.ts';
 import { fmtMoney, gameDate, t, locale } from '../i18n.ts';
+import { downloadCsv } from '../csv.ts';
 import { Instalments } from './FinanceParts.tsx';
+
+/** conto economico di tutte le stagioni (quella in corso è la proiezione) e cassa mese per mese */
+const exportBooks = (season: number, books: Books[]) => downloadCsv(`finanze-${season}.csv`, [
+  [t('rec.season'), ...[...IN, ...OUT].map((k) => t(`fin.${k}`)), t('fin.net')],
+  ...books.map((b) => [`${b.season}/${String(b.season + 1).slice(2)}${b.season === season ? ` (${t('fin.projShort')})` : ''}`, ...[...IN, ...OUT].map((k) => b[k] as number), profit(b)]),
+  [],
+  [t('fin.cashMonthly')],
+  ...books.filter((b) => b.monthly.length).map((b) => [`${b.season}/${String(b.season + 1).slice(2)}`, ...b.monthly]),
+]);
 
 const IN: (keyof Books)[] = ['gate', 'tv', 'sponsor', 'merch', 'prize', 'transfersIn'];
 const OUT: (keyof Books)[] = ['wages', 'staff', 'stadium', 'transfersOut'];
@@ -58,9 +68,12 @@ export function Finance({ world }: { world: WorldState }) {
       <div className="panel">
         <div className="row wrap" style={{ justifyContent: 'space-between' }}>
           <h2><ReceiptText size={18} /> {t('fin.statement', { s: `${season}/${String(season + 1).slice(2)}` })}</h2>
+          <div className="row">
+          <button className="btn" title={t('csv.export')} onClick={() => exportBooks(world.season, [...[...past].reverse(), { ...proj, monthly: cur?.monthly ?? [] }])}><Download size={15} /></button>
           <div className="seg-tabs">
             <button className={season === world.season ? 'active' : ''} onClick={() => setSeason(world.season)}>{t('fin.current', { s: `${world.season}/${String(world.season + 1).slice(2)}` })}</button>
             {past.slice(0, 3).map((b) => <button key={b.season} className={season === b.season ? 'active' : ''} onClick={() => setSeason(b.season)}>{t('fin.closed', { s: `${b.season}/${String(b.season + 1).slice(2)}` })}</button>)}
+          </div>
           </div>
         </div>
         <span className="muted small">{season === world.season ? t('fin.projHint') : t('fin.closedHint')}</span>

@@ -5,6 +5,8 @@ import { value } from '../../engine/transfers/valuation.ts';
 import { PosBadge, Stars, attrClass, fullName } from '../bits.tsx';
 import { estimate } from '../../engine/scouting/fog.ts';
 import { Ability, Est } from '../fog.tsx';
+import { Download } from 'lucide-react';
+import { downloadCsv } from '../csv.ts';
 import { fmtMoney, t } from '../i18n.ts';
 import { moraleClass } from './Graph.tsx';
 
@@ -114,6 +116,10 @@ export function Squad({ world, clubId, onPlayer, title }: { world: WorldState; c
         <span className="pill num">{t('squad.avgAge', { n: avgAge.toFixed(1) })}</span>
         <span className="pill num">{t('squad.wages', { v: fmtMoney(wages) })}</span>
         <span className="pill num">{t('squad.u21', { n: u21, tot: squad.length })}</span>
+        {own && <button className="btn" title={t('csv.export')} onClick={() => downloadCsv(`rosa-${view}-${world.season}.csv`, [
+          [t('col.pos'), t('col.name'), t('col.nat'), ...cols.map((c) => c.title ?? c.label)],
+          ...players.map((p) => [p.position, fullName(p), p.nation, ...cols.map((c) => c.value(p))]),
+        ])}><Download size={15} /></button>}
       </div>
       <div className="seg-tabs">
         {VIEWS.map((v) => <button key={v} className={v === view ? 'active' : ''} onClick={() => setView(v)}>{t(`squad.view.${v}`)}</button>)}
