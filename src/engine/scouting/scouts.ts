@@ -19,7 +19,7 @@ export function makeScout(rng: Rng, id: number, clubId: number | null): Scout {
   return {
     id, name: `${rng.pick(names.first)} ${rng.pick(names.last)}`, nation, clubId,
     judgeAbility, judgePotential,
-    bias: Math.round((rng.gauss(0, 0.45) + (11 - (judgeAbility + judgePotential) / 2) * 0.02) * 100) / 100,
+    bias: Math.round((rng.gauss(0, 0.45) + (11 - (judgeAbility + judgePotential) / 2) * 0.02) * 100) / 100 + 0, // + 0: niente -0, che il salvataggio non conserva
     contacts,
     wage: SCOUT.wageBase + (judgeAbility + judgePotential) * SCOUT.wagePerJudge,
     assignment: null,

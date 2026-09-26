@@ -20,6 +20,13 @@ export const NATIONS: Record<string, { w: number; first: string[]; last: string[
 };
 
 // Città inventate (i club reali entrano solo col database dell'utente)
+// Serie C (Blocco 4): una lista a parte, così le città di A e B del mondo generato restano le stesse
+export const CITIES_C = [
+  'Valcupra', 'Borgorotto', 'Castelvento', 'Sassofonte', 'Montebrusco', 'Riva Serena', 'Pontealto', 'Campolargo',
+  'Torrenera', 'Vallescura', 'Rupefonda', 'Collemore', 'Fonteviva', 'Marmorella', 'Bosconero', 'Lagorosso',
+  'Rocca Stura', 'Pratofiorito', 'Selvafonda', 'Mezzaluna',
+];
+
 export const CITIES = [
   'Valdoria', 'Portobruno', 'Castelmarino', 'Rivalta', 'Montecorvo', 'Santa Lidia', 'Borgoferro', 'Acquanera',
   'Pratolungo', 'Serravento', 'Lagonero', 'Roccabianca', 'Vallombra', 'Torre Alta', 'Fiumescuro', 'Campoverde',

@@ -50,6 +50,13 @@ export const STYLE = {
   youthAge: 21,
 } as const;
 
+// playoff e playout della Serie B (Blocco 4)
+export const PLAYOFF = {
+  gap: 4, // giorni fra un turno e l'altro
+  playoutGap: 4, // il playout si gioca solo se fra 16ª e 17ª ci sono meno di questi punti
+  shadowNoise: 8, // Serie C non giocata: la classifica è la forza degli XI più questo caso (deviazione)
+} as const;
+
 // --- Coppa nazionale (F10) ---
 export const CUP = {
   days: [24, 45, 59, 94, 136, 171, 206, 234] as const, // giorni infrasettimanali possibili; il tabellone usa gli ultimi che servono
@@ -565,7 +572,7 @@ export const FIN = {
   fillRep: 0.0035, // per punto di reputazione dell'avversario
   fillMin: 0.25,
   // diritti tv e sponsor, a fine stagione
-  tvBase: [48_000_000, 7_000_000] as const, // per livello di campionato, a chi arriva primo
+  tvBase: [48_000_000, 7_000_000, 1_500_000] as const, // per livello di campionato (A, B, C), a chi arriva primo
   tvLast: 0.55, // quota che tocca all'ultima in classifica
   sponsorPerRep2: 2200, // sponsor sulla reputazione al quadrato: non è lineare
   merchPerRep2: 1300,

@@ -75,6 +75,11 @@ tbody tr:hover { background: rgb(255 255 255 / 0.05); }
 tr.clickable { cursor: pointer; }
 tr.me { background: color-mix(in srgb, var(--accent) 12%, transparent); }
 td.zone-up { box-shadow: inset 3px 0 0 var(--positive); } td.zone-down { box-shadow: inset 3px 0 0 var(--negative); }
+/* spareggi della Serie B (Blocco 4) */
+td.zone-po { box-shadow: inset 3px 0 0 var(--data-1); } td.zone-pl { box-shadow: inset 3px 0 0 var(--warning); }
+.zone-po-key { color: var(--data-1); } .zone-pl-key { color: var(--warning); }
+.tie { display: flex; justify-content: space-between; gap: var(--s-2); padding: 4px 0; border-bottom: 1px solid var(--border); }
+.tie.me b { color: var(--accent); }
 .r { text-align: right; } .c { text-align: center; }
 
 /* stelle abilità */

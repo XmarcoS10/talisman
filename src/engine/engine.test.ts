@@ -233,10 +233,10 @@ describe('mondo', () => {
     for (let s = 0; s < 3; s++) {
       while (!isSeasonOver(w)) advance(w);
       const sum = endSeason(w);
-      expect(sum.promoted).toHaveLength(3);
-      expect(sum.relegated).toHaveLength(3);
+      expect(sum.promoted).toHaveLength(7); // 3 in Serie A (le prime due e chi vince i playoff), 4 dalla Serie C
+      expect(sum.relegated).toHaveLength(7); // 3 dalla A, 4 dalla B (le ultime tre e chi perde il playout)
     }
-    expect(w.competitions.ITA1!.clubIds).toHaveLength(20);
+    for (const c of Object.values(w.competitions)) expect(c.clubIds).toHaveLength(20);
     for (const c of Object.values(w.clubs)) expect(c.playerIds.length).toBeGreaterThanOrEqual(25);
     for (const p of Object.values(w.players)) for (const v of Object.values(p.attrs)) expect(v >= 1 && v <= 20).toBe(true);
     // niente cicli esplosivi: il morale non va a 0 o a 100 per tutti

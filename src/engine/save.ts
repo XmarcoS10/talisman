@@ -10,7 +10,7 @@ import { assignAgents } from './transfers/agents.ts';
 import { makeScouts } from './scouting/scouts.ts';
 import { newBoard } from './board/board.ts';
 
-export const SCHEMA_VERSION = 24;
+export const SCHEMA_VERSION = 25;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -125,6 +125,14 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
   (w) => { for (const c of Object.values(w.clubs as Obj)) c.tactic.counterPress ??= 1; },
   // 23 → 24 (0.2.0, istruzioni individuali e piani partita): nessuna istruzione e nessun piano nelle carriere di prima
   (w) => { for (const c of Object.values(w.clubs as Obj)) { c.tactic.players ??= {}; c.tactic.plans ??= []; } },
+  // 24 → 25 (0.2.0, Serie C, playoff e playout): spareggi accesi, la B retrocede in quattro; la Serie C arriva da
+  // sola alla prima fine stagione (endSeason), prima di promozioni e retrocessioni
+  (w) => {
+    w.rules ??= { playoffs: true };
+    w.playoffs ??= null;
+    const b = (w.competitions as Obj).ITA2;
+    if (b) b.relegate = 4;
+  },
 ];
 
 export function serialize(world: WorldState): string {

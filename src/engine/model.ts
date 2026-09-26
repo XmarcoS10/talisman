@@ -327,6 +327,7 @@ export interface Fixture {
   away: ClubId;
   result?: MatchResult;
   cup?: true; // gara di coppa: non conta nelle statistiche di campionato
+  stage?: 'playoff' | 'playout'; // spareggi di fine stagione della Serie B (Blocco 4): come la coppa, fuori dalle statistiche
   pens?: [number, number]; // rigori, se la gara di coppa è finita pari
 }
 
@@ -347,6 +348,17 @@ export interface Competition {
   fixtures: Fixture[];
   promote: number; // quante salgono di categoria (0 in cima)
   relegate: number; // quante scendono (0 in fondo)
+}
+
+/** playoff e playout della Serie B (Blocco 4), costruiti a fine campionato: le gare si aggiungono turno per turno */
+export interface Playoffs {
+  season: number;
+  seeds: ClubId[]; // dalla 3ª all'8ª, in ordine di classifica: a parità passa chi sta più in alto
+  days: { prelim: number; semi: [number, number]; final: [number, number]; playout: [number, number] };
+  ties: Fixture[];
+  playout: [ClubId, ClubId] | null; // 16ª e 17ª, se il distacco è sotto i 4 punti
+  winner: ClubId | null; // chi sale dai playoff
+  relegated: ClubId | null; // chi scende dal playout (o la 17ª direttamente)
 }
 
 export interface SeasonRecord {
@@ -486,6 +498,8 @@ export interface WorldState {
   press: PressRoom | null; // la conferenza stampa della settimana
   nations: Record<string, National>;
   cup: Cup | null;
+  playoffs: Playoffs | null; // spareggi della Serie B di questa stagione
+  rules: { playoffs: boolean }; // regole della carriera: playoff e playout in Serie B
   friendlies: { season: number; games: { day: number; opp: ClubId; home: boolean; gf: number; ga: number }[] } | null; // amichevoli estive dell'utente
   cupWinners: { season: number; clubId: ClubId }[];
   intake: { season: number; clubId: ClubId; playerIds: PlayerId[] }[]; // ultimi vivai, per la schermata

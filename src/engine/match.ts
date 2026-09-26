@@ -142,7 +142,7 @@ export function applyMatch(world: WorldState, rng: Rng, fx: Fixture, out: SimOut
       const p = m.p;
       const name = pName(p);
       const rating = result.ratings[p.id]!;
-      if (!fx.cup) { // la coppa non entra nelle statistiche di campionato
+      if (!fx.cup && !fx.stage) { // coppa e spareggi non entrano nelle statistiche di campionato
         p.stats.apps++;
         p.stats.goals += m.st.goals;
         p.stats.assists += m.st.assists;
@@ -165,7 +165,7 @@ export function applyMatch(world: WorldState, rng: Rng, fx: Fixture, out: SimOut
         p.stats.reds++;
         p.discipline.ban += m.st.yellows === 2 ? 1 : rng.int(1, 2);
         if (mine) addNews(world, 'news.ban', { name, n: p.discipline.ban });
-      } else if (m.st.yellows && !fx.cup) {
+      } else if (m.st.yellows && !fx.cup && !fx.stage) {
         p.stats.yellows++;
         p.discipline.yellows++;
         if (p.discipline.yellows % 5 === 0) {

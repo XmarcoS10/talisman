@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { fxLabel } from '../league.ts';
 import { CalendarDays, Clock, Download, Landmark, Trophy } from 'lucide-react';
 import type { Fixture, WorldState } from '../../engine/model.ts';
 import { DAYS_BETWEEN_ROUNDS } from '../../engine/world.ts';
@@ -138,7 +139,7 @@ function Featured({ world, fx, clubId, round }: { world: WorldState; fx: Fixture
     <div className="panel featured">
       <span className="featured-icon"><Crest club={world.clubs[fx.home === clubId ? fx.away : fx.home]!} size={40} /></span>
       <div className="stack" style={{ gap: 4 }}>
-        <span className="row"><span className="tag">{t('fixtures.featured')}</span><span className="caps" style={{ color: 'var(--data-1)' }}>{fx.cup ? t('cup.name') : `${t('fixtures.round', { n: round })} · ${world.competitions[h.compId]!.name}`}</span>
+        <span className="row"><span className="tag">{t('fixtures.featured')}</span><span className="caps" style={{ color: 'var(--data-1)' }}>{fx.cup || fx.stage ? fxLabel(fx, '') : `${t('fixtures.round', { n: round })} · ${world.competitions[h.compId]!.name}`}</span>
           {isRivalry(world, h.id, a.id) && <span className="tag warn">{t('fixtures.rivalry')}</span>}</span>
         <h1>{h.name} <span className="muted">vs</span> {a.name}</h1>
         <span className="row muted wrap">

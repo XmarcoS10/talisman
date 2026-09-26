@@ -2,8 +2,12 @@
 // Tutto calcolato dal calendario, niente di salvato (regola 4).
 import type { ClubId, Competition, Fixture, Player, WorldState } from '../engine/model.ts';
 import { standings, type TableRow } from '../engine/world.ts';
+import { t } from './i18n.ts';
 
 export type TableView = 'all' | 'home' | 'away' | 'form' | 'xg';
+
+/** di che competizione è una partita: coppa, spareggi della Serie B, o il campionato `league` */
+export const fxLabel = (fx: Fixture, league: string) => (fx.cup ? t('cup.name') : fx.stage ? t(`${fx.stage}.name`) : league);
 export type Row = TableRow & { xgf: number; xga: number };
 
 const played = (comp: Competition, ids: Set<ClubId>) =>

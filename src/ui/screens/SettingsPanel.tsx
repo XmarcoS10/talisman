@@ -42,6 +42,8 @@ export function SettingsPanel({ world, onChange }: { world: WorldState; onChange
         <Check on={s.hints} set={(v) => set({ hints: v })} title={t('settings.hints')} sub={t('settings.hintsSub')} />
         <Check on={s.autosave} set={(v) => set({ autosave: v })} title={t('settings.autosave')} sub={t('settings.autosaveSub')} />
         <Check on={s.pauseNews} set={(v) => set({ pauseNews: v })} title={t('settings.pauseNews')} sub={t('settings.pauseNewsSub')} />
+        <span className="caps">{t('settings.rules')}</span>
+        <Check on={world.rules.playoffs} set={(v) => { world.rules.playoffs = v; refresh(); }} title={t('settings.playoffs')} sub={t('settings.playoffsSub')} />
         <span className="caps">{t('settings.currency')}</span>
         <div className="seg-tabs" style={{ alignSelf: 'stretch' }}>
           {(['EUR', 'USD', 'GBP'] as const).map((c) => <button key={c} className={s.currency === c ? 'active hot' : ''} onClick={() => set({ currency: c })}>{t(`settings.cur.${c}`)}</button>)}

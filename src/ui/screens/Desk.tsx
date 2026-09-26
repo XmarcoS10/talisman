@@ -1,6 +1,7 @@
 // Scrivania (specifiche §3.3): riquadri del momento, la prossima gara con i due pulsanti che servono,
 // la guida della prima stagione, le notizie e la mini classifica con le zone.
 import { CalendarDays, Clock, Landmark, ListChecks, Newspaper, Play, Route, Trophy } from 'lucide-react';
+import { fxLabel } from '../league.ts';
 import { expected } from '../../engine/board/board.ts';
 import type { WorldState } from '../../engine/model.ts';
 import { fixturesOn, nextMatchDay, standings } from '../../engine/world.ts';
@@ -56,7 +57,7 @@ export function Desk({ world, onNav, onWatch, onChange, onPlayer }: Props) {
           <div className="panel match-hero">
             <div className="row" style={{ justifyContent: 'space-between' }}>
               <h2><CalendarDays size={18} /> {t('desk.nextMatch')}</h2>
-              {next && <span className="tag">{next.cup ? t('cup.name') : comp.name}</span>}
+              {next && <span className="tag">{fxLabel(next, comp.name)}</span>}
             </div>
             {next ? <>
               <div className="score">

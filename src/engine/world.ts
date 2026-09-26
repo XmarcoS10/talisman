@@ -1,11 +1,11 @@
 // Mondo: generazione, calendario, avanzamento, classifiche, cambio stagione.
-import { BALANCE, FIN, MARKET, MATCH, NATIONAL, SQUAD_TEMPLATE, TRAIN, YOUTH } from './balance.ts';
+import { BALANCE, FIN, MARKET, MATCH, NATIONAL, PLAYOFF, SQUAD_TEMPLATE, TRAIN, YOUTH } from './balance.ts';
 import { heal } from './injuries.ts';
-import { aiSetFormation, applyMatch, matchSetups, playMatch } from './match.ts';
+import { aiSetFormation, applyMatch, matchSetups, pickXI, playMatch, xiStrength } from './match.ts';
 import { runMatch, type MatchRun, type SimOutput } from './match/engine.ts';
 import { defaultTactic } from './match/tactics.ts';
 import { PHILOSOPHIES, type Club, type ClubId, type Competition, type Fixture, type Player, type Position, type WorldState } from './model.ts';
-import { CITIES, CLUB_PREFIX, KIT_COLORS, NATIONS } from './names.ts';
+import { CITIES, CITIES_C, CLUB_PREFIX, KIT_COLORS, NATIONS } from './names.ts';
 import { seedMinutes, weekPsych } from './morale.ts';
 import { newBoard, endSeasonBoard, weekBoard } from './board/board.ts';
 import { addNews, pName } from './news.ts';
@@ -23,6 +23,7 @@ import { weekPress } from './press/press.ts';
 import { internationalBreak, summerTournament } from './nations/nations.ts';
 import { yearlyIntake, youthPa } from './youth/intake.ts';
 import { afterCupDay, cupFixtures, makeCup } from './cup.ts';
+import { afterPlayoffDay, makePlayoffs, playoffFixtures, serieB } from './playoffs.ts';
 import { preseason } from './friendlies.ts';
 import { checkFFP, estimate, gate, payBonuses, seasonIncome, settleInstalments, trimWages, weekCosts } from './finance/ledger.ts';
 import { defaultTraining, trainWeek } from './training.ts';
@@ -31,7 +32,9 @@ export const DAYS_BETWEEN_ROUNDS = 7;
 
 const LEAGUES = [
   { id: 'ITA1', name: 'Serie A', level: 1, promote: 0, relegate: 3, rep: [55, 90] },
-  { id: 'ITA2', name: 'Serie B', level: 2, promote: 3, relegate: 0, rep: [36, 60] }, // Blocco 4 (scelta 2A): era [30, 58], una B più debole di quanto il mondo sostiene
+  { id: 'ITA2', name: 'Serie B', level: 2, promote: 3, relegate: 4, rep: [36, 60] }, // Blocco 4 (scelta 2A): era [30, 58], una B più debole di quanto il mondo sostiene
+  // Serie C di contorno (Blocco 4, scelta 3A): rose vere, ma non si gioca partita per partita finché non c'è il club dell'utente
+  { id: 'ITA3', name: 'Serie C', level: 3, promote: 4, relegate: 0, rep: [22, 40] },
 ] as const;
 
 function addPlayer(world: WorldState, rng: Rng, club: Club, pos: Position, ageRange?: [number, number]): Player {
@@ -42,50 +45,79 @@ function addPlayer(world: WorldState, rng: Rng, club: Club, pos: Position, ageRa
   return p;
 }
 
+/** un club nuovo nella lega `comp`, `i`-esimo per blasone (0 = il più grande) */
+function makeClub(world: WorldState, rng: Rng, comp: Competition, i: number, city: string): Club {
+  const lg = LEAGUES.find((l) => l.id === comp.id)!;
+  const rep = Math.round(lg.rep[1] - (i / 19) * (lg.rep[1] - lg.rep[0]) + rng.gauss(0, 3));
+  const [c1, c2, c3] = rng.shuffle(KIT_COLORS);
+  const id = Object.keys(world.clubs).length ? Math.max(...Object.keys(world.clubs).map(Number)) + 1 : 0;
+  const club: Club = {
+    id, name: `${rng.pick(CLUB_PREFIX)} ${city}`, shortName: city.replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase(), city,
+    colors: [c1!, c2!, c3!], crest: null, founded: rng.int(1890, 1960), reputation: rep, philosophy: rng.pick([...PHILOSOPHIES]),
+    stadium: { name: `Stadio ${rng.pick(NATIONS.ITA!.last)}`, capacity: Math.round((5000 + rep * rep * 7) / 500) * 500 },
+    balance: Math.round((rep * rep * 9000) / 100000) * 100000, books: [], debts: [], credits: [],
+    sanction: { kind: 'none', seasons: 0, points: 0 }, compId: comp.id, playerIds: [],
+    tactic: defaultTactic(), training: defaultTraining(), familiarity: {}, excluded: [], feuds: [], scoutIds: [],
+    youth: { facilities: Math.round(YOUTH.facilitiesFromRep[0] + rep / YOUTH.facilitiesFromRep[1]), recruitment: Math.round(YOUTH.recruitmentFromRep[0] + rep / YOUTH.recruitmentFromRep[1]) },
+  };
+  world.clubs[club.id] = club; // prima dei giocatori: addPlayer lo cerca già nel mondo
+  for (const [pos, n] of Object.entries(SQUAD_TEMPLATE) as [Position, number][])
+    for (let k = 0; k < n; k++) addPlayer(world, rng, club, pos);
+  comp.clubIds.push(club.id);
+  return club;
+}
+
+/**
+ * la Serie C (Blocco 4): nel mondo nuovo si crea con gli altri campionati; nelle carriere di prima arriva alla prima
+ * fine stagione, prima di promozioni e retrocessioni. Gli stipendi si riscalano sul fatturato come per tutti.
+ */
+function ensureSerieC(world: WorldState, rng: Rng) {
+  const lg = LEAGUES.find((l) => l.level === 3)!;
+  if (world.competitions[lg.id]) return;
+  const comp: Competition = { id: lg.id, name: lg.name, level: lg.level, clubIds: [], fixtures: [], promote: lg.promote, relegate: lg.relegate };
+  world.competitions[comp.id] = comp;
+  const used = new Set(Object.values(world.clubs).map((c) => c.city));
+  const cities = CITIES_C.filter((c) => !used.has(c));
+  for (let i = 0; i < 20; i++) {
+    const club = makeClub(world, rng, comp, i, cities.splice(rng.int(0, cities.length - 1), 1)[0]!);
+    club.familiarity = { [club.tactic.formation]: TRAIN.famStart };
+    if (world.history.length) { initRelations(world, club, rng); seedMinutes(world, club); rescaleWages(world, club); }
+  }
+}
+
+/** gli stipendi di partenza si riscalano sul fatturato stimato: un club non nasce già fuori dal tetto */
+function rescaleWages(world: WorldState, club: Club) {
+  const squad = club.playerIds.map((id) => world.players[id]!);
+  const bill = squad.reduce((a, p) => a + p.contract.wage, 0);
+  const k = bill > 0 ? (estimate(world, club) * FIN.startWageShare) / bill : 1;
+  for (const p of squad) p.contract.wage = Math.max(MARKET.wageMin, Math.round((p.contract.wage * k) / 10000) * 10000);
+}
+
+/** Serie C senza il club dell'utente: non si gioca, la classifica a fine stagione si calcola dalla forza */
+export const isShadow = (world: WorldState, comp: Competition) => comp.level === 3 && !comp.clubIds.includes(world.manager.clubId);
+
 export function newWorld(seed: number, season = 2026): WorldState {
   const rng = new Rng(seed);
   const world: WorldState = {
     schemaVersion: SCHEMA_VERSION, seed, rng: rng.s, season, day: 0,
     manager: { name: '', clubId: 0, kept: 0, broken: 0, board: newBoard(), h2h: {}, style: 'none' }, players: {}, clubs: {}, competitions: {}, history: [], news: [],
-    causal: [], promises: [], talks: [], offers: [], arcs: [], press: null, nations: {}, cup: null, cupWinners: [], friendlies: null, intake: [], nextArcId: 1, nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
+    causal: [], promises: [], talks: [], offers: [], arcs: [], press: null, nations: {}, cup: null, playoffs: null, rules: { playoffs: true }, cupWinners: [], friendlies: null, intake: [], nextArcId: 1, nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
   };
   const cities = [...CITIES];
-  let clubId = 0;
   for (const lg of LEAGUES) {
+    if (lg.level === 3) continue; // la C si aggiunge dopo, con le sue città: A e B restano quelle di sempre
     const comp: Competition = { id: lg.id, name: lg.name, level: lg.level, clubIds: [], fixtures: [], promote: lg.promote, relegate: lg.relegate };
-    for (let i = 0; i < 20; i++) {
-      const city = cities.splice(rng.int(0, cities.length - 1), 1)[0]!;
-      const rep = Math.round(lg.rep[1] - (i / 19) * (lg.rep[1] - lg.rep[0]) + rng.gauss(0, 3));
-      const [c1, c2, c3] = rng.shuffle(KIT_COLORS);
-      const club: Club = {
-        id: clubId++, name: `${rng.pick(CLUB_PREFIX)} ${city}`, shortName: city.replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase(), city,
-        colors: [c1!, c2!, c3!], crest: null, founded: rng.int(1890, 1960), reputation: rep, philosophy: rng.pick([...PHILOSOPHIES]),
-        stadium: { name: `Stadio ${rng.pick(NATIONS.ITA!.last)}`, capacity: Math.round((5000 + rep * rep * 7) / 500) * 500 },
-        balance: Math.round((rep * rep * 9000) / 100000) * 100000, books: [], debts: [], credits: [],
-        sanction: { kind: 'none', seasons: 0, points: 0 }, compId: comp.id, playerIds: [],
-        tactic: defaultTactic(), training: defaultTraining(), familiarity: {}, excluded: [], feuds: [], scoutIds: [],
-        youth: { facilities: Math.round(YOUTH.facilitiesFromRep[0] + rep / YOUTH.facilitiesFromRep[1]), recruitment: Math.round(YOUTH.recruitmentFromRep[0] + rep / YOUTH.recruitmentFromRep[1]) },
-      };
-      for (const [pos, n] of Object.entries(SQUAD_TEMPLATE) as [Position, number][])
-        for (let k = 0; k < n; k++) addPlayer(world, rng, club, pos);
-      world.clubs[club.id] = club;
-      comp.clubIds.push(club.id);
-    }
+    for (let i = 0; i < 20; i++) makeClub(world, rng, comp, i, cities.splice(rng.int(0, cities.length - 1), 1)[0]!);
     world.competitions[comp.id] = comp;
   }
+  ensureSerieC(world, rng);
   scheduleSeason(world, rng);
   for (const club of Object.values(world.clubs)) {
     club.familiarity = { [club.tactic.formation]: TRAIN.famStart };
     initRelations(world, club, rng);
     seedMinutes(world, club);
   }
-  // gli stipendi di partenza si riscalano sul fatturato stimato: un club non nasce già fuori dal tetto
-  for (const club of Object.values(world.clubs)) {
-    const squad = club.playerIds.map((id) => world.players[id]!);
-    const bill = squad.reduce((a, p) => a + p.contract.wage, 0);
-    const k = bill > 0 ? (estimate(world, club) * FIN.startWageShare) / bill : 1;
-    for (const p of squad) p.contract.wage = Math.max(MARKET.wageMin, Math.round((p.contract.wage * k) / 10000) * 10000);
-  }
+  for (const club of Object.values(world.clubs)) rescaleWages(world, club);
   assignAgents(world, rng);
   makeScouts(world, rng);
   world.rng = rng.s;
@@ -140,8 +172,9 @@ export function roundRobin(clubIds: ClubId[], rng: Rng): Fixture[] {
 
 function scheduleSeason(world: WorldState, rng: Rng) {
   world.day = 0;
-  for (const comp of Object.values(world.competitions)) comp.fixtures = roundRobin(comp.clubIds, rng);
+  for (const comp of Object.values(world.competitions)) comp.fixtures = isShadow(world, comp) ? [] : roundRobin(comp.clubIds, rng);
   world.cup = makeCup(world, rng);
+  world.playoffs = null;
   // l'IA riadatta il modulo alla rosa ogni estate (il club dell'utente lo sceglie l'utente)
   for (const club of Object.values(world.clubs))
     if (club.id !== world.manager.clubId || world.history.length === 0) aiSetFormation(world, club);
@@ -192,6 +225,7 @@ export function fixturesOn(world: WorldState, day: number): Fixture[] {
   const out: Fixture[] = [];
   for (const comp of Object.values(world.competitions)) for (const fx of comp.fixtures) if (fx.day === day) out.push(fx);
   for (const fx of cupFixtures(world)) if (fx.day === day) out.push(fx);
+  for (const fx of playoffFixtures(world)) if (fx.day === day) out.push(fx);
   return out;
 }
 
@@ -199,6 +233,8 @@ export function nextMatchDay(world: WorldState): number | null {
   let min: number | null = null;
   for (const comp of Object.values(world.competitions))
     for (const fx of comp.fixtures) if (!fx.result && fx.day >= world.day && (min === null || fx.day < min)) min = fx.day;
+  // i playoff sì: si giocano dopo il campionato
+  for (const fx of playoffFixtures(world)) if (!fx.result && fx.day >= world.day && (min === null || fx.day < min)) min = fx.day;
   // la coppa non allunga la stagione: finiti i campionati, non si aspetta un turno di coppa
   if (min === null) return null;
   for (const fx of cupFixtures(world)) if (!fx.result && fx.day >= world.day && fx.day < min) min = fx.day;
@@ -227,6 +263,7 @@ export function advance(world: WorldState): Fixture[] {
     played.push(fx);
   }
   afterCupDay(world, rng, day);
+  afterLeagueDay(world, day);
   // ogni 4 giornate un punto nel grafico di crescita
   if ((day / DAYS_BETWEEN_ROUNDS) % 4 === 0) for (const p of Object.values(world.players)) p.caLog.push(p.ca);
   const next = nextMatchDay(world);
@@ -235,6 +272,14 @@ export function advance(world: WorldState): Fixture[] {
   expireOffers(world); // le offerte a cui non hai risposto
   world.rng = rng.s;
   return played;
+}
+
+/** finito il campionato di Serie B nasce il tabellone dei playoff; poi ogni giornata di spareggi va avanti da sola */
+function afterLeagueDay(world: WorldState, day: number) {
+  afterPlayoffDay(world, day);
+  const b = serieB(world);
+  if (!world.rules.playoffs || !b || world.playoffs?.season === world.season || !b.fixtures.length || b.fixtures.some((fx) => !fx.result)) return;
+  world.playoffs = makePlayoffs(world, standings(world, b), day);
 }
 
 /** giornata seguita dal vivo (F6): la partita dell'utente si gioca azione per azione, il resto alla fine */
@@ -280,6 +325,7 @@ export function closeMatchDay(world: WorldState, day: number, fx: Fixture, rng: 
   for (const f of fixturesOn(world, day))
     if (f !== fx && !f.result) { playMatch(world, rng, f); gate(world, f); played.push(f); }
   afterCupDay(world, rng, day);
+  afterLeagueDay(world, day);
   if ((day / DAYS_BETWEEN_ROUNDS) % 4 === 0) for (const p of Object.values(world.players)) p.caLog.push(p.ca);
   const next = nextMatchDay(world);
   passDays(world, rng, (next ?? day + 1) - day, next === null ? 0 : 1);
@@ -327,13 +373,37 @@ export function topScorers(world: WorldState, comp: Competition, n = 10): Player
 
 export type SeasonSummary = { season: number; champions: Record<string, ClubId>; promoted: ClubId[]; relegated: ClubId[]; retired: number; signings: number };
 
+/** Serie C non giocata: la classifica è la forza degli XI più un po' di caso (niente partite, niente statistiche) */
+function shadowTable(world: WorldState, comp: Competition, rng: Rng): TableRow[] {
+  return comp.clubIds
+    .map((id) => ({ id, s: xiStrength(pickXI(world, world.clubs[id]!)) + rng.gauss(0, PLAYOFF.shadowNoise) }))
+    .sort((a, b) => b.s - a.s)
+    .map(({ id }) => ({ clubId: id, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }));
+}
+
+/** chi scende: le ultime; in Serie B con gli spareggi le ultime tre più chi perde il playout (o la 17ª) */
+function relegatedFrom(world: WorldState, comp: Competition, table: TableRow[]): ClubId[] {
+  const po = world.playoffs;
+  if (comp.level === 2 && po?.season === world.season && po.relegated !== null)
+    return [...table.slice(-3).map((r) => r.clubId), po.relegated];
+  return table.slice(-comp.relegate).map((r) => r.clubId);
+}
+
+/** chi sale: le prime; in Serie B con gli spareggi le prime due più chi vince i playoff */
+function promotedFrom(world: WorldState, comp: Competition, table: TableRow[]): ClubId[] {
+  const po = world.playoffs;
+  if (comp.level === 2 && po?.season === world.season && po.winner !== null) return [table[0]!.clubId, table[1]!.clubId, po.winner];
+  return table.slice(0, comp.promote).map((r) => r.clubId);
+}
+
 /** fine stagione: albo d'oro, promozioni/retrocessioni, sviluppo, ritiri, vivaio, nuovo calendario */
 export function endSeason(world: WorldState): SeasonSummary {
   const rng = new Rng(world.rng);
+  ensureSerieC(world, rng); // le carriere nate prima della 0.2.0 ricevono qui la Serie C
   const comps = Object.values(world.competitions).sort((a, b) => a.level - b.level);
   const summary: SeasonSummary = { season: world.season, champions: {}, promoted: [], relegated: [], retired: 0, signings: 0 };
 
-  const tables = comps.map((c) => standings(world, c));
+  const tables = comps.map((c) => (isShadow(world, c) ? shadowTable(world, c, rng) : standings(world, c)));
   comps.forEach((comp, i) => seasonIncome(world, comp, tables[i]!)); // tv, sponsor, premi
   payBonuses(world); // chi ha messo da parte troppo paga i premi ai giocatori
   endSeasonBoard(world); // il verdetto della dirigenza, prima che cambino le categorie
@@ -349,8 +419,8 @@ export function endSeason(world: WorldState): SeasonSummary {
   for (let i = 0; i < comps.length - 1; i++) {
     const upper = comps[i]!;
     const lower = comps[i + 1]!;
-    const down = tables[i]!.slice(-upper.relegate).map((r) => r.clubId);
-    const up = tables[i + 1]!.slice(0, lower.promote).map((r) => r.clubId);
+    const down = relegatedFrom(world, upper, tables[i]!);
+    const up = promotedFrom(world, lower, tables[i + 1]!);
     upper.clubIds = upper.clubIds.filter((id) => !down.includes(id)).concat(up);
     lower.clubIds = lower.clubIds.filter((id) => !up.includes(id)).concat(down);
     for (const id of up) world.clubs[id]!.compId = upper.id;

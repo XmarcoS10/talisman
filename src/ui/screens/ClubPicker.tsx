@@ -49,7 +49,8 @@ export function ClubPicker({ world, selected, onPick }: { world: WorldState; sel
   const [goal, setGoal] = useState<Goal>('all');
   const [q, setQ] = useState('');
   const [sort, setSort] = useState<Sort>('rep');
-  const comps = Object.values(world.competitions).sort((a, b) => a.level - b.level);
+  // la Serie C non si sceglie: non si gioca partita per partita (Blocco 4)
+  const comps = Object.values(world.competitions).filter((c) => c.level <= 2).sort((a, b) => a.level - b.level);
   const xi = useMemo(() => new Map(Object.values(world.clubs).map((c) => [c.id, avgXI(world, c)])), [world]);
 
   const clubs = useMemo(() => Object.values(world.clubs).filter((c) =>

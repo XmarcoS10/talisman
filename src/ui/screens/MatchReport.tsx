@@ -1,4 +1,5 @@
 import type { Fixture, MatchEvent, SideStats, WorldState } from '../../engine/model.ts';
+import { fxLabel } from '../league.ts';
 import { Crest } from '../Crest.tsx';
 import { Star } from 'lucide-react';
 import { PosBadge, Rating, shortName } from '../bits.tsx';
@@ -62,7 +63,7 @@ export function MatchModal({ world, fx, others, onClose }: { world: WorldState; 
   return (
     <div className="overlay" onClick={onClose}>
       <div className="modal wide" onClick={(e) => e.stopPropagation()}>
-        <div className="row" style={{ justifyContent: 'center' }}><span className="tag">{fx.cup ? t('cup.name') : world.competitions[clubs[0]!.compId]?.name}</span><span className="caps">{t('match.fullTime')}</span></div>
+        <div className="row" style={{ justifyContent: 'center' }}><span className="tag">{fxLabel(fx, world.competitions[clubs[0]!.compId]?.name ?? '')}</span><span className="caps">{t('match.fullTime')}</span></div>
         <div className="score">
           <div className="grid" style={{ justifyItems: 'center' }}><Crest club={clubs[0]!} size={72} /><b>{clubs[0]!.name}</b></div>
           <div className="grid" style={{ justifyItems: 'center' }}><div className="big">{r.hg} - {r.ag}</div>{fx.pens && <span className="muted">{t('cup.pens', { a: fx.pens[0], b: fx.pens[1] })}</span>}</div>

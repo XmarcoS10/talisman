@@ -34,7 +34,7 @@ export function revenue(world: WorldState, club: Club): number {
 /** stima del fatturato per un club senza storia: stadio, blasone, categoria */
 export function estimate(world: WorldState, club: Club): number {
   const level = world.competitions[club.compId]?.level ?? 1;
-  const tv = FIN.tvBase[level === 1 ? 0 : 1];
+  const tv = FIN.tvBase[Math.min(2, level - 1)]!;
   return Math.round(club.stadium.capacity * 19 * FIN.fillBase * FIN.ticket * (level === 1 ? 1 : FIN.ticketByLevel)
     + tv * 0.8 + club.reputation * club.reputation * (FIN.sponsorPerRep2 + FIN.merchPerRep2));
 }
@@ -83,7 +83,7 @@ export function projection(world: WorldState, club: Club, position: number, team
     ...b,
     monthly: [...b.monthly],
     gate: Math.round(b.gate > 0 ? b.gate + perGate * homeLeft : perGate * (homeLeft + homePlayed)),
-    tv: b.tv || Math.round(FIN.tvBase[level === 1 ? 0 : 1] * (FIN.tvLast + (1 - FIN.tvLast) * ((n - i) / n))),
+    tv: b.tv || Math.round(FIN.tvBase[Math.min(2, level - 1)]! * (FIN.tvLast + (1 - FIN.tvLast) * ((n - i) / n))),
     sponsor: b.sponsor || Math.round(club.reputation * club.reputation * FIN.sponsorPerRep2),
     merch: b.merch || Math.round(club.reputation * club.reputation * FIN.merchPerRep2),
     prize: b.prize || (n - i) * FIN.prizePerPosition + (i === 0 ? FIN.prizeChampion : 0),
@@ -131,12 +131,14 @@ export function seasonIncome(world: WorldState, comp: Competition, table: { club
   table.forEach((row, i) => {
     const club = world.clubs[row.clubId]!;
     const b = books(club, world.season);
-    const tv = Math.round(FIN.tvBase[comp.level === 1 ? 0 : 1] * (FIN.tvLast + (1 - FIN.tvLast) * ((n - i) / n)));
+    const tv = Math.round(FIN.tvBase[Math.min(2, comp.level - 1)]! * (FIN.tvLast + (1 - FIN.tvLast) * ((n - i) / n)));
     const sponsor = Math.round(club.reputation * club.reputation * FIN.sponsorPerRep2);
     const merch = Math.round(club.reputation * club.reputation * FIN.merchPerRep2);
     const prize = (n - i) * FIN.prizePerPosition + (i === 0 ? FIN.prizeChampion : 0);
-    b.tv += tv; b.sponsor += sponsor; b.merch += merch; b.prize += prize;
-    club.balance += tv + sponsor + merch + prize;
+    // Serie C di contorno: le partite non si giocano una per una, il botteghino si conta qui tutto insieme
+    const gateC = comp.fixtures.length ? 0 : Math.round(club.stadium.capacity * (n - 1) * FIN.fillBase * FIN.ticket * FIN.ticketByLevel ** 2);
+    b.tv += tv; b.sponsor += sponsor; b.merch += merch; b.prize += prize; b.gate += gateC;
+    club.balance += tv + sponsor + merch + prize + gateC;
   });
 }
 

@@ -31,6 +31,7 @@ describe('Coppa nazionale (F10)', { timeout: 60000 }, () => {
     world.manager.clubId = -1;
     while (!isSeasonOver(world)) advance(world);
     for (const comp of Object.values(world.competitions)) {
+      if (!comp.fixtures.length) continue; // la Serie C di contorno non gioca (chi ci arriva a gennaio porta le sue presenze)
       const games = new Map<number, number>();
       for (const fx of comp.fixtures) for (const id of [fx.home, fx.away]) games.set(id, (games.get(id) ?? 0) + 1);
       for (const id of comp.clubIds) for (const pid of world.clubs[id]!.playerIds)
