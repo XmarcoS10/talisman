@@ -1,16 +1,34 @@
 # Note di rilascio
 
-## In arrivo (0.3.0)
+## 0.5.0 — il mondo intorno
 
-Le carriere della 0.2.x si aprono da sole (passano al formato 29).
+Contiene anche la 0.3.0 e la 0.4.0, che non sono uscite da sole. Le carriere della 0.2.x si aprono da sole (passano al
+formato 30).
 
-- **Record e storia**: una schermata nuova con i record del tuo club (vittoria e sconfitta più larghe, miglior stagione,
-  marcatori e presenze di sempre), la tua carriera stagione per stagione, le carriere dei giocatori della rosa e
-  l'albo d'oro di campionati e coppa. I record si vedono anche nella scheda degli altri club.
-- **Esportazione CSV** da Rosa, Classifiche, Finanze e Record: il file si apre in Excel con lettere accentate e
-  decimali giusti.
+- **Allenatori dell'IA**: ogni club ha un allenatore con uno stile (equilibrato, offensivo, difensivo, pressing,
+  possesso, contropiede) che decide modulo, istruzioni e mentalità. Chi va troppo sotto il blasone del club viene
+  esonerato, con la notizia. Si vedono nella scheda del club e nel report sull'avversario.
+- **Istruzioni riequilibrate**: pressing alto e gioco verticale vincevano quasi da soli, il palleggio perdeva. Adesso
+  ogni istruzione ha i suoi pro e contro.
+- **Radiocronaca** di ogni partita giocata, dal resoconto o cliccando i risultati (anche nel Calendario).
+- **Arbitri** con la loro severità, che si vede prima della partita: quello severo tira fuori più cartellini.
+- **Meteo e terreno**: caldo, pioggia, vento, temporale e freddo secondo il mese, con campo pesante. Cambiano un po' la
+  partita, si vedono nelle previsioni, nel resoconto e nel 2D.
+- **Database della community**: dalla nuova carriera si carica un file col mondo intero (campionati, club, stemmi,
+  giocatori). Il formato è in `docs/database.md`; il gioco non contiene dati reali e non si collega a internet.
+- **Record e storia**: una schermata nuova con i record del tuo club, la tua carriera stagione per stagione, le
+  carriere dei giocatori e l'albo d'oro. I record si vedono anche nella scheda degli altri club.
+- **Esportazione CSV** da Rosa, Classifiche, Finanze, Record e Mercato: si apre in Excel con accenti e decimali giusti.
 - **Tema chiaro**: nelle Impostazioni, Scuro, Chiaro o Come il sistema. Il campo resta verde scuro.
+- **Stranieri come nella Serie A vera**: circa 60% in A, 35% in B, 15% in C; i vivai pescano di conseguenza.
+- Le nazionali convocano per reparto (3 portieri, 8 difensori, 7 centrocampisti, 5 attaccanti).
+- La rosa degli altri club si ordina per le stime degli osservatori, non per i valori veri.
 - Il grafico della cassa non mostra più dieci mesi piatti a inizio stagione.
+
+### Limiti noti
+
+- Il centravanti tira troppo e i capocannonieri segnano troppo (40-70 gol); la squadra più forte non tiene abbastanza
+  la palla. Serve il movimento senza palla, che è il prossimo lavoro sul motore.
 
 ## 0.2.1 — le nazionali
 
@@ -68,16 +86,35 @@ nuove si scrivono nella lingua che scegli.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
 
-## Coming next (0.3.0, English)
+## 0.5.0 — the world around you (English)
 
-Careers from 0.2.x open on their own (they move to save format 29).
+Also contains 0.3.0 and 0.4.0, which were not released on their own. Careers from 0.2.x open on their own (they move to
+save format 30).
 
-- **Records and history**: a new screen with your club's records (biggest win and heaviest defeat, best season,
-  all-time top scorers and appearances), your career season by season, your squad's careers and the roll of honour
-  for leagues and cup. Records also show on other clubs' pages.
-- **CSV export** from Squad, Tables, Finances and Records: the file opens in Excel with the right accents and decimals.
+- **AI managers**: every club has a manager with a style (balanced, attacking, defensive, pressing, possession,
+  counter-attack) that picks formation, instructions and mentality. Those who fall too far below the club's standing
+  get sacked, with a news item. They show on club pages and in the opponent report.
+- **Instructions rebalanced**: high pressing and direct play almost won on their own, short passing lost. Now every
+  instruction has its pros and cons.
+- **Radio commentary** for every match played, from the match report or by clicking results (Fixtures too).
+- **Referees** with their own strictness, shown before the match: a strict one shows more cards.
+- **Weather and pitch**: heat, rain, wind, storms and cold by month, with heavy pitches. They change the match a little
+  and show in the forecast, the match report and the 2D view.
+- **Community database**: a new career can load a file with a whole world (leagues, clubs, crests, players). The format
+  is in `docs/database.md`; the game ships no real data and never goes online.
+- **Records and history**: a new screen with your club's records, your career season by season, the players' careers
+  and the roll of honour. Records also show on other clubs' pages.
+- **CSV export** from Squad, Tables, Finances, Records and Transfers: it opens in Excel with the right accents and decimals.
 - **Light theme**: in Settings, Dark, Light or Follow system. The pitch stays dark green.
+- **Foreign players like the real Serie A**: about 60% in A, 35% in B, 15% in C; academies recruit accordingly.
+- National teams call up by position (3 goalkeepers, 8 defenders, 7 midfielders, 5 forwards).
+- Other clubs' squads sort by the scouts' estimates, not by true values.
 - The cash chart no longer shows ten flat months at the start of a season.
+
+### Known limits
+
+- Centre-forwards shoot too much and top scorers score too many (40-70 goals); the stronger side doesn't keep the ball
+  enough. It needs off-the-ball movement, the next piece of work on the engine.
 
 ## 0.2.1 — the national teams (English)
 

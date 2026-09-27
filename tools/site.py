@@ -6,9 +6,9 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'site')
 REPO = 'https://github.com/XmarcoS10/talisman'
 SITE = 'https://xmarcos10.github.io/talisman/'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
-VERSION = '0.2.1'
+VERSION = '0.5.0'
 SIZE = '123 MB'
-SHA = '435b51bcdf0b19e76fa473bc63f40cf0d225c9e0cb19c310f3228fa445ad14f8'
+SHA = 'f2ac7726f394f8a01b85251a4312540264ef50bf80cc6a24c2eb85eb13ed4a13'
 # pnpm sim -- --seasons 10 --seed 42 con la 0.2.0
 SIM_GOALS = {'it': '2,56', 'en': '2.56'}
 SIM_DRAWS = {'it': '23,2%', 'en': '23.2%'}
@@ -543,12 +543,12 @@ def download():
         <div class="panel">
           <h3>{x('Novità della', 'New in')} {VERSION}</h3>
           <ul class="checks">
-            <li>{x('<b>Le nazionali giocano davvero</b>: partite col motore del gioco, marcatori e presenze vere.', '<b>National teams really play</b>: matches run by the game engine, real scorers and caps.')}</li>
-            <li>{x('<b>La partita in 2D rifatta</b>: salienti, replay, sovrapposizioni tattiche, tre telecamere.', '<b>The 2D match rebuilt</b>: highlights, replays, tactical overlays, three cameras.')}</li>
-            <li>{x('<b>Un motore più ricco</b>: dribbling, cross e duelli aerei, portiere, piazzati con schemi, fatica vera.', '<b>A richer engine</b>: dribbles, crosses and aerial duels, goalkeepers, set-piece routines, real fatigue.')}</li>
-            <li>{x('<b>Istruzioni individuali</b> e <b>piani partita</b> che scattano da soli.', '<b>Player instructions</b> and <b>match plans</b> that kick in on their own.')}</li>
-            <li>{x('<b>Tre campionati</b>, con playoff e playout in Serie B.', '<b>Three leagues</b>, with play-offs and play-out in Serie B.')}</li>
-            <li>{x('<b>Club che falliscono</b> se spendono troppo.', '<b>Clubs that go bust</b> if they overspend.')}</li>
+            <li>{x("<b>Allenatori dell'IA</b> con uno stile, esoneri e notizie; istruzioni riequilibrate.", '<b>AI managers</b> with a style, sackings and news; instructions rebalanced.')}</li>
+            <li>{x('<b>Radiocronaca</b> di ogni partita, <b>arbitri</b> con la loro severità, <b>meteo e terreno</b>.', '<b>Radio commentary</b> for every match, <b>referees</b> with their own strictness, <b>weather and pitch</b>.')}</li>
+            <li>{x('<b>Database della community</b>: una carriera nuova può caricare un mondo intero da file.', '<b>Community database</b>: a new career can load a whole world from a file.')}</li>
+            <li>{x('<b>Record e storia</b>, <b>esportazione CSV</b> e <b>tema chiaro</b>.', '<b>Records and history</b>, <b>CSV export</b> and a <b>light theme</b>.')}</li>
+            <li>{x('<b>Stranieri come nella Serie A vera</b>, nazionali convocate per reparto.', '<b>Foreign players like the real Serie A</b>, national teams called up by position.')}</li>
+            <li>{x('<b>La partita in 2D</b> con salienti, replay e sovrapposizioni tattiche; tre campionati con playoff e playout.', '<b>The 2D match</b> with highlights, replays and tactical overlays; three leagues with play-offs and play-out.')}</li>
             <li>{x('<b>In inglese</b>: interfaccia, storie e conferenze stampa.', '<b>In English</b>: interface, stories and press conferences.')}</li>
           </ul>
           <div class="foot"><a href="{REPO}/blob/main/docs/release-notes.md">{x('Note di rilascio complete →', 'Full release notes →')}</a></div>
@@ -642,8 +642,8 @@ def community():
         <div class="text">
           <div class="kicker cy">{x('Dati e modding', 'Data and modding')}</div>
           <h2>{x('Un mondo in un formato aperto', 'A world in an open format')}</h2>
-          <p>{x('Il gioco genera club, città e giocatori inventati. Il formato del mondo è lo stesso che userà il database della community: chi vorrà potrà caricare i propri campionati. Nomi e stemmi reali non li distribuiamo noi — li carica chi li possiede.',
-                "The game generates invented clubs, towns and players. The world format is the same one the community database will use: anyone who wants to will be able to load their own leagues. We don't distribute real names and crests — whoever owns them loads them.")}</p>
+          <p>{x('Il gioco genera club, città e giocatori inventati. Chi vuole può caricare un database della community con i propri campionati (formato in docs/database.md). Nomi e stemmi reali non li distribuiamo noi — li carica chi li possiede.',
+                "The game generates invented clubs, towns and players. Anyone who wants to can load a community database with their own leagues (format in docs/database.md). We don't distribute real names and crests — whoever owns them loads them.")}</p>
           <div class="points">
             <div class="point"><i>01</i><div><b>{x('Esporta la carriera', 'Export your career')}</b><p>{x('Un file solo con tutto il mondo, da condividere o riprendere altrove.', 'A single file with the whole world, to share or pick up elsewhere.')}</p></div></div>
             <div class="point"><i>02</i><div><b>{x('Stemmi generati', 'Generated crests')}</b><p>{x('Colori e forme nascono dal gioco: nessuna immagine esterna.', 'Colours and shapes come from the game: no external images.')}</p></div></div>
@@ -670,8 +670,8 @@ def community():
           <p>{x('Il gioco è costruito a fasi, ognuna provata prima di passare alla successiva.', 'The game is built in phases, each one tested before moving on to the next.')}</p></div>
         <div class="grid g3 road">
           <div class="panel done"><span class="tag">{x('Fatto', 'Done')} · 0.1</span><h3>{x('Il gioco completo e il collaudo', 'The complete game and first testing')}</h3><p>{x('Motore partita e campo 2D, spogliatoio, mercato e osservatori, storie e stampa, finanze e dirigenza, vivaio e nazionali, coppa e Primavera, installer per Windows.', 'Match engine and 2D pitch, dressing room, transfers and scouting, stories and press, finances and board, academy and national teams, cup and youth league, Windows installer.')}</p></div>
-          <div class="panel now"><span class="tag cy">{x('Adesso', 'Now')} · {VERSION}</span><h3>{x('La partita', 'The match')}</h3><p>{x('Partita 2D rifatta, motore più ricco, istruzioni individuali e piani partita, tre campionati con playoff e playout, club che falliscono, il gioco in inglese.', 'A rebuilt 2D match, a richer engine, player instructions and match plans, three leagues with play-offs and play-out, clubs that go bust, the game in English.')}</p></div>
-          <div class="panel next"><span class="tag am">{x('Dopo', 'Next')} · 1.0</span><h3>{x("Più campionati e l'editor", 'More leagues and the editor')}</h3><p>{x('Versione Linux, altre leghe, un editor per il mondo e i database della community, statistiche storiche.', 'A Linux version, more leagues, an editor for the world and community databases, historical statistics.')}</p></div>
+          <div class="panel now"><span class="tag cy">{x('Adesso', 'Now')} · {VERSION}</span><h3>{x('Il mondo intorno', 'The world around you')}</h3><p>{x("Allenatori dell'IA, arbitri, meteo, radiocronaca, database della community, record e storia, tema chiaro. Prima: partita 2D rifatta, tre campionati, il gioco in inglese.", 'AI managers, referees, weather, radio commentary, community database, records and history, light theme. Before that: a rebuilt 2D match, three leagues, the game in English.')}</p></div>
+          <div class="panel next"><span class="tag am">{x('Dopo', 'Next')} · 1.0</span><h3>{x("Più campionati e l'editor", 'More leagues and the editor')}</h3><p>{x('Movimento senza palla nel motore, versione Linux, altre leghe, un editor per il mondo.', 'Off-the-ball movement in the engine, a Linux version, more leagues, an editor for the world.')}</p></div>
         </div>
       </div>
     </section>
