@@ -1,6 +1,6 @@
 // Stato esplicito di una partita (Blocco 2a): tutto quello che il motore ricorda fra un'azione e l'altra sta qui,
 // e i moduli (posizionamento, pressione, esecuzione, eventi, piazzati, cambi, voti) lo ricevono come parametro.
-import { FLAGS, MATCH } from '../balance.ts';
+import { FLAGS, MATCH, REFEREE } from '../balance.ts';
 import type { Club, MatchEvent, MatchEventType, MatchResult, Player, PlayerInstr, Position, SideStats, Tactic } from '../model.ts';
 import type { Rng } from '../rng.ts';
 import type { OnPitch } from './decision.ts';
@@ -40,6 +40,7 @@ export interface TeamSetup {
   familiarity: number; // 0-100, col modulo in uso
   injuryP: (p: Player) => { muscle: number; relapse: number }; // rischio personale di infortunio in partita
   auto?: boolean; // false: cambi e mentalità li decide l'utente dal vivo (schermata Live)
+  ref?: number; // severità dell'arbitro della partita (uguale nei due lati; 1 = media, referees.ts)
 }
 
 /** da dove nasce un tiro: serve a contare i gol per origine (piazzati, cross, contropiede) */
@@ -146,6 +147,7 @@ export interface Scheduled { who: MP; team: Team; at: number; ctx: 'muscle' | 'r
 
 export interface MatchState {
   rng: Rng;
+  ref: number; // severità dell'arbitro: × cartellini, e a metà sui falli fischiati
   setups: [TeamSetup, TeamSetup];
   teams: [Team, Team];
   events: MatchEvent[];
@@ -203,13 +205,16 @@ export const mp = (player: Player, slot: Slot, role: RoleId, fam: number, from =
   ({ p: player, pos: slot.pos, hx: slot.x, hy: slot.y, roleId: role, role: ROLES[role], marked: 0, x: slot.x, y: slot.y, tx: slot.x, ty: slot.y,
     jx: 0, jy: 0, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from), ins });
 
+/** falli fischiati: l'arbitro severo ne vede di più (metà dell'effetto sui cartellini) */
+export const whistle = (st: MatchState) => 1 + (st.ref - 1) * REFEREE.foulShare;
+
 export function createState(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: TraceStep[]): MatchState {
   const teams = setups.map((s, i) => {
     const on = s.xi.map((e) => mp(e.player, e.slot, e.role, s.familiarity, 0, s.tactic.players?.[e.player.id]));
     return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity, auto: s.auto !== false, log: newLog() };
   }) as [Team, Team];
   return {
-    rng, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, counterNow: false, momentum: 0,
+    rng, ref: setups[0].ref ?? 1, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, counterNow: false, momentum: 0,
     half: 1, t: 0, length: 0, scheduled: [], lastPlace: 0, markStamp: 0, holder: null, meet: null, snap: true,
     trace, curFrame: null, track: [], playAt: 0, lastBall: { x: 6, y: 4 }, lastStep: -1, ids0: [], idsDirty: true,
     defX: [], defY: [], defAnt: [], pendingDrain: [0, 0], subIdx: 0, shoutAt: [0, 0], output: null, plansFired: [[], []], planUndo: [null, null],

@@ -12,7 +12,7 @@ import { inBox } from './pitch.ts';
 import { kickoff, settle } from './positioning.ts';
 import { PRESS, readPlay } from './pressure.ts';
 import { finish, rate } from './ratings.ts';
-import { createState, inTransition, minute, type MatchState, type MP, type PosFrame, type Shout, type SimOutput, type Team, type TeamSetup, type TraceStep } from './state.ts';
+import { createState, inTransition, minute, whistle, type MatchState, type MP, type PosFrame, type Shout, type SimOutput, type Team, type TeamSetup, type TraceStep } from './state.ts';
 import { checkPlans, undoPlans } from './plans.ts';
 import { autoSubs, gameState, substitute } from './subs.ts';
 
@@ -72,7 +72,7 @@ function step(st: MatchState) {
   st.poss.acts++;
   // fallo "di pressione": il difensore più vicino ferma l'azione (in area si sta più attenti)
   const pressFoul = MATCH.pressFoul * pressure * PRESS[def.tactic.pressing]! * (inBox(st.bx, st.by) ? MATCH.foulInBox : 1)
-    * (closest?.st.yellows ? MATCH.bookedCaution : 1);
+    * (closest?.st.yellows ? MATCH.bookedCaution : 1) * whistle(st);
   // fallo tattico: la ripartenza trova la difesa scoperta a metà campo, e il più vicino la ferma
   const tactical = closest && exposed > MATCH.counterFrom && st.bx >= 4 && st.bx <= 8
     ? MATCH.tacticalFoul * closest.p.attrs.aggression / 10 : 0;

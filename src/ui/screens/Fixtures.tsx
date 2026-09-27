@@ -130,7 +130,7 @@ export function Fixtures({ world, clubId, onPlayer }: { world: WorldState; clubI
             <ResultsList world={world} fixtures={comp.fixtures.filter((f) => f.day === roundDay)} highlight={clubId} onPick={setOpen} />
             {open && <MatchModal world={world} fx={open} others={comp.fixtures.filter((f) => f.day === open.day && f !== open)} onClose={() => setOpen(null)} />}
           </div>
-          {next && <OpponentReport world={world} oppId={next.home === clubId ? next.away : next.home} onPlayer={onPlayer} />}
+          {next && <OpponentReport world={world} oppId={next.home === clubId ? next.away : next.home} fx={next} onPlayer={onPlayer} />}
         </div>
       </div>)}
     </div>

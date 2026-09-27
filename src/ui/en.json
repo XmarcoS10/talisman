@@ -1897,5 +1897,11 @@
   "radio.end.2": "It's all over: {score} between {home} and {away}. The shots read {shots}; home side had {pos}% of the ball.",
   "radio.title": "Radio commentary",
   "radio.hint": "Written from the match events: goals, chances, cards, substitutions.",
-  "radio.red2": "Second yellow for {name}: sent off, {team} down to ten."
+  "radio.red2": "Second yellow for {name}: sent off, {team} down to ten.",
+  "ref.title": "Referee",
+  "ref.lenient": "lenient",
+  "ref.average": "average",
+  "ref.strict": "strict",
+  "ref.line": "Referee: {name} ({how})",
+  "ref.adviceStrict": "A strict referee: high pressing and players already on a yellow risk cards and penalties."
 }

@@ -11,7 +11,7 @@ import { cross } from './aerial.ts';
 import { afterSave, keeperSkill, sweeps } from './keeper.ts';
 import { corner } from './setpieces.ts';
 import { beat, frame } from './trace.ts';
-import { best, ev, gain, gx, gy, minute, nearest, type MatchState, type MP, type Origin, type Team, type TraceStep } from './state.ts';
+import { best, ev, gain, gx, gy, minute, nearest, whistle, type MatchState, type MP, type Origin, type Team, type TraceStep } from './state.ts';
 
 const TEMPO = [1.2, 1, 0.85];
 type ShotKind = 'open' | 'header' | 'pen' | 'fk';
@@ -122,7 +122,7 @@ function doDribble(st: MatchState, def: Team, c: MP, o: Extract<Option, { kind: 
   const tk = o.tackler as MP | undefined;
   st.teams[st.s].log.dribbles++;
   const foulP = MATCH.foulBase * (1 + MATCH.foulAggression * (tk ? tk.p.attrs.aggression - 11 : 0)) * PRESS[def.tactic.pressing]!
-    * (inBox(st.bx, st.by) ? MATCH.foulInBox : 1) * (tk?.st.yellows ? MATCH.bookedCaution : 1);
+    * (inBox(st.bx, st.by) ? MATCH.foulInBox : 1) * (tk?.st.yellows ? MATCH.bookedCaution : 1) * whistle(st);
   if (tk && st.rng.next() < foulP) foul(st, tk, c);
   else if (st.rng.next() < o.p) {
     c.st.dribbles++;

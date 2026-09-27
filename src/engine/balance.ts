@@ -677,6 +677,9 @@ export const YOUTH = {
 } as const;
 
 // --- nazionali (GUIDA §7.8) ---
+/** arbitri (0.5.0): severità 1-20 → moltiplicatore dei cartellini; i falli fischiati ne prendono `foulShare` */
+export const REFEREE = { count: 24, min: 0.8, max: 1.25, foulShare: 0.5 };
+
 /** allenatori dei club IA (0.5.0): stile → istruzioni e mentalità, esoneri a metà stagione */
 export const COACH = {
   pool: 24, // senza panchina nel mondo nuovo

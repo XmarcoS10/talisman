@@ -1897,5 +1897,11 @@
   "radio.end.2": "È finita: {score} fra {home} e {away}. Il conto dei tiri dice {shots}, il possesso di casa {pos}%.",
   "radio.title": "Radiocronaca",
   "radio.hint": "Scritta dagli eventi della partita: gol, occasioni, cartellini, cambi.",
-  "radio.red2": "Secondo giallo per {name}: espulso, {team} in dieci."
+  "radio.red2": "Secondo giallo per {name}: espulso, {team} in dieci.",
+  "ref.title": "Arbitro",
+  "ref.lenient": "tollerante",
+  "ref.average": "nella media",
+  "ref.strict": "severo",
+  "ref.line": "Arbitro: {name} ({how})",
+  "ref.adviceStrict": "Arbitro severo: con il pressing alto e i giocatori già ammoniti si rischiano cartellini e rigori."
 }

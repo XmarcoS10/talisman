@@ -53,9 +53,9 @@ export function foul(st: MatchState, fouler: MP, victim: MP, tactical = false) {
   def.stats.fouls++; fouler.st.fouls++;
   beat(st, 'foul', fouler, victim);
   st.t += MATCH.restartTime;
-  if (rng.next() < MATCH.redP) sendOff(st, def, fouler);
+  if (rng.next() < MATCH.redP * st.ref) sendOff(st, def, fouler);
   // chi è già ammonito entra con più prudenza: il secondo giallo è più raro
-  else if (rng.next() < MATCH.yellowP * (tactical ? MATCH.tacticalYellow : 1) * (1 + 0.08 * (fouler.p.attrs.aggression - 11)) * (fouler.st.yellows ? MATCH.bookedCaution : 1)) {
+  else if (rng.next() < MATCH.yellowP * st.ref * (tactical ? MATCH.tacticalYellow : 1) * (1 + 0.08 * (fouler.p.attrs.aggression - 11)) * (fouler.st.yellows ? MATCH.bookedCaution : 1)) {
     fouler.st.yellows++; def.stats.yellows++;
     beat(st, 'yellow', fouler);
     ev(st, 'yellow', def.side, fouler);

@@ -8,6 +8,7 @@ import { FORMATIONS, defaultRoles, type Slot } from './match/tactics.ts';
 import { FORMATION_IDS, type Club, type ClubId, type FormationId, type Fixture, type Player, type WorldState } from './model.ts';
 import { addCause, addNews, pName } from './news.ts';
 import { ratingAt } from './players.ts';
+import { refereeFor, refFactor } from './referees.ts';
 import { clamp } from './util.ts';
 import type { Rng } from './rng.ts';
 
@@ -111,11 +112,12 @@ export function matchSetups(world: WorldState, fx: Fixture, live = false): [Team
   const clubs = [world.clubs[fx.home]!, world.clubs[fx.away]!] as const;
   const xis = clubs.map((c, i) => (c.id === me ? userXI(world, c, clubs[1 - i]!.id) : pickXI(world, c, c.tactic.formation, [], clubs[1 - i]!.id)));
   const str = xis.map(xiStrength);
+  const ref = refFactor(refereeFor(world, fx));
   return clubs.map((c, i) => {
     const mine = c.id === me;
     // l'IA: la mentalità segue il rapporto di forze, spostata dallo stile del suo allenatore (tactic.mentality − 3)
     const mentality = mine ? c.tactic.mentality : clamp(aiMentality(str[i]!, str[1 - i]!, i === 0) + c.tactic.mentality - 3, 1, 5);
-    return { ...teamSetup(world, c, xis[i]!, mentality, clubs[1 - i]!.id), auto: !(mine && live) };
+    return { ...teamSetup(world, c, xis[i]!, mentality, clubs[1 - i]!.id), auto: !(mine && live), ref };
   }) as [TeamSetup, TeamSetup];
 }
 

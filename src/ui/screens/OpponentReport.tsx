@@ -1,7 +1,8 @@
 // Report sull'avversario: modulo probabile, uomo pericoloso, ultimi precedenti, consiglio dell'analista.
 // Tutto ciò che si mostra è pubblico (tattica vista in campo, gol segnati, risultati): niente valori nascosti.
 import { coachOf } from '../../engine/coaches.ts';
-import type { Club, WorldState } from '../../engine/model.ts';
+import type { Club, Fixture, WorldState } from '../../engine/model.ts';
+import { refereeFor, type Referee } from '../../engine/referees.ts';
 import { shortName } from '../bits.tsx';
 import { t } from '../i18n.ts';
 
@@ -17,13 +18,17 @@ function advice(c: Club): string {
   return 'balanced';
 }
 
-export function OpponentReport({ world, oppId, onPlayer }: { world: WorldState; oppId: number; onPlayer: (id: number) => void }) {
+/** severità dell'arbitro in parole: tollerante, nella media, severo */
+export const strictLabel = (r: Referee) => t(r.strict <= 7 ? 'ref.lenient' : r.strict <= 13 ? 'ref.average' : 'ref.strict');
+
+export function OpponentReport({ world, oppId, fx, onPlayer }: { world: WorldState; oppId: number; fx?: Fixture; onPlayer: (id: number) => void }) {
   const opp = world.clubs[oppId]!;
   const squad = opp.playerIds.map((id) => world.players[id]!);
   const danger = [...squad].sort((a, b) => b.stats.goals * 2 + b.stats.assists - (a.stats.goals * 2 + a.stats.assists) || (b.history.at(-1)?.goals ?? 0) - (a.history.at(-1)?.goals ?? 0))[0];
   const last = [...(world.manager.h2h[oppId] ?? '')].slice(-3);
   const a = advice(opp);
   const coach = coachOf(world, oppId);
+  const ref = fx ? refereeFor(world, fx) : null;
   return (
     <div className="panel">
       <div className="row" style={{ justifyContent: 'space-between' }}>
@@ -51,6 +56,13 @@ export function OpponentReport({ world, oppId, onPlayer }: { world: WorldState; 
           {last.map((r, i) => <span key={i} className={`form ${r}`}>{t(`col.${r === 'W' ? 'w' : r === 'D' ? 'd' : 'l'}`)}</span>)}
         </span>
       </div>
+      {ref && (
+        <div className="row" style={{ justifyContent: 'space-between' }}>
+          <span className="caps">{t('ref.title')}</span>
+          <span>{ref.firstName} {ref.lastName} · <b className={ref.strict >= 14 ? 'pos-bad' : ref.strict <= 7 ? 'pos-good' : ''}>{strictLabel(ref)}</b> <span className="muted small">({ref.strict}/20)</span></span>
+        </div>
+      )}
+      {ref && ref.strict >= 14 && <div className="muted small">{t('ref.adviceStrict')}</div>}
       <div className="analyst"><b>{t('opp.analyst')}</b> {t(`opp.advice.${a}`, { club: opp.shortName })}</div>
     </div>
   );
