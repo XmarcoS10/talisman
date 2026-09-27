@@ -519,3 +519,44 @@ punta. È il movimento senza palla (intervento 7, §6 e §9): inserimenti di mez
 segue. La leva 3 è realistica e da tenere per quando si riprende: riduce i tiri «regalati» dall'impostazione, ma da
 sola toglie troppi gol. Patch non conservata (tre righe: `MATCH.longShotBias` in `shot()`, `MATCH.markedValue` sul
 valore del passaggio in `passes()`, `MATCH.interceptFrom` sull'intercetto in `doPass()`).
+
+---
+
+## 11. Proposta: il movimento senza palla (0.5.0, da approvare prima del codice)
+
+**Perché i tentativi di prima si sono fermati.** Ogni leva è stata provata da sola e fermata al primo target rosso, e
+le leve vanno in direzioni opposte sui gol: le corse (§6) li alzano (3,03), l'intercetto realistico dell'impostazione
+(capocannonieri, leva 3) li abbassa (2,10-2,28). Da sole sono tutte e due fuori; insieme si compensano, ed è quello che
+succede nel calcio vero: meno gol regalati dagli errori dietro, più gol costruiti da chi si inserisce.
+
+**Due buchi del modello, visti nel codice.**
+- L'xG vede solo la pressione sul tiratore (`pitch.ts`, `xG`), e il tiro murato è una quota fissa tirata a caso
+  (`execute.ts`, `MATCH.blockedShare`). Quindi un blocco basso non toglie niente a chi tira: la squadra forte non ha
+  motivo di far girare palla, e da fuori area non conviene mai tirare.
+- In area con la palla ci arriva solo la punta: chi si inserisce sale poco (`boxRun` 0,6 zone) e la difesa marca per
+  vicinanza a ogni azione, quindi l'inserimento non crea mai un uomo libero. Il 60% dei tiri della punta nasce da un
+  pallone perso nell'impostazione e raccolto proprio da lei.
+
+**Il pacchetto, in quattro passi** (un commit ciascuno, misurati in ordine):
+
+| Passo | Cosa | Effetto atteso sui gol |
+|---|---|---|
+| 1. Corpi davanti al tiro | l'xG conta i difensori nel cono fra palla e porta (portiere escluso), e il tiro murato nasce da quelli invece che dal caso | giù |
+| 2. L'impostazione non regala palloni | intercetta chi sta davvero sulla traiettoria, soprattutto nella seconda metà (leva 3): errori dal basso verso 5-8% | giù |
+| 3. Inserimenti che la difesa deve seguire | corse di mezzali, ali e terzini (patch dell'intervento 7) come duello di velocità con chi le segue (Accelerazione, Velocità, Movimento senza palla contro Posizionamento, Anticipo, Velocità): vinto = arriva libero in area | su |
+| 4. Tiro da fuori | con i corpi davanti diventa una scelta vera: poco xG, spesso murato, ma da lì tirano centrocampisti e ali | su, poco |
+| Taratura | una sola manopola (la base dell'xG) riporta i gol nel target alla fine | — |
+
+**La regola dei tre tentativi, adattata.** Ai passi 1-4 mi fermo se diventa rosso un target che **non** sono i gol
+(precisione, fuorigioco, contropiedi, cartellini, correlazione, velocità del motore); i gol si giudicano dopo la
+taratura. Se dopo la taratura un target verde resta rosso, tre iterazioni e poi fermo, come sempre.
+
+**Come si misura** (3 semi, `diag-scorers`, `--match-stats`, stagioni e carriere da 25):
+- devono andare nel target: tiri delle punte 35-50% (oggi 81%), capocannoniere ≤ 40 gol (oggi 42-74), tiri da fuori
+  20-40% (oggi 1%);
+- devono restare nel target: gol, correlazione forza↔punti, fuorigioco, precisione, equilibrio di istruzioni e stili
+  (`diag-instructions`, `diag-coaches`), ms a partita entro +15%;
+- devono muoversi nella direzione giusta, senza essere una condizione: possesso della più forte (oggi 44%),
+  contropiedi (2,7%), blocco basso che rende (punti della mentalità prudente contro squadre più forti).
+
+**Rischio**: alto, cambia tutte le partite (golden master rigenerato apposta a ogni passo). **Costo**: 2-3 giorni.
