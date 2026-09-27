@@ -108,10 +108,12 @@ function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, 
     const quick = st.counterNow ? MATCH.transTempo : 1; // la ripartenza contro una difesa scoperta non si ferma a pensare
     st.t += (MATCH.passTime * TEMPO[att.tactic.tempo]! + MATCH.passTimePerZone * len(o.tx - c.x, o.ty - c.y)) * quick;
   } else {
-    // intercetto: il difensore più vicino alla linea di passaggio
+    // intercetto: il difensore più vicino alla seconda parte della traiettoria (chi pressa il portatore non
+    // raccoglie ogni pallone sbagliato: la palla gli è già passata oltre)
     let w = def.on[0]!, bd = Infinity;
+    const fx = st.bx + (o.tx - st.bx) * MATCH.interceptFrom, fy = st.by + (o.ty - st.by) * MATCH.interceptFrom;
     for (let i = 0; i < def.on.length; i++) {
-      const d = segDist(st.defX[i]!, st.defY[i]!, st.bx, st.by, o.tx, o.ty);
+      const d = segDist(st.defX[i]!, st.defY[i]!, fx, fy, o.tx, o.ty);
       if (d < bd) { bd = d; w = def.on[i]!; }
     }
     w.st.tackles++; def.stats.tackles++;

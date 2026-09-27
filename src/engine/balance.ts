@@ -207,6 +207,7 @@ export const MATCH = {
   xgAngle: 1.6,
   xgDist: 0.1,
   xgPress: 0.45,
+  interceptFrom: 0.5, // l'intercetto lo fa chi sta sulla traiettoria da questa frazione in poi
   xgBlock: 0.4, // logit tolto per ogni difensore pieno fra la palla e la porta
   blockRadius: 0.35, // zone: distanza dalla linea palla-porta entro cui un difensore fa da muro
   blockBase: 0.3, blockPer: 0.4, blockMax: 0.8, // tiro sbagliato che finisce murato: base + per corpo davanti
