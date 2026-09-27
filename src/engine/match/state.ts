@@ -191,6 +191,7 @@ export interface MatchState {
   defX: number[];
   defY: number[];
   defAnt: number[];
+  defMark: number[]; // peso di marcatura di ogni avversario (Marcatura, Posizionamento)
   pendingDrain: [number, number];
   subIdx: number;
   shoutAt: [number, number];
@@ -224,7 +225,7 @@ export function createState(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Tr
     rng, ref: setups[0].ref ?? 1, wx: setups[0].wx ?? CALM, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, counterNow: false, momentum: 0,
     half: 1, t: 0, length: 0, scheduled: [], lastPlace: 0, markStamp: 0, holder: null, meet: null, snap: true,
     trace, curFrame: null, track: [], playAt: 0, lastBall: { x: 6, y: 4 }, lastStep: -1, ids0: [], idsDirty: true,
-    defX: [], defY: [], defAnt: [], pendingDrain: [0, 0], subIdx: 0, shoutAt: [0, 0], output: null, plansFired: [[], []], planUndo: [null, null],
+    defX: [], defY: [], defAnt: [], defMark: [], pendingDrain: [0, 0], subIdx: 0, shoutAt: [0, 0], output: null, plansFired: [[], []], planUndo: [null, null],
   };
 }
 

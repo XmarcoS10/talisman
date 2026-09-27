@@ -3,23 +3,35 @@
 import { MATCH } from '../balance.ts';
 import type { View } from './decision.ts';
 import { len, segDist } from './pitch.ts';
-import { cover, inTransition, type MatchState, type MP } from './state.ts';
+import { cover, inTransition, type MatchState, type MP, type Team } from './state.ts';
 
 export const PRESS = MATCH.pressLevels;
 const FAR = MATCH.pressRadius * MATCH.pressRadius * 1.001;
 
 /** la difesa vista da chi attacca, la pressione sul portatore e il difensore più vicino (per il fallo di pressione) */
-export function readPlay(st: MatchState): { view: View; pressure: number; closest: MP | undefined; exposed: number } {
-  const att = st.teams[st.s], def = st.teams[1 - st.s]!;
-  const { bx, by, defX, defY, defAnt } = st;
-  const cv = cover(def);
-  defX.length = defY.length = defAnt.length = def.on.length;
+/** la difesa vista da chi attacca: posizioni, peso di intercetto (Anticipazione) e di marcatura */
+function readDefence(st: MatchState, att: Team, def: Team, cv: number) {
+  const { defX, defY, defAnt, defMark } = st;
+  // qualità media di chi attacca senza palla (Movimento senza palla, Primo controllo): il metro di chi marca
+  let attQ = 0;
+  for (const a of att.on) attQ += (a.p.attrs.offTheBall + a.p.attrs.firstTouch) / 2;
+  attQ /= att.on.length;
+  defX.length = defY.length = defAnt.length = defMark.length = def.on.length;
   for (let i = 0; i < def.on.length; i++) {
     const m = def.on[i]!;
     defX[i] = 12 - m.x;
     defY[i] = 8 - m.y;
     defAnt[i] = (0.6 + 0.03 * m.p.attrs.anticipation) * cv;
+    // chi marca bene sta addosso al ricevitore e fa da muro al tiro (motore-v2 §11: conta la qualità, non solo il corpo)
+    defMark[i] = Math.max(0.3, 1 + MATCH.markSkill * ((m.p.attrs.marking + m.p.attrs.positioning) / 2 - attQ)) * cv;
   }
+}
+
+export function readPlay(st: MatchState): { view: View; pressure: number; closest: MP | undefined; exposed: number } {
+  const att = st.teams[st.s], def = st.teams[1 - st.s]!;
+  const { bx, by, defX, defY, defAnt, defMark } = st;
+  const cv = cover(def);
+  readDefence(st, att, def, cv);
   // nei secondi dopo aver perso palla chi difende ripiega o aggredisce secondo l'istruzione
   const trans = inTransition(st);
   const cp = trans ? [MATCH.cpRetreat, 1, MATCH.cpPress][def.tactic.counterPress ?? 1]! : 1;
@@ -32,7 +44,7 @@ export function readPlay(st: MatchState): { view: View; pressure: number; closes
     // corpi fra la palla e il centro della porta: tolgono xG al tiro e lo murano
     if (shooting && m.pos !== 'GK' && defX[i]! > bx) {
       const d = segDist(defX[i]!, defY[i]!, bx, by, 12, 4);
-      if (d < MATCH.blockRadius) block += 1 - d / MATCH.blockRadius;
+      if (d < MATCH.blockRadius) block += (1 - d / MATCH.blockRadius) * defMark[i]!;
     }
     // lontano dal portatore: né pressione né "più vicino". Il margine tiene esatto il confronto sul bordo
     const qx = defX[i]! - bx, qy = defY[i]! - by;
@@ -44,7 +56,7 @@ export function readPlay(st: MatchState): { view: View; pressure: number; closes
   const c = st.carrier;
   const sign = st.s === 0 ? 1 : -1;
   const view: View = {
-    carrier: c, isGK: c.pos === 'GK', bx, by, mates: att.on, defs: def.on, defX, defY, defAnt, pressure, block,
+    carrier: c, isGK: c.pos === 'GK', bx, by, mates: att.on, defs: def.on, defX, defY, defAnt, defMark, pressure, block,
     offsideLine: Math.max(line, bx), tactic: att.tactic, mentality: att.mentality,
     wind: st.wx.cross,
     bonus: -st.wx.pass + (st.s === 0 ? MATCH.homeBoost : 0) + (sign * st.momentum / 100) * MATCH.momentumK * (1 - c.p.attrs.composure / 25)

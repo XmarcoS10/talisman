@@ -29,6 +29,7 @@ export interface View {
   defX: number[]; // avversari nel sistema dell'attaccante
   defY: number[];
   defAnt: number[]; // peso di intercetto di ogni avversario (Anticipazione)
+  defMark: number[]; // peso di marcatura di ogni avversario (Marcatura, Posizionamento)
   pressure: number; // 0 … ~2.5
   block: number; // corpi dei difensori fra palla e porta (solo in zona di tiro)
   offsideLine: number; // x oltre cui un compagno è in fuorigioco
@@ -93,7 +94,7 @@ function passes(v: View, x: Ctx, out: Option[]) {
       const ex = X - m.x, ey = Y - m.y;
       if (ex > -mr && ex < mr && ey > -mr && ey < mr) {
         const dm = len(ex, ey);
-        if (dm < mr) mark += 1 - dm / mr;
+        if (dm < mr) mark += (1 - dm / mr) * v.defMark[i]!;
       }
       if (X < minX || X > maxX || Y < minY || Y > maxY) continue; // lontano dalla linea di passaggio
       const d = segDist(X, Y, bx, by, m.x, m.y);

@@ -143,8 +143,9 @@ export const MATCH = {
   passLane: 0.8, // difensori vicini alla linea di passaggio
   passMark: 0.9, // difensori vicini al ricevitore
   passMarkBox: 2.6, // … se il ricevitore è in area: lì si marca stretto (motore-v2 §11)
+  markSkill: 0.2, // peso di marcatura e muro per punto di (Marcatura + Posizionamento)/2 sopra la media di chi attacca
   passPress: 0.35,
-  passSkill: 0.18, // per punto di Passaggio sopra/sotto 11
+  passSkill: 0.24, // per punto di Passaggio sopra/sotto 11
   passVision: 0.05, // Visione, solo sui passaggi lunghi
   passTouch: 0.06, // Primo controllo del ricevitore
   laneRadius: 0.9,
@@ -198,7 +199,7 @@ export const MATCH = {
   // dribbling e 1 contro 1 (Blocco 2b, intervento 3): chi punta (Dribbling 0,4, Tecnica, Agilità, Accelerazione 0,2)
   // contro chi difende (Contrasto 0,4, Posizionamento e Anticipo 0,3). Saltare un uomo vicino vale più della zona
   // guadagnata: ci si libera della pressione (dribBeat)
-  dribBase: 0.65,
+  dribBase: 0.5,
   dribSkill: 0.12, // per punto di abilità di chi punta, sopra/sotto 11
   dribDef: 0.1, // per punto di abilità del difensore, pesato da quanto è vicino
   dribPress: 0.9,
@@ -211,7 +212,7 @@ export const MATCH = {
 
   // tiro e xG (§6.3): logit = base + angolo·a − distanza_m·d − pressione·p (+ colpo di testa)
   shotMinX: 7,
-  xgBase: -1.19,
+  xgBase: -1.08,
   xgAngle: 1.6,
   xgDist: 0.1,
   xgPress: 0.45,
@@ -221,7 +222,7 @@ export const MATCH = {
   blockBase: 0.3, blockPer: 0.4, blockMax: 0.8, // tiro sbagliato che finisce murato: base + per corpo davanti
   xgHeader: -0.9,
   penaltyXg: 0.76,
-  shotSkill: 0.04, // Finalizzazione: moltiplicatore sulla probabilità di gol
+  shotSkill: 0.025, // Finalizzazione: moltiplicatore sulla probabilità di gol
   gkSkill: 0.025, // Portiere: riduzione (bravura da keeper.ts, secondo il tipo di tiro)
   // portiere (Blocco 2b, intervento 5, match/keeper.ts)
   gkCloseXg: 0.25, // da questo xG il tiro è ravvicinato: contano Uno contro uno e Uscite basse
@@ -294,8 +295,8 @@ export const MATCH = {
   widthLevels: [0.8, 1, 1.2],
   lineLevels: [-0.4, 0, 0.45], // era −0,6 · 0 · 0,6
   directLevels: [0.85, 1, 1.15], // spinta verso la porta (era 0 · 1 · 2)
-  shotBias: 0.7,
-  longShotBias: 1.5, // voglia di tirare da fuori area (motore-v2 §11): poco xG, spesso murato, ma è una scelta vera
+  shotBias: 0.6,
+  longShotBias: 1.75, // voglia di tirare da fuori area (motore-v2 §11): poco xG, spesso murato, ma è una scelta vera
 
   // contrasti, falli, cartellini, infortuni
   foulBase: 0.3,
@@ -698,8 +699,8 @@ export const WEATHER = {
   winter: { rain: 0.3, storm: 0.08, cold: 0.25, wind: 0.1 } as Record<string, number>, // dicembre, gennaio, febbraio
   fx: {
     clear: { pass: 0, cross: 0, drain: 1, speed: 1, slip: 0 },
-    rain: { pass: 0.1, cross: 0.04, drain: 1, speed: 1, slip: 0.06 },
-    storm: { pass: 0.18, cross: 0.12, drain: 1, speed: 1, slip: 0.1 },
+    rain: { pass: 0.12, cross: 0.04, drain: 1, speed: 1, slip: 0.06 },
+    storm: { pass: 0.3, cross: 0.12, drain: 1, speed: 1, slip: 0.1 },
     wind: { pass: 0, cross: 0.18, drain: 1, speed: 1, slip: 0.03 },
     heat: { pass: 0, cross: 0, drain: 1.12, speed: 1, slip: 0 },
     cold: { pass: 0.03, cross: 0, drain: 1, speed: 1, slip: 0.02 },
