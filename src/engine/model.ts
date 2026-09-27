@@ -9,6 +9,7 @@ export type ClubId = number;
 export type CompId = string;
 export type AgentId = number;
 export type ScoutId = number;
+export type CoachId = number;
 
 export const POSITIONS = ['GK', 'DL', 'DC', 'DR', 'DM', 'ML', 'MC', 'MR', 'AML', 'AMC', 'AMR', 'ST'] as const;
 export type Position = (typeof POSITIONS)[number];
@@ -407,6 +408,25 @@ export interface ManagerSeason {
   sacked: boolean;
 }
 
+export const COACH_STYLES = ['balanced', 'attacking', 'defensive', 'pressing', 'possession', 'counter'] as const;
+export type CoachStyle = (typeof COACH_STYLES)[number];
+
+/** allenatore di un club IA (0.5.0): lo stile decide istruzioni e mentalità, il blasone dove allena */
+export interface Coach {
+  id: CoachId;
+  firstName: string;
+  lastName: string;
+  nation: string;
+  birthYear: number;
+  reputation: number; // 1-100
+  style: CoachStyle;
+  formation: FormationId; // modulo preferito
+  clubId: ClubId | null; // null = senza panchina
+  since: number; // stagione in cui ha preso la panchina
+  sinceDay: number; // e il giorno: chi è appena arrivato non si esonera
+  career: { season: number; clubId: ClubId; sacked: boolean }[]; // le panchine lasciate
+}
+
 /** l'offerta, con tutti i parametri della specifica */
 export interface Offer {
   fee: number; // parte fissa
@@ -533,6 +553,7 @@ export interface WorldState {
   clubs: Record<ClubId, Club>;
   agents: Record<AgentId, Agent>;
   scouts: Record<ScoutId, Scout>;
+  coaches: Record<CoachId, Coach>; // allenatori dei club IA e senza panchina (0.5.0, schema 30)
   known: Record<PlayerId, Known>; // la nebbia: solo quello che l'utente ha scoperto
   competitions: Record<CompId, Competition>;
   history: SeasonRecord[];
@@ -556,4 +577,5 @@ export interface WorldState {
   nextPlayerId: number;
   nextAgentId: number;
   nextScoutId: number;
+  nextCoachId: number;
 }

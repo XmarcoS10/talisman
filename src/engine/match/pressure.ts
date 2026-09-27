@@ -5,7 +5,7 @@ import type { View } from './decision.ts';
 import { len } from './pitch.ts';
 import { cover, inTransition, type MatchState, type MP } from './state.ts';
 
-export const PRESS = [0.8, 1, 1.25];
+export const PRESS = MATCH.pressLevels;
 const FAR = MATCH.pressRadius * MATCH.pressRadius * 1.001;
 
 /** la difesa vista da chi attacca, la pressione sul portatore e il difensore più vicino (per il fallo di pressione) */

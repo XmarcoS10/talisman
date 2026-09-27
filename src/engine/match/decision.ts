@@ -60,7 +60,7 @@ function context(v: View): Ctx {
   const keep = MATCH.possessionValue * riskW;
   const loss = lossCost(bx, by) * riskW + keep;
   // verticalità: istruzione tattica + impazienza dopo una lunga serie di passaggi
-  const direct = MATCH.directnessK * tactic.directness + MATCH.patience * Math.max(0, v.chain - 5) + c.role.direct
+  const direct = MATCH.directnessK * MATCH.directLevels[tactic.directness]! + MATCH.patience * Math.max(0, v.chain - 5) + c.role.direct
     + MATCH.counterDirect * v.counter; // difesa sbilanciata: si riparte in verticale
   // spogliatoio in campo (§7.3): tra amici ci si cerca un po' di più, tra nemici un po' di meno
   return { keep, loss, direct, vision: MATCH.passVision * a(c, 'vision'), rel: FLAGS.psychology ? c.p.rel : NO_REL };
@@ -132,7 +132,7 @@ function longKicks(v: View, x: Ctx, out: Option[]) {
   for (const m of v.mates) {
     if (m === c || m.x < 6.5) continue;
     const p = sigmoid(MATCH.kickBase + MATCH.kickSkill * (a(c, 'kicking') + a(m, 'heading')) + v.bonus);
-    out.push({ kind: 'pass', to: m, tx: m.x, ty: m.y, p, off: 0, u: p * (xT(m.x, m.y) + x.keep) - (1 - p) * x.loss + MATCH.kickDirect * tactic.directness * (m.x - bx) / 6,
+    out.push({ kind: 'pass', to: m, tx: m.x, ty: m.y, p, off: 0, u: p * (xT(m.x, m.y) + x.keep) - (1 - p) * x.loss + MATCH.kickDirect * MATCH.directLevels[tactic.directness]! * (m.x - bx) / 6,
       w: chem(x.rel[m.p.id]), deep: false, long: true });
   }
 }

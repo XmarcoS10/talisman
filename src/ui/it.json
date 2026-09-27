@@ -1854,5 +1854,15 @@
   "db.hint": "Il gioco non contiene nomi né stemmi reali: un database della community li porta sul tuo computer. Formato in docs/database.md.",
   "db.tooBig": "Il file è troppo grande (massimo 40 MB).",
   "db.notJson": "Il file non è un JSON leggibile.",
-  "db.invalid": "Il database non si può caricare: {n} problemi"
+  "db.invalid": "Il database non si può caricare: {n} problemi",
+  "coach.title": "Allenatore",
+  "coach.line": "Allenatore: {name}, {style}",
+  "coach.since": "dal {s}",
+  "coach.style.balanced": "equilibrato",
+  "coach.style.attacking": "offensivo",
+  "coach.style.defensive": "difensivo",
+  "coach.style.pressing": "pressing alto",
+  "coach.style.possession": "possesso palla",
+  "coach.style.counter": "contropiede",
+  "news.coach.sacked": "{club} esonera {old}: in panchina arriva {coach}."
 }

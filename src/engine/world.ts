@@ -1,7 +1,8 @@
 // Mondo: generazione, calendario, avanzamento, classifiche, cambio stagione.
 import { BALANCE, FIN, MARKET, MATCH, NATIONAL, NATIONALITY, PLAYOFF, SQUAD_TEMPLATE, TRAIN, YOUTH } from './balance.ts';
 import { heal } from './injuries.ts';
-import { aiSetFormation, applyMatch, matchSetups, pickXI, playMatch, xiStrength } from './match.ts';
+import { applyMatch, matchSetups, pickXI, playMatch, xiStrength } from './match.ts';
+import { coachTactics, ensureCoaches, seasonCoaches, weekCoaches } from './coaches.ts';
 import { runMatch, type MatchRun, type SimOutput } from './match/engine.ts';
 import { defaultTactic } from './match/tactics.ts';
 import { PHILOSOPHIES, type Club, type ClubId, type Competition, type Fixture, type Player, type Position, type WorldState } from './model.ts';
@@ -108,7 +109,7 @@ export function emptyWorld(seed: number, season = 2026): { world: WorldState; rn
   const world: WorldState = {
     schemaVersion: SCHEMA_VERSION, seed, rng: rng.s, season, day: 0,
     manager: { name: '', clubId: 0, kept: 0, broken: 0, board: newBoard(), h2h: {}, style: 'none', seasons: [] }, players: {}, clubs: {}, competitions: {}, history: [], records: {}, news: [],
-    causal: [], promises: [], talks: [], offers: [], arcs: [], press: null, nations: {}, intl: [], cup: null, playoffs: null, rules: { playoffs: true }, cupWinners: [], friendlies: null, intake: [], nextArcId: 1, nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1,
+    causal: [], promises: [], talks: [], offers: [], arcs: [], press: null, nations: {}, intl: [], cup: null, playoffs: null, rules: { playoffs: true }, cupWinners: [], friendlies: null, intake: [], nextArcId: 1, nextPlayerId: 1, agents: {}, nextAgentId: 1, scouts: {}, known: {}, nextScoutId: 1, coaches: {}, nextCoachId: 1,
   };
   return { world, rng };
 }
@@ -192,9 +193,9 @@ function scheduleSeason(world: WorldState, rng: Rng) {
   for (const comp of Object.values(world.competitions)) comp.fixtures = isShadow(world, comp) ? [] : roundRobin(comp.clubIds, rng);
   world.cup = makeCup(world, rng);
   world.playoffs = null;
-  // l'IA riadatta il modulo alla rosa ogni estate (il club dell'utente lo sceglie l'utente)
+  // ogni estate l'allenatore dell'IA riadatta modulo e istruzioni alla rosa (il club dell'utente lo sceglie l'utente)
   for (const club of Object.values(world.clubs))
-    if (club.id !== world.manager.clubId || world.history.length === 0) aiSetFormation(world, club);
+    if (club.id !== world.manager.clubId || world.history.length === 0) coachTactics(world, club);
 }
 
 /**
@@ -202,6 +203,7 @@ function scheduleSeason(world: WorldState, rng: Rng) {
  * stagionale è alto) e guarigioni
  */
 function passDays(world: WorldState, rng: Rng, days: number, weeks: number) {
+  ensureCoaches(world); // le carriere di prima della 0.5.0, e la panchina lasciata libera dall'utente
   // pause per le nazionali e mercato di gennaio: scattano quando il calendario ci passa sopra
   for (const w of NATIONAL.windows) if (days > 0 && world.day < w && world.day + days >= w) internationalBreak(world, rng);
   if (days > 0 && !isWinterWindow(world.day) && isWinterWindow(world.day + days)) {
@@ -214,6 +216,7 @@ function passDays(world: WorldState, rng: Rng, days: number, weeks: number) {
       weekPsych(world, club, rng);
     }
     weekCosts(world, 1); // stipendi, staff, stadio
+    weekCoaches(world, leagueSpot(world)); // chi è troppo sotto il suo blasone rischia la panchina
     weekDistress(world); // gli avvisi al club dell'utente se la cassa va a picco
     weekBoard(world); // le quattro barre della fiducia
     weekScouting(world, rng); // gli osservatori diradano la nebbia
@@ -359,6 +362,13 @@ export const finishMatchDay = (world: WorldState, live: LiveDay): Fixture[] =>
 
 export type TableRow ={ clubId: ClubId; p: number; w: number; d: number; l: number; gf: number; ga: number; pts: number };
 
+/** posizione e partite giocate di ogni club nel suo campionato, calcolate una volta sola */
+function leagueSpot(world: WorldState): (club: Club) => { pos: number; played: number } {
+  const map = new Map<number, { pos: number; played: number }>();
+  for (const comp of Object.values(world.competitions)) standings(world, comp).forEach((r, i) => map.set(r.clubId, { pos: i + 1, played: r.p }));
+  return (club) => map.get(club.id) ?? { pos: 10, played: 0 };
+}
+
 /** classifica derivata dai risultati (non salvata) */
 export function standings(world: WorldState, comp: Competition): TableRow[] {
   const rows = new Map<ClubId, TableRow>(comp.clubIds.map((id) => [id, { clubId: id, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }]));
@@ -457,6 +467,8 @@ export function endSeason(world: WorldState): SeasonSummary {
     p.condition.fatigue = Math.round(p.condition.fatigue * 0.3); // vacanze
   }
   endSeasonRecords(world, comps, tables); // record e storia, prima dei ritiri e del calendario nuovo
+  const spot = new Map(tables.flatMap((t) => t.map((r, i) => [r.clubId, i + 1] as const)));
+  seasonCoaches(world, (club) => spot.get(club.id) ?? 10); // gli allenatori: reputazione, ritiri, giovani
   world.season++;
 
   for (const club of Object.values(world.clubs)) {

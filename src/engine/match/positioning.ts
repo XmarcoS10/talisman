@@ -6,9 +6,9 @@ import { len } from './pitch.ts';
 import { clamp } from '../util.ts';
 import { clock, cover, gx, gy, minute, type MatchState, type MP, type Team, type TraceStep } from './state.ts';
 
-const WIDTH = [0.8, 1, 1.2];
-const LINE = [-0.6, 0, 0.6];
-const PRESS_STEP = [0.35, 0.5, 0.7]; // quanto esce il pressatore verso il portatore
+const WIDTH = MATCH.widthLevels;
+const LINE = MATCH.lineLevels;
+const PRESS_STEP = MATCH.pressStep;
 
 /** accelerazione e frenata: la palla non viaggia a velocità costante */
 const ease = (u: number) => (u < 0.5 ? 2 * u * u : 1 - (1 - u) ** 2 * 2);

@@ -1,3 +1,4 @@
+import { coachOf } from '../../engine/coaches.ts';
 import type { WorldState } from '../../engine/model.ts';
 import { standings } from '../../engine/world.ts';
 import { Crest } from '../Crest.tsx';
@@ -11,6 +12,7 @@ export function ClubView({ world, clubId, onPlayer, onBack }: { world: WorldStat
   const comp = world.competitions[club.compId]!;
   const pos = standings(world, comp).findIndex((r) => r.clubId === clubId) + 1;
   const titles = world.history.filter((h) => h.championId === clubId);
+  const coach = coachOf(world, clubId);
   return (
     <div className="grid">
       <div className="row"><button className="btn" onClick={onBack}>← {t('player.back')}</button></div>
@@ -25,6 +27,7 @@ export function ClubView({ world, clubId, onPlayer, onBack }: { world: WorldStat
           <span className="muted">{comp.name}</span><b className="num">{pos}°</b>
           <span className="muted">{t('start.reputation')}</span><b className="num">{club.reputation}</b>
           <span className="muted">{t('tactics.formation')}</span><b className="num">{club.tactic.formation}</b>
+          {coach && <><span className="muted">{t('coach.title')}</span><b>{coach.firstName} {coach.lastName} <small className="muted">{t(`coach.style.${coach.style}`)} · {t('coach.since', { s: coach.since })}</small></b></>}
           <span className="muted">{t('top.balance')}</span><b className="num">{fmtMoney(club.balance)}</b>
           {titles.length > 0 && <><span className="muted">{t('club.titles')}</span><b className="num">{titles.length}</b></>}
         </div>

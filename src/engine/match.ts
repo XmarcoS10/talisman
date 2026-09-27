@@ -8,6 +8,7 @@ import { FORMATIONS, defaultRoles, type Slot } from './match/tactics.ts';
 import { FORMATION_IDS, type Club, type ClubId, type FormationId, type Fixture, type Player, type WorldState } from './model.ts';
 import { addCause, addNews, pName } from './news.ts';
 import { ratingAt } from './players.ts';
+import { clamp } from './util.ts';
 import type { Rng } from './rng.ts';
 
 export type LineupSlot = { slot: Slot; player: Player; rating: number };
@@ -112,7 +113,8 @@ export function matchSetups(world: WorldState, fx: Fixture, live = false): [Team
   const str = xis.map(xiStrength);
   return clubs.map((c, i) => {
     const mine = c.id === me;
-    const mentality = mine ? c.tactic.mentality : aiMentality(str[i]!, str[1 - i]!, i === 0);
+    // l'IA: la mentalità segue il rapporto di forze, spostata dallo stile del suo allenatore (tactic.mentality − 3)
+    const mentality = mine ? c.tactic.mentality : clamp(aiMentality(str[i]!, str[1 - i]!, i === 0) + c.tactic.mentality - 3, 1, 5);
     return { ...teamSetup(world, c, xis[i]!, mentality, clubs[1 - i]!.id), auto: !(mine && live) };
   }) as [TeamSetup, TeamSetup];
 }

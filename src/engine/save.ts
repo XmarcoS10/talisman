@@ -10,7 +10,7 @@ import { assignAgents } from './transfers/agents.ts';
 import { makeScouts } from './scouting/scouts.ts';
 import { newBoard } from './board/board.ts';
 
-export const SCHEMA_VERSION = 29;
+export const SCHEMA_VERSION = 30;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -158,6 +158,8 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
       r.apps = (r.apps as Obj[]).sort((a, b) => b.apps - a.apps).slice(0, 10);
     }
   },
+  // 29 → 30 (0.5.0, allenatori dell'IA): nessuno; arrivano da soli alla prima giornata (ensureCoaches), come la Serie C
+  (w) => { w.coaches = {}; w.nextCoachId = 1; },
 ];
 
 export function serialize(world: WorldState): string {

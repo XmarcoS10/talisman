@@ -59,6 +59,12 @@ gioco dal manifest generato `src/ui/assets-manifest.ts` (non si modifica a mano)
 giocatori sono derivati. Schermata `ui/screens/Records.tsx`, CSV con `ui/csv.ts`. Tema chiaro: `data-theme` sulla
 radice (`settings.applyTheme`), token in `tokens.css`; il campo (`.pitch`, `.pitch-wrap`, `.shot-map`) resta scuro.
 
+## Allenatori dell'IA (0.5.0)
+`engine/coaches.ts`: `world.coaches` (schema 30), uno per club IA più i liberi; lo stile (`COACH.styles`) decide
+istruzioni e spinta sulla mentalità (`tactic.mentality − 3`, sommata ad `aiMentality` in `matchSetups`). Esoneri in
+`weekCoaches`, fine stagione in `seasonCoaches`; `ensureCoaches` in `passDays` (carriere vecchie, panchina dell'utente).
+Rng proprio. Equilibrio degli stili: `tools/diag-coaches.ts`; delle istruzioni: `tools/diag-instructions.ts`.
+
 ## Database della community (0.4.0)
 `engine/database.ts`: formato `talisman-db` v1 (documentato in `docs/database.md`), `validateDb` (il file arriva da
 fuori: tutto controllato, stemmi solo PNG/JPEG/WebP), `worldFromDb` (stessa costruzione di `newWorld`: `emptyWorld` →

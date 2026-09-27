@@ -1,5 +1,6 @@
 // Report sull'avversario: modulo probabile, uomo pericoloso, ultimi precedenti, consiglio dell'analista.
 // Tutto ciò che si mostra è pubblico (tattica vista in campo, gol segnati, risultati): niente valori nascosti.
+import { coachOf } from '../../engine/coaches.ts';
 import type { Club, WorldState } from '../../engine/model.ts';
 import { shortName } from '../bits.tsx';
 import { t } from '../i18n.ts';
@@ -22,6 +23,7 @@ export function OpponentReport({ world, oppId, onPlayer }: { world: WorldState; 
   const danger = [...squad].sort((a, b) => b.stats.goals * 2 + b.stats.assists - (a.stats.goals * 2 + a.stats.assists) || (b.history.at(-1)?.goals ?? 0) - (a.history.at(-1)?.goals ?? 0))[0];
   const last = [...(world.manager.h2h[oppId] ?? '')].slice(-3);
   const a = advice(opp);
+  const coach = coachOf(world, oppId);
   return (
     <div className="panel">
       <div className="row" style={{ justifyContent: 'space-between' }}>
@@ -32,6 +34,7 @@ export function OpponentReport({ world, oppId, onPlayer }: { world: WorldState; 
           <span className="caps">{t('opp.formation')}</span>
           <b className="big-num">{opp.tactic.formation}</b>
           <small>{t(`mentality.${opp.tactic.mentality}`)}</small>
+          {coach && <small className="muted">{t('coach.line', { name: `${coach.firstName} ${coach.lastName}`, style: t(`coach.style.${coach.style}`) })}</small>}
         </div>
         {danger && (
           <button className="mini-card" style={{ textAlign: 'left' }} onClick={() => onPlayer(danger.id)}>

@@ -1854,5 +1854,15 @@
   "db.hint": "The game contains no real names or crests: a community database brings them to your computer. Format in docs/database.md.",
   "db.tooBig": "The file is too large (40 MB max).",
   "db.notJson": "The file is not readable JSON.",
-  "db.invalid": "The database can't be loaded: {n} problems"
+  "db.invalid": "The database can't be loaded: {n} problems",
+  "coach.title": "Manager",
+  "coach.line": "Manager: {name}, {style}",
+  "coach.since": "since {s}",
+  "coach.style.balanced": "balanced",
+  "coach.style.attacking": "attacking",
+  "coach.style.defensive": "defensive",
+  "coach.style.pressing": "high press",
+  "coach.style.possession": "possession",
+  "coach.style.counter": "counter-attack",
+  "news.coach.sacked": "{club} sack {old}: {coach} takes over."
 }

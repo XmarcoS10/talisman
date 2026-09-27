@@ -85,7 +85,7 @@ function step(st: MatchState) {
   // tempo che passa: stanchezza (applicata a blocchi di un minuto), momentum
   const dt = st.t - t0;
   st.pendingDrain[st.s] += dt;
-  st.pendingDrain[st.s === 0 ? 1 : 0] += dt * PRESS[def.tactic.pressing]!; // chi pressa si stanca di più
+  st.pendingDrain[st.s === 0 ? 1 : 0] += dt * MATCH.pressDrain[def.tactic.pressing]!; // chi pressa si stanca di più
   if (trans && def.tactic.counterPress === 2) st.pendingDrain[def.side] += dt * MATCH.cpDrain; // il contro-pressing stanca
 
   if (st.pendingDrain[0] + st.pendingDrain[1] >= 120) drain(st);

@@ -274,6 +274,13 @@ export const MATCH = {
   tempDecisions: 0.04, // per punto di Decisioni sotto 11
   tempPressure: 0.25,
   directnessK: 0.004, // bonus per zona guadagnata, scalato dall'istruzione "verticalità"
+  // livelli delle istruzioni 0-1-2 (0.5.0): prima pressing alto e gioco verticale vincevano quasi sempre
+  pressLevels: [0.95, 1, 1.12], // intensità della pressione
+  pressDrain: [0.7, 1, 1.5], // e fatica di chi pressa
+  pressStep: [0.45, 0.5, 0.52], // quanto esce il pressatore verso il portatore (era 0,35 · 0,5 · 0,7)
+  widthLevels: [0.8, 1, 1.2],
+  lineLevels: [-0.4, 0, 0.45], // era −0,6 · 0 · 0,6
+  directLevels: [0.85, 1, 1.15], // spinta verso la porta (era 0 · 1 · 2)
   shotBias: 0.7,
 
   // contrasti, falli, cartellini, infortuni
@@ -670,6 +677,31 @@ export const YOUTH = {
 } as const;
 
 // --- nazionali (GUIDA §7.8) ---
+/** allenatori dei club IA (0.5.0): stile → istruzioni e mentalità, esoneri a metà stagione */
+export const COACH = {
+  pool: 24, // senza panchina nel mondo nuovo
+  italian: 0.75,
+  age: [36, 64] as const,
+  retireFrom: 68,
+  newPerSeason: 6, // allenatori giovani che arrivano ogni estate
+  formationSlack: 3, // il modulo preferito si usa se l'undici perde al massimo così tanto
+  // istruzioni per stile (pressing, ritmo, ampiezza, linea, verticalità, dopo la palla persa: 0-2) e spinta sulla mentalità
+  styles: {
+    balanced: { mentality: 0, pressing: 1, tempo: 1, width: 1, line: 1, directness: 1, counterPress: 1 },
+    attacking: { mentality: 1, pressing: 1, tempo: 1, width: 2, line: 1, directness: 1, counterPress: 1 },
+    defensive: { mentality: 0, pressing: 1, tempo: 0, width: 1, line: 0, directness: 1, counterPress: 1 },
+    pressing: { mentality: 0, pressing: 2, tempo: 1, width: 1, line: 1, directness: 1, counterPress: 1 },
+    possession: { mentality: 0, pressing: 1, tempo: 0, width: 2, line: 1, directness: 1, counterPress: 1 },
+    counter: { mentality: 0, pressing: 1, tempo: 1, width: 1, line: 1, directness: 2, counterPress: 0 },
+  },
+  sackFrom: 10, // giornate giocate prima che si possa esonerare
+  sackGap: 5, // posizioni sotto il blasone
+  sackP: 0.03, // probabilità a settimana, per posizione oltre la soglia
+  grace: 56, // giorni di tempo per chi è appena arrivato (8 giornate)
+  sackedRep: -5, // reputazione persa con l'esonero
+  repPerPlace: 1.2, // a fine stagione: reputazione per posizione sopra (o sotto) il blasone
+};
+
 /** nazionalità dei giocatori (0.4.0, scelta di Marco: come la Serie A vera). Quota di italiani per categoria:
  * in Serie A 2024-25 gli stranieri sono circa il 60%, in B circa il 35%, in C circa il 15% */
 export const NATIONALITY = {
