@@ -28,6 +28,8 @@ export interface MP extends OnPitch {
   ty: number;
   jx: number; // smarcamento casuale dell'azione in corso (estratto una volta per azione)
   jy: number;
+  run: boolean; // inserimento in area in questa azione (motore-v2 §11)
+  runRoll: number; // estrazione del duello con chi lo segue, una per azione (la partita guardata non ne pesca altre)
   on: boolean;
   st: PStats;
 }
@@ -58,6 +60,8 @@ export interface MatchLog {
   tackles: number; // palla vinta in un duello
   intercepts: number; // passaggio intercettato
   headers: number; // tiri di testa
+  longShots: number; // tiri su azione da fuori area
+  blocked: number; // tiri murati da un difensore
   deep: number; deepOk: number; // palle in profondità alle spalle della linea
   regainX: number; regains: number; // somma e numero delle x (nel proprio sistema) dei recuperi da contrasto o intercetto
   goals: Record<Origin, number>;
@@ -187,6 +191,7 @@ export interface MatchState {
   defX: number[];
   defY: number[];
   defAnt: number[];
+  defMark: number[]; // peso di marcatura di ogni avversario (Marcatura, Posizionamento)
   pendingDrain: [number, number];
   subIdx: number;
   shoutAt: [number, number];
@@ -196,7 +201,7 @@ export interface MatchState {
 }
 
 export const newPStats = (from: number): PStats => ({ passes: 0, passesOk: 0, keyPasses: 0, shots: 0, onTarget: 0, goals: 0, assists: 0, tackles: 0, dribbles: 0, duelsLost: 0, saves: 0, fouls: 0, yellows: 0, red: false, injured: false, conceded: 0, injuryCtx: 'contact', from, to: 90 });
-const newLog = (): MatchLog => ({ crosses: 0, crossesOk: 0, dribbles: 0, dribblesOk: 0, tackles: 0, intercepts: 0, headers: 0, deep: 0, deepOk: 0,
+const newLog = (): MatchLog => ({ crosses: 0, crossesOk: 0, dribbles: 0, dribblesOk: 0, tackles: 0, intercepts: 0, headers: 0, longShots: 0, blocked: 0, deep: 0, deepOk: 0,
   regainX: 0, regains: 0, goals: { open: 0, cross: 0, corner: 0, pen: 0, fk: 0 }, counterGoals: 0, late: [0, 0], rebounds: 0, sweeps: 0, longKicks: 0, tacticalFouls: 0, quickRegains: 0 });
 const newSide = (): SideStats => ({ possession: 0, shots: 0, onTarget: 0, xg: 0, passes: 0, passesOk: 0, tackles: 0, fouls: 0, corners: 0, offsides: 0, yellows: 0, reds: 0 });
 
@@ -206,7 +211,7 @@ const dayMod = (p: Player, fam: number) =>
   - MATCH.famK * Math.max(0, 1 - fam / 90);
 export const mp = (player: Player, slot: Slot, role: RoleId, fam: number, from = 0, ins: PlayerInstr = {}): MP =>
   ({ p: player, pos: slot.pos, hx: slot.x, hy: slot.y, roleId: role, role: ROLES[role], marked: 0, x: slot.x, y: slot.y, tx: slot.x, ty: slot.y,
-    jx: 0, jy: 0, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from), ins });
+    jx: 0, jy: 0, run: false, runRoll: 1, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from), ins });
 
 /** falli fischiati: l'arbitro severo ne vede di più (metà dell'effetto sui cartellini) */
 export const whistle = (st: MatchState) => 1 + (st.ref - 1) * REFEREE.foulShare;
@@ -220,7 +225,7 @@ export function createState(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Tr
     rng, ref: setups[0].ref ?? 1, wx: setups[0].wx ?? CALM, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, counterNow: false, momentum: 0,
     half: 1, t: 0, length: 0, scheduled: [], lastPlace: 0, markStamp: 0, holder: null, meet: null, snap: true,
     trace, curFrame: null, track: [], playAt: 0, lastBall: { x: 6, y: 4 }, lastStep: -1, ids0: [], idsDirty: true,
-    defX: [], defY: [], defAnt: [], pendingDrain: [0, 0], subIdx: 0, shoutAt: [0, 0], output: null, plansFired: [[], []], planUndo: [null, null],
+    defX: [], defY: [], defAnt: [], defMark: [], pendingDrain: [0, 0], subIdx: 0, shoutAt: [0, 0], output: null, plansFired: [[], []], planUndo: [null, null],
   };
 }
 

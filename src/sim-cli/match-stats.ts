@@ -48,6 +48,7 @@ export async function matchStatsReport(seed: number, n: number): Promise<string[
     line('Corner', per((s) => s.corners), 4, 6, n1),
     line('Fuorigioco', per((s) => s.offsides), 1, 2.5, n1),
     line('Tiri di testa sul totale dei tiri', sum((_, l) => l.headers) / sum((s) => s.shots), 0.15, 0.22, pct),
+    `| Tiri da fuori area · murati sul totale | ${pct(sum((_, l) => l.longShots) / sum((s) => s.shots))} · ${pct(sum((_, l) => l.blocked) / sum((s) => s.shots))} | 30-40% · ~25% | |`,
     line('Gol da piazzato (corner, punizione, rigore)', setPieces / goals, 0.25, 0.35, pct),
     `| Gol per origine: azione · cross · corner · rigore · punizione | ${[g('open'), g('cross'), g('corner'), g('pen'), g('fk')].map((x) => pct(x / goals)).join(' · ')} | | |`,
     line('Gol in contropiede', sum((_, l) => l.counterGoals) / goals, 0.05, 0.1, pct),

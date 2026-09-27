@@ -43,7 +43,7 @@ function scoreGoal(st: MatchState, sh: MP, xg: number, kind: ShotKind, assist: M
 }
 
 /** tiro non a segno: parato (a volte in corner), respinto da un difensore (a volte in corner) o fuori */
-function missed(st: MatchState, sh: MP, xg: number, kind: ShotKind, gk: MP | undefined) {
+function missed(st: MatchState, sh: MP, xg: number, kind: ShotKind, gk: MP | undefined, block: number | undefined) {
   const att = st.teams[st.s], def = st.teams[1 - st.s]!;
   const { rng } = st;
   if (kind === 'pen') ev(st, 'penMiss', st.s, sh, { xg });
@@ -53,19 +53,22 @@ function missed(st: MatchState, sh: MP, xg: number, kind: ShotKind, gk: MP | und
     att.stats.onTarget++; sh.st.onTarget++;
     if (gk) gk.st.saves++;
     afterSave(st, att, def, gk, xg);
-  } else if (kind !== 'pen' && rng.next() < MATCH.blockedShare) {
+  } else if (kind !== 'pen' && rng.next() < (block === undefined ? MATCH.blockedShare : Math.min(MATCH.blockMax, MATCH.blockBase + MATCH.blockPer * block))) {
+    att.log.blocked++;
     beat(st, 'block', nearest(def, 12 - st.bx, 8 - st.by, true), sh);
     if (rng.next() < MATCH.cornerAfterBlock) corner(st);
     else gain(st, def, nearest(def, 12 - st.bx, 8 - st.by, true));
   } else { beat(st, 'miss', sh); gain(st, def, gk ?? nearest(def, 0.6, 4)); }
 }
 
-export function shoot(st: MatchState, sh: MP, xg: number, kind: ShotKind, origin: Origin) {
+/** block: corpi davanti al tiro, se li ha contati la decisione; altrimenti (testa, piazzati, ribattute) una quota fissa */
+export function shoot(st: MatchState, sh: MP, xg: number, kind: ShotKind, origin: Origin, block?: number) {
   const att = st.teams[st.s], def = st.teams[1 - st.s]!;
   const gk = def.on.find((m) => m.pos === 'GK');
   att.stats.shots++; sh.st.shots++; att.stats.xg += xg;
   beat(st, 'shot', sh, undefined, kind === 'header', xg);
   if (kind === 'header') att.log.headers++;
+  if (kind === 'open' && !inBox(st.bx, st.by)) att.log.longShots++;
   const skill = shotSkill(st, sh, kind);
   const gkSkill = keeperSkill(gk, kind === 'pen', xg);
   // pallone bagnato: il portiere trattiene peggio (st.wx.slip)
@@ -75,7 +78,7 @@ export function shoot(st: MatchState, sh: MP, xg: number, kind: ShotKind, origin
   const sign = st.s === 0 ? 1 : -1;
   st.momentum = clamp(st.momentum + sign * MATCH.momentumShot, -100, 100);
   if (st.rng.next() < pGoal) scoreGoal(st, sh, xg, kind, assist, sign, origin);
-  else missed(st, sh, xg, kind, gk);
+  else missed(st, sh, xg, kind, gk, block);
 }
 
 function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, { kind: 'pass' }>, f: TraceStep | null) {
@@ -105,10 +108,12 @@ function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, 
     const quick = st.counterNow ? MATCH.transTempo : 1; // la ripartenza contro una difesa scoperta non si ferma a pensare
     st.t += (MATCH.passTime * TEMPO[att.tactic.tempo]! + MATCH.passTimePerZone * len(o.tx - c.x, o.ty - c.y)) * quick;
   } else {
-    // intercetto: il difensore più vicino alla linea di passaggio
+    // intercetto: il difensore più vicino alla seconda parte della traiettoria (chi pressa il portatore non
+    // raccoglie ogni pallone sbagliato: la palla gli è già passata oltre)
     let w = def.on[0]!, bd = Infinity;
+    const fx = st.bx + (o.tx - st.bx) * MATCH.interceptFrom, fy = st.by + (o.ty - st.by) * MATCH.interceptFrom;
     for (let i = 0; i < def.on.length; i++) {
-      const d = segDist(st.defX[i]!, st.defY[i]!, st.bx, st.by, o.tx, o.ty);
+      const d = segDist(st.defX[i]!, st.defY[i]!, fx, fy, o.tx, o.ty);
       if (d < bd) { bd = d; w = def.on[i]!; }
     }
     w.st.tackles++; def.stats.tackles++;
@@ -165,7 +170,7 @@ export function act(st: MatchState, att: Team, def: Team, c: MP, o: Option) {
   else {
     const side = st.s; // dopo un gol kickoff() passa la palla all'altra squadra: l'esito va letto su chi ha tirato
     const before = st.score[side];
-    shoot(st, c, o.xg, 'open', 'open');
+    shoot(st, c, o.xg, 'open', 'open', o.block);
     if (f) f.ok = st.score[side] > before;
   }
 }

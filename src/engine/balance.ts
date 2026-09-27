@@ -138,12 +138,14 @@ export const MATCH = {
   possessionValue: 0.03, // K: valore di avere la palla in sé (azioni future, gestione): rende prudenti
 
   // passaggio: logit di riuscita = base − dist·d − corsia − marcatura − pressione + abilità
-  passBase: 4.0,
+  passBase: 4.7,
   passDist: 0.45,
   passLane: 0.8, // difensori vicini alla linea di passaggio
   passMark: 0.9, // difensori vicini al ricevitore
+  passMarkBox: 2.6, // … se il ricevitore è in area: lì si marca stretto (motore-v2 §11)
+  markSkill: 0.2, // peso di marcatura e muro per punto di (Marcatura + Posizionamento)/2 sopra la media di chi attacca
   passPress: 0.35,
-  passSkill: 0.06, // per punto di Passaggio sopra/sotto 11
+  passSkill: 0.24, // per punto di Passaggio sopra/sotto 11
   passVision: 0.05, // Visione, solo sui passaggi lunghi
   passTouch: 0.06, // Primo controllo del ricevitore
   laneRadius: 0.9,
@@ -166,6 +168,13 @@ export const MATCH = {
   disXg: 0.6, // logit in più dei tiri a disordine pieno (c'è spazio)
   disValue: 0.02, // quanto vale, nella scelta del passaggio, il disordine che produce
   patience: 0.0015, // voglia di verticalizzare in più per ogni passaggio consecutivo oltre il 5°
+  // inserimenti (motore-v2 §11): chi ha le corse nel ruolo attacca l'area dalla trequarti, e chi lo marca deve seguirlo
+  runFromX: 7.5, // da dove parte l'inserimento (palla oltre questa x)
+  runInsert: 0.6, // probabilità per azione × Movimento senza palla/10 × istruzione individuale
+  runBoxX: 10.4, // dove arriva
+  runNarrow: 0.5, // quanto stringe verso il centro dell'area
+  runDuelBase: 0, runDuelK: 0.25, // duello con chi lo segue (logit per punto di vantaggio medio)
+  runLag: 0, // chi perde il duello resta a questa frazione della marcatura
   boxRun: 0.6, // zone di inserimento in area (× Inserimenti/20) per centrocampisti e trequartisti
   defCompact: 0.75, // senza palla: quanto si accorcia il modulo verso la propria porta (1 = per niente)
   mentalityCompact: 0.04, // per livello di mentalità: più offensiva = meno uomini che rientrano
@@ -190,7 +199,7 @@ export const MATCH = {
   // dribbling e 1 contro 1 (Blocco 2b, intervento 3): chi punta (Dribbling 0,4, Tecnica, Agilità, Accelerazione 0,2)
   // contro chi difende (Contrasto 0,4, Posizionamento e Anticipo 0,3). Saltare un uomo vicino vale più della zona
   // guadagnata: ci si libera della pressione (dribBeat)
-  dribBase: 0.46,
+  dribBase: 0.5,
   dribSkill: 0.12, // per punto di abilità di chi punta, sopra/sotto 11
   dribDef: 0.1, // per punto di abilità del difensore, pesato da quanto è vicino
   dribPress: 0.9,
@@ -203,10 +212,14 @@ export const MATCH = {
 
   // tiro e xG (§6.3): logit = base + angolo·a − distanza_m·d − pressione·p (+ colpo di testa)
   shotMinX: 7,
-  xgBase: -1.27,
+  xgBase: -1.08,
   xgAngle: 1.6,
   xgDist: 0.1,
   xgPress: 0.45,
+  interceptFrom: 0.5, // l'intercetto lo fa chi sta sulla traiettoria da questa frazione in poi
+  xgBlock: 0.4, // logit tolto per ogni difensore pieno fra la palla e la porta
+  blockRadius: 0.35, // zone: distanza dalla linea palla-porta entro cui un difensore fa da muro
+  blockBase: 0.3, blockPer: 0.4, blockMax: 0.8, // tiro sbagliato che finisce murato: base + per corpo davanti
   xgHeader: -0.9,
   penaltyXg: 0.76,
   shotSkill: 0.025, // Finalizzazione: moltiplicatore sulla probabilità di gol
@@ -243,6 +256,7 @@ export const MATCH = {
   duelBase: -1.1, // logit che l'attaccante vinca il duello aereo a pari forza
   duelSkill: 0.12, // per punto di differenza nel gioco aereo (aerial.ts)
   lowBase: -0.3, // logit che la palla bassa trovi il compagno a pari anticipo
+  cutbackFromX: 8.5, // da dove si arriva in tempo sulla palla all'indietro
   lowPressure: 0.6, // pressione su chi tira dopo la palla bassa
   headerXg: 0.1,
   headerMargin: 0.05, // xG del colpo di testa in più per punto di duello vinto
@@ -281,7 +295,8 @@ export const MATCH = {
   widthLevels: [0.8, 1, 1.2],
   lineLevels: [-0.4, 0, 0.45], // era −0,6 · 0 · 0,6
   directLevels: [0.85, 1, 1.15], // spinta verso la porta (era 0 · 1 · 2)
-  shotBias: 0.7,
+  shotBias: 0.6,
+  longShotBias: 1.75, // voglia di tirare da fuori area (motore-v2 §11): poco xG, spesso murato, ma è una scelta vera
 
   // contrasti, falli, cartellini, infortuni
   foulBase: 0.3,
@@ -337,7 +352,7 @@ export const MATCH = {
   insRuns: [0.4, 1, 1.7], // inserimenti in area: di meno, normale, di più
   stayBackX: 5.5, // chi "resta dietro" non sale oltre questa x in possesso
   markStrict: 1.3, // marcatura stretta su un uomo: quanto più vicino di una marcatura normale
-  homeBoost: 0.12, // logit in più per la squadra di casa (pubblico)
+  homeBoost: 0.2, // logit in più per la squadra di casa (pubblico)
   protectLeadFrom: 55, // minuto da cui chi è in vantaggio abbassa la mentalità di 1
   chaseFrom: 60, // minuto da cui chi è sotto la alza di 1 (di 2 dal 75')
 } as const;
@@ -684,11 +699,11 @@ export const WEATHER = {
   winter: { rain: 0.3, storm: 0.08, cold: 0.25, wind: 0.1 } as Record<string, number>, // dicembre, gennaio, febbraio
   fx: {
     clear: { pass: 0, cross: 0, drain: 1, speed: 1, slip: 0 },
-    rain: { pass: 0.07, cross: 0.04, drain: 1, speed: 1, slip: 0.06 },
-    storm: { pass: 0.12, cross: 0.12, drain: 1, speed: 1, slip: 0.1 },
+    rain: { pass: 0.12, cross: 0.04, drain: 1, speed: 1, slip: 0.06 },
+    storm: { pass: 0.3, cross: 0.12, drain: 1, speed: 1, slip: 0.1 },
     wind: { pass: 0, cross: 0.18, drain: 1, speed: 1, slip: 0.03 },
     heat: { pass: 0, cross: 0, drain: 1.12, speed: 1, slip: 0 },
-    cold: { pass: 0.02, cross: 0, drain: 1, speed: 1, slip: 0.02 },
+    cold: { pass: 0.03, cross: 0, drain: 1, speed: 1, slip: 0.02 },
   },
   heavyDrain: 1.08, // campo pesante: più fatica…
   heavySpeed: 0.95, // …e si corre più piano

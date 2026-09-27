@@ -31,9 +31,11 @@ export function shotGeometry(x: number, y: number) {
   return { dist, angle: angle < 0 ? angle + Math.PI : angle };
 }
 
-export function xG(x: number, y: number, pressure: number, header = false): number {
+/** block: corpi dei difensori fra la palla e la porta (`blockers`), portiere escluso */
+export function xG(x: number, y: number, pressure: number, header = false, block = 0): number {
   const { dist, angle } = shotGeometry(x, y);
-  return sigmoid(MATCH.xgBase + MATCH.xgAngle * angle - MATCH.xgDist * dist - MATCH.xgPress * pressure + (header ? MATCH.xgHeader : 0));
+  return sigmoid(MATCH.xgBase + MATCH.xgAngle * angle - MATCH.xgDist * dist - MATCH.xgPress * pressure - MATCH.xgBlock * block
+    + (header ? MATCH.xgHeader : 0));
 }
 
 /** distanza del punto (px,py) dal segmento (ax,ay)-(bx,by) */
