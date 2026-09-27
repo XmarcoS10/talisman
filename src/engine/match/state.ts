@@ -28,6 +28,8 @@ export interface MP extends OnPitch {
   ty: number;
   jx: number; // smarcamento casuale dell'azione in corso (estratto una volta per azione)
   jy: number;
+  run: boolean; // inserimento in area in questa azione (motore-v2 §11)
+  runRoll: number; // estrazione del duello con chi lo segue, una per azione (la partita guardata non ne pesca altre)
   on: boolean;
   st: PStats;
 }
@@ -208,7 +210,7 @@ const dayMod = (p: Player, fam: number) =>
   - MATCH.famK * Math.max(0, 1 - fam / 90);
 export const mp = (player: Player, slot: Slot, role: RoleId, fam: number, from = 0, ins: PlayerInstr = {}): MP =>
   ({ p: player, pos: slot.pos, hx: slot.x, hy: slot.y, roleId: role, role: ROLES[role], marked: 0, x: slot.x, y: slot.y, tx: slot.x, ty: slot.y,
-    jx: 0, jy: 0, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from), ins });
+    jx: 0, jy: 0, run: false, runRoll: 1, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from), ins });
 
 /** falli fischiati: l'arbitro severo ne vede di più (metà dell'effetto sui cartellini) */
 export const whistle = (st: MatchState) => 1 + (st.ref - 1) * REFEREE.foulShare;

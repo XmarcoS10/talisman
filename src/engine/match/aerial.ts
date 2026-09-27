@@ -70,9 +70,25 @@ export function headerDuel(st: MatchState, att: Team, def: Team, from: MP, quali
   return true;
 }
 
+/**
+ * chi arriva sulla palla all'indietro: il più vicino al dischetto fra quelli che arrivano da dietro. Il più avanzato
+ * attacca il primo palo e si porta via il suo difensore (motore-v2 §11: prima la prendeva sempre il più forte di testa)
+ */
+function cutbackTarget(att: Team, c: MP): MP {
+  let front: MP | undefined;
+  for (const m of att.on) if (m !== c && m.pos !== 'GK' && (!front || m.x > front.x)) front = m;
+  let pick: MP | undefined, bd = Infinity;
+  for (const m of att.on) {
+    if (m === c || m === front || m.pos === 'GK' || m.x < MATCH.cutbackFromX) continue;
+    const d = (m.x - 10.2) ** 2 + (m.y - 4) ** 2;
+    if (d < bd) { bd = d; pick = m; }
+  }
+  return pick ?? target(att, c);
+}
+
 /** palla bassa all'indietro dal fondo: anticipo, e il tiro è di piatto dal dischetto contro una difesa che rientra */
 function cutback(st: MatchState, att: Team, def: Team, c: MP): boolean {
-  const a = target(att, c), d = marker(def);
+  const a = cutbackTarget(att, c), d = marker(def);
   const margin = (a.p.attrs.offTheBall + a.p.attrs.firstTouch - d.p.attrs.anticipation - d.p.attrs.positioning) / 2;
   if (st.rng.next() >= sigmoid(MATCH.lowBase + MATCH.duelSkill * margin + MATCH.crossSkill * (c.p.attrs.crossing - 11))) { cleared(st, att, def, d); return false; }
   st.lastPass = c;

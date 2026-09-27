@@ -2,7 +2,7 @@
 // velocità limitata: dopo una palla persa chi era sbilanciato in avanti deve rientrare, ed è da lì che nascono i
 // contropiedi. Col registro acceso (partita guardata) lo stesso intervallo si gioca a passi fissi (F6.2).
 import { MATCH } from '../balance.ts';
-import { len } from './pitch.ts';
+import { len, sigmoid } from './pitch.ts';
 import { clamp } from '../util.ts';
 import { clock, cover, gx, gy, minute, type MatchState, type MP, type Team, type TraceStep } from './state.ts';
 
@@ -23,9 +23,17 @@ function runTo(m: MP, x: number, y: number, dt: number) {
 /** gli smarcamenti si estraggono una volta per azione: dentro l'azione il movimento è continuo, non nervoso */
 function jitter(st: MatchState) {
   for (const m of st.teams[st.s].on) {
+    m.run = false;
     if (m === st.carrier || m.pos === 'GK') continue;
     m.jx = (st.rng.next() - 0.5) * MATCH.offBallMove;
     m.jy = (st.rng.next() - 0.5) * MATCH.offBallMove * 1.5;
+    // inserimento: dalla trequarti chi ha le corse nel ruolo attacca l'area (la punta ci sta già); chi gioca largo
+    // solo col pallone sull'altra fascia, a chiudere sul secondo palo (sulla sua resta largo per il cross)
+    const wide = m.hy > 4.3 ? 1 : m.hy < 3.7 ? -1 : 0;
+    if (st.bx >= MATCH.runFromX && m.pos !== 'ST' && (m.role.runs || m.ins.runs === 2) && !(wide && (st.by - 4) * wide > 0)) {
+      m.run = st.rng.next() < MATCH.runInsert * MATCH.insRuns[m.ins.runs ?? 1]! * m.p.attrs.offTheBall / 10;
+      if (m.run) m.runRoll = st.rng.next();
+    }
   }
 }
 
@@ -58,6 +66,7 @@ function aimAtt(st: MatchState) {
     const wide = side * MATCH.insWidth * ((m.ins.width ?? 1) - 1); // "resta largo" / "stringi"
     m.tx = clamp(x + m.jx * mv, 0.3, rl.maxX);
     m.ty = clamp(4 + (m.hy - 4) * wf + rl.dy * side + wide + (by - 4) * 0.25 + m.jy * mv, 0.2, 7.8);
+    if (m.run) { m.tx = Math.max(m.tx, MATCH.runBoxX); m.ty = 4 + (m.ty - 4) * MATCH.runNarrow; }
   }
 }
 
@@ -106,7 +115,7 @@ function markUp(st: MatchState, att: Team, def: Team, presser: MP | undefined, d
     }
     if (target) {
       target.marked = stamp;
-      const tight = MATCH.markTightness * cover(def);
+      const tight = MATCH.markTightness * cover(def) * runLag(target, m);
       m.tx += (12 - target.x - MATCH.markGoalSide - m.tx) * tight;
       m.ty += (8 - target.y - m.ty) * tight;
     } else {
@@ -115,6 +124,17 @@ function markUp(st: MatchState, att: Team, def: Team, presser: MP | undefined, d
       m.ty += (dby - m.ty) * 0.3;
     }
   }
+}
+
+/**
+ * chi si inserisce contro chi lo segue (Movimento senza palla, Accelerazione, Velocità contro Posizionamento, Anticipo,
+ * Velocità): chi perde il duello resta indietro, a `runLag` della marcatura. 1 se non c'è inserimento
+ */
+function runLag(runner: MP, m: MP) {
+  if (!runner.run) return 1;
+  const a = runner.p.attrs, d = m.p.attrs;
+  const edge = (a.offTheBall + a.acceleration + a.pace - d.positioning - d.anticipation - d.pace) / 3;
+  return runner.runRoll < sigmoid(MATCH.runDuelBase + MATCH.runDuelK * edge) ? MATCH.runLag : 1;
 }
 
 function aimDef(st: MatchState) {
