@@ -560,3 +560,41 @@ taratura. Se dopo la taratura un target verde resta rosso, tre iterazioni e poi 
   contropiedi (2,7%), blocco basso che rende (punti della mentalità prudente contro squadre più forti).
 
 **Rischio**: alto, cambia tutte le partite (golden master rigenerato apposta a ogni passo). **Costo**: 2-3 giorni.
+
+### Movimento senza palla (§11) — 27/09, fermo sulla correlazione
+
+Lavoro sul ramo `movimento-senza-palla` (tre commit, non su main). Strumento nuovo: `node tools/diag-box.ts [seme]
+[partite]` (chi riceve in area e cosa ci fa, da dove nascono i tiri della punta, precisione dell'impostazione).
+
+**Cosa ha detto la diagnosi, in ordine:**
+- in area chi riceve passa invece di tirare (centrocampisti: 4,9 passaggi e 0,4 tiri a partita), e la palla torna
+  sempre alla punta, che la dà indietro e la riceve di nuovo: **24 passaggi riusciti in area per squadra** (reale 10-12);
+- 4,9 dei circa 12 tiri a partita delle punte arrivano subito dopo un passaggio sbagliato di un difensore avversario:
+  l'impostazione riesce all'86,7% (reale 93-95%);
+- la palla bassa all'indietro dal fondo andava al più forte di testa, cioè quasi sempre alla punta (4,3 tiri a partita).
+
+**Cosa è entrato nel ramo:** corpi davanti al tiro (xG e tiro murato, passo 1); intercetto sulla seconda metà della
+traiettoria (passo 2); inserimenti dalla trequarti di chi ha le corse nel ruolo (gli esterni solo col pallone sull'altra
+fascia), con un duello contro chi li segue; marcatura più stretta sul ricevitore in area (`passMarkBox`); palla
+all'indietro a chi arriva da dietro; tiro da fuori per chi ha Tiri da lontano più di Finalizzazione; passaggi più
+precisi (`passBase` 4,0 → 4,7), e per compensare più peso a Passaggi, Finalizzazione, fattore campo e dribbling.
+
+| (seme 42 / 7 / 99) | Prima | Ramo |
+|---|---|---|
+| Tiri delle punte | 82% | 57-61% (target 35-50%) |
+| Capocannoniere, 1 stagione | 67 / 45 | 49 / 46 (con Finalizzazione più pesante; 42 / 34 prima) |
+| Tiri da fuori area | ~3% | 23% (target 30-40%) |
+| Precisione passaggi | 76,9% ❌ | 82,1% ✅ |
+| Tiri di testa | 22,9% ❌ | 17,9% ✅ |
+| Gol, stagioni | 2,75 / 2,56 / 2,69 | 2,49 / 2,44 / 2,81 |
+| Correlazione, 10 stagioni | 0,86 / 0,84 / 0,75 | 0,81 / 0,81 / 0,71 |
+| **Correlazione, carriere da 25** | 0,75-0,81 | **0,71 / 0,71 / 0,61 ❌** |
+| Possesso della più forte | 43,9% | 43,8% (non si muove) |
+
+Tre tarature sulla correlazione (xG di base, peso di Passaggi e di Finalizzazione) e poi fermo. Il rumore fra due
+corse dello stesso seme con un'estrazione in più è ±0,04, quindi i singoli confronti non bastano: il calo è la somma di
+piccoli effetti. Ipotesi: gli errori dell'impostazione regalavano gol alla squadra forte (la sua punta pressa difensori
+deboli); tolti quelli, la differenza di forza deve passare da altro, e i tiri da fuori aggiungono gol poco legati alla
+forza. Anche il test della pioggia non passa più: con passaggi più precisi i giocatori scelgono quelli sicuri e la
+pioggia pesa meno. Trovato e corretto per strada: il duello sugli inserimenti pescava dal caso dentro i passi della
+partita guardata, e guardarla o simularla dava risultati diversi (ora l'estrazione è una per azione).
