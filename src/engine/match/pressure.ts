@@ -2,7 +2,7 @@
 // energia, istruzione di pressing e ruolo. Da qui nasce anche la "vista" su cui il portatore decide.
 import { MATCH } from '../balance.ts';
 import type { View } from './decision.ts';
-import { len } from './pitch.ts';
+import { len, segDist } from './pitch.ts';
 import { cover, inTransition, type MatchState, type MP } from './state.ts';
 
 export const PRESS = MATCH.pressLevels;
@@ -23,11 +23,17 @@ export function readPlay(st: MatchState): { view: View; pressure: number; closes
   // nei secondi dopo aver perso palla chi difende ripiega o aggredisce secondo l'istruzione
   const trans = inTransition(st);
   const cp = trans ? [MATCH.cpRetreat, 1, MATCH.cpPress][def.tactic.counterPress ?? 1]! : 1;
-  let pressure = 0, line = 6, exposed = 0, closest: MP | undefined, cd: number = MATCH.pressRadius;
+  let pressure = 0, line = 6, exposed = 0, closest: MP | undefined, cd: number = MATCH.pressRadius, block = 0;
+  const shooting = bx >= MATCH.shotMinX;
   for (let i = 0; i < def.on.length; i++) {
     const m = def.on[i]!;
     if (m.pos !== 'GK') line = Math.max(line, defX[i]!);
     if (m.pos !== 'GK' && defX[i]! < bx) exposed++; // rimasto oltre la palla: non difende la porta
+    // corpi fra la palla e il centro della porta: tolgono xG al tiro e lo murano
+    if (shooting && m.pos !== 'GK' && defX[i]! > bx) {
+      const d = segDist(defX[i]!, defY[i]!, bx, by, 12, 4);
+      if (d < MATCH.blockRadius) block += 1 - d / MATCH.blockRadius;
+    }
     // lontano dal portatore: né pressione né "più vicino". Il margine tiene esatto il confronto sul bordo
     const qx = defX[i]! - bx, qy = defY[i]! - by;
     if (qx * qx + qy * qy > FAR) continue;
@@ -38,7 +44,7 @@ export function readPlay(st: MatchState): { view: View; pressure: number; closes
   const c = st.carrier;
   const sign = st.s === 0 ? 1 : -1;
   const view: View = {
-    carrier: c, isGK: c.pos === 'GK', bx, by, mates: att.on, defs: def.on, defX, defY, defAnt, pressure,
+    carrier: c, isGK: c.pos === 'GK', bx, by, mates: att.on, defs: def.on, defX, defY, defAnt, pressure, block,
     offsideLine: Math.max(line, bx), tactic: att.tactic, mentality: att.mentality,
     wind: st.wx.cross,
     bonus: -st.wx.pass + (st.s === 0 ? MATCH.homeBoost : 0) + (sign * st.momentum / 100) * MATCH.momentumK * (1 - c.p.attrs.composure / 25)

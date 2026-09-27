@@ -30,6 +30,7 @@ export interface View {
   defY: number[];
   defAnt: number[]; // peso di intercetto di ogni avversario (Anticipazione)
   pressure: number; // 0 … ~2.5
+  block: number; // corpi dei difensori fra palla e porta (solo in zona di tiro)
   offsideLine: number; // x oltre cui un compagno è in fuorigioco
   tactic: Tactic;
   mentality: number;
@@ -42,7 +43,7 @@ export interface View {
 export type Option =
   | { kind: 'pass'; to: OnPitch; tx: number; ty: number; p: number; off: number; u: number; w: number; deep: boolean; long?: boolean } // w: intesa (chem); deep: in profondità; long: rinvio lungo del portiere
   | { kind: 'dribble'; tx: number; ty: number; p: number; tackler: OnPitch | undefined; u: number }
-  | { kind: 'shot'; xg: number; u: number }
+  | { kind: 'shot'; xg: number; block: number; u: number }
   | { kind: 'cross'; p: number; u: number; low: boolean }; // p: che arrivi; low: palla bassa all'indietro dal fondo
 
 const a = (pl: OnPitch, k: keyof Player['attrs']) => pl.p.attrs[k] - 11; // attributo centrato su 11
@@ -160,13 +161,13 @@ function dribble(v: View, x: Ctx): Option {
 function shot(v: View, x: Ctx, out: Option[]) {
   const { carrier: c, bx, by, pressure } = v;
   if (bx < MATCH.shotMinX) return;
-  const xg = xG(bx, by, pressure);
+  const xg = xG(bx, by, pressure, false, v.block);
   if (!(xg > 0.015)) return;
   const skill = bx < 10 ? a(c, 'longShots') : a(c, 'finishing');
   const mm = v.mentality - 3;
   // tirare chiude quasi sempre l'azione: si rinuncia a metà del valore del possesso
   const want = c.role.shoot * MATCH.insShoot[c.ins.shoot ?? 1]!; // ruolo e istruzione individuale
-  out.push({ kind: 'shot', xg, u: xg * (1 + MATCH.shotSkill * skill) * MATCH.shotBias * want * (1 + MATCH.mentalityShot * mm) - (1 - xg) * x.keep * 0.5 });
+  out.push({ kind: 'shot', xg, block: v.block, u: xg * (1 + MATCH.shotSkill * skill) * MATCH.shotBias * want * (1 + MATCH.mentalityShot * mm) - (1 - xg) * x.keep * 0.5 });
 }
 
 /** xG del tiro dopo la palla bassa all'indietro: sempre dallo stesso punto, si calcola una volta */

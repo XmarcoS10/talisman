@@ -58,6 +58,8 @@ export interface MatchLog {
   tackles: number; // palla vinta in un duello
   intercepts: number; // passaggio intercettato
   headers: number; // tiri di testa
+  longShots: number; // tiri su azione da fuori area
+  blocked: number; // tiri murati da un difensore
   deep: number; deepOk: number; // palle in profondità alle spalle della linea
   regainX: number; regains: number; // somma e numero delle x (nel proprio sistema) dei recuperi da contrasto o intercetto
   goals: Record<Origin, number>;
@@ -196,7 +198,7 @@ export interface MatchState {
 }
 
 export const newPStats = (from: number): PStats => ({ passes: 0, passesOk: 0, keyPasses: 0, shots: 0, onTarget: 0, goals: 0, assists: 0, tackles: 0, dribbles: 0, duelsLost: 0, saves: 0, fouls: 0, yellows: 0, red: false, injured: false, conceded: 0, injuryCtx: 'contact', from, to: 90 });
-const newLog = (): MatchLog => ({ crosses: 0, crossesOk: 0, dribbles: 0, dribblesOk: 0, tackles: 0, intercepts: 0, headers: 0, deep: 0, deepOk: 0,
+const newLog = (): MatchLog => ({ crosses: 0, crossesOk: 0, dribbles: 0, dribblesOk: 0, tackles: 0, intercepts: 0, headers: 0, longShots: 0, blocked: 0, deep: 0, deepOk: 0,
   regainX: 0, regains: 0, goals: { open: 0, cross: 0, corner: 0, pen: 0, fk: 0 }, counterGoals: 0, late: [0, 0], rebounds: 0, sweeps: 0, longKicks: 0, tacticalFouls: 0, quickRegains: 0 });
 const newSide = (): SideStats => ({ possession: 0, shots: 0, onTarget: 0, xg: 0, passes: 0, passesOk: 0, tackles: 0, fouls: 0, corners: 0, offsides: 0, yellows: 0, reds: 0 });
 
