@@ -91,3 +91,39 @@ osservatori, calendario, coppa. I ragazzi dei vivai che arrivano negli anni succ
 - Solo la piramide a tre categorie da venti club.
 - Le nazionali si giocano per le 12 nazioni che il gioco conosce (`ITA ESP FRA BRA ARG POR NED SRB CRO SEN NGA
   SWE`): i giocatori di altre nazioni ci sono e giocano nei club, ma non vengono convocati.
+
+## Il convertitore (`tools/db/cli.ts`)
+
+Uno strumento **fuori dal gioco** che scrive il file del database sul tuo computer e ti dice se il gioco lo accetterà.
+
+**Da un foglio CSV** (Excel, LibreOffice: una riga per giocatore, separatore `;` o `,`):
+
+```
+node tools/db/cli.ts csv giocatori.csv --out database.json --name "Il mio database" --season 2026
+```
+
+Colonne: `league` (ITA1, ITA2, ITA3), `club`, `city`, `colors` (`#c81e1e/#ffffff/#111827`, facoltativa),
+`reputation` (facoltativa: se manca si stima dalla forza della rosa), `first`, `last`, `born`, `nation`,
+`position`, `ability`, e se vuoi `potential`, `wage`, `until`. Le colonne del club valgono dalla prima riga del club.
+
+**Da API-Football** (api-sports.io), con una chiave tua:
+
+```
+set API_FOOTBALL_KEY=la-tua-chiave
+node tools/db/cli.ts api-football --season 2025 --a 135 --b 136 --c 138 --crests
+```
+
+`--a --b --c` sono i codici delle leghe su API-Football (135 Serie A, 136 Serie B; per la Serie C scegli uno dei
+gironi). Le risposte si salvano in `.cache/api-football`: il piano gratuito ha 100 richieste al giorno, e un database
+completo ne chiede di più, quindi si rilancia il giorno dopo e riparte da dove era arrivato. `--crests` scarica anche
+gli stemmi. Cosa arriva e cosa no:
+
+- dati anagrafici, nazionalità, altezza, stadio e capienza: veri;
+- **ruolo**: solo portiere, difensore, centrocampista o attaccante (diventano GK, DC, MC, ST: i ruoli precisi si
+  correggono nel file);
+- **abilità**: una **stima** da categoria, voto medio e minuti giocati. Le API danno statistiche, non attributi: gli
+  attributi li genera il gioco attorno a quella stima;
+- colori sociali: non ci sono, se ne mette una coppia di ripiego da correggere.
+
+Le condizioni d'uso di API-Football, e dei dati che ne escono, restano di chi usa la chiave: il file che produci è
+per uso tuo, e condividerlo è una tua responsabilità.

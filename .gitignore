@@ -11,3 +11,6 @@ assets/raw/
 assets/archive/
 assets/approved/
 tools/docs-save.json
+# convertitore del database (tools/db): risposte delle API e file prodotti restano sul computer di chi li crea
+.cache/
+database.json
