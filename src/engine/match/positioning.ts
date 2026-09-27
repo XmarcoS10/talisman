@@ -134,9 +134,9 @@ const move = (tm: Team, dt: number) => { for (const m of tm.on) runTo(m, m.tx, m
 /** un passo di movimento: prima si muove chi ha palla, poi la difesa si riposiziona su quello che vede */
 function advance(st: MatchState, dt: number) {
   aimAtt(st);
-  move(st.teams[st.s], dt);
+  move(st.teams[st.s], dt * st.wx.speed); // campo pesante: si corre più piano
   aimDef(st);
-  move(st.teams[1 - st.s]!, dt);
+  move(st.teams[1 - st.s]!, dt * st.wx.speed);
 }
 
 /** senza registro il campo fa un salto solo per azione: è la modalità del sim-cli e del mondo che avanza */

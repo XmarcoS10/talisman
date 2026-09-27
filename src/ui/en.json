@@ -1903,5 +1903,18 @@
   "ref.average": "average",
   "ref.strict": "strict",
   "ref.line": "Referee: {name} ({how})",
-  "ref.adviceStrict": "A strict referee: high pressing and players already on a yellow risk cards and penalties."
+  "ref.adviceStrict": "A strict referee: high pressing and players already on a yellow risk cards and penalties.",
+  "wx.forecast": "Forecast",
+  "wx.clear": "clear",
+  "wx.rain": "rain",
+  "wx.storm": "storm",
+  "wx.wind": "strong wind",
+  "wx.heat": "heat",
+  "wx.cold": "cold",
+  "wx.heavy": "heavy pitch",
+  "wx.advice.rain": "Rain makes passing on the ground less accurate: fewer risky balls.",
+  "wx.advice.storm": "Storm: a heavy pitch and a slippery ball, players tire sooner and make more mistakes.",
+  "wx.advice.wind": "Strong wind: crosses and long balls lose accuracy, keep it on the ground.",
+  "wx.advice.heat": "Heat: players tire sooner, careful with high pressing and plan your subs.",
+  "wx.advice.cold": "Cold and a heavy pitch: players run slower and tire more."
 }

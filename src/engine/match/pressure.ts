@@ -40,7 +40,8 @@ export function readPlay(st: MatchState): { view: View; pressure: number; closes
   const view: View = {
     carrier: c, isGK: c.pos === 'GK', bx, by, mates: att.on, defs: def.on, defX, defY, defAnt, pressure,
     offsideLine: Math.max(line, bx), tactic: att.tactic, mentality: att.mentality,
-    bonus: (st.s === 0 ? MATCH.homeBoost : 0) + (sign * st.momentum / 100) * MATCH.momentumK * (1 - c.p.attrs.composure / 25)
+    wind: st.wx.cross,
+    bonus: -st.wx.pass + (st.s === 0 ? MATCH.homeBoost : 0) + (sign * st.momentum / 100) * MATCH.momentumK * (1 - c.p.attrs.composure / 25)
       - (100 - c.energy) * MATCH.energySkill + c.mod,
     chain: st.chain,
     counter: trans ? Math.max(0, exposed - MATCH.counterFrom) : 0,

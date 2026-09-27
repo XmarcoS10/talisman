@@ -7,6 +7,7 @@ import { PosBadge, Rating, shortName } from '../bits.tsx';
 import { t } from '../i18n.ts';
 import { ResultsList } from './Fixtures.tsx';
 import { refereeFor } from '../../engine/referees.ts';
+import { weatherFor } from '../../engine/weather.ts';
 import { strictLabel } from './OpponentReport.tsx';
 import { RadioPanel } from './Radio.tsx';
 
@@ -70,7 +71,7 @@ export function MatchModal({ world, fx: first, others, onClose }: { world: World
     <div className="overlay" onClick={onClose}>
       <div className="modal wide" onClick={(e) => e.stopPropagation()}>
         <div className="row" style={{ justifyContent: 'center' }}><span className="tag">{fxLabel(fx, world.competitions[clubs[0]!.compId]?.name ?? '')}</span><span className="caps">{t('match.fullTime')}</span>
-          <span className="muted small">{((r) => t('ref.line', { name: `${r.firstName} ${r.lastName}`, how: strictLabel(r) }))(refereeFor(world, fx))}</span></div>
+          <span className="muted small">{((r) => t('ref.line', { name: `${r.firstName} ${r.lastName}`, how: strictLabel(r) }))(refereeFor(world, fx))} · {t(`wx.${weatherFor(world, fx).kind}`)}</span></div>
         <div className="score">
           <div className="grid" style={{ justifyItems: 'center' }}><Crest club={clubs[0]!} size={72} /><b>{clubs[0]!.name}</b></div>
           <div className="grid" style={{ justifyItems: 'center' }}><div className="big">{r.hg} - {r.ag}</div>{fx.pens && <span className="muted">{t('cup.pens', { a: fx.pens[0], b: fx.pens[1] })}</span>}</div>

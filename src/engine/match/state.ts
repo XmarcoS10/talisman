@@ -1,6 +1,7 @@
 // Stato esplicito di una partita (Blocco 2a): tutto quello che il motore ricorda fra un'azione e l'altra sta qui,
 // e i moduli (posizionamento, pressione, esecuzione, eventi, piazzati, cambi, voti) lo ricevono come parametro.
 import { FLAGS, MATCH, REFEREE } from '../balance.ts';
+import { CALM, type WeatherFx } from '../weather.ts';
 import type { Club, MatchEvent, MatchEventType, MatchResult, Player, PlayerInstr, Position, SideStats, Tactic } from '../model.ts';
 import type { Rng } from '../rng.ts';
 import type { OnPitch } from './decision.ts';
@@ -41,6 +42,7 @@ export interface TeamSetup {
   injuryP: (p: Player) => { muscle: number; relapse: number }; // rischio personale di infortunio in partita
   auto?: boolean; // false: cambi e mentalità li decide l'utente dal vivo (schermata Live)
   ref?: number; // severità dell'arbitro della partita (uguale nei due lati; 1 = media, referees.ts)
+  wx?: WeatherFx; // meteo della partita (uguale nei due lati; weather.ts)
 }
 
 /** da dove nasce un tiro: serve a contare i gol per origine (piazzati, cross, contropiede) */
@@ -148,6 +150,7 @@ export interface Scheduled { who: MP; team: Team; at: number; ctx: 'muscle' | 'r
 export interface MatchState {
   rng: Rng;
   ref: number; // severità dell'arbitro: × cartellini, e a metà sui falli fischiati
+  wx: WeatherFx; // meteo: passaggi, cross, fatica, velocità
   setups: [TeamSetup, TeamSetup];
   teams: [Team, Team];
   events: MatchEvent[];
@@ -214,7 +217,7 @@ export function createState(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Tr
     return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity, auto: s.auto !== false, log: newLog() };
   }) as [Team, Team];
   return {
-    rng, ref: setups[0].ref ?? 1, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, counterNow: false, momentum: 0,
+    rng, ref: setups[0].ref ?? 1, wx: setups[0].wx ?? CALM, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, counterNow: false, momentum: 0,
     half: 1, t: 0, length: 0, scheduled: [], lastPlace: 0, markStamp: 0, holder: null, meet: null, snap: true,
     trace, curFrame: null, track: [], playAt: 0, lastBall: { x: 6, y: 4 }, lastStep: -1, ids0: [], idsDirty: true,
     defX: [], defY: [], defAnt: [], pendingDrain: [0, 0], subIdx: 0, shoutAt: [0, 0], output: null, plansFired: [[], []], planUndo: [null, null],

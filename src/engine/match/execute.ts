@@ -68,7 +68,8 @@ export function shoot(st: MatchState, sh: MP, xg: number, kind: ShotKind, origin
   if (kind === 'header') att.log.headers++;
   const skill = shotSkill(st, sh, kind);
   const gkSkill = keeperSkill(gk, kind === 'pen', xg);
-  const pGoal = clamp(xg * (1 + MATCH.shotSkill * (skill - 11)) * (1 - MATCH.gkSkill * (gkSkill - 11)), 0.005, 0.97);
+  // pallone bagnato: il portiere trattiene peggio (st.wx.slip)
+  const pGoal = clamp(xg * (1 + MATCH.shotSkill * (skill - 11)) * (1 - MATCH.gkSkill * (gkSkill - 11)) * (1 + st.wx.slip), 0.005, 0.97);
   const assist = st.lastPass && st.lastPass !== sh && kind !== 'pen' ? st.lastPass : null;
   if (assist) assist.st.keyPasses++;
   const sign = st.s === 0 ? 1 : -1;

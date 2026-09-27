@@ -1903,5 +1903,18 @@
   "ref.average": "nella media",
   "ref.strict": "severo",
   "ref.line": "Arbitro: {name} ({how})",
-  "ref.adviceStrict": "Arbitro severo: con il pressing alto e i giocatori già ammoniti si rischiano cartellini e rigori."
+  "ref.adviceStrict": "Arbitro severo: con il pressing alto e i giocatori già ammoniti si rischiano cartellini e rigori.",
+  "wx.forecast": "Previsioni",
+  "wx.clear": "sereno",
+  "wx.rain": "pioggia",
+  "wx.storm": "temporale",
+  "wx.wind": "vento forte",
+  "wx.heat": "caldo",
+  "wx.cold": "freddo",
+  "wx.heavy": "campo pesante",
+  "wx.advice.rain": "Con la pioggia la palla a terra è meno precisa: meglio poche giocate rischiose.",
+  "wx.advice.storm": "Temporale: campo pesante e palla che scivola, ci si stanca prima e si sbaglia di più.",
+  "wx.advice.wind": "Vento forte: cross e lanci lunghi perdono precisione, meglio giocare a terra.",
+  "wx.advice.heat": "Caldo: ci si stanca prima, occhio al pressing alto e ai cambi.",
+  "wx.advice.cold": "Freddo e campo pesante: si corre più piano e ci si stanca di più."
 }

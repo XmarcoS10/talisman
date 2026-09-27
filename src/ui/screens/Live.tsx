@@ -1,4 +1,5 @@
 // Partita in diretta (GUIDA §8.4): campo 2D, panchina, pannello analista, controlli.
+import { weatherFor } from '../../engine/weather.ts';
 import { useEffect, useReducer, useRef, useState } from 'react';
 import { matchKits } from '../procgen/kit.ts';
 import type { Tactic, WorldState } from '../../engine/model.ts';
@@ -42,7 +43,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
 
   const look: Look = useRef<Look>({
     ...matchKits(clubs[0], clubs[1]), // gli stessi colori delle maglie, con il bordo se si confondono
-    numbers: new Map(), names: new Map(), mine: me,
+    numbers: new Map(), names: new Map(), mine: me, weather: weatherFor(world, fx),
   }).current;
   const mirror = me === 1; // la squadra dell'utente attacca sempre verso destra
   run.teams.forEach((tm) => tm.played.forEach((m, i) => {

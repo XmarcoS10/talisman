@@ -677,6 +677,23 @@ export const YOUTH = {
 } as const;
 
 // --- nazionali (GUIDA §7.8) ---
+/** meteo (0.5.0): probabilità per stagione dell'anno ed effetti in campo (logit, moltiplicatori) */
+export const WEATHER = {
+  summer: { heat: 0.3, rain: 0.1, wind: 0.05 } as Record<string, number>, // agosto, settembre, maggio
+  autumn: { rain: 0.3, storm: 0.05, wind: 0.15 } as Record<string, number>, // ottobre, novembre, marzo, aprile
+  winter: { rain: 0.3, storm: 0.08, cold: 0.25, wind: 0.1 } as Record<string, number>, // dicembre, gennaio, febbraio
+  fx: {
+    clear: { pass: 0, cross: 0, drain: 1, speed: 1, slip: 0 },
+    rain: { pass: 0.07, cross: 0.04, drain: 1, speed: 1, slip: 0.06 },
+    storm: { pass: 0.12, cross: 0.12, drain: 1, speed: 1, slip: 0.1 },
+    wind: { pass: 0, cross: 0.18, drain: 1, speed: 1, slip: 0.03 },
+    heat: { pass: 0, cross: 0, drain: 1.12, speed: 1, slip: 0 },
+    cold: { pass: 0.02, cross: 0, drain: 1, speed: 1, slip: 0.02 },
+  },
+  heavyDrain: 1.08, // campo pesante: più fatica…
+  heavySpeed: 0.95, // …e si corre più piano
+};
+
 /** arbitri (0.5.0): severità 1-20 → moltiplicatore dei cartellini; i falli fischiati ne prendono `foulShare` */
 export const REFEREE = { count: 24, min: 0.8, max: 1.25, foulShare: 0.5 };
 

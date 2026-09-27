@@ -65,6 +65,11 @@ istruzioni e spinta sulla mentalità (`tactic.mentality − 3`, sommata ad `aiMe
 `weekCoaches`, fine stagione in `seasonCoaches`; `ensureCoaches` in `passDays` (carriere vecchie, panchina dell'utente).
 Rng proprio. Equilibrio degli stili: `tools/diag-coaches.ts`; delle istruzioni: `tools/diag-instructions.ts`.
 
+## Arbitri, meteo, radiocronaca (0.5.0)
+Arbitri (`engine/referees.ts`) e meteo (`engine/weather.ts`) si ricavano da seme e calendario, non si salvano; entrano
+nella partita da `matchSetups` (`TeamSetup.ref`, `TeamSetup.wx` → `MatchState.ref`, `MatchState.wx`). Radiocronaca in
+`ui/match/radio.ts`, scritta al momento della lettura dagli eventi salvati.
+
 ## Database della community (0.4.0)
 `engine/database.ts`: formato `talisman-db` v1 (documentato in `docs/database.md`), `validateDb` (il file arriva da
 fuori: tutto controllato, stemmi solo PNG/JPEG/WebP), `worldFromDb` (stessa costruzione di `newWorld`: `emptyWorld` →

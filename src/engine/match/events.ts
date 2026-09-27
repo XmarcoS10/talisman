@@ -85,7 +85,7 @@ export function dueInjuries(st: MatchState, min: number) {
 export function drain(st: MatchState) {
   for (const tm of st.teams) {
     const mins = st.pendingDrain[tm.side] / 60;
-    for (const m of tm.on) m.energy = Math.max(30, m.energy - mins * m.role.drain * (MATCH.drainBase + MATCH.drainStamina * (1 - m.p.attrs.stamina / 20)));
+    for (const m of tm.on) m.energy = Math.max(30, m.energy - mins * st.wx.drain * m.role.drain * (MATCH.drainBase + MATCH.drainStamina * (1 - m.p.attrs.stamina / 20)));
     st.pendingDrain[tm.side] = 0;
   }
 }

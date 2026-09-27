@@ -33,7 +33,8 @@ export interface View {
   offsideLine: number; // x oltre cui un compagno è in fuorigioco
   tactic: Tactic;
   mentality: number;
-  bonus: number; // logit comune: casa, momentum, stanchezza del portatore
+  bonus: number; // logit comune: casa, momentum, stanchezza del portatore, pioggia
+  wind: number; // logit tolto a cross e lanci dal vento
   chain: number; // passaggi consecutivi in questo possesso
   counter: number; // ripartenza: avversari rimasti oltre la palla, oltre la soglia (0 fuori dalla transizione)
 }
@@ -131,7 +132,7 @@ function longKicks(v: View, x: Ctx, out: Option[]) {
   const { carrier: c, bx, tactic } = v;
   for (const m of v.mates) {
     if (m === c || m.x < 6.5) continue;
-    const p = sigmoid(MATCH.kickBase + MATCH.kickSkill * (a(c, 'kicking') + a(m, 'heading')) + v.bonus);
+    const p = sigmoid(MATCH.kickBase + MATCH.kickSkill * (a(c, 'kicking') + a(m, 'heading')) + v.bonus - v.wind);
     out.push({ kind: 'pass', to: m, tx: m.x, ty: m.y, p, off: 0, u: p * (xT(m.x, m.y) + x.keep) - (1 - p) * x.loss + MATCH.kickDirect * MATCH.directLevels[tactic.directness]! * (m.x - bx) / 6,
       w: chem(x.rel[m.p.id]), deep: false, long: true });
   }
@@ -178,7 +179,7 @@ function cross(v: View, x: Ctx, out: Option[]) {
   let attBox = 0, defBox = 0;
   for (const m of v.mates) if (m !== c && m.x >= 9.8 && m.y > 2 && m.y < 6) attBox++;
   for (let i = 0; i < v.defX.length; i++) if (v.defX[i]! >= 9.8 && v.defY[i]! > 2 && v.defY[i]! < 6) defBox++;
-  const p = sigmoid(MATCH.crossBase + MATCH.crossSkill * a(c, 'crossing') - MATCH.crossPress * pressure + v.bonus);
+  const p = sigmoid(MATCH.crossBase + MATCH.crossSkill * a(c, 'crossing') - MATCH.crossPress * pressure + v.bonus - v.wind);
   // stima del duello: quanti dei miei e dei loro ci sono in area
   const win = sigmoid(MATCH.duelBase + MATCH.crossAtt * attBox - MATCH.crossDef * defBox);
   const value = (w: number, xg: number) => p * (w * xg + (1 - w) * MATCH.secondValue) * c.role.cross - (1 - p) * x.loss * MATCH.crossLoss;

@@ -1,6 +1,7 @@
 // Campo 2D dall'alto su canvas (GUIDA §8.4). Niente librerie: disegno diretto, coordinate del motore
 // (12 × 8 zone ≈ 105 × 68 m) convertite in pixel dalla telecamera. Il campo arriva già specchiato dal playback:
 // qui la squadra dell'utente attacca sempre verso destra.
+import type { Weather } from '../../engine/weather.ts';
 import type { Live } from './playback.ts';
 import { art } from '../assets-manifest.ts';
 import { drawMoments } from './fx.ts';
@@ -19,6 +20,7 @@ export interface Look {
   numbers: Map<number, number>;
   names: Map<number, string>;
   mine: 0 | 1; // quale delle due è la squadra dell'utente
+  weather?: Weather; // meteo della partita (0.5.0): pioggia che cade, campo pesante più scuro
 }
 
 export class Camera {
@@ -131,6 +133,7 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: 
   ctx.fillStyle = css('--bg-0');
   ctx.fillRect(0, 0, w, h);
   if (img) ctx.drawImage(img, X(-MARGIN), Y(-MARGIN), (PITCH_X + 2 * MARGIN) * scale, (PITCH_Y + 2 * MARGIN) * scale);
+  if (look.weather?.heavy) { ctx.fillStyle = 'rgba(30,18,6,0.22)'; ctx.fillRect(X(0), Y(0), PITCH_X * scale, PITCH_Y * scale); } // campo pesante
   if (!live) return;
   if (over?.on.size) {
     ctx.textAlign = 'center';
@@ -189,6 +192,26 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: 
   if (ci >= 0) nameTag(ctx, look.names.get(live.carrier) ?? '', X(live.x[ci]!), Y(live.y[ci]!) - r0 * 2.1, r0);
   ball(ctx, X(live.bx), Y(live.by), live.h, scale);
   drawMoments(ctx, moments, live, look, { X, Y, r0, w, css });
+  if (look.weather) rain(ctx, w, h, look.weather);
+}
+
+/** pioggia che cade (e col vento di traverso): righe che scorrono, stabili fra un fotogramma e l'altro */
+function rain(ctx: CanvasRenderingContext2D, w: number, h: number, wx: Weather) {
+  const n = wx.kind === 'storm' ? 140 : wx.kind === 'rain' ? 70 : wx.kind === 'wind' ? 24 : 0;
+  if (!n) return;
+  const t = performance.now();
+  const slant = wx.kind === 'wind' ? 0.9 : wx.kind === 'storm' ? 0.35 : 0.15;
+  const len = wx.kind === 'wind' ? 26 : 14;
+  ctx.strokeStyle = wx.kind === 'wind' ? 'rgba(255,255,255,0.18)' : 'rgba(190,210,255,0.35)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let i = 0; i < n; i++) {
+    const x = (i * 97.3 + t * 0.12 * (1 + slant * 3)) % (w + 40) - 20;
+    const y = (i * 53.7 + t * (wx.kind === 'wind' ? 0.05 : 0.6)) % (h + 20) - 10;
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + len * slant, y + len);
+  }
+  ctx.stroke();
 }
 
 /** la palla e la sua ombra: più la palla è alta, più l'ombra si stacca e si allarga, e la palla sembra più grande */

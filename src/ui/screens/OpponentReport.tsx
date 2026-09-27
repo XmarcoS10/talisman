@@ -3,6 +3,7 @@
 import { coachOf } from '../../engine/coaches.ts';
 import type { Club, Fixture, WorldState } from '../../engine/model.ts';
 import { refereeFor, type Referee } from '../../engine/referees.ts';
+import { weatherFor } from '../../engine/weather.ts';
 import { shortName } from '../bits.tsx';
 import { t } from '../i18n.ts';
 
@@ -29,6 +30,7 @@ export function OpponentReport({ world, oppId, fx, onPlayer }: { world: WorldSta
   const a = advice(opp);
   const coach = coachOf(world, oppId);
   const ref = fx ? refereeFor(world, fx) : null;
+  const wx = fx ? weatherFor(world, fx) : null;
   return (
     <div className="panel">
       <div className="row" style={{ justifyContent: 'space-between' }}>
@@ -63,6 +65,13 @@ export function OpponentReport({ world, oppId, fx, onPlayer }: { world: WorldSta
         </div>
       )}
       {ref && ref.strict >= 14 && <div className="muted small">{t('ref.adviceStrict')}</div>}
+      {wx && (
+        <div className="row" style={{ justifyContent: 'space-between' }}>
+          <span className="caps">{t('wx.forecast')}</span>
+          <span>{t(`wx.${wx.kind}`)}{wx.heavy ? ` · ${t('wx.heavy')}` : ''}</span>
+        </div>
+      )}
+      {wx && wx.kind !== 'clear' && <div className="muted small">{t(`wx.advice.${wx.kind}`)}</div>}
       <div className="analyst"><b>{t('opp.analyst')}</b> {t(`opp.advice.${a}`, { club: opp.shortName })}</div>
     </div>
   );
