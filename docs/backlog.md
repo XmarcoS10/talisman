@@ -2,7 +2,7 @@
 
 Quello che manca o che si vuole fare, in ordine di priorità. Le idee nuove vanno in fondo; se ne discute nelle
 [Discussioni](https://github.com/XmarcoS10/talisman/discussions), i problemi vanno nelle
-[segnalazioni](https://github.com/XmarcoS10/talisman/issues). Aggiornato il 26/09/2026 (dopo la 0.2.0 e le nazionali).
+[segnalazioni](https://github.com/XmarcoS10/talisman/issues). Aggiornato il 27/09/2026 (dopo la 0.5.1).
 
 ## Tocca a Marco (non è codice)
 
@@ -17,29 +17,26 @@ Quello che manca o che si vuole fare, in ordine di priorità. Le idee nuove vann
 
 - **Test dell'interfaccia**: prova di montaggio di 17 schermate fatta nella 0.3.0 (`src/ui/screens/screens.test.tsx`);
   i clic non sono ancora provati.
-- **Gol troppo concentrati sulle punte migliori** (trovato con i record della 0.3.0): il capocannoniere della Serie A
-  fa 42-65 gol in una stagione (semi 42 e 7), contro i 25-30 di un campionato vero (il record storico è 36). I gol
-  totali sono giusti (2,5 a partita), è la loro distribuzione a non esserlo. Tre tentativi il 27/09, fermi
-  (`docs/design/motore-v2.md`, ultima voce): la causa è il movimento senza palla, solo la punta arriva in zona di tiro.
-  Target in `docs/balance/targets.md`; si riprende con l'intervento 7 del motore.
+- **Capocannonieri e possesso** (0.5.1): dopo il movimento senza palla il capocannoniere fa ancora 45-57 gol (reale
+  22-36), le punte tirano il 62-66% (target 35-50%) e la squadra nettamente più forte ha il 43% dei passaggi (target
+  57-63%). Misure e tentativi in `docs/design/motore-v2.md` §11; strumento `node tools/diag-box.ts`.
+- **Distanza fra i mondi**: nella 0.5.1 il seme 7 segna 2,32 gol a partita e il seme 99 pareggia il 21,4%; da seguire.
 - **Distacco fra Serie A e Serie B**: oscilla nelle prime 5-10 stagioni prima di assestarsi
   (`docs/balance/2026-09-26.md`). Da riguardare con una taratura dedicata, non è un errore.
 - **Partite delle nazionali in diretta**: si giocano col motore vero e se ne vedono risultati e marcatori, ma non si
   seguono sul campo 2D come quelle di club (il campo dal vivo è legato al club dell'utente).
-- **Più gol del normale nelle partite delle nazionali** (3,9 contro i 2,5 dei club): in questo mondo il talento è
-  concentrato in una nazione sola, quindi i divari sono enormi. Si sistema dando più peso alle altre nazioni nella
-  generazione del mondo.
+- **Tutorial riscritto**: ultimo punto della 0.3.0, aspetta le note del collaudo esterno.
 
 ## Dopo la 1.0 (GUIDA, appendice B)
 
-Altre leghe (sono soprattutto dati) · editor del mondo nel gioco · import dei database della community · modalità
-sfida («salva il club dal fallimento») · storico pluridecennale con statistiche di carriera · più allenatori sullo
-stesso computer · modalità «solo direttore sportivo» · allenatori dell'IA con carriere e reputazione · meteo e
-terreno · arbitri con personalità · cronaca radiofonica · statistiche esportabili in CSV · tema chiaro · spagnolo.
+Altre leghe (sono soprattutto dati) · editor del mondo nel gioco · modalità sfida («salva il club dal fallimento») ·
+più allenatori sullo stesso computer · modalità «solo direttore sportivo» · spagnolo.
 
 ## Fatto (per non riproporlo)
 
 Carriere lunghe e inflazione del talento, bancarotte, playoff e playout, Serie C, partita 2D rifatta (salienti,
 telecamere, replay, sovrapposizioni, animazioni, racconto), istruzioni individuali e piani partita, offerte dell'IA
 per i tuoi giocatori, motore in un thread a parte, interfaccia e storie in inglese, velocità del motore
-(10.000 partite in 6,5 s), grafica generata e pipeline degli asset, partite delle nazionali col motore vero.
+(10.000 partite in 6,5 s), grafica generata e pipeline degli asset, partite delle nazionali col motore vero (e gol delle nazionali nei target con
+le nazionalità come la Serie A vera), record e storia, CSV, tema chiaro, database della community e convertitore,
+allenatori dell'IA, arbitri, meteo e terreno, radiocronaca, movimento senza palla (0.3.0-0.5.1).
