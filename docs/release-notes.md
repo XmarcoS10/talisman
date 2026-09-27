@@ -1,5 +1,25 @@
 # Note di rilascio
 
+## 0.5.1 — il movimento senza palla
+
+Le carriere della 0.5.0 si aprono senza cambiamenti.
+
+- **Si inseriscono anche i centrocampisti.** Mezzali, trequartisti ed esterni attaccano l'area dalla trequarti, e chi
+  li marca deve seguirli: se perde il duello (Movimento senza palla e velocità contro Posizionamento e Anticipo)
+  l'attaccante arriva libero. Il centravanti non tira più quasi tutto lui: i suoi tiri scendono dall'82% a circa il 63%.
+- **I difensori davanti al tiro contano.** Più corpi fra la palla e la porta vogliono dire un tiro più difficile e più
+  spesso murato; chi marca bene conta più di chi c'è e basta. Chiudersi in difesa ha un senso.
+- **Si tira da fuori area**, soprattutto chi ha un buon tiro da lontano (prima quasi mai, ora circa un tiro su cinque).
+- **In costruzione si sbaglia meno** (precisione dei passaggi dal 77% all'82%, come nel calcio vero), e il centravanti
+  avversario non vive più di palloni regalati.
+- La palla bassa dal fondo va a chi arriva da dietro, non sempre al più forte di testa. Più gol in contropiede.
+- La pioggia pesa di più sui passaggi.
+
+### Limiti noti
+
+- I capocannonieri segnano ancora troppo (45-57 gol nelle prove) e la squadra più forte non tiene abbastanza la palla.
+- Alcuni mondi segnano un po' meno di altri (fra 2,3 e 2,7 gol a partita).
+
 ## 0.5.0 — il mondo intorno
 
 Contiene anche la 0.3.0 e la 0.4.0, che non sono uscite da sole. Le carriere della 0.2.x si aprono da sole (passano al
@@ -85,6 +105,26 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.5.1 — off-the-ball movement (English)
+
+Careers from 0.5.0 open unchanged.
+
+- **Midfielders make runs too.** Box-to-box and attacking midfielders and wingers attack the box, and their markers
+  must follow: lose the duel (Off the Ball and pace against Positioning and Anticipation) and the runner arrives free.
+  The centre-forward no longer takes almost every shot: the share falls from 82% to about 63%.
+- **Defenders in front of the shot matter.** More bodies between ball and goal mean a harder shot, blocked more often;
+  good markers count more than bodies. Sitting deep now makes sense.
+- **Shots from outside the box**, mostly by players with good long shots (almost none before, now about one in five).
+- **Fewer mistakes in the build-up** (pass accuracy from 77% to 82%, as in real football), so opposing strikers no
+  longer live off gifted balls.
+- Cut-backs go to whoever arrives from behind, not always to the best header. More counter-attack goals.
+- Rain weighs more on passing.
+
+### Known limits
+
+- Top scorers still score too many (45-57 goals in tests) and the stronger side doesn't keep the ball enough.
+- Some worlds score a little less than others (between 2.3 and 2.7 goals per match).
 
 ## 0.5.0 — the world around you (English)
 

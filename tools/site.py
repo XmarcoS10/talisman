@@ -6,9 +6,9 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'site')
 REPO = 'https://github.com/XmarcoS10/talisman'
 SITE = 'https://xmarcos10.github.io/talisman/'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
-VERSION = '0.5.0'
+VERSION = '0.5.1'
 SIZE = '123 MB'
-SHA = 'f2ac7726f394f8a01b85251a4312540264ef50bf80cc6a24c2eb85eb13ed4a13'
+SHA = 'c9be5745de5edbcfb06d489503f0e340ec717c7031222ce5c4c4e3ff26c1580a'
 # pnpm sim -- --seasons 10 --seed 42 con la 0.2.0
 SIM_GOALS = {'it': '2,56', 'en': '2.56'}
 SIM_DRAWS = {'it': '23,2%', 'en': '23.2%'}
@@ -543,6 +543,7 @@ def download():
         <div class="panel">
           <h3>{x('Novità della', 'New in')} {VERSION}</h3>
           <ul class="checks">
+            <li>{x('<b>Movimento senza palla</b>: inserimenti dei centrocampisti, difensori che contano davanti al tiro, tiri da fuori.', '<b>Off-the-ball movement</b>: midfield runs, defenders that matter in front of the shot, long-range shots.')}</li>
             <li>{x("<b>Allenatori dell'IA</b> con uno stile, esoneri e notizie; istruzioni riequilibrate.", '<b>AI managers</b> with a style, sackings and news; instructions rebalanced.')}</li>
             <li>{x('<b>Radiocronaca</b> di ogni partita, <b>arbitri</b> con la loro severità, <b>meteo e terreno</b>.', '<b>Radio commentary</b> for every match, <b>referees</b> with their own strictness, <b>weather and pitch</b>.')}</li>
             <li>{x('<b>Database della community</b>: una carriera nuova può caricare un mondo intero da file.', '<b>Community database</b>: a new career can load a whole world from a file.')}</li>
@@ -671,7 +672,7 @@ def community():
         <div class="grid g3 road">
           <div class="panel done"><span class="tag">{x('Fatto', 'Done')} · 0.1</span><h3>{x('Il gioco completo e il collaudo', 'The complete game and first testing')}</h3><p>{x('Motore partita e campo 2D, spogliatoio, mercato e osservatori, storie e stampa, finanze e dirigenza, vivaio e nazionali, coppa e Primavera, installer per Windows.', 'Match engine and 2D pitch, dressing room, transfers and scouting, stories and press, finances and board, academy and national teams, cup and youth league, Windows installer.')}</p></div>
           <div class="panel now"><span class="tag cy">{x('Adesso', 'Now')} · {VERSION}</span><h3>{x('Il mondo intorno', 'The world around you')}</h3><p>{x("Allenatori dell'IA, arbitri, meteo, radiocronaca, database della community, record e storia, tema chiaro. Prima: partita 2D rifatta, tre campionati, il gioco in inglese.", 'AI managers, referees, weather, radio commentary, community database, records and history, light theme. Before that: a rebuilt 2D match, three leagues, the game in English.')}</p></div>
-          <div class="panel next"><span class="tag am">{x('Dopo', 'Next')} · 1.0</span><h3>{x("Più campionati e l'editor", 'More leagues and the editor')}</h3><p>{x('Movimento senza palla nel motore, versione Linux, altre leghe, un editor per il mondo.', 'Off-the-ball movement in the engine, a Linux version, more leagues, an editor for the world.')}</p></div>
+          <div class="panel next"><span class="tag am">{x('Dopo', 'Next')} · 1.0</span><h3>{x("Più campionati e l'editor", 'More leagues and the editor')}</h3><p>{x('Possesso più realistico, versione Linux, altre leghe, un editor per il mondo.', 'More realistic possession, a Linux version, more leagues, an editor for the world.')}</p></div>
         </div>
       </div>
     </section>
