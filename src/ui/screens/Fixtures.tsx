@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type KeyboardEvent } from 'react';
 import { fxLabel } from '../league.ts';
 import { CalendarDays, Clock, Download, Landmark, Trophy } from 'lucide-react';
 import type { Fixture, WorldState } from '../../engine/model.ts';
@@ -7,6 +7,7 @@ import { Crest } from '../Crest.tsx';
 import { download, ical, isRivalry, kickoff } from '../calendar.ts';
 import { fmtDate, gameDate, t, locale } from '../i18n.ts';
 import { CupView, Preseason } from './CupView.tsx';
+import { MatchModal } from './MatchReport.tsx';
 import { OpponentReport } from './OpponentReport.tsx';
 import { cupFixtures } from '../../engine/cup.ts';
 
@@ -18,14 +19,16 @@ export function outcome(fx: Fixture, clubId: number): 'W' | 'D' | 'L' | null {
   return mine > 0 ? 'W' : mine < 0 ? 'L' : 'D';
 }
 
-export function ResultsList({ world, fixtures, highlight }: { world: WorldState; fixtures: Fixture[]; highlight?: number }) {
+/** risultati di una giornata; con `onPick` quelli giocati si aprono (resoconto e radiocronaca) */
+export function ResultsList({ world, fixtures, highlight, onPick }: { world: WorldState; fixtures: Fixture[]; highlight?: number; onPick?: (fx: Fixture) => void }) {
   return (
     <div className="results">
       {fixtures.map((fx) => {
         const h = world.clubs[fx.home]!, a = world.clubs[fx.away]!;
         const me = fx.home === highlight || fx.away === highlight;
         return (
-          <div key={`${fx.home}-${fx.away}`} className={`result ${me ? 'me' : ''}`}>
+          <div key={`${fx.home}-${fx.away}`} className={`result ${me ? 'me' : ''} ${onPick && fx.result ? 'clickable' : ''}`}
+            {...(onPick && fx.result ? { role: 'button', tabIndex: 0, title: t('radio.title'), onClick: () => onPick(fx), onKeyDown: (e: KeyboardEvent) => { if (e.key === 'Enter') onPick(fx); } } : {})}>
             {/* la città basta a riconoscere il club, e nella colonna stretta il nome intero finiva coi puntini */}
             <span className="r" title={h.name}>{h.city} <Crest club={h} size={16} /></span>
             <b className="num c">{fx.result ? `${fx.result.hg} - ${fx.result.ag}` : kickoff(world, fx)}</b>
@@ -49,6 +52,7 @@ export function Fixtures({ world, clubId, onPlayer }: { world: WorldState; clubI
   const [half, setHalf] = useState<Half>('mine');
   const [mon, setMon] = useState(-1);
   const [tab, setTab] = useState<'league' | 'cup'>('league');
+  const [open, setOpen] = useState<Fixture | null>(null); // resoconto e radiocronaca di una partita giocata
   const roundDay = round * DAYS_BETWEEN_ROUNDS;
   const cupNext = cupFixtures(world).filter((f) => !f.result && (f.home === clubId || f.away === clubId)).sort((a, b) => a.day - b.day)[0];
   const leagueNext = nextIdx >= 0 ? mine[nextIdx] : undefined;
@@ -123,7 +127,8 @@ export function Fixtures({ world, clubId, onPlayer }: { world: WorldState; clubI
                 <button className="btn small" disabled={round >= mine.length - 1} onClick={() => setRound(round + 1)}>›</button>
               </span>
             </div>
-            <ResultsList world={world} fixtures={comp.fixtures.filter((f) => f.day === roundDay)} highlight={clubId} />
+            <ResultsList world={world} fixtures={comp.fixtures.filter((f) => f.day === roundDay)} highlight={clubId} onPick={setOpen} />
+            {open && <MatchModal world={world} fx={open} others={comp.fixtures.filter((f) => f.day === open.day && f !== open)} onClose={() => setOpen(null)} />}
           </div>
           {next && <OpponentReport world={world} oppId={next.home === clubId ? next.away : next.home} onPlayer={onPlayer} />}
         </div>

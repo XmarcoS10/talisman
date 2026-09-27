@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { Fixture, MatchEvent, SideStats, WorldState } from '../../engine/model.ts';
 import { fxLabel } from '../league.ts';
 import { Crest } from '../Crest.tsx';
@@ -5,6 +6,7 @@ import { Star } from 'lucide-react';
 import { PosBadge, Rating, shortName } from '../bits.tsx';
 import { t } from '../i18n.ts';
 import { ResultsList } from './Fixtures.tsx';
+import { RadioPanel } from './Radio.tsx';
 
 const ICON: Record<MatchEvent['type'], string> = { goal: '⚽', penGoal: '⚽', penMiss: '✖', chance: '◎', yellow: '🟨', red: '🟥', injury: '✚', sub: '⇄', plan: '📋' };
 
@@ -49,7 +51,9 @@ function EventLine({ world, e }: { world: WorldState; e: MatchEvent }) {
   );
 }
 
-export function MatchModal({ world, fx, others, onClose }: { world: WorldState; fx: Fixture; others: Fixture[]; onClose: () => void }) {
+export function MatchModal({ world, fx: first, others, onClose }: { world: WorldState; fx: Fixture; others: Fixture[]; onClose: () => void }) {
+  // cliccando un altro risultato del giorno se ne legge il resoconto e la radiocronaca
+  const [fx, setFx] = useState(first);
   const clubs = [world.clubs[fx.home]!, world.clubs[fx.away]!];
   const r = fx.result!;
   const ratings = clubs.map((c) =>
@@ -90,6 +94,8 @@ export function MatchModal({ world, fx, others, onClose }: { world: WorldState; 
           </div>
         </div>
 
+        <RadioPanel key={`${fx.home}-${fx.away}`} world={world} fx={fx} />
+
         <div className="panel">
           <h2>{t('match.ratings')}</h2>
           <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: 'var(--s-1) var(--s-5)' }}>
@@ -106,7 +112,7 @@ export function MatchModal({ world, fx, others, onClose }: { world: WorldState; 
         </div>
 
         <h2>{t('match.otherResults')}</h2>
-        <ResultsList world={world} fixtures={others.filter((o) => o !== fx)} />
+        <ResultsList world={world} fixtures={[first, ...others].filter((o, i, all) => o !== fx && all.indexOf(o) === i)} onPick={setFx} />
         <button className="btn primary big" autoFocus onClick={onClose}>{t('match.continue')}</button>
       </div>
     </div>

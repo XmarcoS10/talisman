@@ -73,6 +73,7 @@ td { padding: 0 var(--s-2); height: var(--row-h); border-bottom: 1px solid color
 tbody tr:nth-child(even) { background: color-mix(in srgb, var(--text-1) 2%, transparent); }
 tbody tr:hover { background: color-mix(in srgb, var(--text-1) 5%, transparent); }
 tr.clickable { cursor: pointer; }
+.result.clickable { cursor: pointer; border-radius: var(--r-1); } .result.clickable:hover { background: var(--surface-2); }
 tr.me { background: color-mix(in srgb, var(--accent) 12%, transparent); }
 td.zone-up { box-shadow: inset 3px 0 0 var(--positive); } td.zone-down { box-shadow: inset 3px 0 0 var(--negative); }
 /* spareggi della Serie B (Blocco 4) */
