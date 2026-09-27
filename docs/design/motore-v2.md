@@ -598,3 +598,27 @@ deboli); tolti quelli, la differenza di forza deve passare da altro, e i tiri da
 forza. Anche il test della pioggia non passa più: con passaggi più precisi i giocatori scelgono quelli sicuri e la
 pioggia pesa meno. Trovato e corretto per strada: il duello sugli inserimenti pescava dal caso dentro i passi della
 partita guardata, e guardarla o simularla dava risultati diversi (ora l'estrazione è una per azione).
+
+### Movimento senza palla (§11), giro sulla correlazione — 27/09
+
+Sul ramo `movimento-senza-palla`. Prima di dare la colpa alle modifiche, misurata la base: le carriere di main fanno
+0,79 / 0,82 / 0,75, il ramo 0,62 / 0,72 / 0,65. Sulle 10 stagioni i due si somigliano: il ramo perde nelle stagioni
+tarde (da 0,94 a 0,4-0,6), quando le squadre della A sono più vicine di forza e la qualità deve pesare di più.
+
+| Tentativo | Carriere (42 / 7 / 99) | Note |
+|---|---|---|
+| 1. Qualità di chi marca (Marcatura, Posizionamento) su marcatura del ricevitore e muro, centrata su 11 | 0,62 / 0,72 / 0,65 | stagioni già nel target |
+| 2. Pesi più forti (marcatura 0,2, Passaggi 0,3) | 0,77 / — / 0,74 | ma gol 3,0-3,26 e capocannoniere 72: centrare su 11 sposta il livello (in A gli attributi stanno a 14-15) |
+| 3. **Marcatura misurata contro chi attacca** (Movimento senza palla, Primo controllo), Passaggi 0,24 | **0,76 / 0,81 / 0,75** ✅ | il livello non si sposta |
+
+Stato finale del ramo (seme 42 / 7 / 99; tra parentesi main):
+- stagioni: gol 2,54 / 2,32 / 2,72 (2,75 / 2,56 / 2,69); correlazione 0,83 / 0,86 / 0,79 (0,86 / 0,84 / 0,75);
+  pareggi 22,8 / 23,7 / 21,4% (23,3 / 23,3 / 23,6%); vittorie in casa 42-44%;
+- partita: precisione 82,6% ✅ (76,9% ❌), contropiedi 7,3% ✅ (3,5% ❌), colpi di testa 21,2% ✅, fuorigioco 2,4 ✅,
+  tiri da fuori 20% (3%), tiri delle punte 62-66% (82%), capocannoniere di una stagione 56 / 47 (67 / 45);
+- equilibrio: istruzioni 1,23-1,50 punti a partita (1,22-1,51), stili degli allenatori da +3,8 a −4,9;
+- velocità: 4,65 ms a partita contro 4,41 di main sullo stesso PC (+5%; nella CI main fa 4,23 con limite 7).
+
+Aperti: il seme 7 segna poco (2,32) e il seme 99 pareggia poco (21,4%): la distanza fra i semi è 0,4 gol, il doppio di
+main. Punte e capocannonieri migliorano ma restano fuori dal target: più correlazione vuol dire che la squadra forte
+segna di più, e la sua punta tira ancora il 60% dei tiri. Il possesso della più forte non si muove (43%).
