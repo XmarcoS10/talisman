@@ -158,15 +158,6 @@ export const MATCH = {
   deadSpeed: 8, // il gioco fermo (rimesse, esultanza) scorre più in fretta nella riproduzione
   deadFrom: 12, // oltre questi secondi un intervallo è gioco fermo
   offBallMove: 1.2, // ampiezza (zone) degli smarcamenti casuali di chi attacca
-  // la difesa che si disordina (Blocco 2b, docs/design/motore-v2.md §7): disordine 0-1 della squadra senza palla
-  disSwitch: 0.15, // cambio di gioco riuscito (≥ 3 zone in larghezza), × qualità di Visione e Passaggi
-  disLine: 0.1, // per difensore scavalcato da un passaggio riuscito
-  disDribble: 0.2, // uomo saltato
-  disTau: 8, // secondi in cui il disordine cala a 1/e (la difesa si riorganizza)…
-  disOrg: 0.04, // …più in fretta per punto di Concentrazione e Posizionamento medi sopra 11
-  disK: 0.5, // efficacia persa su intercetti e pressione a disordine pieno
-  disXg: 0.6, // logit in più dei tiri a disordine pieno (c'è spazio)
-  disValue: 0.02, // quanto vale, nella scelta del passaggio, il disordine che produce
   patience: 0.0015, // voglia di verticalizzare in più per ogni passaggio consecutivo oltre il 5°
   // inserimenti (motore-v2 §11): chi ha le corse nel ruolo attacca l'area dalla trequarti, e chi lo marca deve seguirlo
   runFromX: 7.5, // da dove parte l'inserimento (palla oltre questa x)

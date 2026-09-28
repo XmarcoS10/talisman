@@ -18,7 +18,8 @@ Quello che manca o che si vuole fare, in ordine di priorità. Le idee nuove vann
 - **Capocannonieri e possesso** (0.5.1): dopo il movimento senza palla il capocannoniere fa ancora 45-57 gol (reale
   22-36), le punte tirano il 62-66% (target 35-50%) e la squadra nettamente più forte ha il 43% dei passaggi (target
   57-63%). Misure e tentativi in `docs/design/motore-v2.md` §11 e ultima voce (28/09: pazienza in costruzione, possesso
-  al 52% ma correlazione delle carriere sotto il target; patch conservata). Serve la fase di costruzione (§9).
+  al 52% ma correlazione delle carriere sotto il target; patch conservata) e fase di costruzione (28/09: possesso 51%,
+  stesso calo; ramo `fase-di-costruzione`). Prossimo passo: capire perché fra squadre vicine il possesso non diventa punti.
 - **Distanza fra i mondi**: nella 0.5.1 il seme 7 segna 2,32 gol a partita e il seme 99 pareggia il 21,4%; da seguire.
 - **Distacco fra Serie A e Serie B**: oscilla nelle prime 5-10 stagioni prima di assestarsi
   (`docs/balance/2026-09-26.md`). Da riguardare con una taratura dedicata, non è un errore.

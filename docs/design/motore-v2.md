@@ -639,3 +639,25 @@ Senza l'eccezione in transizione il possesso arriva al 57% ma i contropiedi cado
 il possesso ottenuto dal valore di tenere palla non si trasforma in punti, e la correlazione sulle carriere scende. La
 2 è la base giusta per la fase di costruzione (§9), che deve far rendere il giro palla (difesa che si sposta e si
 apre), non solo farlo durare.
+
+### Fase di costruzione (§9) — 28/09, fermo dopo 3 tentativi
+
+Ramo `fase-di-costruzione`, patch `docs/design/patches/fase-costruzione-v1.patch` (contiene anche la pazienza del
+tentativo precedente). Base misurata prima: le carriere di main fanno 0,76 / 0,74 / 0,77 (semi 42 / 7 / 99).
+
+| Tentativo | Carriere | Altro |
+|---|---|---|
+| 1. Pazienza + disordine della difesa dai cambi di gioco riusciti (toglie efficacia a marcatura, linee, muro; svanisce in 8 s) | — (stagioni 0,78-0,80 contro 0,84-0,85 senza) | il disordine aiuta anche la debole: quando apre la difesa della forte i suoi tiri salgono da 8 a 10,5 |
+| 2. Pazienza decisa dall'abilità complessiva invece che dal palleggio (ipotesi: il palleggio si stacca dalla forza nelle carriere) | 0,71 / 0,72 / 0,66 | l'ipotesi è sbagliata |
+| 3. Disordine solo se chi passa palleggia meglio di quanto l'altra difesa sappia posizionarsi | 0,70 / 0,76 / 0,71 | possesso della nettamente più forte 51,2%, precisione 85%, contropiedi 6,1%, gol 2,63 / 2,44 / 2,74 |
+
+Nella sfida 2ª contro 19ª la pazienza non cambia i punti (2,56 → 2,51; col tentativo 3, 2,62): il calo della
+correlazione sta nelle partite fra squadre vicine di forza, dove far girare palla non vale abbastanza. Il possesso
+della più forte resta a 51% contro il target 57-63%.
+
+Cosa resta da capire per chi riprende: perché, fra squadre vicine, più possesso della migliore non diventa più
+punti. Da misurare con una tabella dei punti per differenza di forza (a fasce) con e senza pazienza, invece che solo
+col coefficiente di correlazione.
+
+Pulizia: tolte da `balance.ts` le costanti del disordine del 25/09 (`disSwitch`, `disLine`, `disDribble`, `disTau`,
+`disOrg`, `disK`, `disXg`, `disValue`), che nessuno usava: le partite non cambiano (golden master uguale).
