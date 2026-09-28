@@ -1,5 +1,14 @@
 # Note di rilascio
 
+## 0.5.2 — il gioco si spiega
+
+Le carriere della 0.5.1 si aprono senza cambiamenti; la partita è la stessa della 0.5.1.
+
+- **La guida della prima partita ha sei passi**: il nuovo è «Studia l'avversario», il report sulla prossima partita
+  nel Calendario (allenatore avversario e suo stile, arbitro, meteo). Si rifà dalle Impostazioni.
+- **Suggerimenti nuovi** per Classifiche, Calendario e Record, e aggiornati quelli di Scrivania, Tattica, Mercato e
+  partita dal vivo con le novità delle ultime versioni (istruzioni individuali, piani partita, radiocronaca, CSV).
+
 ## 0.5.1 — il movimento senza palla
 
 Le carriere della 0.5.0 si aprono senza cambiamenti.
@@ -105,6 +114,15 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.5.2 — the game explains itself (English)
+
+Careers from 0.5.1 open unchanged; matches play exactly as in 0.5.1.
+
+- **The first-match guide has six steps**: the new one is "Study the opponent", the report on the next match in
+  Fixtures (opposing manager and style, referee, weather). You can restart it from Settings.
+- **New hints** for Tables, Fixtures and Records, and updated ones for the Desk, Tactics, the Market and the live
+  match, covering what's new in recent versions (player instructions, match plans, radio commentary, CSV).
 
 ## 0.5.1 — off-the-ball movement (English)
 

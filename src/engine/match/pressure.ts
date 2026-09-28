@@ -8,7 +8,6 @@ import { cover, inTransition, type MatchState, type MP, type Team } from './stat
 export const PRESS = MATCH.pressLevels;
 const FAR = MATCH.pressRadius * MATCH.pressRadius * 1.001;
 
-/** la difesa vista da chi attacca, la pressione sul portatore e il difensore più vicino (per il fallo di pressione) */
 /** la difesa vista da chi attacca: posizioni, peso di intercetto (Anticipazione) e di marcatura */
 function readDefence(st: MatchState, att: Team, def: Team, cv: number) {
   const { defX, defY, defAnt, defMark } = st;
@@ -27,6 +26,7 @@ function readDefence(st: MatchState, att: Team, def: Team, cv: number) {
   }
 }
 
+/** la difesa vista da chi attacca, la pressione sul portatore e il difensore più vicino (per il fallo di pressione) */
 export function readPlay(st: MatchState): { view: View; pressure: number; closest: MP | undefined; exposed: number } {
   const att = st.teams[st.s], def = st.teams[1 - st.s]!;
   const { bx, by, defX, defY, defAnt, defMark } = st;

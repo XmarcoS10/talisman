@@ -6,9 +6,9 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'site')
 REPO = 'https://github.com/XmarcoS10/talisman'
 SITE = 'https://xmarcos10.github.io/talisman/'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
-VERSION = '0.5.1'
+VERSION = '0.5.2'
 SIZE = '123 MB'
-SHA = 'c9be5745de5edbcfb06d489503f0e340ec717c7031222ce5c4c4e3ff26c1580a'
+SHA = '7c40ac6f8953ef57b4288c10b9994240417c860bcc931645afd53e69a4b9bfe9'
 # pnpm sim -- --seasons 10 --seed 42 con la 0.2.0
 SIM_GOALS = {'it': '2,56', 'en': '2.56'}
 SIM_DRAWS = {'it': '23,2%', 'en': '23.2%'}
@@ -543,6 +543,7 @@ def download():
         <div class="panel">
           <h3>{x('Novità della', 'New in')} {VERSION}</h3>
           <ul class="checks">
+            <li>{x('<b>Una guida più completa</b>: sei passi per la prima partita e suggerimenti per tutte le schermate principali.', '<b>A fuller guide</b>: six steps for the first match and hints for all the main screens.')}</li>
             <li>{x('<b>Movimento senza palla</b>: inserimenti dei centrocampisti, difensori che contano davanti al tiro, tiri da fuori.', '<b>Off-the-ball movement</b>: midfield runs, defenders that matter in front of the shot, long-range shots.')}</li>
             <li>{x("<b>Allenatori dell'IA</b> con uno stile, esoneri e notizie; istruzioni riequilibrate.", '<b>AI managers</b> with a style, sackings and news; instructions rebalanced.')}</li>
             <li>{x('<b>Radiocronaca</b> di ogni partita, <b>arbitri</b> con la loro severità, <b>meteo e terreno</b>.', '<b>Radio commentary</b> for every match, <b>referees</b> with their own strictness, <b>weather and pitch</b>.')}</li>

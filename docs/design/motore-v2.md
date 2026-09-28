@@ -622,3 +622,20 @@ Stato finale del ramo (seme 42 / 7 / 99; tra parentesi main):
 Aperti: il seme 7 segna poco (2,32) e il seme 99 pareggia poco (21,4%): la distanza fra i semi è 0,4 gol, il doppio di
 main. Punte e capocannonieri migliorano ma restano fuori dal target: più correlazione vuol dire che la squadra forte
 segna di più, e la sua punta tira ancora il 60% dei tiri. Il possesso della più forte non si muove (43%).
+
+### Possesso e capocannonieri dopo la 0.5.1 — 28/09, fermo dopo 3 tentativi
+
+Patch: `docs/design/patches/pazienza-v1.patch` (motore tornato alla 0.5.1). Diagnosi: anche a mentalità pari la più
+forte ha il 48% dei passaggi, e palleggia quasi come la debole (84% contro 83%; reale ~88% contro ~75%). Arriva al tiro
+in 19 passaggi (reale ~35): la sua superiorità diventa tiri, non possesso.
+
+| Tentativo | Possesso della nettamente più forte | Altro |
+|---|---|---|
+| 1. Pressione come duello di qualità (Contrasto e Anticipo contro Tecnica e Compostezza) | 43-44% | la forte recupera prima e tira ancora di più (24-27 tiri) |
+| 2. **Pazienza in costruzione**: chi palleggia meglio dà più valore a tenere palla, solo fra passaggi, piena fino a x 6,5, nulla dal limite dell'area, niente a palla appena recuperata | **51,7%** (2ª contro 19ª: 57%, tiri 17 contro 7,5, precisione 91% contro 83%) | precisione 85%, contropiedi 7,3%, gol 2,63 / 2,26 / 2,69, **carriere 0,75 / 0,72 / 0,70 ❌** |
+| 3. 1 + 2 insieme | 50,6% | capocannonieri 53-58 |
+
+Senza l'eccezione in transizione il possesso arriva al 57% ma i contropiedi cadono al 2%. Conclusione, come al §6:
+il possesso ottenuto dal valore di tenere palla non si trasforma in punti, e la correlazione sulle carriere scende. La
+2 è la base giusta per la fase di costruzione (§9), che deve far rendere il giro palla (difesa che si sposta e si
+apre), non solo farlo durare.
