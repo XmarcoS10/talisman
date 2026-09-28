@@ -1,5 +1,5 @@
 // Prova di montaggio delle schermate: ognuna si disegna senza errori su un mondo appena nato e su uno a metà
-// stagione. Non prova i clic, prende l'errore più comune: una schermata che si rompe appena la apri.
+// stagione. Prende l'errore più comune: una schermata che si rompe appena la apri. I clic in clicks.test.tsx.
 import { describe, expect, it } from 'vitest';
 import type { ReactElement } from 'react';
 import { renderToString } from 'react-dom/server';

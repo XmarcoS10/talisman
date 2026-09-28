@@ -36,6 +36,16 @@ Per disinstallare: Impostazioni di Windows → App → Tactic F.C. Manager → D
 5. Tieni un foglio o il telefono accanto: quando qualcosa non si capisce, ti annoia o ti diverte, scrivi due parole
    e il giorno di gioco (lo vedi in alto). Servono per il modulo.
 
+### Le novità della 0.5 da provare (se ti capita, senza forzare)
+
+- **Record & Storia** (barra a sinistra): i record del tuo club e la tua carriera, anche a fine stagione.
+- **Tema chiaro**: in Impostazioni, Scuro / Chiaro / Come il sistema.
+- **Esporta CSV**: il pulsante col download in Rosa, Classifiche, Finanze e Record; il file si apre in Excel.
+- **Prima di una partita**, nel report sull'avversario: il suo **allenatore** (e il suo stile), l'**arbitro** (se è
+  severo) e le **previsioni del tempo**.
+- **Radiocronaca**: nel Calendario clicca il risultato di una partita già giocata, anche di altre squadre.
+- **In campo**: tirano anche i centrocampisti e si tira da fuori area; con la pioggia la vedi cadere sul campo 2D.
+
 ---
 
 ## 3. Se qualcosa si rompe: la diagnostica
@@ -77,5 +87,11 @@ Frasi brevi vanno benissimo.
 11. **Capivi cosa stava succedendo in campo** senza leggere il testo?
 12. **Le tue scelte tattiche si vedevano in campo?** Hai cambiato qualcosa e visto (o non visto) una differenza?
 13. **Le partite le hai guardate o simulate, e perché?**
+14. **Gli allenatori avversari, l'arbitro e il meteo** li hai notati? Ti hanno fatto cambiare qualcosa prima della
+    partita?
+
+**Le novità**
+
+15. **Record, radiocronaca, tema chiaro, CSV**: quali hai usato? Qualcosa non funzionava o non si capiva?
 
 Grazie!

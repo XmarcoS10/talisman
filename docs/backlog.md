@@ -15,8 +15,9 @@ Quello che manca o che si vuole fare, in ordine di priorità. Le idee nuove vann
 
 ## Prima della 1.0
 
-- **Test dell'interfaccia**: prova di montaggio di 17 schermate fatta nella 0.3.0 (`src/ui/screens/screens.test.tsx`);
-  i clic non sono ancora provati.
+- **Test dell'interfaccia**: prova di montaggio di 17 schermate (`screens.test.tsx`) e dei clic principali
+  (`clicks.test.tsx`: nuova carriera, tattica, rosa, calendario, record, impostazioni). Mancano mercato, trattative,
+  partita dal vivo e conferenze stampa.
 - **Capocannonieri e possesso** (0.5.1): dopo il movimento senza palla il capocannoniere fa ancora 45-57 gol (reale
   22-36), le punte tirano il 62-66% (target 35-50%) e la squadra nettamente più forte ha il 43% dei passaggi (target
   57-63%). Misure e tentativi in `docs/design/motore-v2.md` §11; strumento `node tools/diag-box.ts`.
