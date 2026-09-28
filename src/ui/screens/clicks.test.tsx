@@ -6,7 +6,8 @@ import { createRoot } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { advance, newWorld } from '../../engine/world.ts';
 import { t } from '../i18n.ts';
-import { settings } from '../settings.ts';
+import { Guide } from '../Guide.tsx';
+import { DEFAULTS, settings, updateSettings } from '../settings.ts';
 import { talkFor } from '../../engine/transfers/market.ts';
 import { Deal } from './Deal.tsx';
 import { Fixtures } from './Fixtures.tsx';
@@ -159,4 +160,16 @@ describe('i clic del collaudatore', () => {
     click(confirm);
     expect(w.press!.questions[0]!.answered).toBe(0);
   }, 60_000);
+
+  it('guida della prima partita: sei passi, «Vai» porta alla schermata, «Salta» la chiude', () => {
+    updateSettings({ guideDone: DEFAULTS.guideDone, visited: [] });
+    const onNav = vi.fn();
+    const box = mount(<Guide onNav={onNav} />);
+    expect(box.querySelectorAll('ol.steps li')).toHaveLength(6);
+    click(find(find(box, 'li', t('guide.fixtures.title')), 'button', t('guide.go')));
+    expect(onNav).toHaveBeenCalledWith('fixtures');
+    click(find(box, 'button', t('guide.skip')));
+    expect(box.querySelector('.guide')).toBeNull();
+    expect(settings().guideDone).toBe(true);
+  });
 });

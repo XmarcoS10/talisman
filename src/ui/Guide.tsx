@@ -1,15 +1,16 @@
-// Prima partita guidata (P13 punto 2): cinque passi, una decina di minuti, dalla scelta del club alla prima
+// Prima partita guidata (P13 punto 2, rivista nella 0.6.0): sei passi, una decina di minuti, dalla scelta del club alla prima
 // partita giocata. Sta in Scrivania finché non è finita o finché non la chiudi.
 import { useReducer } from 'react';
 import { settings, updateSettings } from './settings.ts';
 import { t } from './i18n.ts';
 
-type Nav = 'board' | 'squad' | 'tactics' | 'training' | 'stories';
+type Nav = 'board' | 'squad' | 'tactics' | 'training' | 'fixtures';
 const STEPS: { id: string; nav: Nav | null }[] = [
   { id: 'board', nav: 'board' },
   { id: 'squad', nav: 'squad' },
   { id: 'tactics', nav: 'tactics' },
   { id: 'training', nav: 'training' },
+  { id: 'fixtures', nav: 'fixtures' }, // il report sull'avversario: allenatore, arbitro, meteo
   { id: 'live', nav: null }, // la partita si guarda dal pulsante in alto
 ];
 

@@ -85,6 +85,10 @@ capocannonieri da 40-65 gol (nel backlog, per la 0.5.0) e un ordinamento della R
 - File: componente della guida, `settings.ts` (se servono suggerimenti nuovi), `it.json`/`en.json`.
 - Migrazione: no · Golden: no · Rompe: chiavi i18n.
 
+**Stato (28/09/2026)**: fatto senza aspettare il collaudo (decisione di Marco): guida di sei passi (nuovo: «Studia
+l'avversario» nel Calendario), suggerimenti nuovi per Classifiche, Calendario e Record, quelli di Scrivania, Tattica,
+Mercato e partita aggiornati alle novità 0.2-0.5. Si ritocca con le note dei collaudatori.
+
 ---
 
 ## 0.4.0 — un mondo più largo

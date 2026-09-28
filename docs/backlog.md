@@ -23,7 +23,7 @@ Quello che manca o che si vuole fare, in ordine di priorità. Le idee nuove vann
   (`docs/balance/2026-09-26.md`). Da riguardare con una taratura dedicata, non è un errore.
 - **Partite delle nazionali in diretta**: si giocano col motore vero e se ne vedono risultati e marcatori, ma non si
   seguono sul campo 2D come quelle di club (il campo dal vivo è legato al club dell'utente).
-- **Tutorial riscritto**: ultimo punto della 0.3.0, aspetta le note del collaudo esterno.
+- **Tutorial**: riscritto il 28/09 senza le note del collaudo; da ritoccare quando arrivano.
 
 ## Dopo la 1.0 (GUIDA, appendice B)
 

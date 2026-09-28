@@ -5,7 +5,7 @@ import { Lightbulb } from 'lucide-react';
 import { markSeen, settings, updateSettings } from './settings.ts';
 import { t } from './i18n.ts';
 
-export const HINTS = ['desk', 'stories', 'squad', 'tactics', 'training', 'dressing', 'youth', 'market', 'scouts', 'finance', 'board', 'live'] as const;
+export const HINTS = ['desk', 'stories', 'squad', 'tactics', 'training', 'dressing', 'youth', 'market', 'scouts', 'finance', 'board', 'live', 'tables', 'fixtures', 'records'] as const;
 
 export function Hint({ id }: { id: (typeof HINTS)[number] }) {
   const [, refresh] = useReducer((x: number) => x + 1, 0);
