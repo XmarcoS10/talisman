@@ -81,6 +81,17 @@ export function shoot(st: MatchState, sh: MP, xg: number, kind: ShotKind, origin
   else missed(st, sh, xg, kind, gk, block);
 }
 
+/**
+ * fase di costruzione: un cambio di gioco riuscito sposta il blocco e lo disordina, tanto più se chi passa palleggia
+ * meglio di quanto i difensori sappiano posizionarsi (Passaggi e Visione contro Posizionamento e Concentrazione)
+ */
+function unsettle(st: MatchState, c: MP, def: Team) {
+  let dq = 0;
+  for (const m of def.on) dq += (m.p.attrs.positioning + m.p.attrs.concentration) / 2;
+  const edge = (c.p.attrs.passing + c.p.attrs.vision) / 2 - dq / def.on.length;
+  st.dis = Math.min(1, st.dis + MATCH.disGain * Math.max(0, MATCH.disSkill * edge)); // una difesa migliore non si apre
+}
+
 function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, { kind: 'pass' }>, f: TraceStep | null) {
   const { rng } = st;
   att.stats.passes++; c.st.passes++;
@@ -103,6 +114,7 @@ function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, 
     if (f) f.ok = true;
     st.lastPass = c;
     st.chain++;
+    if (Math.abs(o.ty - st.by) >= MATCH.disSwitch) unsettle(st, c, def);
     st.carrier = o.to as MP;
     st.bx = o.tx; st.by = o.ty;
     const quick = st.counterNow ? MATCH.transTempo : 1; // la ripartenza contro una difesa scoperta non si ferma a pensare

@@ -8,6 +8,9 @@ import { cover, inTransition, type MatchState, type MP, type Team } from './stat
 export const PRESS = MATCH.pressLevels;
 const FAR = MATCH.pressRadius * MATCH.pressRadius * 1.001;
 
+/** qualità media di palleggio di una squadra in campo: Passaggi, Tecnica, Primo controllo */
+const palleggio = (tm: Team) => { let q = 0; for (const m of tm.on) q += MATCH.keepByCa ? m.p.ca / 10 : (m.p.attrs.passing + m.p.attrs.technique + m.p.attrs.firstTouch) / 3; return q / tm.on.length; };
+
 /** la difesa vista da chi attacca: posizioni, peso di intercetto (Anticipazione) e di marcatura */
 function readDefence(st: MatchState, att: Team, def: Team, cv: number) {
   const { defX, defY, defAnt, defMark } = st;
@@ -15,14 +18,19 @@ function readDefence(st: MatchState, att: Team, def: Team, cv: number) {
   let attQ = 0;
   for (const a of att.on) attQ += (a.p.attrs.offTheBall + a.p.attrs.firstTouch) / 2;
   attQ /= att.on.length;
+  st.keepEdge = Math.max(0, palleggio(att) - palleggio(def)); // chi palleggia meglio fa girare palla
+  // la difesa si riordina col tempo (fase di costruzione): il disordine lasciato dal giro palla svanisce
+  st.dis *= Math.exp(-Math.max(0, st.t - st.disAt) / MATCH.disTau);
+  st.disAt = st.t;
+  const open = 1 - MATCH.disEffect * st.dis; // difesa aperta: marcatura, linee di passaggio e muro valgono meno
   defX.length = defY.length = defAnt.length = defMark.length = def.on.length;
   for (let i = 0; i < def.on.length; i++) {
     const m = def.on[i]!;
     defX[i] = 12 - m.x;
     defY[i] = 8 - m.y;
-    defAnt[i] = (0.6 + 0.03 * m.p.attrs.anticipation) * cv;
+    defAnt[i] = (0.6 + 0.03 * m.p.attrs.anticipation) * cv * open;
     // chi marca bene sta addosso al ricevitore e fa da muro al tiro (motore-v2 §11: conta la qualità, non solo il corpo)
-    defMark[i] = Math.max(0.3, 1 + MATCH.markSkill * ((m.p.attrs.marking + m.p.attrs.positioning) / 2 - attQ)) * cv;
+    defMark[i] = Math.max(0.3, 1 + MATCH.markSkill * ((m.p.attrs.marking + m.p.attrs.positioning) / 2 - attQ)) * cv * open;
   }
 }
 
@@ -56,13 +64,14 @@ export function readPlay(st: MatchState): { view: View; pressure: number; closes
   const c = st.carrier;
   const sign = st.s === 0 ? 1 : -1;
   const view: View = {
-    carrier: c, isGK: c.pos === 'GK', bx, by, mates: att.on, defs: def.on, defX, defY, defAnt, defMark, pressure, block,
+    carrier: c, isGK: c.pos === 'GK', bx, by, mates: att.on, defs: def.on, defX, defY, defAnt, defMark, pressure, block, keepEdge: st.keepEdge,
     offsideLine: Math.max(line, bx), tactic: att.tactic, mentality: att.mentality,
     wind: st.wx.cross,
     bonus: -st.wx.pass + (st.s === 0 ? MATCH.homeBoost : 0) + (sign * st.momentum / 100) * MATCH.momentumK * (1 - c.p.attrs.composure / 25)
       - (100 - c.energy) * MATCH.energySkill + c.mod,
     chain: st.chain,
     counter: trans ? Math.max(0, exposed - MATCH.counterFrom) : 0,
+    fresh: trans,
   };
   return { view, pressure, closest, exposed: trans ? exposed : 0 };
 }
