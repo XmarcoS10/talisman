@@ -3,7 +3,7 @@ import { useState } from 'react';
 import type { MP, MatchRun } from '../../engine/match/engine.ts';
 import { ratingAt } from '../../engine/players.ts';
 import { PosBadge, shortName } from '../bits.tsx';
-import { t } from '../i18n.ts';
+import { fmtN, t } from '../i18n.ts';
 
 export function LiveBench({ run, me, onChange }: { run: MatchRun; me: 0 | 1; onChange: () => void }) {
   const [out, setOut] = useState<MP | null>(null);
@@ -27,7 +27,7 @@ export function LiveBench({ run, me, onChange }: { run: MatchRun; me: 0 | 1; onC
                 <td><PosBadge pos={m.pos} /></td>
                 <td>{shortName(m.p)}{m.st.yellows > 0 && <span className="status ban"> 🟨</span>}{m.st.injured && <span className="status inj"> ✚</span>}</td>
                 <td className={`num r ${m.energy < 62 ? 'pos-bad' : m.energy < 75 ? 'pos-mid' : 'muted'}`}>{Math.round(m.energy)}</td>
-                <td className={`num r ${r >= 7.5 ? 'pos-good' : r < 6 ? 'pos-bad' : ''}`}>{r.toFixed(1)}</td>
+                <td className={`num r ${r >= 7.5 ? 'pos-good' : r < 6 ? 'pos-bad' : ''}`}>{fmtN(r)}</td>
               </tr>
             );
           })}

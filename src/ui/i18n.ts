@@ -36,6 +36,8 @@ function fill(s: string, vars: Record<string, string | number>): string {
     const v = vars[k];
     if (v === undefined) return `{${k}}`;
     if (form === 'ord') return ordinalEn(Number(v)); // solo nei testi inglesi: 1st, 2nd, 3rd, 11th
+    // numeri coi decimali della lingua in uso (il collaudo ha trovato «Riferimento 5.5» in italiano)
+    if (typeof v === 'number' && !Number.isInteger(v)) return v.toLocaleString(locale(), { maximumFractionDigits: 2, useGrouping: false });
     if (!form || typeof v !== 'string' || !/^\p{Lu}/u.test(v)) return String(v);
     const forms = teamForms('x', v);
     return forms[form === 'art' ? 'x' : `x_${form}`] ?? v;
@@ -84,4 +86,7 @@ export const fmtDate = (season: number, day: number) =>
     : { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 /** nome di una nazione; quelle che arrivano da un database e il gioco non conosce restano col loro codice */
 export const natName = (code: string) => { const k = `nat.${code}`; const s = t(k); return s === k ? code : s; };
+/** numero coi decimali della lingua (virgola in italiano, punto in inglese) */
+export const fmtN = (v: number, digits = 1) =>
+  v.toLocaleString(locale(), { minimumFractionDigits: digits, maximumFractionDigits: digits, useGrouping: false });
 export const fmtSeason = (season: number) => `${season}/${String(season + 1).slice(2)}`;

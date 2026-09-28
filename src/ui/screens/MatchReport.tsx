@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Fixture, MatchEvent, SideStats, WorldState } from '../../engine/model.ts';
 import { fxLabel } from '../league.ts';
 import { Crest } from '../Crest.tsx';
 import { Star } from 'lucide-react';
 import { PosBadge, Rating, shortName } from '../bits.tsx';
-import { t } from '../i18n.ts';
+import { fmtN, t } from '../i18n.ts';
 import { ResultsList } from './Fixtures.tsx';
 import { refereeFor } from '../../engine/referees.ts';
 import { weatherFor } from '../../engine/weather.ts';
@@ -23,7 +23,7 @@ function statRows(s: [SideStats, SideStats]): [string, string, string, number][]
   const acc = (x: SideStats) => (x.passes ? Math.round((x.passesOk / x.passes) * 100) : 0);
   return [
     ['match.stat.possession', ...both((x) => `${x.possession}%`)],
-    ['match.stat.xg', ...both((x) => x.xg.toFixed(2))],
+    ['match.stat.xg', ...both((x) => fmtN(x.xg, 2))],
     ['match.stat.shots', ...both((x) => `${x.shots} (${x.onTarget})`)],
     ['match.stat.passes', ...both((x) => `${x.passes} · ${acc(x)}%`)],
     ['match.stat.tackles', ...both((x) => x.tackles)],
@@ -43,7 +43,7 @@ function EventLine({ world, e }: { world: WorldState; e: MatchEvent }) {
   );
   const extra = e.type === 'sub' && e.assistId !== undefined ? ` → ${name(e.assistId)}`
     : e.assistId !== undefined ? ` (${t('match.assist', { name: name(e.assistId) })})`
-    : e.type === 'penGoal' ? ` (${t('match.pen')})` : e.type === 'chance' ? ` · xG ${e.xg?.toFixed(2)}` : '';
+    : e.type === 'penGoal' ? ` (${t('match.pen')})` : e.type === 'chance' ? ` · xG ${fmtN(e.xg ?? 0, 2)}` : '';
   return (
     <div className="row" style={{ justifyContent: e.side ? 'flex-start' : 'flex-end', gap: 'var(--s-2)' }}>
       {e.side === 1 && <span className="num muted">{e.min}'</span>}
@@ -57,6 +57,11 @@ function EventLine({ world, e }: { world: WorldState; e: MatchEvent }) {
 export function MatchModal({ world, fx: first, others, onClose }: { world: WorldState; fx: Fixture; others: Fixture[]; onClose: () => void }) {
   // cliccando un altro risultato del giorno se ne legge il resoconto e la radiocronaca
   const [fx, setFx] = useState(first);
+  useEffect(() => { // Esc chiude, come ci si aspetta da una finestra
+    const key = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', key);
+    return () => window.removeEventListener('keydown', key);
+  }, [onClose]);
   const clubs = [world.clubs[fx.home]!, world.clubs[fx.away]!];
   const r = fx.result!;
   const ratings = clubs.map((c) =>

@@ -6,11 +6,11 @@ import { pick, type Ctx } from '../match/analyst.ts';
 import type { Clip } from '../match/highlights.ts';
 import { sheet, type SheetSide, type ShotDot } from '../match/sheet.ts';
 import { shortName } from '../bits.tsx';
-import { t } from '../i18n.ts';
+import { fmtN, t } from '../i18n.ts';
 import { ClipStrip } from './LiveParts.tsx';
 
 const ROWS: { key: string; get: (s: SheetSide) => number | string }[] = [
-  { key: 'xg', get: (s) => s.xg.toFixed(2) },
+  { key: 'xg', get: (s) => fmtN(s.xg, 2) },
   { key: 'shots', get: (s) => `${s.shots} (${s.onTarget})` },
   { key: 'possession', get: (s) => `${s.possession}%` },
   { key: 'passes', get: (s) => `${s.passesOk}/${s.passes}` },
@@ -31,7 +31,7 @@ function ShotMap({ shots, me }: { shots: ShotDot[]; me: 0 | 1 }) {
       <line x1="60" y1="0" x2="60" y2="80" /><rect x="0" y="21" width="19" height="38" /><rect x="101" y="21" width="19" height="38" />
       {shots.map((s, i) => (
         <circle key={i} cx={mx(s.x) * 10} cy={my(s.y) * 10} r={2 + s.xg * 9} className={`shot ${s.outcome} ${s.side === me ? 'me' : 'them'}`}>
-          <title>{`${s.min}' xG ${s.xg.toFixed(2)} · ${t(`sheet.out.${s.outcome}`)}`}</title>
+          <title>{`${s.min}' xG ${fmtN(s.xg, 2)} · ${t(`sheet.out.${s.outcome}`)}`}</title>
         </circle>
       ))}
     </svg>
@@ -44,7 +44,7 @@ export function LiveSheet({ run, me, clubs, step, final, ctx, clips, now, onRepl
 }) {
   const { sides, shots } = sheet(run.frames, step);
   const best = [...run.teams[0].played, ...run.teams[1].played].sort((a, b) => run.rating(b) - run.rating(a)).slice(0, 3);
-  const advice = pick(ctx, new Map());
+  const advice = pick({ ...ctx, over: final }, new Map());
   return (
     <div className="panel live-sheet">
       <div className="sheet-head">
@@ -67,7 +67,7 @@ export function LiveSheet({ run, me, clubs, step, final, ctx, clips, now, onRepl
           <span className="caps">{t('sheet.best')}</span>
           {best.map((m) => (
             <div key={m.p.id} className="row"><b>{shortName(m.p)}</b><span className="muted small">{clubs[run.teams[0].played.includes(m) ? 0 : 1].shortName}</span>
-              <span className="num">{run.rating(m).toFixed(1)}</span></div>
+              <span className="num">{fmtN(run.rating(m))}</span></div>
           ))}
           <span className="caps">{t('live.analyst')}</span>
           <p className="sheet-advice">{advice ? t(`an.${advice.id}`, advice.vars) : t('an.quiet')}</p>

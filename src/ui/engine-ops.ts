@@ -4,7 +4,7 @@ import { deserialize, serialize } from '../engine/save.ts';
 import type { SimOutput } from '../engine/match/engine.ts';
 import type { Fixture, WorldState } from '../engine/model.ts';
 import type { RngState } from '../engine/rng.ts';
-import { advance, closeMatchDay, endSeason, fixturesOn, openMatchDay, type SeasonSummary } from '../engine/world.ts';
+import { advanceToMine, closeMatchDay, endSeason, fixturesOn, openMatchDay, type SeasonSummary } from '../engine/world.ts';
 import { Rng } from '../engine/rng.ts';
 
 export interface FxKey { day: number; home: number; away: number; cup: boolean }
@@ -26,7 +26,7 @@ export const findFx = (w: WorldState, k: FxKey) =>
 /** esegue una richiesta sul mondo: la usa il worker, e il thread principale quando il worker non c'è */
 export function handle(req: Req): Res {
   const w = deserialize(req.world);
-  if (req.op === 'advance') { const played = advance(w).map(keyOf); return { op: 'advance', world: serialize(w), played }; }
+  if (req.op === 'advance') { const played = advanceToMine(w).map(keyOf); return { op: 'advance', world: serialize(w), played }; }
   if (req.op === 'endSeason') { const summary = endSeason(w); return { op: 'endSeason', world: serialize(w), summary }; }
   if (req.op === 'open') {
     const o = openMatchDay(w);

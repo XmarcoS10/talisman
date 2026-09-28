@@ -7,7 +7,7 @@ import { request, requestCost } from '../../engine/board/board.ts';
 import type { WorldState } from '../../engine/model.ts';
 import { NATIONS } from '../../engine/names.ts';
 import { intakePreview, youthTable } from '../../engine/youth/primavera.ts';
-import { youngsters } from '../../engine/youth/intake.ts';
+import { foreignShare, youngsters } from '../../engine/youth/intake.ts';
 import { PosBadge, Stars, fullName } from '../bits.tsx';
 import { t } from '../i18n.ts';
 import { IntlMatches } from './IntlMatches.tsx';
@@ -42,7 +42,7 @@ export function Youth({ world, onPlayer, onChange }: { world: WorldState; onPlay
           <span className="muted small"><Building2 size={12} /> {t('youth.facilitiesHint')}</span></div>
         <div className="kpi"><span className="row" style={{ justifyContent: 'space-between' }}><span className="caps">{t('youth.recruitment')}</span><span className="tag warn">{t(`youth.reach.${level(club.youth.recruitment)}`)}</span></span>
           <div className="big num">{club.youth.recruitment} <small>/ 20</small></div><div className="meter"><i className="warn" style={{ width: `${club.youth.recruitment * 5}%` }} /></div>
-          <span className="muted small">{t('youth.recruitHint', { n: Math.round(club.youth.recruitment * YOUTH.foreignPerRecruitment * 100) })}</span></div>
+          <span className="muted small">{t('youth.recruitHint', { n: Math.round(foreignShare(world, club) * 100) })}</span></div>
         <div className="kpi"><span className="row" style={{ justifyContent: 'space-between' }}><span className="caps">{t('youth.next')}</span><Sparkles size={16} color="var(--accent)" /></span>
           <div className="big" style={{ color: 'var(--accent)' }}>{t('youth.summer', { y: world.season + 1 })}</div>
           <span className="muted small">{t('youth.preview', { a: prev.size[0], b: prev.size[1] })} <Stars world={world} ca={prev.pa} /></span></div>

@@ -86,11 +86,18 @@ export function Desk({ world, onNav, onWatch, onChange, onPlayer }: Props) {
 
           <div className="panel">
             <h2><Newspaper size={18} /> {t('desk.news')}</h2>
-            {news.map((n, i) => (
-              <div key={`n${i}`} className="feed-row" style={{ gridTemplateColumns: '92px 1fr' }}>
-                <span className="num muted small">{fmtDate(n.season, n.day)}</span><span>{tEvent(n.key, n.vars)}</span>
-              </div>
-            ))}
+            {news.map((n, i) => {
+              // le richieste degli agenti portano al giocatore, dove c'è il contratto da rinnovare (collaudo: non si trovava)
+              const pid = typeof n.vars.pid === 'number' && world.players[n.vars.pid] ? n.vars.pid : null;
+              return (
+                <div key={`n${i}`} className="feed-row" style={{ gridTemplateColumns: '92px 1fr' }}>
+                  <span className="num muted small">{fmtDate(n.season, n.day)}</span>
+                  {pid !== null
+                    ? <button className="link" style={{ textAlign: 'left' }} onClick={() => onPlayer(pid)}>{tEvent(n.key, n.vars)} ›</button>
+                    : <span>{tEvent(n.key, n.vars)}</span>}
+                </div>
+              );
+            })}
             {[...played].reverse().slice(0, 4).map((fx) => (
               <div key={fx.day} className="feed-row" style={{ gridTemplateColumns: '92px 1fr' }}>
                 <span className="num muted small">{fmtDate(world.season, fx.day)}</span>

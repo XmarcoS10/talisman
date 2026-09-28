@@ -1,5 +1,21 @@
 # Note di rilascio
 
+## 0.6.1 — il collaudo
+
+Le carriere della 0.6.0 si aprono senza cambiamenti; la partita è la stessa. Correzioni trovate giocando una stagione
+intera come un giocatore nuovo (`docs/notes/collaudo-2026-09-28.md`).
+
+- **I decimali hanno la virgola** in italiano (età media, carico di allenamento, voti, xG, percentuali).
+- **«Avanza» non fa più clic a vuoto**: i giorni in cui la tua squadra non gioca passano da soli fino alla tua prossima
+  partita o alla fine della stagione. Ci si ferma se arriva un'offerta o una conferenza stampa.
+- **Il report sulla prima partita** mostra già l'allenatore avversario, e l'uomo pericoloso non ha più numeri inventati.
+- **«Salta al finale»** lascia i cambi al vice, e **l'analista** a fine partita commenta invece di suggerire cambi.
+- Dopo una partita di coppa il resoconto dice «Fine partita» e non «Finale»; si chiude anche con Esc.
+- Le **richieste di rinnovo** degli agenti portano al giocatore; le Finanze spiegano perché la cassa scende fino a maggio.
+- Il riassunto di fine stagione dice chi ha vinto la coppa e chi è il tuo capocannoniere.
+- Ogni club ha una sigla sua (nei mondi nuovi); il suggerimento della partita dal vivo non copre più il campo.
+- Piccoli testi: «una giornata» di squalifica, «esonero sotto il 18%», il vivaio con la quota vera di stranieri.
+
 ## 0.6.0 — la costruzione
 
 Le carriere della 0.5.x si aprono senza cambiamenti.
@@ -131,6 +147,23 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.6.1 — the playtest (English)
+
+Careers from 0.6.0 open unchanged; matches play the same. Fixes found by playing a full season as a new player
+(`docs/notes/collaudo-2026-09-28.md`).
+
+- **Decimals follow the language** (average age, training load, ratings, xG, percentages).
+- **No more empty clicks on "Continue"**: days when your team doesn't play go by on their own until your next match or
+  the end of the season. It stops if an offer or a press conference comes in.
+- **The report on the first match** already shows the opposing manager, and the danger man no longer has made-up numbers.
+- **"Skip to the end"** lets the assistant make the substitutions, and at full time **the analyst** comments instead of
+  suggesting changes.
+- Cup match reports say "Full time" rather than "Final"; they also close with Esc.
+- Agents' **renewal requests** take you to the player; the Finances screen explains why cash goes down until May.
+- The end-of-season summary shows the cup winner and your top scorer.
+- Every club has its own short code (in new worlds); the live-match hint no longer covers the pitch.
+- Small texts: a one-match ban, "sacked below 18%", the academy's real share of foreign players.
 
 ## 0.6.0 — the build-up (English)
 

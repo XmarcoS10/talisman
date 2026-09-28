@@ -7,7 +7,7 @@ import { estimate, range } from '../../engine/scouting/fog.ts';
 import { Ability, Est } from '../fog.tsx';
 import { Download } from 'lucide-react';
 import { downloadCsv } from '../csv.ts';
-import { fmtMoney, natName, t } from '../i18n.ts';
+import { fmtMoney, fmtN, natName, t } from '../i18n.ts';
 import { moraleClass } from './Graph.tsx';
 
 /** segnali di indisponibilità accanto al nome */
@@ -15,7 +15,7 @@ export function Status({ p, out = false }: { p: Player; out?: boolean }) {
   return (
     <>
       {p.condition.injuryDays > 0 && <span className="status inj" title={t('status.injured', { days: p.condition.injuryDays })}>✚ {p.condition.injuryDays}g</span>}{' '}
-      {p.discipline.ban > 0 && <span className="status ban" title={t('status.banned', { n: p.discipline.ban })}>SQ {p.discipline.ban}</span>}{' '}
+      {p.discipline.ban > 0 && <span className="status ban" title={t(p.discipline.ban === 1 ? 'status.banned1' : 'status.banned', { n: p.discipline.ban })}>SQ {p.discipline.ban}</span>}{' '}
       {p.condition.injuryDays === 0 && p.condition.relapse > 0 && <span className="status ban" title={t('status.relapse')}>⚠</span>}{' '}
       {out && <span className="status inj" title={t('status.excluded')}>FR</span>}
     </>
@@ -75,8 +75,8 @@ function columns(view: View, season: number, rep: number, world: WorldState, own
     { key: 'apps', label: t('col.apps'), num: true, value: (p) => p.stats.apps },
     { key: 'goals', label: t('col.goals'), num: true, value: (p) => p.stats.goals },
     { key: 'assists', label: t('col.assists'), num: true, value: (p) => p.stats.assists },
-    { key: 'rating', label: t('col.rating'), num: true, value: avg, cell: (p) => (avg(p) ? avg(p).toFixed(2) : '-') },
-    { key: 'form', label: t('player.form'), value: (p) => p.form.at(-1) ?? 0, cell: (p) => p.form.map((v) => v.toFixed(1)).join(' ') },
+    { key: 'rating', label: t('col.rating'), num: true, value: avg, cell: (p) => (avg(p) ? fmtN(avg(p), 2) : '-') },
+    { key: 'form', label: t('player.form'), value: (p) => p.form.at(-1) ?? 0, cell: (p) => p.form.map((v) => fmtN(v)).join(' ') },
     { key: 'yel', label: '🟨', num: true, value: (p) => p.stats.yellows },
     { key: 'red', label: '🟥', num: true, value: (p) => p.stats.reds },
   ];
@@ -120,7 +120,7 @@ export function Squad({ world, clubId, onPlayer, title }: { world: WorldState; c
     <div className="panel">
       <div className="row wrap">
         <h2>{title ?? t('squad.title', { n: squad.length })}</h2>
-        <span className="pill num">{t('squad.avgAge', { n: avgAge.toFixed(1) })}</span>
+        <span className="pill num">{t('squad.avgAge', { n: fmtN(avgAge) })}</span>
         <span className="pill num">{t('squad.wages', { v: fmtMoney(wages) })}</span>
         <span className="pill num">{t('squad.u21', { n: u21, tot: squad.length })}</span>
         {own && <button className="btn" title={t('csv.export')} onClick={() => downloadCsv(`rosa-${view}-${world.season}.csv`, [

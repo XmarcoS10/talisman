@@ -5,7 +5,7 @@ import { FORMATION_IDS, TRAINING_CATS, type TrainingCat, type WorldState } from 
 import { age } from '../../engine/players.ts';
 import { PRESETS, planFocus, planLoad, trainingInjuryP } from '../../engine/training.ts';
 import { PosBadge, shortName } from '../bits.tsx';
-import { t } from '../i18n.ts';
+import { fmtN, t } from '../i18n.ts';
 
 const Bar = ({ v, max, cls = '' }: { v: number; max: number; cls?: string }) => (
   <span className={`bar ${cls}`}><span style={{ width: `${Math.max(0, Math.min(100, (v / max) * 100))}%` }} /></span>
@@ -33,9 +33,9 @@ export function Training({ world, onChange, onPlayer }: { world: WorldState; onC
   return (
     <div className="stack">
     <div className="kpis">
-      <div className="kpi"><span className="caps">{t('training.load')}</span><div className={`big num ${load > TRAIN.loadRef * 1.3 ? 'pos-bad' : load > TRAIN.loadRef ? 'pos-mid' : 'pos-good'}`}>{load.toFixed(1)} <small>/ {TRAIN.loadRef}</small></div>
+      <div className="kpi"><span className="caps">{t('training.load')}</span><div className={`big num ${load > TRAIN.loadRef * 1.3 ? 'pos-bad' : load > TRAIN.loadRef ? 'pos-mid' : 'pos-good'}`}>{fmtN(load)} <small>/ {fmtN(TRAIN.loadRef)}</small></div>
         <div className="meter"><i className={load > TRAIN.loadRef * 1.3 ? 'bad' : load > TRAIN.loadRef ? 'warn' : ''} style={{ width: `${Math.min(100, load / (TRAIN.loadRef * 1.5) * 100)}%` }} /></div></div>
-      <div className="kpi"><span className="caps">{t('training.riskAvg')}</span><div className="big num">{(avgRisk * 100).toFixed(2)}%</div><span className="muted small">{t('training.riskAvgHint')}</span></div>
+      <div className="kpi"><span className="caps">{t('training.riskAvg')}</span><div className="big num">{fmtN(avgRisk * 100, 2)}%</div><span className="muted small">{t('training.riskAvgHint')}</span></div>
       <div className="kpi"><span className="caps">{t('training.famNow', { f: club.tactic.formation })}</span><div className="big num">{Math.round(familiarityOf(club))}%</div>
         <div className="meter"><i className="cyan" style={{ width: `${familiarityOf(club)}%` }} /></div></div>
       <div className="kpi"><span className="caps">{t('training.mentors')}</span><div className="big num">{tutored} <small>/ {mentees.length}</small></div><span className="muted small">{t('training.tutored')}</span></div>
@@ -75,7 +75,7 @@ export function Training({ world, onChange, onPlayer }: { world: WorldState; onC
         <div className="grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
           <div className="panel">
             <h2><Activity size={18} /> {t('training.load')}</h2>
-            <div className="row"><Bar v={load} max={10} cls={load > TRAIN.loadRef * 1.3 ? 'bad' : load > TRAIN.loadRef ? 'mid' : ''} /><b className="num">{load.toFixed(1)}</b></div>
+            <div className="row"><Bar v={load} max={10} cls={load > TRAIN.loadRef * 1.3 ? 'bad' : load > TRAIN.loadRef ? 'mid' : ''} /><b className="num">{fmtN(load)}</b></div>
             <div className="muted" style={{ fontSize: 11 }}>{t('training.loadHint', { ref: TRAIN.loadRef })}</div>
             <h2 style={{ marginTop: 8 }}>{t('training.focus')}</h2>
             {(['technical', 'physical', 'mental', 'setPieces'] as const).map((a) => (
@@ -102,7 +102,7 @@ export function Training({ world, onChange, onPlayer }: { world: WorldState; onC
           {risky.map(({ p, r }) => (
             <div key={p.id} className="attr clickable" onClick={() => onPlayer(p.id)}>
               <span><PosBadge pos={p.position} /> {shortName(p)} {p.condition.relapse > 0 && <span className="pos-mid">· {t('training.relapse')}</span>}</span>
-              <b className={`num ${r > TRAIN.injuryBase * 4 ? 'pos-bad' : 'pos-mid'}`}>{(r * 100).toFixed(1)}%</b>
+              <b className={`num ${r > TRAIN.injuryBase * 4 ? 'pos-bad' : 'pos-mid'}`}>{fmtN(r * 100)}%</b>
             </div>
           ))}
         </div>

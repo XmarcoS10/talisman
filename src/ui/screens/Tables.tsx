@@ -8,7 +8,7 @@ import { Crest } from '../Crest.tsx';
 import { shortName } from '../bits.tsx';
 import { Download } from 'lucide-react';
 import { downloadCsv } from '../csv.ts';
-import { t } from '../i18n.ts';
+import { fmtN, t } from '../i18n.ts';
 import { formOf, nextFixture, tableFor, type TableView } from '../league.ts';
 import { LeagueSide } from './TablesSide.tsx';
 
@@ -141,8 +141,8 @@ export function Tables({ world, clubId, onPlayer, onClub }: { world: WorldState;
                     <td className={`r num ${view === 'all' ? `zone-${zone(i + 1)}` : ''}`}>{i + 1}</td>
                     <td><span className="row" style={{ gap: 'var(--s-2)' }}><span className="code">{c.shortName.slice(0, 3).toUpperCase()}</span><Crest club={c} size={18} />{c.name}</span></td>
                     {view === 'xg'
-                      ? <><td className="r num">{r.p}</td><td className="r num">{r.xgf.toFixed(1)}</td><td className="r num">{r.xga.toFixed(1)}</td>
-                        <td className="r num"><b>{(r.xgf - r.xga > 0 ? '+' : '') + (r.xgf - r.xga).toFixed(1)}</b></td><td className="r num">{r.gf}</td><td className="r num">{r.ga}</td></>
+                      ? <><td className="r num">{r.p}</td><td className="r num">{fmtN(r.xgf)}</td><td className="r num">{fmtN(r.xga)}</td>
+                        <td className="r num"><b>{(r.xgf - r.xga > 0 ? '+' : '') + fmtN(r.xgf - r.xga)}</b></td><td className="r num">{r.gf}</td><td className="r num">{r.ga}</td></>
                       : <><td className="r num">{r.p}</td><td className="r num">{r.w}</td><td className="r num">{r.d}</td><td className="r num">{r.l}</td>
                         <td className="r num">{r.gf}</td><td className="r num">{r.ga}</td><td className="r num">{r.gf - r.ga > 0 ? '+' : ''}{r.gf - r.ga}</td><td className="r num"><b>{r.pts}</b></td></>}
                     <td><span className="form-row">{formOf(comp, r.clubId).map((f, j) => <span key={j} className={`form ${f}`}>{t(`col.${f === 'W' ? 'w' : f === 'D' ? 'd' : 'l'}`)}</span>)}</span></td>

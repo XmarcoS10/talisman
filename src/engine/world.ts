@@ -127,8 +127,27 @@ export function newWorld(seed: number, season = 2026): WorldState {
 }
 
 /** dopo i club: Serie C se manca, calendario, spogliatoi, stipendi, agenti e osservatori */
+/**
+ * sigle di tre lettere tutte diverse (il collaudo ha trovato due «CAS» nella stessa Serie A): chi arriva dopo prende
+ * un'altra combinazione di lettere della sua città, sempre con la prima; nessuna pesca dal caso
+ */
+export function uniqueCodes(world: WorldState) {
+  const used = new Set<string>();
+  for (const club of Object.values(world.clubs)) {
+    const all = club.city.replace(/[^A-Za-z]/g, '').toUpperCase();
+    const letters = all[0]! + all.slice(1).replace(/[AEIOU]/g, '') + all.slice(1); // prima le consonanti: CSL, non CAA
+    let code = club.shortName;
+    for (let i = 1; used.has(code) && i < letters.length; i++)
+      for (let j = i + 1; used.has(code) && j < letters.length; j++) code = letters[0]! + letters[i]! + letters[j]!;
+    for (let n = 2; used.has(code); n++) code = club.shortName.slice(0, 2) + n; // città di due lettere o tutte prese
+    club.shortName = code;
+    used.add(code);
+  }
+}
+
 export function finishWorld(world: WorldState, rng: Rng): WorldState {
   ensureSerieC(world, rng);
+  uniqueCodes(world); // dopo la Serie C, che crea i suoi club
   scheduleSeason(world, rng);
   for (const club of Object.values(world.clubs)) {
     club.familiarity = { [club.tactic.formation]: TRAIN.famStart };
@@ -226,7 +245,7 @@ function passDays(world: WorldState, rng: Rng, days: number, weeks: number) {
     for (const mv of weekAgents(world, rng)) {
       const mine = world.manager.clubId;
       if (mv.kind === 'renew' && mv.player.clubId === mine)
-        addNews(world, 'news.agentRenew', { agent: mv.agent.name, name: pName(mv.player), wage: mv.wage });
+        addNews(world, 'news.agentRenew', { agent: mv.agent.name, name: pName(mv.player), wage: mv.wage, pid: mv.player.id }); // pid: la notizia apre il giocatore
       else if (mv.kind === 'push' && mv.player.clubId === mine)
         addNews(world, 'news.agentPush', { agent: mv.agent.name, name: pName(mv.player) });
       else if (mv.kind === 'propose' && mv.to === mine)
@@ -292,6 +311,25 @@ export function advance(world: WorldState): Fixture[] {
   world.day = next ?? day + 1;
   expireOffers(world); // le offerte a cui non hai risposto
   world.rng = rng.s;
+  return played;
+}
+
+/**
+ * «Avanza» dell'utente: i giorni in cui il suo club non gioca (coppa da eliminato, spareggi di Serie B, finale altrui)
+ * passano da soli fino alla sua prossima partita o alla fine della stagione (il collaudo contava sei clic a vuoto a
+ * fine maggio). Si ferma prima se arriva qualcosa da decidere: un'offerta o una conferenza stampa
+ */
+export function advanceToMine(world: WorldState): Fixture[] {
+  const me = world.manager.clubId;
+  const mine = (f: Fixture) => f.home === me || f.away === me;
+  const played = advance(world);
+  const offers = world.offers.length, press = world.press;
+  for (let guard = 0; guard < 30 && !played.some(mine) && !isSeasonOver(world); guard++) {
+    if (world.offers.length !== offers || world.press !== press) break;
+    const more = advance(world);
+    if (!more.length && nextMatchDay(world) === null) break;
+    played.push(...more);
+  }
   return played;
 }
 

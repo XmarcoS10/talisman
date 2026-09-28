@@ -1,6 +1,6 @@
 // Colonna destra delle classifiche: marcatori, assist, media voto, disciplina.
 import type { Competition, Player, WorldState } from '../../engine/model.ts';
-import { t } from '../i18n.ts';
+import { fmtN, t } from '../i18n.ts';
 import { avgRating, cards, goalsPerGame, leaders } from '../league.ts';
 
 interface Props { world: WorldState; comp: Competition; onPlayer: (id: number) => void; name: (p: Player) => string }
@@ -47,7 +47,7 @@ export function LeagueSide({ world, comp, onPlayer, name }: Props) {
             <span className="num muted">{i + 1}</span>
             <span><b>{name(p)}</b><small>{club(p)}</small></span>
             <span className="meter" style={{ width: 70 }}><i style={{ width: `${(avgRating(p) - 5) / 4 * 100}%` }} /></span>
-            <span className="tag num">{avgRating(p).toFixed(2)}</span>
+            <span className="tag num">{fmtN(avgRating(p), 2)}</span>
           </button>
         ))}
         {rated.length === 0 && <span className="muted">{t('tables.none')}</span>}
@@ -63,7 +63,7 @@ export function LeagueSide({ world, comp, onPlayer, name }: Props) {
           </div>
         )}
         <div className="row muted small" style={{ justifyContent: 'space-between' }}>
-          <span>{t('tables.gpg')} <b className="num">{goalsPerGame(comp).toFixed(2)}</b></span>
+          <span>{t('tables.gpg')} <b className="num">{fmtN(goalsPerGame(comp), 2)}</b></span>
           <span>{t('tables.pens')} <b className="num">{pens}</b></span>
         </div>
       </div>

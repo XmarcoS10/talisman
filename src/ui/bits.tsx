@@ -1,7 +1,7 @@
 // Piccole primitive condivise tra le schermate.
 import type { Player, Position, WorldState } from '../engine/model.ts';
 import { toStars } from './stars.ts';
-import { t, lang } from './i18n.ts';
+import { fmtN, lang, t } from './i18n.ts';
 import { teamForms } from '../engine/narrative/italian.ts';
 
 /** abilità in stelle da ½ a 5, relative al campionato dell'utente (`stars.ts`) */
@@ -25,7 +25,7 @@ export const attrClass = (v: number) => (v <= 7 ? 'a1' : v <= 10 ? 'a2' : v <= 1
 
 /** voto in pagella come chip colorato: 8+ smeraldo, 6,8-7,9 ciano, 6-6,7 grigio, sotto 6 rosso */
 export const rateClass = (v: number) => (v >= 8 ? 'top' : v >= 6.8 ? 'good' : v >= 6 ? 'ok' : 'bad');
-export const Rating = ({ v }: { v: number }) => <span className={`rate ${rateClass(v)}`}>{v ? v.toFixed(1) : '–'}</span>;
+export const Rating = ({ v }: { v: number }) => <span className={`rate ${rateClass(v)}`}>{v ? fmtN(v) : '–'}</span>;
 
 /** etichetta di personalità derivata dai 6 assi (GUIDA §4.4), mai salvata */
 export function personalityKey(p: Player): string {

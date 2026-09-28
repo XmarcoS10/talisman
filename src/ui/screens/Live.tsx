@@ -68,15 +68,17 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   const ctx = context(run, me, run.frames, world.clubs[world.manager.clubId]!.playerIds
     .reduce((s, id) => s + world.players[id]!.psych.morale, 0) / world.clubs[world.manager.clubId]!.playerIds.length);
 
-  // la frase dell'analista cambia ogni 5 minuti di gioco
+  const over = run.done && T.current >= duration(run);
+  // la frase dell'analista cambia ogni 5 minuti di gioco, e al fischio finale diventa il commento alla partita
   const lastPhrase = useRef(-10);
-  if (min - lastPhrase.current >= 5) {
+  const finalSaid = useRef(false);
+  if (min - lastPhrase.current >= 5 || (over && !finalSaid.current)) {
     lastPhrase.current = min;
-    const p = pick({ ...ctx, min }, said.current);
+    finalSaid.current = over;
+    const p = pick({ ...ctx, min, over }, said.current);
     if (p) setTimeout(() => setPhrase(p), 0);
   }
 
-  const over = run.done && T.current >= duration(run);
   const whistled = useRef(false);
   if (over && !whistled.current) { whistled.current = true; playUi('whistle'); setTimeout(() => setSheet('full'), 0); }
   if (!halfShown.current && !replay.current && (st?.frame?.half ?? 1) === 2) { // intervallo: la partita aspetta col tabellino
@@ -101,6 +103,8 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   // la partita finisce di giocarsi subito
   const toEnd = () => {
     replay.current = null; // saltare chiude il replay
+    // chi salta al finale non può fare i cambi: per il resto della partita li fa il vice, come per l'IA (collaudo)
+    run.teams[me].auto = true;
     run.result();
     halfShown.current = true; // niente intervallo se si salta al finale
     T.current = duration(run);
@@ -136,7 +140,6 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
         </div>
 
         <div className="stack">
-          <Hint id="live" />
           <OverlayChips on={overlays} onChange={(v) => { setOverlays(v); updateSettings({ overlays: v }); }} />
           {sheetOpen && (
             <LiveSheet run={run} me={me} clubs={clubs} step={st?.i ?? 0} final={sheetOpen === 'full'} ctx={{ ...ctx, min }} clips={reel.current.clips}
@@ -155,6 +158,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
               <div key={`${l.key}${i}`} className={`${i === a.length - 1 ? 'now' : 'muted'} ${l.big ? 'big' : ''}`}>{t(l.key, l.vars)}</div>
             ))}
           </div>
+          <Hint id="live" /> {/* sotto il campo: sopra lo spingeva fuori dallo schermo alla prima partita */}
         </div>
 
         <div className="stack">

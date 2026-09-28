@@ -25,7 +25,9 @@ export const strictLabel = (r: Referee) => t(r.strict <= 7 ? 'ref.lenient' : r.s
 export function OpponentReport({ world, oppId, fx, onPlayer }: { world: WorldState; oppId: number; fx?: Fixture; onPlayer: (id: number) => void }) {
   const opp = world.clubs[oppId]!;
   const squad = opp.playerIds.map((id) => world.players[id]!);
-  const danger = [...squad].sort((a, b) => b.stats.goals * 2 + b.stats.assists - (a.stats.goals * 2 + a.stats.assists) || (b.history.at(-1)?.goals ?? 0) - (a.history.at(-1)?.goals ?? 0))[0];
+  // senza gol in stagione né storia (la prima stagione di un mondo nuovo) resta la punta: niente valori nascosti
+  const danger = [...squad].sort((a, b) => b.stats.goals * 2 + b.stats.assists - (a.stats.goals * 2 + a.stats.assists)
+    || (b.history.at(-1)?.goals ?? 0) - (a.history.at(-1)?.goals ?? 0) || +(b.position === 'ST') - +(a.position === 'ST'))[0];
   const last = [...(world.manager.h2h[oppId] ?? '')].slice(-3);
   const a = advice(opp);
   const coach = coachOf(world, oppId);
@@ -47,7 +49,7 @@ export function OpponentReport({ world, oppId, fx, onPlayer }: { world: WorldSta
           <button className="mini-card" style={{ textAlign: 'left' }} onClick={() => onPlayer(danger.id)}>
             <span className="caps">{t('opp.danger')}</span>
             <b>★ {shortName(danger)}</b>
-            <small>{danger.stats.apps ? t('opp.dangerStats', { g: danger.stats.goals, a: danger.stats.assists }) : t('opp.dangerLast', { g: danger.history.at(-1)?.goals ?? 0 })}</small>
+            <small>{danger.stats.apps ? t('opp.dangerStats', { g: danger.stats.goals, a: danger.stats.assists }) : danger.history.length ? t('opp.dangerLast', { g: danger.history.at(-1)!.goals }) : t('opp.dangerNone')}</small>
           </button>
         )}
       </div>
@@ -72,7 +74,7 @@ export function OpponentReport({ world, oppId, fx, onPlayer }: { world: WorldSta
         </div>
       )}
       {wx && wx.kind !== 'clear' && <div className="muted small">{t(`wx.advice.${wx.kind}`)}</div>}
-      <div className="analyst"><b>{t('opp.analyst')}</b> {t(`opp.advice.${a}`, { club: opp.shortName })}</div>
+      <div className="analyst"><b>{t('opp.analyst')}</b> {t(`opp.advice.${a}`, { club: opp.city })}</div>
     </div>
   );
 }

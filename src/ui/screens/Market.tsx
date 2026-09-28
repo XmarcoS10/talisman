@@ -8,7 +8,7 @@ import { value } from '../../engine/transfers/valuation.ts';
 import { PosBadge, fullName } from '../bits.tsx';
 import { downloadCsv } from '../csv.ts';
 import { Ability } from '../fog.tsx';
-import { fmtMoney, t } from '../i18n.ts';
+import { fmtMoney, fmtN, t } from '../i18n.ts';
 
 interface F {
   pos: Position | '';
@@ -139,7 +139,7 @@ export function Market({ world, onPlayer, onOffer }: { world: WorldState; onPlay
                   <td className="r num">{fmtMoney(p.contract.wage)}</td>
                   <td className={`r num ${p.contract.until <= world.season ? 'pos-bad' : ''}`}>{p.contract.until}</td>
                   <td className={`r num ${m.small ? 'muted' : ''}`} title={t(m.small ? 'market.smallSample' : 'market.sample', { n: m.apps })}>
-                    {m.apps ? `${m.rating.toFixed(2)}${m.small ? ' ⚠' : ''}` : '–'}
+                    {m.apps ? `${fmtN(m.rating, 2)}${m.small ? ' ⚠' : ''}` : '–'}
                   </td>
                   <td className="r">{club && <button className="btn small primary" onClick={(e) => { e.stopPropagation(); onOffer(p.id); }}>{t('market.offer')}</button>}</td>
                 </tr>

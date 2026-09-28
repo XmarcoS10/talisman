@@ -6,7 +6,7 @@ import type { Books, WorldState } from '../../engine/model.ts';
 import { FIN } from '../../engine/balance.ts';
 import { costs, income, profit, projection, revenue, wageBill } from '../../engine/finance/ledger.ts';
 import { standings } from '../../engine/world.ts';
-import { fmtMoney, gameDate, t, locale } from '../i18n.ts';
+import { fmtMoney, fmtN, gameDate, locale, t } from '../i18n.ts';
 import { downloadCsv } from '../csv.ts';
 import { Instalments } from './FinanceParts.tsx';
 
@@ -92,6 +92,7 @@ export function Finance({ world }: { world: WorldState }) {
 
       <div className="panel">
         <h2><ChartColumn size={18} /> {t('fin.trend', { s: `${world.season}/${String(world.season + 1).slice(2)}` })}</h2>
+        <span className="muted small">{t('fin.trendHint')}</span>
         <CashChart world={world} monthly={cur?.monthly ?? []} />
       </div>
     </div>
@@ -111,7 +112,7 @@ function Side({ kind, b, keys }: { kind: 'in' | 'out'; b: Books; keys: (keyof Bo
         return (
           <div key={k} className="ledger-row">
             <div><b>{t(`fin.${k}`)}</b><div className="muted small">{t(`fin.desc.${k}`)}</div></div>
-            <div className="r"><b className="num">{fmtMoney(v)}</b><div className="small" style={{ color: kind === 'in' ? 'var(--accent)' : 'var(--warning)' }}>{tot ? Math.round(v / tot * 1000) / 10 : 0}%</div></div>
+            <div className="r"><b className="num">{fmtMoney(v)}</b><div className="small" style={{ color: kind === 'in' ? 'var(--accent)' : 'var(--warning)' }}>{fmtN(tot ? v / tot * 100 : 0)}%</div></div>
           </div>
         );
       })}

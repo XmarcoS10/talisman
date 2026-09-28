@@ -23,13 +23,17 @@ export function youthPa(club: Club, rng: Rng): { pa: number; jackpot: boolean } 
   return { pa: Math.round(clamp(rng.gauss(mean, YOUTH.paSigma), 60, 200)), jackpot: false };
 }
 
+/** quota di stranieri nell'annata: come nella prima squadra della sua categoria, di più con un buon reclutamento (0.4.0) */
+export function foreignShare(world: WorldState, club: Club) {
+  const level = Math.min(world.competitions[club.compId]?.level ?? 1, 3);
+  return Math.min(0.9, (1 - NATIONALITY.italian[level - 1]!) * (YOUTH.foreignBase + club.youth.recruitment * YOUTH.foreignPerRecruitment));
+}
+
 /** l'annata di un club: ragazzi di 15-16 anni, per lo più del paese della lega */
 export function intake(world: WorldState, rng: Rng, club: Club): Player[] {
   const out: Player[] = [];
   const n = intakeSize(club, rng);
-  // stranieri come nella prima squadra della sua categoria, di più con un buon reclutamento (0.4.0)
-  const level = Math.min(world.competitions[club.compId]?.level ?? 1, 3);
-  const foreign = Math.min(0.9, (1 - NATIONALITY.italian[level - 1]!) * (YOUTH.foreignBase + club.youth.recruitment * YOUTH.foreignPerRecruitment));
+  const foreign = foreignShare(world, club);
   for (let i = 0; i < n; i++) {
     const pos = rng.pick(ROLES);
     const nation = pickNation(rng, 1 - foreign);

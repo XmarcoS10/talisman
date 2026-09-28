@@ -1,10 +1,12 @@
 // Frase dell'analista (GUIDA §8.4, P10 punto 5): regole sui dati live, nessun testo generato a caso.
 // Ogni regola guarda il contesto e, se scatta, propone una lettura + un suggerimento concreto (testi in it.json).
+import { fmtN } from '../i18n.ts';
 import type { MP, MatchRun, TraceStep } from '../../engine/match/engine.ts';
 import type { SideStats } from '../../engine/model.ts';
 
 export interface Ctx {
   min: number;
+  over?: boolean; // fischio finale: niente più consigli su cambi e tattica, solo il commento alla partita
   me: 0 | 1;
   my: SideStats;
   opp: SideStats;
@@ -102,11 +104,11 @@ export const RULES: Rule[] = [
   { id: 'drawLate', prio: 78, when: (c) => c.diff === 0 && c.min >= 75 },
   { id: 'trailEarly', prio: 60, when: (c) => c.diff < 0 && c.min < 35 },
   { id: 'leadEarly', prio: 55, when: (c) => c.diff > 0 && c.min < 35 },
-  { id: 'xgHighNoGoals', prio: 76, when: (c) => c.xg >= 1.2 && c.diff <= 0 && c.my.shots >= 8, vars: (c) => ({ xg: c.xg.toFixed(2) }) },
-  { id: 'xgLowManyShots', prio: 72, when: (c) => shots(c) >= 8 && c.xg / Math.max(1, shots(c)) < 0.07, vars: (c) => ({ n: shots(c), xg: c.xg.toFixed(2) }) },
-  { id: 'xgAHigh', prio: 74, when: (c) => c.xgA >= 1.2 && c.min > 40, vars: (c) => ({ xg: c.xgA.toFixed(2) }) },
-  { id: 'luckyLead', prio: 68, when: (c) => c.diff > 0 && c.xgA > c.xg + 0.6, vars: (c) => ({ xg: c.xg.toFixed(2), xga: c.xgA.toFixed(2) }) },
-  { id: 'unluckyTrail', prio: 69, when: (c) => c.diff < 0 && c.xg > c.xgA + 0.6, vars: (c) => ({ xg: c.xg.toFixed(2), xga: c.xgA.toFixed(2) }) },
+  { id: 'xgHighNoGoals', prio: 76, when: (c) => c.xg >= 1.2 && c.diff <= 0 && c.my.shots >= 8, vars: (c) => ({ xg: fmtN(c.xg, 2) }) },
+  { id: 'xgLowManyShots', prio: 72, when: (c) => shots(c) >= 8 && c.xg / Math.max(1, shots(c)) < 0.07, vars: (c) => ({ n: shots(c), xg: fmtN(c.xg, 2) }) },
+  { id: 'xgAHigh', prio: 74, when: (c) => c.xgA >= 1.2 && c.min > 40, vars: (c) => ({ xg: fmtN(c.xgA, 2) }) },
+  { id: 'luckyLead', prio: 68, when: (c) => c.diff > 0 && c.xgA > c.xg + 0.6, vars: (c) => ({ xg: fmtN(c.xg, 2), xga: fmtN(c.xgA, 2) }) },
+  { id: 'unluckyTrail', prio: 69, when: (c) => c.diff < 0 && c.xg > c.xgA + 0.6, vars: (c) => ({ xg: fmtN(c.xg, 2), xga: fmtN(c.xgA, 2) }) },
   { id: 'xgBalanced', prio: 30, when: (c) => Math.abs(c.xg - c.xgA) < 0.2 && c.min > 30 },
   { id: 'fewShots', prio: 66, when: (c) => c.min > 30 && shots(c) < c.min / 10, vars: (c) => ({ n: shots(c) }) },
   { id: 'manyShots', prio: 40, when: (c) => shots(c) >= 12, vars: (c) => ({ n: shots(c) }) },
@@ -121,9 +123,9 @@ export const RULES: Rule[] = [
   { id: 'accLow', prio: 65, when: (c) => c.my.passes > 80 && c.acc < 0.74, vars: (c) => ({ v: Math.round(c.acc * 100) }) },
   { id: 'accHigh', prio: 28, when: (c) => c.my.passes > 120 && c.acc > 0.86, vars: (c) => ({ v: Math.round(c.acc * 100) }) },
   { id: 'fewPasses', prio: 44, when: (c) => c.min > 30 && c.my.passes < c.min * 3 },
-  { id: 'ppdaGood', prio: 34, when: (c) => c.ppda < 9 && c.min > 25, vars: (c) => ({ v: c.ppda.toFixed(1) }) },
-  { id: 'ppdaBad', prio: 67, when: (c) => c.ppda > 18 && c.min > 25, vars: (c) => ({ v: c.ppda.toFixed(1) }) },
-  { id: 'oppPressHigh', prio: 63, when: (c) => c.ppdaA < 8 && c.acc < 0.8, vars: (c) => ({ v: c.ppdaA.toFixed(1) }) },
+  { id: 'ppdaGood', prio: 34, when: (c) => c.ppda < 9 && c.min > 25, vars: (c) => ({ v: fmtN(c.ppda) }) },
+  { id: 'ppdaBad', prio: 67, when: (c) => c.ppda > 18 && c.min > 25, vars: (c) => ({ v: fmtN(c.ppda) }) },
+  { id: 'oppPressHigh', prio: 63, when: (c) => c.ppdaA < 8 && c.acc < 0.8, vars: (c) => ({ v: fmtN(c.ppdaA) }) },
   { id: 'weRecoverHigh', prio: 33, when: (c) => c.my.tackles >= c.opp.tackles + 6, vars: (c) => ({ n: c.my.tackles }) },
   { id: 'weLoseDuels', prio: 61, when: (c) => c.opp.tackles >= c.my.tackles + 6, vars: (c) => ({ n: c.opp.tackles }) },
   { id: 'duelLoser', prio: 59, when: (c) => (c.duelLoser?.st.duelsLost ?? 0) >= 4, vars: (c) => ({ name: nm(c.duelLoser), n: c.duelLoser?.st.duelsLost ?? 0 }) },
@@ -136,7 +138,7 @@ export const RULES: Rule[] = [
   { id: 'oppFoulsMany', prio: 35, when: (c) => c.opp.fouls >= 12, vars: (c) => ({ n: c.opp.fouls }) },
   { id: 'gkBusy', prio: 75, when: (c) => (c.gk?.st.saves ?? 0) >= 4, vars: (c) => ({ name: nm(c.gk), n: c.gk?.st.saves ?? 0 }) },
   { id: 'gkQuiet', prio: 26, when: (c) => c.min > 60 && (c.gk?.st.saves ?? 0) === 0 },
-  { id: 'starPlayer', prio: 46, when: (c) => c.bestR >= 7.2 && c.min > 25, vars: (c) => ({ name: nm(c.best), v: c.bestR.toFixed(1) }) },
+  { id: 'starPlayer', prio: 46, when: (c) => c.bestR >= 7.2 && c.min > 25, vars: (c) => ({ name: nm(c.best), v: fmtN(c.bestR) }) },
   { id: 'poorPlayer', prio: 52, when: (c) => c.worst !== null && c.min > 35 && c.worst.st.passes > 10 && c.worst.st.passesOk / Math.max(1, c.worst.st.passes) < 0.7, vars: (c) => ({ name: nm(c.worst) }) },
   { id: 'strikerQuiet', prio: 53, when: (c) => c.min > 45 && (c.striker?.st.shots ?? 9) <= 1, vars: (c) => ({ name: nm(c.striker) }) },
   { id: 'mentalityLowTrail', prio: 85, when: (c) => c.diff < 0 && c.mentality <= 2 && c.min > 55 },
@@ -152,6 +154,10 @@ export const RULES: Rule[] = [
   { id: 'halfTime', prio: 79, when: (c) => c.min >= 45 && c.min <= 47 },
   { id: 'lastTen', prio: 41, when: (c) => c.min >= 80 },
   { id: 'quiet', prio: 10, when: () => true },
+  // a partita finita l'analista commenta e basta (prima continuava a suggerire cambi dopo il fischio)
+  { id: 'finalWin', prio: 200, when: (c) => !!c.over && c.diff > 0 },
+  { id: 'finalDraw', prio: 200, when: (c) => !!c.over && c.diff === 0 },
+  { id: 'finalLoss', prio: 200, when: (c) => !!c.over && c.diff < 0 },
 ];
 
 /** la regola più urgente che non è già stata detta di recente */

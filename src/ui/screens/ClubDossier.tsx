@@ -25,7 +25,10 @@ export function ClubDossier({ world, clubId, name, setName, style, setStyle, can
   const rev = estimate(world, c);
   const bill = wageBill(world, c);
   const cap = rev * FIN.ffpWageCap;
-  const stars = c.playerIds.map((id) => world.players[id]!).sort((a, b) => b.ca - a.ca).slice(0, 3);
+  // i perni della rosa: i tre più forti, ma un portiere solo (ne gioca uno: il collaudo ne aveva trovati due su tre)
+  const byCa = c.playerIds.map((id) => world.players[id]!).sort((a, b) => b.ca - a.ca);
+  const gk = byCa.find((p) => p.position === 'GK');
+  const stars = byCa.filter((p) => p.position !== 'GK' || p === gk).slice(0, 3);
   const best = bestFormation(world, c);
   const grade = bill / rev < 0.5 ? 'A+' : bill / rev < 0.62 ? 'A' : bill / rev < 0.72 ? 'B' : 'C';
   const lines = challenge(world, c);

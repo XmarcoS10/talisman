@@ -3,7 +3,7 @@ import { useState } from 'react';
 import type { MatchRun, TraceStep } from '../../engine/match/engine.ts';
 import { context, pick, type Ctx } from '../match/analyst.ts';
 import { shortName } from '../bits.tsx';
-import { t } from '../i18n.ts';
+import { fmtN, t } from '../i18n.ts';
 
 type Tab = 'momentum' | 'pressing' | 'chains' | 'duels';
 const TABS: Tab[] = ['momentum', 'pressing', 'chains', 'duels'];
@@ -123,12 +123,12 @@ export function LiveAnalyst({ run, me, names, phrase, ctx, upTo }: {
       </div>
       {tab === 'momentum' && <>
         <Momentum frames={run.frames} me={me} upTo={upTo} />
-        <div className="attr"><span className="muted">xG</span><b className="num">{ctx.xg.toFixed(2)} – {ctx.xgA.toFixed(2)}</b></div>
+        <div className="attr"><span className="muted">xG</span><b className="num">{fmtN(ctx.xg, 2)} – {fmtN(ctx.xgA, 2)}</b></div>
         <div className="attr"><span className="muted">{t('match.stat.possession')}</span><b className="num">{ctx.poss}%</b></div>
         <div className="attr"><span className="muted">{t('match.stat.shots')}</span><b className="num">{ctx.my.shots} ({ctx.my.onTarget}) – {ctx.opp.shots} ({ctx.opp.onTarget})</b></div>
       </>}
       {tab === 'pressing' && <>
-        <div className="attr" title={t('live.ppdaHint')}><span className="muted">PPDA</span><b className="num">{ctx.ppda.toFixed(1)} – {ctx.ppdaA.toFixed(1)}</b></div>
+        <div className="attr" title={t('live.ppdaHint')}><span className="muted">PPDA</span><b className="num">{fmtN(ctx.ppda)} – {fmtN(ctx.ppdaA)}</b></div>
         <div className="attr"><span className="muted">{t('match.stat.tackles')}</span><b className="num">{ctx.my.tackles} – {ctx.opp.tackles}</b></div>
         <div className="attr"><span className="muted">{t('match.stat.passes')}</span><b className="num">{ctx.my.passes} · {Math.round(ctx.acc * 100)}%</b></div>
         <Zones frames={run.frames} me={me} />

@@ -171,7 +171,7 @@ export function applyMatch(world: WorldState, rng: Rng, fx: Fixture, out: SimOut
       if (m.st.red) {
         p.stats.reds++;
         p.discipline.ban += m.st.yellows === 2 ? 1 : rng.int(1, 2);
-        if (mine) addNews(world, 'news.ban', { name, n: p.discipline.ban });
+        if (mine) addNews(world, p.discipline.ban === 1 ? 'news.ban1' : 'news.ban', { name, n: p.discipline.ban });
       } else if (m.st.yellows && !fx.cup && !fx.stage) {
         p.stats.yellows++;
         p.discipline.yellows++;

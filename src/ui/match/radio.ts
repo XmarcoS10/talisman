@@ -4,7 +4,7 @@
 // per la stessa partita (scelta da un hash, niente caso).
 import type { Fixture, MatchEvent, WorldState } from '../../engine/model.ts';
 import { shortName } from '../bits.tsx';
-import { t } from '../i18n.ts';
+import { fmtN, t } from '../i18n.ts';
 
 export interface RadioLine { min: number; text: string; big: boolean }
 
@@ -50,7 +50,7 @@ export function radio(world: WorldState, fx: Fixture): RadioLine[] {
     if (!halfDone && e.min > 45) { out.push(half(key, club.map((c) => c.name), score)); halfDone = true; }
     const team = club[e.side]!.name;
     if (e.type === 'goal' || e.type === 'penGoal') score[e.side]!++;
-    const vars = { min: e.min, name: name(e.playerId), team, other: name(e.assistId), score: `${score[0]}-${score[1]}`, xg: (e.xg ?? 0).toFixed(2) };
+    const vars = { min: e.min, name: name(e.playerId), team, other: name(e.assistId), score: `${score[0]}-${score[1]}`, xg: fmtN(e.xg ?? 0, 2) };
     const kind: Kind = e.type === 'goal' && e.assistId === undefined ? 'goal' : (e.type as Kind);
     const text = e.type === 'goal' && e.assistId !== undefined ? t(`radio.assist.${hash(`${key}:a:${i}`) % 2}`, vars)
       : e.type === 'red' && booked.has(e.playerId) ? t('radio.red2', vars) : say(key, kind, i, vars);

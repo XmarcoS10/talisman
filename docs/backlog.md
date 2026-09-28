@@ -7,7 +7,8 @@ Quello che manca o che si vuole fare, in ordine di priorità. Le idee nuove vann
 ## Tocca a Marco (non è codice)
 
 - **Collaudo esterno**: tre persone, una stagione intera, senza chiedere aiuto. Istruzioni pronte in `docs/collaudo.md`.
-  È il criterio di «fatto» della fase 9 della GUIDA, e l'unica cosa che dice davvero cosa non si capisce.
+  Per ora non ci sono collaudatori: il 28/09 l'ha fatto Claude (vedi sotto), ma chi non conosce il gioco resta
+  l'unico modo di sapere cosa non si capisce.
 - **Pagina itch.io**: testo pronto in italiano e in inglese (`docs/itch.md`), la pubblicazione è dal suo account.
 - **Annuncio e video**: storyboard da 60 secondi in `docs/trailer.md`, clip della partita già pronte.
 - **Firma dell'installer**: serve un certificato a pagamento; senza, Windows mostra «editore sconosciuto».
@@ -27,6 +28,9 @@ Quello che manca o che si vuole fare, in ordine di priorità. Le idee nuove vann
 - **Partite delle nazionali in diretta**: si giocano col motore vero e se ne vedono risultati e marcatori, ma non si
   seguono sul campo 2D come quelle di club (il campo dal vivo è legato al club dell'utente).
 - **Tutorial**: riscritto il 28/09 senza le note del collaudo; da ritoccare quando arrivano.
+- **Collaudo interno del 28/09** (`docs/notes/collaudo-2026-09-28.md`): punti aperti da decidere — estate in un clic,
+  quindicenni in prima squadra, stranieri nei vivai di A al 67%, fiducia che sale piano, voto 10 alle triplette, nomi
+  abbreviati uguali nella cronaca.
 
 ## Dopo la 1.0 (GUIDA, appendice B)
 
