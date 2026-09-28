@@ -7,7 +7,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { advance, newWorld } from '../../engine/world.ts';
 import { t } from '../i18n.ts';
 import { settings } from '../settings.ts';
+import { talkFor } from '../../engine/transfers/market.ts';
+import { Deal } from './Deal.tsx';
 import { Fixtures } from './Fixtures.tsx';
+import { Market } from './Market.tsx';
+import { PressRoom } from './PressRoom.tsx';
 import { Records } from './Records.tsx';
 import { SettingsPanel } from './SettingsPanel.tsx';
 import { Squad } from './Squad.tsx';
@@ -118,4 +122,41 @@ describe('i clic del collaudatore', () => {
     click(find(box, 'button', t('settings.themeDark')));
     expect(document.documentElement.dataset.theme).toBe('dark');
   });
+
+  it('mercato: «Offri» porta alla trattativa di quel giocatore, la riga alla sua scheda', () => {
+    const w = world(), onOffer = vi.fn(), onPlayer = vi.fn();
+    const box = mount(<Market world={w} onPlayer={onPlayer} onOffer={onOffer} />);
+    click(find(box, 'button', t('market.offer')));
+    const id = onOffer.mock.calls[0]![0];
+    expect(w.players[id]!.clubId).not.toBe(w.manager.clubId);
+    expect(onPlayer).not.toHaveBeenCalled(); // il pulsante non apre anche la scheda
+    click(find(box, 'tr.clickable'));
+    expect(onPlayer).toHaveBeenCalledTimes(1);
+  });
+
+  it("trattativa: si apre, si manda l'offerta e arriva una risposta", () => {
+    const w = world(), onChange = vi.fn();
+    const other = Object.values(w.clubs).find((c) => c.id !== w.manager.clubId && c.compId === 'ITA1')!;
+    const p = w.players[other.playerIds[5]!]!;
+    const box = mount(<Deal world={w} p={p} onChange={onChange} onClose={() => {}} />);
+    click(find(box, 'button', t('deal.open')));
+    expect(talkFor(w, p)).toBeDefined();
+    unmount!(); // la trattativa aperta cambia la schermata: si ridisegna come fa l'app dopo onChange
+    const again = mount(<Deal world={w} p={p} onChange={onChange} onClose={() => {}} />);
+    click(find(again, 'button', t('deal.send')));
+    expect(again.querySelector('.banner')).not.toBeNull();
+    expect(onChange).toHaveBeenCalledTimes(2);
+  });
+
+  it('conferenza stampa: si sceglie una risposta e si passa alla domanda dopo', () => {
+    const w = world();
+    for (let i = 0; i < 30 && !w.press; i++) advance(w);
+    expect(w.press).not.toBeNull();
+    const box = mount(<PressRoom world={w} onChange={() => {}} />);
+    const confirm = find(box, 'button', t('press.confirm')) as HTMLButtonElement;
+    expect(confirm.disabled).toBe(true); // prima si sceglie
+    click(find(box, '.answer-card'));
+    click(confirm);
+    expect(w.press!.questions[0]!.answered).toBe(0);
+  }, 60_000);
 });
