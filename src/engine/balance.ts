@@ -144,6 +144,15 @@ export const MATCH = {
   passMark: 0.9, // difensori vicini al ricevitore
   passMarkBox: 2.6, // … se il ricevitore è in area: lì si marca stretto (motore-v2 §11)
   markSkill: 0.2, // peso di marcatura e muro per punto di (Marcatura + Posizionamento)/2 sopra la media di chi attacca
+  // pazienza in costruzione (§11): chi palleggia meglio dell'avversario dà più valore a tenere palla fra un passaggio e
+  // l'altro, pieno fino a x 6,5 e nullo dal limite dell'area (9,5); a palla appena recuperata no
+  keepUntilX: 9.5, keepFade: 3,
+  keepByCa: 0,
+  keepQuality: 3, // valore del possesso in più per punto di palleggio medio (Passaggi, Tecnica, Primo controllo) sopra l'avversario
+  // la difesa che si disordina (fase di costruzione): il cambio di gioco riuscito (spostamento laterale ≥ disSwitch zone)
+  // alza il disordine di chi difende, che svanisce in disTau secondi e toglie fino a disEffect a marcatura, linee e muro
+  disSwitch: 1.5, disGain: 1, disSkill: 0.3,
+  disTau: 8, disEffect: 0.8,
   passPress: 0.35,
   passSkill: 0.24, // per punto di Passaggio sopra/sotto 11
   passVision: 0.05, // Visione, solo sui passaggi lunghi
@@ -158,15 +167,6 @@ export const MATCH = {
   deadSpeed: 8, // il gioco fermo (rimesse, esultanza) scorre più in fretta nella riproduzione
   deadFrom: 12, // oltre questi secondi un intervallo è gioco fermo
   offBallMove: 1.2, // ampiezza (zone) degli smarcamenti casuali di chi attacca
-  // la difesa che si disordina (Blocco 2b, docs/design/motore-v2.md §7): disordine 0-1 della squadra senza palla
-  disSwitch: 0.15, // cambio di gioco riuscito (≥ 3 zone in larghezza), × qualità di Visione e Passaggi
-  disLine: 0.1, // per difensore scavalcato da un passaggio riuscito
-  disDribble: 0.2, // uomo saltato
-  disTau: 8, // secondi in cui il disordine cala a 1/e (la difesa si riorganizza)…
-  disOrg: 0.04, // …più in fretta per punto di Concentrazione e Posizionamento medi sopra 11
-  disK: 0.5, // efficacia persa su intercetti e pressione a disordine pieno
-  disXg: 0.6, // logit in più dei tiri a disordine pieno (c'è spazio)
-  disValue: 0.02, // quanto vale, nella scelta del passaggio, il disordine che produce
   patience: 0.0015, // voglia di verticalizzare in più per ogni passaggio consecutivo oltre il 5°
   // inserimenti (motore-v2 §11): chi ha le corse nel ruolo attacca l'area dalla trequarti, e chi lo marca deve seguirlo
   runFromX: 7.5, // da dove parte l'inserimento (palla oltre questa x)
@@ -199,7 +199,7 @@ export const MATCH = {
   // dribbling e 1 contro 1 (Blocco 2b, intervento 3): chi punta (Dribbling 0,4, Tecnica, Agilità, Accelerazione 0,2)
   // contro chi difende (Contrasto 0,4, Posizionamento e Anticipo 0,3). Saltare un uomo vicino vale più della zona
   // guadagnata: ci si libera della pressione (dribBeat)
-  dribBase: 0.5,
+  dribBase: 0.6,
   dribSkill: 0.12, // per punto di abilità di chi punta, sopra/sotto 11
   dribDef: 0.1, // per punto di abilità del difensore, pesato da quanto è vicino
   dribPress: 0.9,
@@ -212,7 +212,7 @@ export const MATCH = {
 
   // tiro e xG (§6.3): logit = base + angolo·a − distanza_m·d − pressione·p (+ colpo di testa)
   shotMinX: 7,
-  xgBase: -1.08,
+  xgBase: -1.03,
   xgAngle: 1.6,
   xgDist: 0.1,
   xgPress: 0.45,

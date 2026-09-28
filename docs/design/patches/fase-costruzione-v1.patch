@@ -1,0 +1,233 @@
+diff --git a/src/engine/balance.ts b/src/engine/balance.ts
+index f0aeed2..c77c972 100644
+--- a/src/engine/balance.ts
++++ b/src/engine/balance.ts
+@@ -144,6 +144,15 @@ export const MATCH = {
+   passMark: 0.9, // difensori vicini al ricevitore
+   passMarkBox: 2.6, // … se il ricevitore è in area: lì si marca stretto (motore-v2 §11)
+   markSkill: 0.2, // peso di marcatura e muro per punto di (Marcatura + Posizionamento)/2 sopra la media di chi attacca
++  // pazienza in costruzione (§11): chi palleggia meglio dell'avversario dà più valore a tenere palla fra un passaggio e
++  // l'altro, pieno fino a x 6,5 e nullo dal limite dell'area (9,5); a palla appena recuperata no
++  keepUntilX: 9.5, keepFade: 3,
++  keepByCa: 0,
++  keepQuality: 3, // valore del possesso in più per punto di palleggio medio (Passaggi, Tecnica, Primo controllo) sopra l'avversario
++  // la difesa che si disordina (fase di costruzione): il cambio di gioco riuscito (spostamento laterale ≥ disSwitch zone)
++  // alza il disordine di chi difende, che svanisce in disTau secondi e toglie fino a disEffect a marcatura, linee e muro
++  disSwitch: 1.5, disGain: 1, disSkill: 0.3,
++  disTau: 8, disEffect: 0.8,
+   passPress: 0.35,
+   passSkill: 0.24, // per punto di Passaggio sopra/sotto 11
+   passVision: 0.05, // Visione, solo sui passaggi lunghi
+@@ -158,15 +167,6 @@ export const MATCH = {
+   deadSpeed: 8, // il gioco fermo (rimesse, esultanza) scorre più in fretta nella riproduzione
+   deadFrom: 12, // oltre questi secondi un intervallo è gioco fermo
+   offBallMove: 1.2, // ampiezza (zone) degli smarcamenti casuali di chi attacca
+-  // la difesa che si disordina (Blocco 2b, docs/design/motore-v2.md §7): disordine 0-1 della squadra senza palla
+-  disSwitch: 0.15, // cambio di gioco riuscito (≥ 3 zone in larghezza), × qualità di Visione e Passaggi
+-  disLine: 0.1, // per difensore scavalcato da un passaggio riuscito
+-  disDribble: 0.2, // uomo saltato
+-  disTau: 8, // secondi in cui il disordine cala a 1/e (la difesa si riorganizza)…
+-  disOrg: 0.04, // …più in fretta per punto di Concentrazione e Posizionamento medi sopra 11
+-  disK: 0.5, // efficacia persa su intercetti e pressione a disordine pieno
+-  disXg: 0.6, // logit in più dei tiri a disordine pieno (c'è spazio)
+-  disValue: 0.02, // quanto vale, nella scelta del passaggio, il disordine che produce
+   patience: 0.0015, // voglia di verticalizzare in più per ogni passaggio consecutivo oltre il 5°
+   // inserimenti (motore-v2 §11): chi ha le corse nel ruolo attacca l'area dalla trequarti, e chi lo marca deve seguirlo
+   runFromX: 7.5, // da dove parte l'inserimento (palla oltre questa x)
+@@ -199,7 +199,7 @@ export const MATCH = {
+   // dribbling e 1 contro 1 (Blocco 2b, intervento 3): chi punta (Dribbling 0,4, Tecnica, Agilità, Accelerazione 0,2)
+   // contro chi difende (Contrasto 0,4, Posizionamento e Anticipo 0,3). Saltare un uomo vicino vale più della zona
+   // guadagnata: ci si libera della pressione (dribBeat)
+-  dribBase: 0.5,
++  dribBase: 0.6,
+   dribSkill: 0.12, // per punto di abilità di chi punta, sopra/sotto 11
+   dribDef: 0.1, // per punto di abilità del difensore, pesato da quanto è vicino
+   dribPress: 0.9,
+@@ -212,7 +212,7 @@ export const MATCH = {
+ 
+   // tiro e xG (§6.3): logit = base + angolo·a − distanza_m·d − pressione·p (+ colpo di testa)
+   shotMinX: 7,
+-  xgBase: -1.08,
++  xgBase: -1.03,
+   xgAngle: 1.6,
+   xgDist: 0.1,
+   xgPress: 0.45,
+diff --git a/src/engine/match/decision.ts b/src/engine/match/decision.ts
+index 069abbd..bb04aea 100644
+--- a/src/engine/match/decision.ts
++++ b/src/engine/match/decision.ts
+@@ -32,6 +32,7 @@ export interface View {
+   defMark: number[]; // peso di marcatura di ogni avversario (Marcatura, Posizionamento)
+   pressure: number; // 0 … ~2.5
+   block: number; // corpi dei difensori fra palla e porta (solo in zona di tiro)
++  keepEdge: number; // quanto chi ha palla palleggia meglio dell'avversario (≥ 0)
+   offsideLine: number; // x oltre cui un compagno è in fuorigioco
+   tactic: Tactic;
+   mentality: number;
+@@ -39,6 +40,7 @@ export interface View {
+   wind: number; // logit tolto a cross e lanci dal vento
+   chain: number; // passaggi consecutivi in questo possesso
+   counter: number; // ripartenza: avversari rimasti oltre la palla, oltre la soglia (0 fuori dalla transizione)
++  fresh: boolean; // palla appena recuperata (transizione)
+ }
+ 
+ export type Option =
+@@ -72,10 +74,20 @@ function context(v: View): Ctx {
+ /** peso della marcatura sul ricevitore: fuori area, in area (lì si marca stretto) */
+ const MARK_W = [MATCH.passMark, MATCH.passMarkBox];
+ 
++/**
++ * pazienza in costruzione (§11): chi palleggia meglio dell'avversario dà più valore a tenere palla fra un passaggio e
++ * l'altro, sempre meno avvicinandosi all'area, dove si attacca come prima; a palla appena recuperata si riparte
++ */
++function patientKeep(v: View, x: Ctx) {
++  const build = v.fresh ? 0 : Math.min(1, Math.max(0, (MATCH.keepUntilX - v.bx) / MATCH.keepFade));
++  return x.keep * (1 + MATCH.keepQuality * v.keepEdge * build);
++}
++
+ /** 1) PASSAGGI a ogni compagno (è il ciclo più caldo del gioco: niente allocazioni qui dentro) */
+ function passes(v: View, x: Ctx, out: Option[]) {
+   const { carrier: c, bx, by, tactic, pressure } = v;
+-  const { keep, loss, direct, vision, rel } = x;
++  const { direct, vision, rel } = x;
++  const keep = patientKeep(v, x), loss = x.loss - x.keep + keep;
+   const tempoMod = (1 - tactic.tempo) * 0.15; // ritmo alto = più errori
+   const nd = v.defX.length;
+   const lr = MATCH.laneRadius, mr = MATCH.markRadius;
+diff --git a/src/engine/match/execute.ts b/src/engine/match/execute.ts
+index a33ac9a..8d7a1ea 100644
+--- a/src/engine/match/execute.ts
++++ b/src/engine/match/execute.ts
+@@ -81,6 +81,17 @@ export function shoot(st: MatchState, sh: MP, xg: number, kind: ShotKind, origin
+   else missed(st, sh, xg, kind, gk, block);
+ }
+ 
++/**
++ * fase di costruzione: un cambio di gioco riuscito sposta il blocco e lo disordina, tanto più se chi passa palleggia
++ * meglio di quanto i difensori sappiano posizionarsi (Passaggi e Visione contro Posizionamento e Concentrazione)
++ */
++function unsettle(st: MatchState, c: MP, def: Team) {
++  let dq = 0;
++  for (const m of def.on) dq += (m.p.attrs.positioning + m.p.attrs.concentration) / 2;
++  const edge = (c.p.attrs.passing + c.p.attrs.vision) / 2 - dq / def.on.length;
++  st.dis = Math.min(1, st.dis + MATCH.disGain * Math.max(0, MATCH.disSkill * edge)); // una difesa migliore non si apre
++}
++
+ function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, { kind: 'pass' }>, f: TraceStep | null) {
+   const { rng } = st;
+   att.stats.passes++; c.st.passes++;
+@@ -103,6 +114,7 @@ function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option,
+     if (f) f.ok = true;
+     st.lastPass = c;
+     st.chain++;
++    if (Math.abs(o.ty - st.by) >= MATCH.disSwitch) unsettle(st, c, def);
+     st.carrier = o.to as MP;
+     st.bx = o.tx; st.by = o.ty;
+     const quick = st.counterNow ? MATCH.transTempo : 1; // la ripartenza contro una difesa scoperta non si ferma a pensare
+diff --git a/src/engine/match/golden.json b/src/engine/match/golden.json
+index bccfced..5adb5da 100644
+--- a/src/engine/match/golden.json
++++ b/src/engine/match/golden.json
+@@ -1,13 +1,13 @@
+ {
+-  "results": "6a17f6ae2f74d765e596e4c3a982eeec55f952c2b9e08394394a71588987dade",
+-  "traced": "40b8dcaeda601fcb04dfcecd46f4970b8a0a28947b18788a7d4095509de30059",
++  "results": "e73c600199dfbd755ed3380d04572c3cdcb43c0fe10b5c47ecb16ed332e4c419",
++  "traced": "1d82a8249483b394da1b2afbd1abc2dfa2d3337199a2c06414f2558183ebac19",
+   "sameResults": true,
+   "summary": {
+-    "goals": 3417,
+-    "shots": 30279,
+-    "passes": 781479,
+-    "events": 14728,
+-    "actions": 26124,
+-    "frames": 670826
++    "goals": 3446,
++    "shots": 29191,
++    "passes": 803670,
++    "events": 14417,
++    "actions": 26907,
++    "frames": 669158
+   }
+ }
+diff --git a/src/engine/match/pressure.ts b/src/engine/match/pressure.ts
+index 9c2935e..e1a0f4e 100644
+--- a/src/engine/match/pressure.ts
++++ b/src/engine/match/pressure.ts
+@@ -8,6 +8,9 @@ import { cover, inTransition, type MatchState, type MP, type Team } from './stat
+ export const PRESS = MATCH.pressLevels;
+ const FAR = MATCH.pressRadius * MATCH.pressRadius * 1.001;
+ 
++/** qualità media di palleggio di una squadra in campo: Passaggi, Tecnica, Primo controllo */
++const palleggio = (tm: Team) => { let q = 0; for (const m of tm.on) q += MATCH.keepByCa ? m.p.ca / 10 : (m.p.attrs.passing + m.p.attrs.technique + m.p.attrs.firstTouch) / 3; return q / tm.on.length; };
++
+ /** la difesa vista da chi attacca: posizioni, peso di intercetto (Anticipazione) e di marcatura */
+ function readDefence(st: MatchState, att: Team, def: Team, cv: number) {
+   const { defX, defY, defAnt, defMark } = st;
+@@ -15,14 +18,19 @@ function readDefence(st: MatchState, att: Team, def: Team, cv: number) {
+   let attQ = 0;
+   for (const a of att.on) attQ += (a.p.attrs.offTheBall + a.p.attrs.firstTouch) / 2;
+   attQ /= att.on.length;
++  st.keepEdge = Math.max(0, palleggio(att) - palleggio(def)); // chi palleggia meglio fa girare palla
++  // la difesa si riordina col tempo (fase di costruzione): il disordine lasciato dal giro palla svanisce
++  st.dis *= Math.exp(-Math.max(0, st.t - st.disAt) / MATCH.disTau);
++  st.disAt = st.t;
++  const open = 1 - MATCH.disEffect * st.dis; // difesa aperta: marcatura, linee di passaggio e muro valgono meno
+   defX.length = defY.length = defAnt.length = defMark.length = def.on.length;
+   for (let i = 0; i < def.on.length; i++) {
+     const m = def.on[i]!;
+     defX[i] = 12 - m.x;
+     defY[i] = 8 - m.y;
+-    defAnt[i] = (0.6 + 0.03 * m.p.attrs.anticipation) * cv;
++    defAnt[i] = (0.6 + 0.03 * m.p.attrs.anticipation) * cv * open;
+     // chi marca bene sta addosso al ricevitore e fa da muro al tiro (motore-v2 §11: conta la qualità, non solo il corpo)
+-    defMark[i] = Math.max(0.3, 1 + MATCH.markSkill * ((m.p.attrs.marking + m.p.attrs.positioning) / 2 - attQ)) * cv;
++    defMark[i] = Math.max(0.3, 1 + MATCH.markSkill * ((m.p.attrs.marking + m.p.attrs.positioning) / 2 - attQ)) * cv * open;
+   }
+ }
+ 
+@@ -56,13 +64,14 @@ export function readPlay(st: MatchState): { view: View; pressure: number; closes
+   const c = st.carrier;
+   const sign = st.s === 0 ? 1 : -1;
+   const view: View = {
+-    carrier: c, isGK: c.pos === 'GK', bx, by, mates: att.on, defs: def.on, defX, defY, defAnt, defMark, pressure, block,
++    carrier: c, isGK: c.pos === 'GK', bx, by, mates: att.on, defs: def.on, defX, defY, defAnt, defMark, pressure, block, keepEdge: st.keepEdge,
+     offsideLine: Math.max(line, bx), tactic: att.tactic, mentality: att.mentality,
+     wind: st.wx.cross,
+     bonus: -st.wx.pass + (st.s === 0 ? MATCH.homeBoost : 0) + (sign * st.momentum / 100) * MATCH.momentumK * (1 - c.p.attrs.composure / 25)
+       - (100 - c.energy) * MATCH.energySkill + c.mod,
+     chain: st.chain,
+     counter: trans ? Math.max(0, exposed - MATCH.counterFrom) : 0,
++    fresh: trans,
+   };
+   return { view, pressure, closest, exposed: trans ? exposed : 0 };
+ }
+diff --git a/src/engine/match/state.ts b/src/engine/match/state.ts
+index 8b29722..d250673 100644
+--- a/src/engine/match/state.ts
++++ b/src/engine/match/state.ts
+@@ -192,6 +192,9 @@ export interface MatchState {
+   defY: number[];
+   defAnt: number[];
+   defMark: number[]; // peso di marcatura di ogni avversario (Marcatura, Posizionamento)
++  keepEdge: number; // quanto chi ha palla palleggia meglio dell'avversario (≥ 0)
++  dis: number; // disordine della squadra che difende (0-1): lo crea il giro palla, svanisce col tempo (fase di costruzione)
++  disAt: number; // secondo dell'ultimo aggiornamento del disordine
+   pendingDrain: [number, number];
+   subIdx: number;
+   shoutAt: [number, number];
+@@ -225,7 +228,7 @@ export function createState(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Tr
+     rng, ref: setups[0].ref ?? 1, wx: setups[0].wx ?? CALM, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, counterNow: false, momentum: 0,
+     half: 1, t: 0, length: 0, scheduled: [], lastPlace: 0, markStamp: 0, holder: null, meet: null, snap: true,
+     trace, curFrame: null, track: [], playAt: 0, lastBall: { x: 6, y: 4 }, lastStep: -1, ids0: [], idsDirty: true,
+-    defX: [], defY: [], defAnt: [], defMark: [], pendingDrain: [0, 0], subIdx: 0, shoutAt: [0, 0], output: null, plansFired: [[], []], planUndo: [null, null],
++    defX: [], defY: [], defAnt: [], defMark: [], keepEdge: 0, dis: 0, disAt: 0, pendingDrain: [0, 0], subIdx: 0, shoutAt: [0, 0], output: null, plansFired: [[], []], planUndo: [null, null],
+   };
+ }
+ 
+@@ -270,4 +273,5 @@ export function gain(st: MatchState, tm: Team, m: MP) {
+   st.lastPass = null;
+   st.chain = 0;
+   st.poss = { t: st.t, half: st.half, x: m.x, acts: 0 };
++  st.dis = 0; // palla all'altra squadra: chi difende adesso è in ordine
+ }

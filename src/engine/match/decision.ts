@@ -32,6 +32,7 @@ export interface View {
   defMark: number[]; // peso di marcatura di ogni avversario (Marcatura, Posizionamento)
   pressure: number; // 0 … ~2.5
   block: number; // corpi dei difensori fra palla e porta (solo in zona di tiro)
+  keepEdge: number; // quanto chi ha palla palleggia meglio dell'avversario (≥ 0)
   offsideLine: number; // x oltre cui un compagno è in fuorigioco
   tactic: Tactic;
   mentality: number;
@@ -39,6 +40,7 @@ export interface View {
   wind: number; // logit tolto a cross e lanci dal vento
   chain: number; // passaggi consecutivi in questo possesso
   counter: number; // ripartenza: avversari rimasti oltre la palla, oltre la soglia (0 fuori dalla transizione)
+  fresh: boolean; // palla appena recuperata (transizione)
 }
 
 export type Option =
@@ -72,10 +74,20 @@ function context(v: View): Ctx {
 /** peso della marcatura sul ricevitore: fuori area, in area (lì si marca stretto) */
 const MARK_W = [MATCH.passMark, MATCH.passMarkBox];
 
+/**
+ * pazienza in costruzione (§11): chi palleggia meglio dell'avversario dà più valore a tenere palla fra un passaggio e
+ * l'altro, sempre meno avvicinandosi all'area, dove si attacca come prima; a palla appena recuperata si riparte
+ */
+function patientKeep(v: View, x: Ctx) {
+  const build = v.fresh ? 0 : Math.min(1, Math.max(0, (MATCH.keepUntilX - v.bx) / MATCH.keepFade));
+  return x.keep * (1 + MATCH.keepQuality * v.keepEdge * build);
+}
+
 /** 1) PASSAGGI a ogni compagno (è il ciclo più caldo del gioco: niente allocazioni qui dentro) */
 function passes(v: View, x: Ctx, out: Option[]) {
   const { carrier: c, bx, by, tactic, pressure } = v;
-  const { keep, loss, direct, vision, rel } = x;
+  const { direct, vision, rel } = x;
+  const keep = patientKeep(v, x), loss = x.loss - x.keep + keep;
   const tempoMod = (1 - tactic.tempo) * 0.15; // ritmo alto = più errori
   const nd = v.defX.length;
   const lr = MATCH.laneRadius, mr = MATCH.markRadius;
