@@ -87,6 +87,7 @@ export interface Team {
   fam: number;
   auto: boolean; // false = i cambi li fa l'utente dalla panchina (F6)
   log: MatchLog;
+  q: { on: MP[]; pal: number; att: number } | null; // qualità medie in campo, ricalcolate quando cambia `on`
 }
 
 /**
@@ -222,7 +223,7 @@ export const whistle = (st: MatchState) => 1 + (st.ref - 1) * REFEREE.foulShare;
 export function createState(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: TraceStep[]): MatchState {
   const teams = setups.map((s, i) => {
     const on = s.xi.map((e) => mp(e.player, e.slot, e.role, s.familiarity, 0, s.tactic.players?.[e.player.id]));
-    return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity, auto: s.auto !== false, log: newLog() };
+    return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity, auto: s.auto !== false, log: newLog(), q: null };
   }) as [Team, Team];
   return {
     rng, ref: setups[0].ref ?? 1, wx: setups[0].wx ?? CALM, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, counterNow: false, momentum: 0,

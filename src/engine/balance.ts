@@ -147,7 +147,6 @@ export const MATCH = {
   // pazienza in costruzione (§11): chi palleggia meglio dell'avversario dà più valore a tenere palla fra un passaggio e
   // l'altro, pieno fino a x 6,5 e nullo dal limite dell'area (9,5); a palla appena recuperata no
   keepUntilX: 9.5, keepFade: 3,
-  keepByCa: 0,
   keepQuality: 3, // valore del possesso in più per punto di palleggio medio (Passaggi, Tecnica, Primo controllo) sopra l'avversario
   // la difesa che si disordina (fase di costruzione): il cambio di gioco riuscito (spostamento laterale ≥ disSwitch zone)
   // alza il disordine di chi difende, che svanisce in disTau secondi e toglie fino a disEffect a marcatura, linee e muro

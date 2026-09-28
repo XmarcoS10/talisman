@@ -63,7 +63,7 @@ Verifica: `pnpm sim -- --match-stats 4000`. Fonti e correzioni ai target propost
 | Quota dei gol della squadra al suo miglior marcatore | 25-40% | ~30% | 56% ❌ | 45% ❌ (bordo) |
 | Tiri delle punte sul totale | 35-50% | ~45% | 79-81% ❌ | 62-66% ❌ |
 | Tiri da fuori area sul totale | 30-40% | ~37% | ~1% ❌ | 18-20% ❌ |
-| Possesso della nettamente più forte (CA medio +15) | 57-63% | 59,8% (Inter) | 50,4% ❌ | 43% ❌ (quota di passaggi) |
+| Possesso della nettamente più forte (CA medio +15) | 57-63% | 59,8% (Inter) | 50,4% ❌ | 43% ❌ (quota di passaggi); 0.6.0: 51% ❌ |
 
 ## Carriere lunghe (Blocco 4, `pnpm sim -- --career 25 --seed 42`, semi 42 / 7 / 99)
 | Metrica | Target |

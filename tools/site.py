@@ -6,9 +6,9 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'site')
 REPO = 'https://github.com/XmarcoS10/talisman'
 SITE = 'https://xmarcos10.github.io/talisman/'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
-VERSION = '0.5.2'
+VERSION = '0.6.0'
 SIZE = '123 MB'
-SHA = '7c40ac6f8953ef57b4288c10b9994240417c860bcc931645afd53e69a4b9bfe9'
+SHA = 'd72fabd63d9216d6001dc7024c8b72697b6698b84f002e18e432836f1e639c2d'
 # pnpm sim -- --seasons 10 --seed 42 con la 0.2.0
 SIM_GOALS = {'it': '2,56', 'en': '2.56'}
 SIM_DRAWS = {'it': '23,2%', 'en': '23.2%'}
@@ -543,6 +543,7 @@ def download():
         <div class="panel">
           <h3>{x('Novità della', 'New in')} {VERSION}</h3>
           <ul class="checks">
+            <li>{x('<b>La costruzione</b>: la squadra più forte fa girare palla, e un cambio di gioco apre la difesa avversaria.', '<b>The build-up</b>: the stronger side keeps the ball moving, and a switch of play opens up the opposing defence.')}</li>
             <li>{x('<b>Una guida più completa</b>: sei passi per la prima partita e suggerimenti per tutte le schermate principali.', '<b>A fuller guide</b>: six steps for the first match and hints for all the main screens.')}</li>
             <li>{x('<b>Movimento senza palla</b>: inserimenti dei centrocampisti, difensori che contano davanti al tiro, tiri da fuori.', '<b>Off-the-ball movement</b>: midfield runs, defenders that matter in front of the shot, long-range shots.')}</li>
             <li>{x("<b>Allenatori dell'IA</b> con uno stile, esoneri e notizie; istruzioni riequilibrate.", '<b>AI managers</b> with a style, sackings and news; instructions rebalanced.')}</li>

@@ -1,5 +1,22 @@
 # Note di rilascio
 
+## 0.6.0 — la costruzione
+
+Le carriere della 0.5.x si aprono senza cambiamenti.
+
+- **La squadra più forte fa girare palla.** Chi palleggia meglio dell'avversario costruisce con pazienza nella sua metà
+  campo e sulla trequarti, e attacca come prima vicino all'area; a palla appena recuperata riparte subito. Il possesso
+  della squadra nettamente più forte passa dal 43% a circa il 51%, e la precisione dei passaggi sale all'85%.
+- **La difesa si disordina.** Un cambio di gioco riuscito sposta il blocco avversario per qualche secondo: marcature,
+  linee di passaggio e corpi davanti al tiro contano meno. Succede solo se chi passa palleggia meglio di quanto
+  l'altra difesa sappia posizionarsi (Passaggi e Visione contro Posizionamento e Concentrazione).
+
+### Limiti noti
+
+- Fra squadre vicine di forza i risultati sono un po' più casuali di prima nelle carriere lunghe.
+- Il possesso della squadra più forte resta sotto quello della Serie A vera (51% contro circa 60%), e i capocannonieri
+  segnano ancora troppo (circa 50 gol).
+
 ## 0.5.2 — il gioco si spiega
 
 Le carriere della 0.5.1 si aprono senza cambiamenti; la partita è la stessa della 0.5.1.
@@ -114,6 +131,23 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.6.0 — the build-up (English)
+
+Careers from 0.5.x open unchanged.
+
+- **The stronger side keeps the ball moving.** Whoever passes better than the opponent builds patiently in their own
+  half and midfield, and attacks as before near the box; right after winning the ball back they go straight away.
+  The clearly stronger side's possession rises from 43% to about 51%, and pass accuracy to 85%.
+- **Defences get pulled apart.** A successful switch of play shifts the opposing block for a few seconds: marking,
+  passing lanes and bodies in front of the shot count for less. It only happens if the passer is better than the
+  defence is at positioning (Passing and Vision against Positioning and Concentration).
+
+### Known limits
+
+- Between teams of similar strength, results over long careers are a little more random than before.
+- The stronger side's possession is still below real Serie A (51% against about 60%), and top scorers still score too
+  many (about 50 goals).
 
 ## 0.5.2 — the game explains itself (English)
 

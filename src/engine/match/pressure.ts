@@ -8,17 +8,27 @@ import { cover, inTransition, type MatchState, type MP, type Team } from './stat
 export const PRESS = MATCH.pressLevels;
 const FAR = MATCH.pressRadius * MATCH.pressRadius * 1.001;
 
-/** qualità media di palleggio di una squadra in campo: Passaggi, Tecnica, Primo controllo */
-const palleggio = (tm: Team) => { let q = 0; for (const m of tm.on) q += MATCH.keepByCa ? m.p.ca / 10 : (m.p.attrs.passing + m.p.attrs.technique + m.p.attrs.firstTouch) / 3; return q / tm.on.length; };
+/**
+ * qualità medie di chi è in campo: palleggio (Passaggi, Tecnica, Primo controllo) e movimento senza palla (Movimento
+ * senza palla, Primo controllo). Cambi ed espulsioni creano un nuovo `on`: lì si ricalcolano, non a ogni azione
+ */
+function quality(tm: Team) {
+  if (tm.q?.on === tm.on) return tm.q;
+  let pal = 0, att = 0;
+  for (const m of tm.on) {
+    const a = m.p.attrs;
+    pal += (a.passing + a.technique + a.firstTouch) / 3;
+    att += (a.offTheBall + a.firstTouch) / 2;
+  }
+  return (tm.q = { on: tm.on, pal: pal / tm.on.length, att: att / tm.on.length });
+}
 
 /** la difesa vista da chi attacca: posizioni, peso di intercetto (Anticipazione) e di marcatura */
 function readDefence(st: MatchState, att: Team, def: Team, cv: number) {
   const { defX, defY, defAnt, defMark } = st;
   // qualità media di chi attacca senza palla (Movimento senza palla, Primo controllo): il metro di chi marca
-  let attQ = 0;
-  for (const a of att.on) attQ += (a.p.attrs.offTheBall + a.p.attrs.firstTouch) / 2;
-  attQ /= att.on.length;
-  st.keepEdge = Math.max(0, palleggio(att) - palleggio(def)); // chi palleggia meglio fa girare palla
+  const qa = quality(att), attQ = qa.att;
+  st.keepEdge = Math.max(0, qa.pal - quality(def).pal); // chi palleggia meglio fa girare palla
   // la difesa si riordina col tempo (fase di costruzione): il disordine lasciato dal giro palla svanisce
   st.dis *= Math.exp(-Math.max(0, st.t - st.disAt) / MATCH.disTau);
   st.disAt = st.t;
