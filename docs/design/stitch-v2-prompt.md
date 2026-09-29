@@ -91,3 +91,31 @@ Next screen: new career, step 1 "Assegnazione panchina": a grid of club cards (c
 ```
 Show the Scrivania and the Rosa screens again in the LIGHT theme, same layout and hierarchy. The 2D pitch stays green in both themes.
 ```
+
+---
+
+## Scrivania personalizzabile (dopo la prima versione, 29/09)
+
+La prima Scrivania di Stitch è in `docs/design/stitch-v2/01-scrivania.png` (stile «Pitch Command Editorial»,
+`DESIGN.md` accanto). Marco la vuole più personalizzabile. Prompt da incollare nello stesso progetto:
+
+```
+Update the "Scrivania" screen: keep exactly this visual style, but make the dashboard CUSTOMIZABLE by the player, like widgets on a phone home screen. Show it in three states, as three separate frames.
+
+1) NORMAL VIEW: the same dashboard, built from widgets on a 12-column grid. Each widget has a small title bar; hovering shows a "⋯" menu (Riduci / Ingrandisci / Nascondi / Sposta). A button "Personalizza scrivania" at the top right of the page, next to a layout selector "Layout: Allenatore ▾".
+
+2) EDIT MODE (after clicking "Personalizza scrivania"): widgets show dashed outlines, drag handles and resize handles; three sizes S (1/4 width), M (1/2), L (full width); an "×" to remove each widget; empty slots show "+ Aggiungi widget". A top banner: "Trascina i riquadri per spostarli · Salva · Annulla · Ripristina predefinita".
+
+3) WIDGET GALLERY: a right-side drawer "Aggiungi widget" with categories and small previews, each with an "Aggiungi" button and a note of the sizes it supports:
+- Partite: Prossima partita, Prossime 5 partite, Ultimi risultati, Focus avversario, Meteo e arbitro della prossima partita.
+- Squadra: Morale dello spogliatoio, Infermeria e squalificati, Contratti in scadenza, Giocatori in forma, Giovani e minutaggio.
+- Competizioni: Classifica (intorno alla mia posizione o completa), Capocannonieri, Coppa nazionale (tabellone), Statistiche di squadra (xG, possesso, tiri).
+- Società: Cassa e bilancio, Fiducia della dirigenza, Obiettivo di stagione, Monte ingaggi.
+- Mercato: Offerte ricevute, Trattative in corso, Lista osservati, Rapporti degli osservatori.
+- Notizie: Notizie e sala stampa, Conferenza stampa della settimana, Storie del campionato.
+- Guida: La tua prima partita (can be removed once completed).
+
+Also show a small "Layout" menu with presets: "Allenatore" (matches, squad, table), "Direttore sportivo" (market, finances, contracts), "Essenziale" (next match, table, news only), and "Il mio layout" (the saved custom one).
+
+Content fixes for this screen: remove the betting odds ("Quote scommesse") — the game has no betting; remove "Rivedi il discorso motivazionale / Prepara discorso" — there is no team talk feature. Everything else in the widgets must use data the game already has: results, table, cash, board trust, morale, injuries, contracts, scout estimates as star ranges, news, press conferences, weather, referee, opposing coach.
+```
