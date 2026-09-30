@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="it"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,600&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"surface-container-low":"#171c24","on-secondary-fixed-variant":"#005236","secondary":"#4edea3","on-primary-fixed-variant":"#92001f","error":"#ffb4ab","primary-fixed":"#ffdad9","inverse-surface":"#dee2ee","tertiary":"#ffb95f","tertiary-fixed-dim":"#ffb95f","on-surface":"#dee2ee","secondary-container":"#00a572","surface-bright":"#343942","on-background":"#dee2ee","tertiary-container":"#ca8100","tertiary-fixed":"#ffddb8","on-primary-fixed":"#410008","on-primary-container":"#5b000f","on-error-container":"#ffdad6","on-error":"#690005","on-secondary-container":"#00311f","secondary-fixed-dim":"#4edea3","background":"#0f141c","surface":"#0f141c","on-secondary-fixed":"#002113","surface-variant":"#30353e","surface-dim":"#0f141c","error-container":"#93000a","inverse-primary":"#bf002b","on-tertiary":"#472a00","inverse-on-surface":"#2c3139","surface-container-high":"#252a33","surface-container-highest":"#30353e","surface-container":"#1b2028","surface-tint":"#ffb3b2","primary":"#ffb3b2","primary-container":"#ff525d","on-tertiary-container":"#3e2400","on-primary":"#680013","on-tertiary-fixed":"#2a1700","surface-container-lowest":"#090e16","on-tertiary-fixed-variant":"#653e00","secondary-fixed":"#6ffbbe","on-surface-variant":"#e6bdbb","outline-variant":"#5d3f3f","on-secondary":"#003824","primary-fixed-dim":"#ffb3b2","outline":"#ad8887"},borderRadius:{DEFAULT:"0.125rem",lg:"0.25rem",xl:"0.5rem",full:"0.75rem"},spacing:{"space-md":"0.75rem",margin:"1.25rem","space-lg":"1rem","space-sm":"0.5rem","space-xs":"0.25rem","space-xl":"1.5rem",gutter:"1rem"},fontFamily:{"headline-lg":["Barlow Condensed"],"body-sm":["Inter"],"body-md":["Inter"],"label-numeric-md":["JetBrains Mono"],"label-numeric-lg":["JetBrains Mono"],"body-lg":["Inter"],"headline-xl":["Barlow Condensed"],"label-editorial":["Barlow Condensed"],"headline-sm":["Barlow Condensed"],"label-numeric-sm":["JetBrains Mono"],"headline-md":["Barlow Condensed"]},fontSize:{"headline-lg":["2rem",{lineHeight:"2.25rem",letterSpacing:"0.04em",fontWeight:"700"}],"body-sm":["0.75rem",{lineHeight:"1rem",letterSpacing:"0em",fontWeight:"400"}],"body-md":["0.875rem",{lineHeight:"1.25rem",letterSpacing:"-0.005em",fontWeight:"400"}],"label-numeric-md":["0.875rem",{lineHeight:"1.125rem",letterSpacing:"0em",fontWeight:"500"}],"label-numeric-lg":["1.25rem",{lineHeight:"1.5rem",letterSpacing:"-0.02em",fontWeight:"600"}],"body-lg":["1rem",{lineHeight:"1.5rem",letterSpacing:"-0.01em",fontWeight:"400"}],"headline-xl":["2.5rem",{lineHeight:"2.75rem",letterSpacing:"0.05em",fontWeight:"700"}],"label-editorial":["0.8125rem",{lineHeight:"1rem",letterSpacing:"0.08em",fontWeight:"700"}],"headline-sm":["1.125rem",{lineHeight:"1.375rem",letterSpacing:"0.025em",fontWeight:"600"}],"label-numeric-sm":["0.75rem",{lineHeight:"0.875rem",letterSpacing:"0em",fontWeight:"500"}],"headline-md":["1.5rem",{lineHeight:"1.75rem",letterSpacing:"0.03em",fontWeight:"600"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary min-w-[1280px]"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.5)]"><div class="flex flex-col h-full overflow-hidden"><div class="h-14 px-space-md flex items-center justify-between bg-surface-container-low shrink-0"><div class="flex items-center gap-space-sm min-w-0"><img alt="Sporting Ventimonti Crest" class="h-8 w-auto object-contain shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1X5mredOhrUiLowr6013NGwvvUfkEpM-G24BaXKuIA_luyA07SGIH5j6fKJKcSmo8l-H3vgTuIdy3z6GEYyI4-_E2mYJyO8yr4VAoZkWlo0EZ7df_PB8t8J9Y7bQY0KT961cThOL0smYoo2A8cNHNHldfJpw97q5fd0qa1oDOQmcfb8CGQGTDXQeccarITXtbrY2h9j-kVtTHQfJLar3O2MrCi-ga8uXWOcSnTHm4X3eKr9zTsRnkaVXGk"/><div class="flex flex-col min-w-0 leading-none"><span class="font-headline-sm text-headline-sm uppercase text-on-surface tracking-wider truncate">Sporting Ventimonti</span><span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase tracking-widest text-[10px] mt-0.5 truncate">Serie A • Stagione 2026/27</span></div></div><button aria-label="Collassa barra laterale" class="text-on-surface-variant hover:text-on-surface transition-colors p-1" type="button"><span class="material-symbols-outlined text-[18px]">menu_open</span></button></div><div class="flex-1 overflow-y-auto px-space-sm py-space-sm space-y-space-md"><nav class="space-y-space-xs" data-active-classes="bg-surface-container text-primary font-semibold"><div class="px-space-sm pt-space-xs pb-1 font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-variant text-[11px]">PRINCIPALE</div><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="scrivania" href="#">Scrivania</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="storie-media" href="#">Storie &amp; Media</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="rosa" href="#">Rosa</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="tattica" href="#">Tattica</a></nav><nav class="space-y-space-xs" data-active-classes="bg-surface-container text-primary font-semibold"><div class="px-space-sm pt-space-xs pb-1 font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-variant text-[11px]">GESTIONE</div><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="allenamento" href="#">Allenamento</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="spogliatoio" href="#">Spogliatoio</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="vivaio" href="#">Vivaio</a></nav><nav class="space-y-space-xs" data-active-classes="bg-surface-container text-primary-container font-semibold shadow-[inset_0_0_12px_rgba(255,82,93,0.18)]"><div class="px-space-sm pt-space-xs pb-1 font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-variant text-[11px]">MERCATO</div><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="mercato" href="#">Mercato</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="osservatori" href="#">Osservatori</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="finanze" href="#">Finanze</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="dirigenza" href="#">Dirigenza</a></nav><nav class="space-y-space-xs" data-active-classes="bg-surface-container text-primary font-semibold"><div class="px-space-sm pt-space-xs pb-1 font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-variant text-[11px]">COMPETIZIONI</div><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="classifiche" href="#">Classifiche</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="calendario" href="#">Calendario</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="record-storia" href="#">Record &amp; Storia</a></nav><nav class="space-y-space-xs" data-active-classes="bg-surface-container text-primary font-semibold"><div class="px-space-sm pt-space-xs pb-1 font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-variant text-[11px]">IMPOSTAZIONI</div><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="impostazioni" href="#">Impostazioni</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="salvataggi" href="#">Salvataggi</a></nav></div><div class="p-space-sm bg-surface-container-low shrink-0"><div class="flex items-center justify-between px-space-sm py-1.5 rounded bg-surface-container-lowest text-on-surface-variant"><div class="flex items-center gap-1.5 truncate"><span class="h-2 w-2 rounded-full bg-secondary shrink-0"></span><span class="font-label-numeric-sm text-label-numeric-sm truncate text-[11px]">Modalità Offline (TFM 27 v1.0.4)</span></div></div></div></div></aside><div class="pl-64 flex flex-col min-h-screen"><header class="fixed top-0 left-64 right-0 h-14 bg-surface-container-low z-40 px-space-lg flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.3)]"><div class="flex items-center gap-space-lg flex-1 min-w-0 mr-space-lg"><div class="flex items-center gap-1.5 text-on-surface px-space-sm py-1 bg-surface-container rounded shrink-0"><span class="material-symbols-outlined text-secondary text-[18px]">calendar_today</span><span class="font-label-numeric-md text-label-numeric-md uppercase">SAB 12 SET 2026</span></div><div class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container rounded shrink-0"><span class="font-headline-sm text-headline-sm text-on-surface-variant uppercase tracking-wider text-[12px]">CASSA:</span><span class="font-label-numeric-md text-label-numeric-md text-secondary font-semibold">45,4 Mln €</span></div><div class="relative flex-1 max-w-md"><span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span><input class="w-full h-8 pl-8 pr-3 bg-surface-container-lowest text-on-surface placeholder:text-on-surface-variant font-body-sm text-body-sm rounded focus:bg-surface-container focus:outline-none transition-colors" placeholder="Cerca giocatori, club fittizi, staff..." type="text"/></div></div><div class="flex items-center gap-space-md shrink-0"><button class="h-9 px-space-md bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center gap-space-sm rounded transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">live_tv</span><span class="font-headline-sm text-headline-sm uppercase tracking-wider">GUARDA LA PARTITA</span></button><button class="h-9 px-space-lg bg-primary-container hover:bg-primary-container text-on-primary flex items-center gap-space-sm rounded shadow-[0_1px_8px_rgba(255,82,93,0.3)] transition-all" type="button"><span class="font-headline-md text-headline-md uppercase tracking-wider leading-none">AVANZA</span><span class="bg-on-primary text-primary-container font-label-numeric-sm text-label-numeric-sm px-1.5 py-0.5 rounded leading-none uppercase text-[10px] font-bold">SPAZIO</span><span class="material-symbols-outlined text-[18px]">fast_forward</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0 ml-1"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-14 bg-surface flex-1 w-full min-h-[calc(100vh-3.5rem)]"><div class="flex flex-col w-full">
+<div class="p-space-lg space-y-space-md">
+<!-- Section 1: Editorial Header Strip -->
+<div class="bg-surface-container p-space-md rounded shadow-md flex flex-wrap items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-12 h-12 rounded bg-surface-container-lowest p-1 flex items-center justify-center shrink-0">
+<img alt="Sporting Ventimonti Crest" class="w-10 h-10 object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wdtkip5X18SHcxOlfJCQJUYrB8weixm6Oblbw-K5rKQJnvHnsd9hIvboxdPE1xrtKsPTe-92cHw5GN3e1uXgQFKQXxIT7rCKNy-K7gPIpn93t6b0SVPxC3PTAdq4sKL45_A5IM1MNpQEtVWpK50JDDuCHiOBqcs-S5WO4je5ap4nPhjZXjFqTwrgTYqOiBnX3RXP-FVCJpZ0hZ4k6rqB-i6ZKR58JnhXNrEM3kqv7vW19KaXY44iSOIQk"/>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-sm flex-wrap">
+<h1 class="font-headline-lg text-headline-lg uppercase text-on-surface tracking-wider leading-none">
+              BILANCIO &amp; FINANZE SOCIETARIE
+            </h1>
+<span class="bg-surface-container-highest text-secondary font-label-editorial text-label-editorial px-2 py-0.5 rounded uppercase tracking-widest text-[11px]">
+              STAGIONE 2026/27 • SERIE A
+            </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+            Dipartimento Amministrazione e Controllo di Gestione • Revisione Contabile Mensile
+          </p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0 flex-wrap">
+<button class="h-8 px-space-md bg-surface-container-high hover:bg-surface-bright text-on-surface flex items-center gap-1.5 rounded transition-colors text-label-editorial font-label-editorial uppercase tracking-wider text-[11px]" type="button">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">file_download</span>
+          ESPORTA REPORT FINANZIARIO (PDF/CSV)
+        </button>
+<button class="h-8 px-space-md bg-surface-container-high hover:bg-surface-bright text-on-surface flex items-center gap-1.5 rounded transition-colors text-label-editorial font-label-editorial uppercase tracking-wider text-[11px]" type="button">
+<span class="material-symbols-outlined text-[16px] text-tertiary">query_stats</span>
+          PIANIFICAZIONE BUDGET 2027/28
+        </button>
+<button class="h-8 px-space-md bg-primary hover:bg-primary-fixed-dim text-on-primary flex items-center gap-1.5 rounded transition-colors text-label-editorial font-label-editorial uppercase tracking-wider text-[11px]" type="button">
+<span class="material-symbols-outlined text-[16px]">account_balance</span>
+          RICHIEDI EXTRA-BUDGET CDA
+        </button>
+</div>
+</div>
+<!-- Section 2: Top Row - 4 KPI Tiles -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-space-md">
+<!-- Tile 1: Cassa Disponibile -->
+<div class="bg-surface-container p-space-md rounded shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -right-3 -bottom-3 text-surface-container-highest/20 select-none pointer-events-none">
+<span class="material-symbols-outlined text-[90px]">payments</span>
+</div>
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase tracking-wider text-[11px]">
+              CASSA DISPONIBILE
+            </span>
+<span class="inline-flex items-center gap-1 text-secondary bg-surface-container-lowest px-1.5 py-0.5 rounded text-[11px] font-label-numeric-sm">
+<span class="material-symbols-outlined text-[13px]">arrow_upward</span>
+              +3,2 Mln €
+            </span>
+</div>
+<div class="font-headline-xl text-headline-xl text-secondary whitespace-nowrap leading-none mt-1">
+            45,4 Mln €
+          </div>
+</div>
+<div class="mt-3 pt-2 bg-surface-container-lowest/50 -mx-space-md -mb-space-md px-space-md pb-2 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">+3,2 Mln € rispetto a inizio stagione</span>
+<span class="font-label-editorial text-label-editorial text-secondary uppercase tracking-widest text-[10px] shrink-0 font-bold">
+            Stabile / Solvibile
+          </span>
+</div>
+</div>
+<!-- Tile 2: Entrate Previste a Fine Stagione -->
+<div class="bg-surface-container p-space-md rounded shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -right-3 -bottom-3 text-surface-container-highest/20 select-none pointer-events-none">
+<span class="material-symbols-outlined text-[90px]">trending_up</span>
+</div>
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase tracking-wider text-[11px]">
+              ENTRATE PREVISTE
+            </span>
+<span class="bg-surface-container-highest text-tertiary font-label-editorial text-label-editorial px-1.5 py-0.5 rounded uppercase text-[10px]">
+              TARGET C.D.A.
+            </span>
+</div>
+<div class="font-headline-xl text-headline-xl text-on-surface whitespace-nowrap leading-none mt-1">
+            112,6 Mln €
+          </div>
+</div>
+<div class="mt-3 pt-2 bg-surface-container-lowest/50 -mx-space-md -mb-space-md px-space-md pb-2 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Proiezione realistica con 4° posto stimato</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-tertiary shrink-0">
+            PROIEZIONE
+          </span>
+</div>
+</div>
+<!-- Tile 3: Massa Salariale vs Salary Cap -->
+<div class="bg-surface-container p-space-md rounded shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase tracking-wider text-[11px]">
+              MASSA SALARIALE VS LIMITE
+            </span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">
+              46% / 72%
+            </span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-xl text-headline-xl text-secondary whitespace-nowrap leading-none">46%</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant whitespace-nowrap">di 72% limite consentito</span>
+</div>
+<!-- Progress Bar Gauge -->
+<div class="w-full bg-surface-container-lowest h-2 rounded mt-2 relative overflow-hidden">
+<div class="bg-secondary h-full rounded transition-all duration-500" style="width: 46%;"></div>
+<div class="absolute top-0 bottom-0 w-0.5 bg-primary-container z-10" style="left: 72%;" title="Soglia 72%"></div>
+</div>
+</div>
+<div class="mt-2 pt-2 bg-surface-container-lowest/50 -mx-space-md -mb-space-md px-space-md pb-2 flex items-center justify-between gap-1">
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">
+            Monte ingaggi attuale: 32,8 Mln €/a • Tetto massimo consentito: 51,4 Mln €/a
+          </span>
+<span class="font-label-editorial text-label-editorial text-secondary uppercase tracking-widest text-[10px] shrink-0 font-bold whitespace-nowrap">
+            +26% (Ottimo)
+          </span>
+</div>
+</div>
+<!-- Tile 4: Stato Fair Play Finanziario -->
+<div class="bg-surface-container p-space-md rounded shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase tracking-wider text-[11px]">
+              FAIR PLAY FINANZIARIO
+            </span>
+<span class="bg-secondary-container/30 text-secondary font-label-editorial text-label-editorial px-2 py-0.5 rounded uppercase tracking-wider text-[10px] font-bold">
+              NESSUN RISCHIO
+            </span>
+</div>
+<!-- Regulatory Tiers Matrix -->
+<div class="grid grid-cols-2 gap-1.5 mt-2">
+<div class="flex items-center gap-1.5 bg-surface-container-low px-2 py-1 rounded">
+<span class="w-2 h-2 rounded-full bg-secondary shrink-0 shadow-[0_0_6px_rgba(78,222,163,0.8)]"></span>
+<span class="font-label-editorial text-label-editorial text-secondary uppercase text-[10px] truncate font-bold">1. Nessun Rischio</span>
+</div>
+<div class="flex items-center gap-1.5 bg-surface-container-lowest px-2 py-1 rounded opacity-50">
+<span class="w-1.5 h-1.5 rounded-full bg-on-surface-variant shrink-0"></span>
+<span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase text-[10px] truncate">2. Richiamo</span>
+</div>
+<div class="flex items-center gap-1.5 bg-surface-container-lowest px-2 py-1 rounded opacity-50">
+<span class="w-1.5 h-1.5 rounded-full bg-on-surface-variant shrink-0"></span>
+<span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase text-[10px] truncate">3. Mercato Bloccato</span>
+</div>
+<div class="flex items-center gap-1.5 bg-surface-container-lowest px-2 py-1 rounded opacity-50">
+<span class="w-1.5 h-1.5 rounded-full bg-on-surface-variant shrink-0"></span>
+<span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase text-[10px] truncate">4. Penalizzato</span>
+</div>
+</div>
+</div>
+<div class="mt-2 pt-2 bg-surface-container-lowest/50 -mx-space-md -mb-space-md px-space-md pb-2 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Indice di liquidità 1,42 (minimo 0,80) • Nessuna violazione registrata</span>
+<span class="material-symbols-outlined text-secondary text-[16px] shrink-0">verified</span>
+</div>
+</div>
+</div>
+<!-- Section 3 & 4: Rendiconto Economico (Left 8 Cols) + Rate Trasferimenti (Right 4 Cols) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md">
+<!-- Left / Center: Rendiconto Economico Stagionale (8 cols) -->
+<div class="lg:col-span-8 flex flex-col space-y-space-md">
+<div class="bg-surface-container rounded shadow-md overflow-hidden flex flex-col">
+<div class="bg-surface-container-low px-space-md py-2.5 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">receipt_long</span>
+<h2 class="font-headline-md text-headline-md uppercase text-on-surface tracking-wider">
+                RENDICONTO ECONOMICO STAGIONALE
+              </h2>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">
+              ESERCIZIO CONTABILE ATTIVO 2026/27
+            </span>
+</div>
+<div class="p-space-md grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- Column A: Entrate Previste -->
+<div class="flex flex-col space-y-space-sm">
+<div class="flex items-center justify-between pb-1 bg-surface-container-lowest/40 px-2 py-1.5 rounded">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded bg-secondary"></span>
+<span class="font-headline-sm text-headline-sm text-on-surface uppercase tracking-wide text-[13px]">
+                    ENTRATE PREVISTE
+                  </span>
+</div>
+<span class="font-label-numeric-md text-label-numeric-md text-secondary font-bold whitespace-nowrap">
+                  112,6 Mln €
+                </span>
+</div>
+<div class="space-y-1">
+<!-- 1. Incassi partite -->
+<div class="bg-surface-container-high/60 hover:bg-surface-container-highest p-2 rounded transition-colors flex items-center justify-between text-body-sm">
+<div class="flex flex-col min-w-0 pr-2">
+<span class="text-on-surface font-medium truncate">Incassi partite in casa (18.420 spettatori medi)</span>
+<div class="w-24 bg-surface-container-lowest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-secondary h-full" style="width: 13.1%"></div>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">13,1%</span>
+<span class="font-label-numeric-md text-label-numeric-md text-secondary font-semibold whitespace-nowrap">14,8 Mln €</span>
+</div>
+</div>
+<!-- 2. Diritti TV -->
+<div class="bg-surface-container-high/60 hover:bg-surface-container-highest p-2 rounded transition-colors flex items-center justify-between text-body-sm">
+<div class="flex flex-col min-w-0 pr-2">
+<span class="text-on-surface font-medium truncate">Diritti TV</span>
+<div class="w-24 bg-surface-container-lowest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-secondary h-full" style="width: 47.9%"></div>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">47,9%</span>
+<span class="font-label-numeric-md text-label-numeric-md text-secondary font-semibold whitespace-nowrap">54,0 Mln €</span>
+</div>
+</div>
+<!-- 3. Sponsor -->
+<div class="bg-surface-container-high/60 hover:bg-surface-container-highest p-2 rounded transition-colors flex items-center justify-between text-body-sm">
+<div class="flex flex-col min-w-0 pr-2">
+<span class="text-on-surface font-medium truncate">Sponsor</span>
+<div class="w-24 bg-surface-container-lowest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-secondary h-full" style="width: 19.1%"></div>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">19,1%</span>
+<span class="font-label-numeric-md text-label-numeric-md text-secondary font-semibold whitespace-nowrap">21,5 Mln €</span>
+</div>
+</div>
+<!-- 4. Merchandising -->
+<div class="bg-surface-container-high/60 hover:bg-surface-container-highest p-2 rounded transition-colors flex items-center justify-between text-body-sm">
+<div class="flex flex-col min-w-0 pr-2">
+<span class="text-on-surface font-medium truncate">Merchandising</span>
+<div class="w-24 bg-surface-container-lowest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-secondary h-full" style="width: 7.3%"></div>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">7,3%</span>
+<span class="font-label-numeric-md text-label-numeric-md text-secondary font-semibold whitespace-nowrap">8,2 Mln €</span>
+</div>
+</div>
+<!-- 5. Premi di classifica -->
+<div class="bg-surface-container-high/60 hover:bg-surface-container-highest p-2 rounded transition-colors flex items-center justify-between text-body-sm">
+<div class="flex flex-col min-w-0 pr-2">
+<span class="text-on-surface font-medium truncate">Premi di classifica</span>
+<div class="w-24 bg-surface-container-lowest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-secondary h-full" style="width: 8.4%"></div>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">8,4%</span>
+<span class="font-label-numeric-md text-label-numeric-md text-secondary font-semibold whitespace-nowrap">9,5 Mln €</span>
+</div>
+</div>
+<!-- 6. Cessioni -->
+<div class="bg-surface-container-high/60 hover:bg-surface-container-highest p-2 rounded transition-colors flex items-center justify-between text-body-sm">
+<div class="flex flex-col min-w-0 pr-2">
+<span class="text-on-surface font-medium truncate">Cessioni</span>
+<div class="w-24 bg-surface-container-lowest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-secondary h-full" style="width: 4.1%"></div>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">4.1%</span>
+<span class="font-label-numeric-md text-label-numeric-md text-secondary font-semibold whitespace-nowrap">4,6 Mln €</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-2 rounded flex items-center justify-between mt-auto">
+<span class="font-headline-sm text-headline-sm text-on-surface uppercase tracking-wide text-[12px]">TOTALE ENTRATE PREVISTE</span>
+<span class="font-label-numeric-lg text-label-numeric-lg text-secondary font-bold whitespace-nowrap">112,6 Mln €</span>
+</div>
+</div>
+<!-- Column B: Uscite Previste -->
+<div class="flex flex-col space-y-space-sm">
+<div class="flex items-center justify-between pb-1 bg-surface-container-lowest/40 px-2 py-1.5 rounded">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded bg-primary-container"></span>
+<span class="font-headline-sm text-headline-sm text-on-surface uppercase tracking-wide text-[13px]">
+                    USCITE PREVISTE
+                  </span>
+</div>
+<span class="font-label-numeric-md text-label-numeric-md text-primary-container font-bold whitespace-nowrap">
+                  80,2 Mln €
+                </span>
+</div>
+<div class="space-y-1">
+<!-- 1. Stipendi -->
+<div class="bg-surface-container-high/60 hover:bg-surface-container-highest p-2 rounded transition-colors flex items-center justify-between text-body-sm">
+<div class="flex flex-col min-w-0 pr-2">
+<span class="text-on-surface font-medium truncate">Stipendi (rosa e osservatori)</span>
+<div class="w-24 bg-surface-container-lowest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 42.6%"></div>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">42,6%</span>
+<span class="font-label-numeric-md text-label-numeric-md text-primary-container font-semibold whitespace-nowrap">34,2 Mln €</span>
+</div>
+</div>
+<!-- 2. Staff tecnico e sede -->
+<div class="bg-surface-container-high/60 hover:bg-surface-container-highest p-2 rounded transition-colors flex items-center justify-between text-body-sm">
+<div class="flex flex-col min-w-0 pr-2">
+<span class="text-on-surface font-medium truncate">Staff tecnico e sede</span>
+<div class="w-24 bg-surface-container-lowest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 9.7%"></div>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">9,7%</span>
+<span class="font-label-numeric-md text-label-numeric-md text-primary-container font-semibold whitespace-nowrap">7,8 Mln €</span>
+</div>
+</div>
+<!-- 3. Gestione stadio -->
+<div class="bg-surface-container-high/60 hover:bg-surface-container-highest p-2 rounded transition-colors flex items-center justify-between text-body-sm">
+<div class="flex flex-col min-w-0 pr-2">
+<span class="text-on-surface font-medium truncate">Gestione stadio</span>
+<div class="w-24 bg-surface-container-lowest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 8.0%"></div>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">8,0%</span>
+<span class="font-label-numeric-md text-label-numeric-md text-primary-container font-semibold whitespace-nowrap">6,4 Mln €</span>
+</div>
+</div>
+<!-- 4. Acquisti -->
+<div class="bg-surface-container-high/60 hover:bg-surface-container-highest p-2 rounded transition-colors flex items-center justify-between text-body-sm">
+<div class="flex flex-col min-w-0 pr-2">
+<span class="text-on-surface font-medium truncate">Acquisti</span>
+<div class="w-24 bg-surface-container-lowest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 39.7%"></div>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">39,7%</span>
+<span class="font-label-numeric-md text-label-numeric-md text-primary-container font-semibold whitespace-nowrap">31,8 Mln €</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest/30 p-2 rounded flex items-center justify-between text-body-sm opacity-40">
+<span class="text-on-surface-variant italic text-[11px]">Riserve operative accantonate</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant whitespace-nowrap">0,0 Mln €</span>
+</div>
+<div class="bg-surface-container-lowest/30 p-2 rounded flex items-center justify-between text-body-sm opacity-40">
+<span class="text-on-surface-variant italic text-[11px]">Oneri finanziari straordinari</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant whitespace-nowrap">0,0 Mln €</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-2 rounded flex items-center justify-between mt-auto">
+<span class="font-headline-sm text-headline-sm text-on-surface uppercase tracking-wide text-[12px]">TOTALE USCITE PREVISTE</span>
+<span class="font-label-numeric-lg text-label-numeric-lg text-primary-container font-bold whitespace-nowrap">80,2 Mln €</span>
+</div>
+</div>
+</div>
+<!-- Highlight Result Strip: Utile di Esercizio Previsto -->
+<div class="bg-surface-container-lowest px-space-md py-3 flex items-center justify-between flex-wrap gap-2">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded bg-secondary-container/20 flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm uppercase text-on-surface tracking-wider leading-none">
+                  UTILE NETTO PREVISTO A FINE ESERCIZIO
+                </div>
+<div class="font-body-sm text-body-sm text-on-surface-variant text-[11px] mt-0.5">
+                  Risultato di bilancio proiettato al 30 giugno 2027 (al netto di imposte e contributi)
+                </div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-headline-xl text-headline-xl text-secondary whitespace-nowrap leading-none font-bold">
+                +32,4 Mln €
+              </span>
+<span class="material-symbols-outlined text-secondary text-[24px]">verified</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Rate Trasferimenti (Debiti / Crediti) (4 cols) -->
+<div class="lg:col-span-4 flex flex-col space-y-space-md">
+<div class="bg-surface-container rounded shadow-md overflow-hidden flex flex-col h-full">
+<div class="bg-surface-container-low px-space-md py-2.5 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-[18px]">currency_exchange</span>
+<h2 class="font-headline-md text-headline-md uppercase text-on-surface tracking-wider">
+                RATE TRASFERIMENTI
+              </h2>
+</div>
+<span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase text-[10px]">
+              DILAZIONATI
+            </span>
+</div>
+<!-- Segmented Tab Navigation -->
+<div class="p-space-sm bg-surface-container-lowest/80 flex gap-1">
+<button class="flex-1 py-1.5 px-2 bg-surface-container text-primary font-headline-sm text-headline-sm uppercase tracking-wide text-[11px] rounded transition-all text-center" id="tab-btn-debiti" type="button">
+              RATE DA PAGARE (DEBITI)
+            </button>
+<button class="flex-1 py-1.5 px-2 bg-transparent text-on-surface-variant hover:text-on-surface font-headline-sm text-headline-sm uppercase tracking-wide text-[11px] rounded transition-all text-center" id="tab-btn-crediti" type="button">
+              RATE DA INCASSARE (CREDITI)
+            </button>
+</div>
+<!-- Tab Content 1: Rate da Pagare (Debiti) -->
+<div class="p-space-md space-y-space-sm flex-1 flex flex-col justify-between" id="tab-content-debiti">
+<div class="space-y-2">
+<!-- Item 1: Danvers -->
+<div class="bg-surface-container-high p-space-sm rounded space-y-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface tracking-wide text-[13px] truncate">
+                      Castel Rivo
+                    </span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[11px] truncate">
+                      (per L. Danvers)
+                    </span>
+</div>
+<span class="font-label-numeric-md text-label-numeric-md text-primary-container font-bold whitespace-nowrap">
+                    4,5 Mln €
+                  </span>
+</div>
+<div class="flex items-center justify-between text-body-sm text-on-surface-variant text-[11px]">
+<span>2 rate semestrali residue di 2,25 Mln €</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">Scad. 01/2027 &amp; 06/2027</span>
+</div>
+</div>
+<!-- Item 2: Neri -->
+<div class="bg-surface-container-high p-space-sm rounded space-y-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface tracking-wide text-[13px] truncate">
+                      Torre San Biagio
+                    </span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[11px] truncate">
+                      (per G. Neri)
+                    </span>
+</div>
+<span class="font-label-numeric-md text-label-numeric-md text-primary-container font-bold whitespace-nowrap">
+                    1,8 Mln €
+                  </span>
+</div>
+<div class="flex items-center justify-between text-body-sm text-on-surface-variant text-[11px]">
+<span>1 rata residua a saldo unico</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">Scad. 12/2026</span>
+</div>
+</div>
+<!-- Item 3: Conti -->
+<div class="bg-surface-container-high p-space-sm rounded space-y-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface tracking-wide text-[13px] truncate">
+                      Lanificio Sestri
+                    </span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[11px] truncate">
+                      (per S. Conti)
+                    </span>
+</div>
+<span class="font-label-numeric-md text-label-numeric-md text-primary-container font-bold whitespace-nowrap">
+                    2,4 Mln €
+                  </span>
+</div>
+<div class="flex items-center justify-between text-body-sm text-on-surface-variant text-[11px]">
+<span>3 rate semestrali residue di 0,8 Mln €</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">Scad. 06/2028</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-sm rounded flex items-center justify-between mt-space-sm">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase tracking-wider text-[11px]">
+                TOTALE RESIDUO A DEBITO:
+              </span>
+<span class="font-headline-md text-headline-md text-primary-container font-bold whitespace-nowrap">
+                8,7 Mln €
+              </span>
+</div>
+</div>
+<!-- Tab Content 2: Rate da Incassare (Crediti) -->
+<div class="p-space-md space-y-space-sm flex-1 flex flex-col justify-between hidden" id="tab-content-crediti">
+<div class="space-y-2">
+<!-- Item 1: Fabbri -->
+<div class="bg-surface-container-high p-space-sm rounded space-y-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface tracking-wide text-[13px] truncate">
+                      Polisportiva Miravalle
+                    </span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[11px] truncate">
+                      (per R. Fabbri)
+                    </span>
+</div>
+<span class="font-label-numeric-md text-label-numeric-md text-secondary font-bold whitespace-nowrap">
+                    2,0 Mln €
+                  </span>
+</div>
+<div class="flex items-center justify-between text-body-sm text-on-surface-variant text-[11px]">
+<span>2 rate residue di 1,0 Mln €</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary">Atteso entro 06/2027</span>
+</div>
+</div>
+<!-- Item 2: Rota -->
+<div class="bg-surface-container-high p-space-sm rounded space-y-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface tracking-wide text-[13px] truncate">
+                      Aurora Montelupo
+                    </span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[11px] truncate">
+                      (per M. Rota)
+                    </span>
+</div>
+<span class="font-label-numeric-md text-label-numeric-md text-secondary font-bold whitespace-nowrap">
+                    1,6 Mln €
+                  </span>
+</div>
+<div class="flex items-center justify-between text-body-sm text-on-surface-variant text-[11px]">
+<span>1 rata residua</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary">Atteso 01/2027</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-sm rounded flex items-center justify-between mt-space-sm">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase tracking-wider text-[11px]">
+                TOTALE RESIDUO A CREDITO:
+              </span>
+<span class="font-headline-md text-headline-md text-secondary font-bold whitespace-nowrap">
+                3,6 Mln €
+              </span>
+</div>
+</div>
+<!-- Bottom Notice Note -->
+<div class="px-space-md pb-space-sm pt-1 bg-surface-container text-body-sm text-on-surface-variant text-[11px] flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-tertiary">info</span>
+<span>Le rate vengono saldate automaticamente alla scadenza indicata dal contratto di lega.</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 5: Main Bottom Section - Grafico Mensile Evoluzione Cassa -->
+<div class="bg-surface-container rounded shadow-md p-space-md space-y-space-md">
+<div class="flex flex-wrap items-center justify-between gap-space-sm pb-2 bg-surface-container-low px-space-md py-2 -mx-space-md -mt-space-md rounded-t">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">show_chart</span>
+<div>
+<h2 class="font-headline-md text-headline-md uppercase text-on-surface tracking-wider leading-none">
+              EVOLUZIONE MENSILE DELLA LIQUIDITÀ DI CASSA (PROIEZIONE 12 MESI)
+            </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-[11px] mt-0.5">
+              Monitoraggio andamento flussi finanziari da Luglio 2026 a Giugno 2027
+            </p>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded bg-secondary"></span>
+<span class="font-label-editorial text-label-editorial uppercase text-[11px] text-on-surface-variant">Cassa Netta Mensile</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-1.5 bg-primary-container"></span>
+<span class="font-label-editorial text-label-editorial uppercase text-[11px] text-on-surface-variant">Calo Sessione Mercato</span>
+</div>
+<div class="bg-surface-container-highest px-2 py-0.5 rounded font-label-numeric-sm text-label-numeric-sm text-secondary">
+            Min: 38,0 Mln € • Max: 77,8 Mln €
+          </div>
+</div>
+</div>
+<!-- Critical Notice Callout Banner -->
+<div class="bg-surface-container-lowest p-space-sm rounded flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-tertiary text-[20px] shrink-0">notification_important</span>
+<p class="font-headline-sm text-headline-sm uppercase text-tertiary tracking-wide text-[12px] leading-tight">
+          AVVISO DIRIGENZIALE: "Durante la stagione entrano solo i biglietti: tv, sponsor, merchandising e premi arrivano a fine stagione."
+        </p>
+</div>
+<!-- Month-by-Month Visual Bar Chart -->
+<div class="bg-surface-container-lowest/60 p-space-md rounded space-y-4">
+<!-- Y-Axis Indicators & Grid Container -->
+<div class="relative h-60 w-full flex items-end justify-between gap-1 pt-6 px-2">
+<!-- Background Reference lines -->
+<div class="absolute inset-x-0 top-6 h-px bg-surface-variant/20 flex items-center justify-end pr-1">
+<span class="text-[10px] font-label-numeric-sm text-on-surface-variant">80 Mln €</span>
+</div>
+<div class="absolute inset-x-0 top-20 h-px bg-surface-variant/20 flex items-center justify-end pr-1">
+<span class="text-[10px] font-label-numeric-sm text-on-surface-variant">60 Mln €</span>
+</div>
+<div class="absolute inset-x-0 top-36 h-px bg-surface-variant/20 flex items-center justify-end pr-1">
+<span class="text-[10px] font-label-numeric-sm text-on-surface-variant">40 Mln €</span>
+</div>
+<div class="absolute inset-x-0 bottom-6 h-px bg-surface-variant/20 flex items-center justify-end pr-1">
+<span class="text-[10px] font-label-numeric-sm text-on-surface-variant">20 Mln €</span>
+</div>
+<!-- 12 Bars (LUG -> GIU) -->
+<!-- 1. LUG (Inizio budget estivo: 48,0 Mln €) -> ~60% height -->
+<div class="flex-1 flex flex-col items-center h-full justify-end group relative z-10">
+<span class="text-[10px] font-label-numeric-sm text-on-surface-variant mb-1 group-hover:text-secondary transition-colors">48,0</span>
+<div class="w-full max-w-[42px] bg-secondary/70 hover:bg-secondary rounded-t transition-all duration-300" style="height: 60%;"></div>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant uppercase text-[11px] mt-2 group-hover:text-on-surface">LUG</span>
+</div>
+<!-- 2. AGO (Mercato estivo in uscita per acquisti: 42,2 Mln €) -> ~52% height -->
+<div class="flex-1 flex flex-col items-center h-full justify-end group relative z-10">
+<span class="text-[10px] font-label-numeric-sm text-primary-container mb-1">42,2</span>
+<div class="w-full max-w-[42px] bg-primary-container/80 hover:bg-primary-container rounded-t transition-all duration-300" style="height: 52%;"></div>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant uppercase text-[11px] mt-2 group-hover:text-on-surface">AGO</span>
+</div>
+<!-- 3. SET (Mese corrente - Attuale 45,4 Mln €) -> ~56% height - CURRENT ACTIVE -->
+<div class="flex-1 flex flex-col items-center h-full justify-end group relative z-10">
+<div class="absolute -top-1 bg-secondary text-surface-container-lowest font-label-editorial text-[9px] px-1 py-0.2 rounded font-bold uppercase">OGGI</div>
+<span class="text-[10px] font-label-numeric-sm text-secondary font-bold mb-1">45,4</span>
+<div class="w-full max-w-[42px] bg-secondary rounded-t shadow-[0_0_12px_rgba(78,222,163,0.4)] transition-all duration-300" style="height: 56%;"></div>
+<span class="font-headline-sm text-headline-sm text-secondary font-bold uppercase text-[11px] mt-2">SET</span>
+</div>
+<!-- 4. OTT (Solo incassi botteghino + stipendi: 43,8 Mln €) -> ~54% -->
+<div class="flex-1 flex flex-col items-center h-full justify-end group relative z-10">
+<span class="text-[10px] font-label-numeric-sm text-on-surface-variant mb-1 group-hover:text-secondary">43,8</span>
+<div class="w-full max-w-[42px] bg-surface-container-highest hover:bg-surface-bright rounded-t transition-all duration-300" style="height: 54%;"></div>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant uppercase text-[11px] mt-2 group-hover:text-on-surface">OTT</span>
+</div>
+<!-- 5. NOV (Incassi botteghino: 42,1 Mln €) -> ~51% -->
+<div class="flex-1 flex flex-col items-center h-full justify-end group relative z-10">
+<span class="text-[10px] font-label-numeric-sm text-on-surface-variant mb-1 group-hover:text-secondary">42,1</span>
+<div class="w-full max-w-[42px] bg-surface-container-highest hover:bg-surface-bright rounded-t transition-all duration-300" style="height: 51%;"></div>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant uppercase text-[11px] mt-2 group-hover:text-on-surface">NOV</span>
+</div>
+<!-- 6. DIC (Rata Castel Rivo in uscita + stipendi: 40,4 Mln €) -> ~49% -->
+<div class="flex-1 flex flex-col items-center h-full justify-end group relative z-10">
+<span class="text-[10px] font-label-numeric-sm text-on-surface-variant mb-1 group-hover:text-secondary">40,4</span>
+<div class="w-full max-w-[42px] bg-surface-container-highest hover:bg-surface-bright rounded-t transition-all duration-300" style="height: 49%;"></div>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant uppercase text-[11px] mt-2 group-hover:text-on-surface">DIC</span>
+</div>
+<!-- 7. GEN (Mercato Invernale e minimo stagionale: 38,0 Mln €) -> ~46% -->
+<div class="flex-1 flex flex-col items-center h-full justify-end group relative z-10">
+<span class="text-[10px] font-label-numeric-sm text-primary mb-1">38,0</span>
+<div class="w-full max-w-[42px] bg-primary-container/60 hover:bg-primary-container rounded-t transition-all duration-300" style="height: 46%;"></div>
+<span class="font-headline-sm text-headline-sm text-primary uppercase text-[11px] mt-2">GEN</span>
+</div>
+<!-- 8. FEB (Rata Miravalle accreditata: 39,2 Mln €) -> ~48% -->
+<div class="flex-1 flex flex-col items-center h-full justify-end group relative z-10">
+<span class="text-[10px] font-label-numeric-sm text-on-surface-variant mb-1 group-hover:text-secondary">39,2</span>
+<div class="w-full max-w-[42px] bg-surface-container-highest hover:bg-surface-bright rounded-t transition-all duration-300" style="height: 48%;"></div>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant uppercase text-[11px] mt-2 group-hover:text-on-surface">FEB</span>
+</div>
+<!-- 9. MAR (Botteghino partite chiave: 40,6 Mln €) -> ~50% -->
+<div class="flex-1 flex flex-col items-center h-full justify-end group relative z-10">
+<span class="text-[10px] font-label-numeric-sm text-on-surface-variant mb-1 group-hover:text-secondary">40,6</span>
+<div class="w-full max-w-[42px] bg-surface-container-highest hover:bg-surface-bright rounded-t transition-all duration-300" style="height: 50%;"></div>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant uppercase text-[11px] mt-2 group-hover:text-on-surface">MAR</span>
+</div>
+<!-- 10. APR (Fase calda campionato: 41,8 Mln €) -> ~52% -->
+<div class="flex-1 flex flex-col items-center h-full justify-end group relative z-10">
+<span class="text-[10px] font-label-numeric-sm text-on-surface-variant mb-1 group-hover:text-secondary">41,8</span>
+<div class="w-full max-w-[42px] bg-surface-container-highest hover:bg-surface-bright rounded-t transition-all duration-300" style="height: 52%;"></div>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant uppercase text-[11px] mt-2 group-hover:text-on-surface">APR</span>
+</div>
+<!-- 11. MAG (Primi acconti sponsor e TV: 55,2 Mln €) -> ~70% -->
+<div class="flex-1 flex flex-col items-center h-full justify-end group relative z-10">
+<span class="text-[10px] font-label-numeric-sm text-secondary mb-1">55,2</span>
+<div class="w-full max-w-[42px] bg-secondary-container hover:bg-secondary rounded-t transition-all duration-300" style="height: 70%;"></div>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant uppercase text-[11px] mt-2 group-hover:text-on-surface">MAG</span>
+</div>
+<!-- 12. GIU (Saldo TV + Sponsor + Premi classifica + Merchandising: 77,8 Mln €) -> ~96% -->
+<div class="flex-1 flex flex-col items-center h-full justify-end group relative z-10">
+<div class="absolute -top-1 bg-tertiary-container text-on-tertiary font-label-editorial text-[9px] px-1 py-0.2 rounded font-bold uppercase">+INCASSO</div>
+<span class="text-[10px] font-label-numeric-sm text-secondary font-bold mb-1">77,8</span>
+<div class="w-full max-w-[42px] bg-secondary rounded-t shadow-[0_0_16px_rgba(78,222,163,0.5)] transition-all duration-300" style="height: 96%;"></div>
+<span class="font-headline-sm text-headline-sm text-secondary font-bold uppercase text-[11px] mt-2">GIU</span>
+</div>
+</div>
+<!-- Chart Detailed Tooltip / Context Summary Banner -->
+<div class="bg-surface-container-low p-space-sm rounded flex flex-wrap items-center justify-between gap-space-sm text-body-sm text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px]">insights</span>
+<span>
+              La liquidità tocca il minimo fisiologico a <strong class="text-on-surface">GENNAIO (38,0 Mln €)</strong> a causa dei costi di gestione e stipendi senza premi, per poi salire vertiginosamente a <strong class="text-secondary">GIUGNO (77,8 Mln €)</strong> grazie al saldo collettivo dei diritti televisivi (54,0 Mln €) e premi di rendimento.
+            </span>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<span class="font-label-editorial text-label-editorial text-on-surface uppercase text-[11px]">SALDO FINALE STIMATO:</span>
+<span class="font-headline-md text-headline-md text-secondary whitespace-nowrap leading-none font-bold">77,8 Mln €</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Simple tab switcher for Rate Trasferimenti
+  (function() {
+    const btnDebiti = document.getElementById('tab-btn-debiti');
+    const btnCrediti = document.getElementById('tab-btn-crediti');
+    const contentDebiti = document.getElementById('tab-content-debiti');
+    const contentCrediti = document.getElementById('tab-content-crediti');
+
+    if (btnDebiti && btnCrediti && contentDebiti && contentCrediti) {
+      btnDebiti.addEventListener('click', function() {
+        btnDebiti.classList.remove('bg-transparent', 'text-on-surface-variant');
+        btnDebiti.classList.add('bg-surface-container', 'text-primary');
+
+        btnCrediti.classList.remove('bg-surface-container', 'text-primary');
+        btnCrediti.classList.add('bg-transparent', 'text-on-surface-variant');
+
+        contentDebiti.classList.remove('hidden');
+        contentCrediti.classList.add('hidden');
+      });
+
+      btnCrediti.addEventListener('click', function() {
+        btnCrediti.classList.remove('bg-transparent', 'text-on-surface-variant');
+        btnCrediti.classList.add('bg-surface-container', 'text-primary');
+
+        btnDebiti.classList.remove('bg-surface-container', 'text-primary');
+        btnDebiti.classList.add('bg-transparent', 'text-on-surface-variant');
+
+        contentCrediti.classList.remove('hidden');
+        contentDebiti.classList.add('hidden');
+      });
+    }
+  })();
+</script></main></div></body></html>
