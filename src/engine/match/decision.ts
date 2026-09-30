@@ -3,6 +3,7 @@
 // u = p · valore_dopo − (1 − p) · costo_della_perdita · avversione_al_rischio (+ preferenze tattiche).
 // La scelta è un softmax con temperatura: Decisioni alte → quasi sempre l'opzione migliore.
 import { FLAGS, MATCH } from '../balance.ts';
+import { habit } from '../traits.ts';
 import type { Player, PlayerInstr, Tactic } from '../model.ts';
 import type { Rng } from '../rng.ts';
 import { len, lossCost, segDist, sigmoid, xG, xT } from './pitch.ts';
@@ -17,6 +18,7 @@ export interface OnPitch {
   role: Role; // tendenze del ruolo (roles.ts)
   mod: number; // logit personale del giorno: morale, condizione partita, familiarità col modulo
   ins: PlayerInstr; // istruzioni individuali dell'allenatore
+  tr: number; // tratti del giocatore in bit (traits.ts)
 }
 
 export interface View {
@@ -93,6 +95,7 @@ function passes(v: View, x: Ctx, out: Option[]) {
   const lr = MATCH.laneRadius, mr = MATCH.markRadius;
   // parte del logit che dipende solo dal portatore
   const passLogit0 = MATCH.passBase - MATCH.passPress * pressure + MATCH.passSkill * a(c, 'passing') + tempoMod + v.bonus;
+  const longHabit = habit.longPass(c.tr); // tratto: gioca palloni semplici
   for (const m of v.mates) {
     if (m === c) continue;
     const dx = m.x - bx, dy = m.y - by;
@@ -113,7 +116,7 @@ function passes(v: View, x: Ctx, out: Option[]) {
       if (d < lr) lane += (1 - d / lr) * v.defAnt[i]!;
     }
     const logit = passLogit0 - MATCH.passDist * dist - MATCH.passLane * lane - MARK_W[+(m.x >= 10.1)]! * mark
-      + (dist > 3.5 ? vision : 0) + MATCH.passTouch * (m.p.attrs.firstTouch - 11);
+      + (dist > 3.5 ? vision + longHabit : 0) + MATCH.passTouch * (m.p.attrs.firstTouch - 11);
     const p = sigmoid(logit);
     // fuorigioco: passaggi in avanti verso chi attacca la profondità vicino alla linea difensiva
     const edge = v.offsideLine - MATCH.offsideWindow;
@@ -140,7 +143,8 @@ function throughBalls(v: View, x: Ctx, out: Option[]) {
       + MATCH.passSkill * a(c, 'passing') + 2 * vision + v.bonus);
     const off = MATCH.throughOffside * (1 - (m.p.attrs.offTheBall - 11) * 0.04);
     const pe = p * (1 - off);
-    out.push({ kind: 'pass', to: m, tx, ty: m.y, p, off, u: pe * (xT(tx, m.y) + keep) - (1 - pe) * loss + direct * (tx - bx), w: chem(rel[m.p.id]), deep: true });
+    const th = habit.through(c.tr); // tratti: filtranti sì o no
+    out.push({ kind: 'pass', to: m, tx, ty: m.y, p, off, u: pe * (xT(tx, m.y) + keep) - (1 - pe) * loss + direct * (tx - bx) + th, w: chem(rel[m.p.id]), deep: true });
   }
 }
 
@@ -170,7 +174,7 @@ function dribble(v: View, x: Ctx): Option {
   const ty = by + (bx > 7 ? (4 - by) * 0.25 : 0);
   const pd = sigmoid(MATCH.dribBase + MATCH.dribSkill * dribSkill - close * MATCH.dribDef * tackSkill - MATCH.dribPress * pressure
     + (tackler ? (100 - tackler.energy) * MATCH.energySkill : 0) + v.bonus);
-  return { kind: 'dribble', tx, ty, p: pd, tackler: close > 0 ? tackler : undefined, u: pd * (xT(tx, ty) + x.keep + MATCH.dribBeat * close) - (1 - pd) * x.loss + 0.0008 * a(c, 'flair') + c.role.dribble };
+  return { kind: 'dribble', tx, ty, p: pd, tackler: close > 0 ? tackler : undefined, u: pd * (xT(tx, ty) + x.keep + MATCH.dribBeat * close) - (1 - pd) * x.loss + 0.0008 * a(c, 'flair') + c.role.dribble + habit.dribble(c.tr) };
 }
 
 /** 3) TIRO dalla trequarti in su */
@@ -184,7 +188,7 @@ function shot(v: View, x: Ctx, out: Option[]) {
   // tirare chiude quasi sempre l'azione: si rinuncia a metà del valore del possesso
   // ruolo e istruzione individuale; da fuori area tira chi ha il tiro da lontano più che la finalizzazione
   const want = c.role.shoot * MATCH.insShoot[c.ins.shoot ?? 1]!
-    * (bx < 10.1 ? MATCH.longShotBias * c.p.attrs.longShots / Math.max(1, c.p.attrs.finishing) : 1);
+    * (bx < 10.1 ? MATCH.longShotBias * c.p.attrs.longShots / Math.max(1, c.p.attrs.finishing) * habit.longShot(c.tr) : 1);
   out.push({ kind: 'shot', xg, block: v.block, u: xg * (1 + MATCH.shotSkill * skill) * MATCH.shotBias * want * (1 + MATCH.mentalityShot * mm) - (1 - xg) * x.keep * 0.5 });
 }
 
@@ -201,7 +205,8 @@ function cross(v: View, x: Ctx, out: Option[]) {
   const p = sigmoid(MATCH.crossBase + MATCH.crossSkill * a(c, 'crossing') - MATCH.crossPress * pressure + v.bonus - v.wind);
   // stima del duello: quanti dei miei e dei loro ci sono in area
   const win = sigmoid(MATCH.duelBase + MATCH.crossAtt * attBox - MATCH.crossDef * defBox);
-  const value = (w: number, xg: number) => p * (w * xg + (1 - w) * MATCH.secondValue) * c.role.cross - (1 - p) * x.loss * MATCH.crossLoss;
+  const early = habit.cross(c.tr); // tratto: crossa appena può
+  const value = (w: number, xg: number) => p * (w * xg + (1 - w) * MATCH.secondValue) * c.role.cross * early - (1 - p) * x.loss * MATCH.crossLoss;
   out.push({ kind: 'cross', p, low: false, u: value(win, MATCH.headerXg) });
   if (bx >= MATCH.lowMinX) out.push({ kind: 'cross', p, low: true, u: value(sigmoid(MATCH.lowBase + MATCH.crossAtt * attBox - MATCH.crossDef * defBox), LOW_XG) });
 }

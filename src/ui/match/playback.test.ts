@@ -191,7 +191,7 @@ describe('partita in 2D (F6)', { timeout: 30000 }, () => {
     const { w, fx } = setup();
     const names = new Map<number, string>();
     let told = 0, scored = 0;
-    for (let seed = 1; seed <= 6; seed++) {
+    for (let seed = 1; seed <= 12; seed++) { // 12 partite: in 6 può capitare che tutti i gol arrivino di testa o da fermo
       const run = runMatch(new Rng(seed), matchSetups(w, fx), []);
       run.result();
       run.frames.forEach((f, k) => {

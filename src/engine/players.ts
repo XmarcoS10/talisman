@@ -2,6 +2,7 @@
 import { ADJACENT, BALANCE, NATIONALITY } from './balance.ts';
 import { ALL_ATTRS, ATTR_GROUPS, type AttrKey, type Attributes, type Personality, type Player, type Position } from './model.ts';
 import { NATIONS } from './names.ts';
+import { bornTraits } from './traits.ts';
 import type { Rng } from './rng.ts';
 import { value, wageFor } from './transfers/valuation.ts';
 import { clamp } from './util.ts';
@@ -123,9 +124,12 @@ export function makePlayer(rng: Rng, id: number, pos: Position, meanCA: number, 
     stats: emptyStats(),
     history: [],
     caLog: [],
+    traits: [],
+    learning: null,
   };
   recomputeCA(p);
   p.pa = Math.max(p.pa, p.ca);
   p.contract.wage = wageFor(value(p, season));
+  p.traits = bornTraits(p); // da id e attributi: non tocca il caso del mondo
   return p;
 }

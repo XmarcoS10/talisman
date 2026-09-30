@@ -1,7 +1,8 @@
 // Salvataggi versionati (GUIDA §2.5): ogni save ha schemaVersion e passa dalla catena di migrazioni.
 import { SCOUT, TRAIN, YOUTH } from './balance.ts';
 import { defaultRoles } from './match/tactics.ts';
-import { ALL_ATTRS, PHILOSOPHIES, type Club, type WorldState } from './model.ts';
+import { ALL_ATTRS, PHILOSOPHIES, type Club, type Player, type WorldState } from './model.ts';
+import { bornTraits } from './traits.ts';
 import { Rng } from './rng.ts';
 import { seedMinutes } from './morale.ts';
 import { initRelations } from './social.ts';
@@ -10,7 +11,7 @@ import { assignAgents } from './transfers/agents.ts';
 import { makeScouts } from './scouting/scouts.ts';
 import { newBoard } from './board/board.ts';
 
-export const SCHEMA_VERSION = 31;
+export const SCHEMA_VERSION = 32;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -162,6 +163,8 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
   (w) => { w.coaches = {}; w.nextCoachId = 1; },
   // 30 → 31 (0.8.x, staff): nessuno; lo staff medio e i candidati arrivano alla prima giornata (ensureStaff)
   (w) => { w.staff = {}; w.nextStaffId = 1; },
+  // 31 → 32 (0.10.0, tratti del giocatore): quelli di nascita, ricavati da id e attributi (niente caso)
+  (w) => { for (const p of Object.values(w.players as Obj)) { p.learning = null; p.traits = bornTraits(p as unknown as Player); } }, // bornTraits legge solo id, ruolo e attributi
 ];
 
 export function serialize(world: WorldState): string {

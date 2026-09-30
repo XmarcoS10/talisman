@@ -1,5 +1,6 @@
 // Scheda giocatore (specifiche §3.6): intestazione, e sei schede — profilo con radar, attributi, statistiche,
 // prestazioni, contratto, dinamiche. Dei giocatori non tuoi solo stime (§7.6).
+import { PlayerTraits } from './PlayerTraits.tsx';
 import { useState } from 'react';
 import { ArrowLeft, Footprints, Handshake, Ruler } from 'lucide-react';
 import { ATTR_GROUPS, type WorldState } from '../../engine/model.ts';
@@ -96,7 +97,7 @@ export function PlayerView({ startDeal = false, world, playerId, onBack, onClub,
               {p.intl.caps > 0 && <span className="muted">{t('player.intl', { caps: p.intl.caps, goals: p.intl.goals })}</span>}
             </div>
           </div>
-          {valueBox}
+          <div className="stack">{valueBox}<PlayerTraits world={world} p={p} own={own} known={known} onChange={onChange} /></div>
         </div>
       )}
 

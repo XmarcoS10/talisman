@@ -6,6 +6,7 @@ import { ADJACENT } from './balance.ts';
 import { ALL_ATTRS, POSITIONS, type AttrKey, type Personality, type Player, type Position, type WorldState } from './model.ts';
 import { NATIONS } from './names.ts';
 import { makePlayer, recomputeCA } from './players.ts';
+import { bornTraits } from './traits.ts';
 import type { Rng } from './rng.ts';
 import { clamp } from './util.ts';
 import { emptyWorld, finishWorld, LEAGUES, makeClub } from './world.ts';
@@ -144,6 +145,7 @@ function dbPlayer(world: WorldState, rng: Rng, d: DbPlayer): Player {
   for (const adj of ADJACENT[d.position] ?? []) if (!d.positions) p.positions[adj] ??= 3;
   if (d.attrs) Object.assign(p.attrs, d.attrs);
   recomputeCA(p);
+  p.traits = bornTraits(p); // dagli attributi del file, non da quelli generati
   p.pa = clamp(d.potential ?? p.pa, p.ca, 200);
   if (d.personality) Object.assign(p.personality, d.personality);
   if (d.until !== undefined) p.contract.until = Math.max(world.season, d.until);

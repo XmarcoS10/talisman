@@ -110,6 +110,11 @@ Scrivania a riquadri: catalogo in `screens/DeskWidgets.tsx` (taglie S/M/L su 12 
 nessun effetto (`staffEdge`); guarigioni, infortuni in allenamento, morale (`STAFF` in balance.ts). Rng proprio: il caso
 del mondo non cambia. Nasce in `preseason`, in `passDays` e all'apertura della carriera (`ensureStaff`).
 
+## Tratti del giocatore (0.10.0)
+`engine/traits.ts`, come i tratti di FM: `p.traits` e `p.learning` (schema 32). Nascono da id e attributi (`bornTraits`,
+niente caso del mondo), si insegnano o disimparano in allenamento (`weekTraits`, solo utente). In partita contano dai bit
+`MP.tr` attraverso `habit.*` (costanti in `TRAIT`): il motore non guarda mai la lista. Coppie opposte in `CONFLICTS`.
+
 ## Salvataggi e diagnostica
 In Electron gli slot sono file in `%APPDATA%/talisman/saves` (preload `electron/preload.cjs`), con intestazione davanti
 al mondo; il registro degli errori è in `%APPDATA%/talisman/logs`. Nel browser resta il localStorage.

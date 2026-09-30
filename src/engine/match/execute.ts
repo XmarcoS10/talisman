@@ -1,6 +1,7 @@
 // Esecuzione dell'opzione scelta (GUIDA §6.2 punto 5): passaggio, dribbling, cross e tiro, con le conseguenze
 // (intercetti, contrasti, fuorigioco, gol, parate, respinte, corner) e il fotogramma del registro.
 import { MATCH } from '../balance.ts';
+import { habit } from '../traits.ts';
 import { clamp } from '../util.ts';
 import type { Option } from './decision.ts';
 import { foul } from './events.ts';
@@ -140,7 +141,7 @@ function doDribble(st: MatchState, def: Team, c: MP, o: Extract<Option, { kind: 
   const tk = o.tackler as MP | undefined;
   st.teams[st.s].log.dribbles++;
   const foulP = MATCH.foulBase * (1 + MATCH.foulAggression * (tk ? tk.p.attrs.aggression - 11 : 0)) * PRESS[def.tactic.pressing]!
-    * (inBox(st.bx, st.by) ? MATCH.foulInBox : 1) * (tk?.st.yellows ? MATCH.bookedCaution : 1) * whistle(st);
+    * (inBox(st.bx, st.by) ? MATCH.foulInBox : 1) * (tk?.st.yellows ? MATCH.bookedCaution : 1) * whistle(st) * habit.foul(tk?.tr ?? 0);
   if (tk && st.rng.next() < foulP) foul(st, tk, c);
   else if (st.rng.next() < o.p) {
     c.st.dribbles++;

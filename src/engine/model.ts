@@ -2,6 +2,7 @@
 // Questo stesso formato è quello del "database della community" caricabile dall'utente.
 import type { RoleId } from './match/roles.ts';
 import type { RngState } from './rng.ts';
+import type { Trait } from './traits.ts';
 
 // ponytail: id numerici semplici, branded types quando ci saranno più tipi di id che si confondono
 export type PlayerId = number;
@@ -67,6 +68,8 @@ export interface Player {
   stats: { apps: number; goals: number; assists: number; yellows: number; reds: number; ratingSum: number };
   history: { season: number; clubId: ClubId; apps: number; goals: number; ca: number }[];
   caLog: number[]; // CA ogni 4 giornate della stagione in corso (grafico di crescita)
+  traits: Trait[]; // tratti del giocatore, come in FM (traits.ts, schema 32)
+  learning: { trait: Trait; progress: number; remove: boolean } | null; // tratto che sta imparando (o disimparando)
 }
 
 /** contratto (§7.5): stipendio annuo, scadenza, clausole, prestito in corso */

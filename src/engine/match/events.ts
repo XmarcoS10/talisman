@@ -1,5 +1,6 @@
 // Eventi intorno al gioco: falli, cartellini, infortuni (di contatto e "senza contatto"), stanchezza.
 import { MATCH } from '../balance.ts';
+import { habit } from '../traits.ts';
 import { afterFoul } from './setpieces.ts';
 import { ev, gain, minute, nearest, type MatchState, type MP, type PStats, type Team } from './state.ts';
 import { substitute } from './subs.ts';
@@ -34,7 +35,7 @@ function sendOff(st: MatchState, tm: Team, m: MP) {
 export function challengeP(tk: MP, c: MP, pressure: number) {
   const a = tk.p.attrs, b = c.p.attrs;
   const diff = 0.4 * a.tackling + 0.3 * (a.positioning + a.anticipation) - 0.5 * b.technique - 0.25 * (b.composure + b.balance);
-  return MATCH.pressTackle * pressure * Math.max(0.2, 1 + MATCH.tackleSkill * diff);
+  return MATCH.pressTackle * pressure * Math.max(0.2, 1 + MATCH.tackleSkill * diff) * habit.tackle(tk.tr);
 }
 
 /** contrasto vinto sul portatore: palla al difensore, dove si trova */

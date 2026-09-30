@@ -1,6 +1,7 @@
 // Il portiere (Blocco 2b, intervento 5): parata secondo il tipo di tiro, presa o respinta (la respinta crea la
 // ribattuta), uscita sulle palle in profondità. Il rinvio lungo è un'opzione in decision.ts. Costanti in MATCH (gk*).
 import { MATCH } from '../balance.ts';
+import { habit } from '../traits.ts';
 import { sigmoid } from './pitch.ts';
 import { corner } from './setpieces.ts';
 import { shoot } from './execute.ts';
@@ -46,6 +47,7 @@ export function afterSave(st: MatchState, att: Team, def: Team, gk: MP | undefin
 export function sweeps(st: MatchState, def: Team): MP | null {
   const gk = def.on.find((m) => m.pos === 'GK');
   if (!gk) return null;
-  const p = MATCH.gkSweepBase + MATCH.gkSweepSkill * (gk.p.attrs.rushingOut - 11) + (gk.roleId === 'sweeperKeeper' ? MATCH.gkSweepRole : 0);
+  const p = MATCH.gkSweepBase + MATCH.gkSweepSkill * (gk.p.attrs.rushingOut - 11) + (gk.roleId === 'sweeperKeeper' ? MATCH.gkSweepRole : 0)
+    + habit.sweep(gk.tr); // tratto: esce spesso dai pali
   return st.rng.next() < p ? gk : null;
 }

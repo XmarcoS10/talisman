@@ -565,6 +565,29 @@ export const STAFF = {
   assistantMorale: 3, // punti di morale verso cui tende lo spogliatoio
 } as const;
 
+/** tratti del giocatore (traits.ts): nascita, apprendimento, effetto in partita */
+export const TRAIT = {
+  bornFit: 0.3, // probabilità di nascere col tratto se il suo gioco lo porta lì (attributo ≥ 15)
+  bornSome: 0.1, // attributo 12-14
+  bornRare: 0.02,
+  bornMax: 3,
+  max: 5,
+  learnBase: 8, // punti a settimana su 100 (≈ 12 settimane per un 22-27enne medio)
+  coachK: 0.3, // quanto conta il vice nell'insegnare
+  moraleStop: 40, // sotto questo morale non impara
+  // in partita
+  longShots: 1.4, // voglia di tirare da fuori area
+  dribble: 0.004, // utilità in più al dribbling (quanto il ruolo di ala)
+  through: 0.004, // al passaggio filtrante
+  simpleLong: 0.35, // logit in meno ai passaggi lunghi
+  cross: 1.15, // valore del cross
+  runs: 1.5, // inserimenti in area
+  stayRuns: 0.2, // chi resta dietro
+  tackle: 1.2, // contrasti tentati con successo
+  foul: 1.35, // e falli
+  sweep: 0.08, // uscite del portiere
+} as const;
+
 export const SCOUT = {
   // quello che si sa gratis
   publicBase: 8,

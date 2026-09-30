@@ -1,6 +1,7 @@
 // Allenamento settimanale (GUIDA §7.1-7.2): carico, condizione, infortuni, sviluppo, mentori, familiarità col modulo.
 import { DEV, STAFF, STYLE, TRAIN } from './balance.ts';
 import { staffEdge } from './staff.ts';
+import { weekTraits } from './traits.ts';
 import { developPlayer, type DevContext } from './development.ts';
 import { injure, injuryRisk, relapseRisk } from './injuries.ts';
 import { FORMATION_IDS, type Club, type Player, type TrainingCat, type WorldState } from './model.ts';
@@ -73,6 +74,7 @@ export function trainWeek(world: WorldState, club: Club, rng: Rng) {
         addCause(world, p, 'cause.injury', { injury: type.id, days: c.injuryDays });
       }
     }
+    if (me) weekTraits(world, p); // tratto che sta imparando
     const mentor = validMentor(world, p);
     if (!mentor) p.mentorId = null;
     else bond(p, mentor, 1);

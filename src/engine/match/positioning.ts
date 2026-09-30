@@ -2,6 +2,7 @@
 // velocità limitata: dopo una palla persa chi era sbilanciato in avanti deve rientrare, ed è da lì che nascono i
 // contropiedi. Col registro acceso (partita guardata) lo stesso intervallo si gioca a passi fissi (F6.2).
 import { MATCH } from '../balance.ts';
+import { habit } from '../traits.ts';
 import { len, sigmoid } from './pitch.ts';
 import { clamp } from '../util.ts';
 import { clock, cover, gx, gy, minute, type MatchState, type MP, type Team, type TraceStep } from './state.ts';
@@ -31,7 +32,8 @@ function jitter(st: MatchState) {
     // solo col pallone sull'altra fascia, a chiudere sul secondo palo (sulla sua resta largo per il cross)
     const wide = m.hy > 4.3 ? 1 : m.hy < 3.7 ? -1 : 0;
     if (st.bx >= MATCH.runFromX && m.pos !== 'ST' && (m.role.runs || m.ins.runs === 2) && !(wide && (st.by - 4) * wide > 0)) {
-      m.run = st.rng.next() < MATCH.runInsert * MATCH.insRuns[m.ins.runs ?? 1]! * m.p.attrs.offTheBall / 10;
+      m.run = st.rng.next() < MATCH.runInsert * MATCH.insRuns[m.ins.runs ?? 1]! * m.p.attrs.offTheBall / 10
+        * habit.runs(m.tr); // tratti: si inserisce, resta dietro
       if (m.run) m.runRoll = st.rng.next();
     }
   }
