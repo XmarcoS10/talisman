@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="it"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,600&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-tertiary":"#472a00","on-secondary":"#003824","on-secondary-fixed":"#002113","background":"#0f141c","outline":"#ad8887","secondary-fixed":"#6ffbbe","on-surface-variant":"#e6bdbb","error-container":"#93000a","secondary-fixed-dim":"#4edea3","on-tertiary-fixed":"#2a1700","primary-fixed-dim":"#ffb3b2","tertiary-fixed":"#ffddb8","surface-container-high":"#252a33","surface-container-highest":"#30353e","surface-container-low":"#171c24","tertiary-container":"#ca8100","surface-bright":"#343942","on-primary-container":"#5b000f","surface-container-lowest":"#090e16","tertiary-fixed-dim":"#ffb95f","on-secondary-container":"#00311f","inverse-surface":"#dee2ee","on-error":"#690005","primary":"#ffb3b2","on-tertiary-container":"#3e2400","surface-tint":"#ffb3b2","surface-variant":"#30353e","surface":"#0f141c","on-secondary-fixed-variant":"#005236","primary-fixed":"#ffdad9","on-primary-fixed-variant":"#92001f","on-primary-fixed":"#410008","secondary-container":"#00a572","surface-container":"#1b2028","tertiary":"#ffb95f","on-surface":"#dee2ee","on-error-container":"#ffdad6","outline-variant":"#5d3f3f","primary-container":"#ff525d","error":"#ffb4ab","on-tertiary-fixed-variant":"#653e00","on-primary":"#680013","surface-dim":"#0f141c","on-background":"#dee2ee","secondary":"#4edea3","inverse-on-surface":"#2c3139","inverse-primary":"#bf002b"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"space-xl":"1.5rem","gutter":"1rem","space-lg":"1rem","space-sm":"0.5rem","space-xs":"0.25rem","margin":"1.25rem","space-md":"0.75rem"},"fontFamily":{"headline-sm":["Barlow Condensed"],"label-numeric-sm":["JetBrains Mono"],"label-editorial":["Barlow Condensed"],"body-lg":["Inter"],"body-sm":["Inter"],"headline-md":["Barlow Condensed"],"label-numeric-md":["JetBrains Mono"],"headline-xl":["Barlow Condensed"],"headline-lg":["Barlow Condensed"],"label-numeric-lg":["JetBrains Mono"],"body-md":["Inter"]},"fontSize":{"headline-sm":["1.125rem",{"lineHeight":"1.375rem","letterSpacing":"0.025em","fontWeight":"600"}],"label-numeric-sm":["0.75rem",{"lineHeight":"0.875rem","letterSpacing":"0em","fontWeight":"500"}],"label-editorial":["0.8125rem",{"lineHeight":"1rem","letterSpacing":"0.08em","fontWeight":"700"}],"body-lg":["1rem",{"lineHeight":"1.5rem","letterSpacing":"-0.01em","fontWeight":"400"}],"body-sm":["0.75rem",{"lineHeight":"1rem","letterSpacing":"0em","fontWeight":"400"}],"headline-md":["1.5rem",{"lineHeight":"1.75rem","letterSpacing":"0.03em","fontWeight":"600"}],"label-numeric-md":["0.875rem",{"lineHeight":"1.125rem","letterSpacing":"0em","fontWeight":"500"}],"headline-xl":["2.5rem",{"lineHeight":"2.75rem","letterSpacing":"0.05em","fontWeight":"700"}],"headline-lg":["2rem",{"lineHeight":"2.25rem","letterSpacing":"0.04em","fontWeight":"700"}],"label-numeric-lg":["1.25rem",{"lineHeight":"1.5rem","letterSpacing":"-0.02em","fontWeight":"600"}],"body-md":["0.875rem",{"lineHeight":"1.25rem","letterSpacing":"-0.005em","fontWeight":"400"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.25)]"><div class="flex flex-col"><div class="h-14 px-gutter flex items-center gap-space-md bg-surface-container-lowest"><img alt="Minimalist geometric football club shield crest for fictional club 'Sporting Ventimonti' (SV), diagonally split deep navy and crimson red with gold/white monogram initials 'SV' and a clean star on top, flat vector sports crest.. Brand logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wdtkip5X18SHcxOlfJCQJUYrB8weixm6Oblbw-K5rKQJnvHnsd9hIvboxdPE1xrtKsPTe-92cHw5GN3e1uXgQFKQXxIT7rCKNy-K7gPIpn93t6b0SVPxC3PTAdq4sKL45_A5IM1MNpQEtVWpK50JDDuCHiOBqcs-S5WO4je5ap4nPhjZXjFqTwrgTYqOiBnX3RXP-FVCJpZ0hZ4k6rqB-i6ZKR58JnhXNrEM3kqv7vW19KaXY44iSOIQk"/><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface truncate leading-tight">SPORTING VENTIMONTI</span><span class="font-label-numeric-sm text-label-numeric-sm text-outline uppercase tracking-wider truncate">SERIE A • STAGIONE 2026/27</span></div></div><div class="overflow-y-auto px-space-xs py-space-sm space-y-space-md"><div class="space-y-space-xs"><div class="px-space-md py-space-xs font-label-editorial text-label-editorial text-outline uppercase">PRINCIPALE</div><nav class="space-y-0.5" data-active-classes="bg-surface-container-highest text-on-surface font-semibold"><a class="block px-space-md py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-headline-sm text-headline-sm uppercase tracking-wide transition-colors" data-path="scrivania" href="#">Scrivania</a><a class="block px-space-md py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-headline-sm text-headline-sm uppercase tracking-wide transition-colors" data-path="storie-and-media" href="#">Storie &amp; Media</a><a aria-current="page" class="block px-space-md py-1.5 rounded-lg uppercase tracking-wide transition-colors bg-surface-container-highest text-on-surface font-semibold" data-path="rosa" href="#">Rosa</a><a class="block px-space-md py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-headline-sm text-headline-sm uppercase tracking-wide transition-colors" data-path="tattica" href="#">Tattica</a></nav></div><div class="space-y-space-xs"><div class="px-space-md py-space-xs font-label-editorial text-label-editorial text-outline uppercase">GESTIONE</div><nav class="space-y-0.5" data-active-classes="bg-surface-container-highest text-on-surface font-semibold"><a class="block px-space-md py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-headline-sm text-headline-sm uppercase tracking-wide transition-colors" data-path="allenamento" href="#">Allenamento</a><a class="block px-space-md py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-headline-sm text-headline-sm uppercase tracking-wide transition-colors" data-path="spogliatoio" href="#">Spogliatoio</a><a class="block px-space-md py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-headline-sm text-headline-sm uppercase tracking-wide transition-colors" data-path="vivaio" href="#">Vivaio</a></nav></div><div class="space-y-space-xs"><div class="px-space-md py-space-xs font-label-editorial text-label-editorial text-outline uppercase">MERCATO</div><nav class="space-y-0.5" data-active-classes="bg-surface-container-highest text-on-surface font-semibold"><a class="block px-space-md py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-headline-sm text-headline-sm uppercase tracking-wide transition-colors" data-path="mercato" href="#">Mercato</a><a class="block px-space-md py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-headline-sm text-headline-sm uppercase tracking-wide transition-colors" data-path="osservatori" href="#">Osservatori</a><a class="block px-space-md py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-headline-sm text-headline-sm uppercase tracking-wide transition-colors" data-path="finanze" href="#">Finanze</a><a class="block px-space-md py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-headline-sm text-headline-sm uppercase tracking-wide transition-colors" data-path="dirigenza" href="#">Dirigenza</a></nav></div><div class="space-y-space-xs"><div class="px-space-md py-space-xs font-label-editorial text-label-editorial text-outline uppercase">COMPETIZIONI</div><nav class="space-y-0.5" data-active-classes="bg-surface-container-highest text-on-surface font-semibold"><a class="block px-space-md py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-headline-sm text-headline-sm uppercase tracking-wide transition-colors" data-path="classifiche" href="#">Classifiche</a><a class="block px-space-md py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-headline-sm text-headline-sm uppercase tracking-wide transition-colors" data-path="calendario" href="#">Calendario</a><a class="block px-space-md py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-headline-sm text-headline-sm uppercase tracking-wide transition-colors" data-path="record-and-storia" href="#">Record &amp; Storia</a></nav></div><div class="space-y-space-xs"><div class="px-space-md py-space-xs font-label-editorial text-label-editorial text-outline uppercase">IMPOSTAZIONI</div><nav class="space-y-0.5" data-active-classes="bg-surface-container-highest text-on-surface font-semibold"><a class="block px-space-md py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-headline-sm text-headline-sm uppercase tracking-wide transition-colors" data-path="impostazioni" href="#">Impostazioni</a><a class="block px-space-md py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-headline-sm text-headline-sm uppercase tracking-wide transition-colors" data-path="salvataggi" href="#">Salvataggi</a></nav></div></div></div><div class="p-gutter bg-surface-container-lowest flex items-center justify-between font-label-numeric-sm text-label-numeric-sm text-outline"><span class="uppercase tracking-wider">Modalità Offline</span><span>v27.4.0</span></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-14 bg-surface-container/90 backdrop-blur-xl z-40 px-gutter flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.15)]"><div class="flex items-center gap-space-xl"><div class="flex items-center gap-space-xs"><span class="font-label-numeric-md text-label-numeric-md text-on-surface font-bold tracking-tight">SAB 12 SET 2026</span></div><div class="h-4 w-px bg-surface-container-highest"></div><div class="flex items-center gap-space-xs"><span class="font-label-editorial text-label-editorial text-outline uppercase">CASSA:</span><span class="font-label-numeric-md text-label-numeric-md text-secondary font-semibold">45,4 Mln €</span></div><div class="h-4 w-px bg-surface-container-highest"></div><div class="relative flex items-center"><span class="material-symbols-outlined absolute left-space-sm text-outline text-[18px]">search</span><input class="bg-surface-container-low text-on-surface placeholder:text-outline h-8 pl-8 pr-space-md rounded-lg font-body-sm text-body-sm w-72 focus:outline-none focus:ring-1 focus:ring-primary" placeholder="Cerca giocatori, club fittizi..." type="text"/></div></div><div class="flex items-center gap-space-md"><button class="h-9 px-space-md rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-editorial text-label-editorial tracking-wider uppercase transition-colors" type="button">GUARDA LA PARTITA</button><button class="h-9 px-gutter rounded-lg bg-primary-container hover:bg-on-primary-container text-on-primary-container hover:text-on-primary font-label-editorial text-label-editorial tracking-wider uppercase transition-colors flex items-center gap-space-xs shadow-[0_1px_8px_rgba(255,82,93,0.25)]" type="button">AVANZA [SPAZIO] ▶▶</button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-14 w-full px-gutter min-h-screen bg-background"><div class="flex flex-col w-full text-on-surface pb-12">
+<!-- TOP BANNER & PLAYER DOSSIER -->
+<div class="w-full bg-surface-container-low rounded-xl p-space-md shadow-md mb-space-md">
+<!-- Breadcrumb & Mode Selector -->
+<div class="flex items-center justify-between pb-space-sm mb-space-sm bg-surface-container-lowest/50 px-space-md py-space-xs rounded-lg">
+<div class="flex items-center gap-space-sm">
+<a class="font-headline-sm text-headline-sm text-outline hover:text-primary transition-colors flex items-center gap-space-xs uppercase" href="#">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+          Torna alla Rosa
+        </a>
+<span class="text-surface-variant font-label-numeric-sm">/</span>
+<span class="font-label-editorial text-label-editorial text-secondary tracking-widest uppercase">PROFILO CALCIATORE • SPORTING VENTIMONTI F.C.</span>
+</div>
+<div class="flex items-center gap-space-md">
+<span class="font-label-numeric-sm text-label-numeric-sm text-outline uppercase tracking-wider flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+          Vista: Calciatore Proprio
+        </span>
+<div class="h-3 w-px bg-surface-variant"></div>
+<button class="text-outline hover:text-on-surface font-label-numeric-sm text-label-numeric-sm transition-colors flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded" type="button">
+<span class="material-symbols-outlined text-[14px]">swap_horiz</span> Simula vista osservatore esterno
+        </button>
+</div>
+</div>
+<!-- Main Header Card Content -->
+<div class="grid grid-cols-12 gap-space-md items-start">
+<!-- Player Photo & Identifiers -->
+<div class="col-span-12 xl:col-span-5 flex gap-space-md items-center">
+<div class="relative shrink-0 w-28 h-28 rounded-xl overflow-hidden shadow-lg bg-surface-container-lowest">
+<img alt="Matteo Valente portrait" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAltta9k9LczWp-HkSGlfwqyGa0cpXdKEEUCkooYMXnt5O0nb-MvYEecueVnOXoLEwUN2wJZHZKQG5tBEWS4dyED4BoWC8yYaygrLvH3lAzaaoXIgAI647ovXW2U2za_c4-zE3ni4jFXU77g_DHj8mvcic9eANJ2KCzs9mGwPn98YG6x9DH6kfzO7FYD-xIXDcmnBO0J-klHKHTV3LZgsmSA-ckWoReFYIvSVnQqY0bfR8mKzNcE5fQ"/>
+<div class="absolute top-1 left-1 bg-primary-container text-on-primary-container font-headline-sm text-headline-sm px-1.5 py-0.5 rounded shadow">
+            #9
+          </div>
+<div class="absolute bottom-1 right-1 bg-surface-container-lowest/90 text-tertiary px-1 py-0.5 rounded text-[10px] font-label-numeric-sm flex items-center gap-0.5 shadow">
+<span class="material-symbols-outlined text-[12px] text-tertiary">star</span> 1°
+          </div>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<div class="flex items-center gap-space-sm flex-wrap">
+<h1 class="font-headline-xl text-headline-xl uppercase text-on-surface tracking-wide leading-none">Matteo Valente</h1>
+<span class="px-2 py-0.5 bg-primary-container text-on-primary-container font-label-editorial text-label-editorial tracking-wider uppercase rounded">Capocannoniere Serie A</span>
+</div>
+<div class="flex items-center gap-space-sm mt-1 flex-wrap font-label-numeric-sm text-label-numeric-sm text-outline">
+<span>27 anni (14/05/1999)</span>
+<span>•</span>
+<span class="flex items-center gap-1">Italia <span class="text-base leading-none">🇮🇹</span></span>
+<span>•</span>
+<span class="text-secondary font-semibold">Giocatore Chiave</span>
+</div>
+<div class="mt-2 flex flex-col gap-0.5">
+<div class="flex items-baseline gap-1">
+<span class="font-label-editorial text-label-editorial text-outline uppercase">RUOLO NATURALE:</span>
+<span class="font-headline-sm text-headline-sm text-primary tracking-wide uppercase">ATT / Punta Centrale (PC)</span>
+</div>
+<div class="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant">
+<span class="text-outline">Secondari:</span> Seconda Punta (SP), Ala Sinistra (AS)
+            </div>
+<div class="flex items-center gap-1 font-body-sm text-body-sm text-outline mt-0.5">
+<span>Piede:</span> <span class="text-on-surface font-medium">Destro (Molto Forte)</span>, <span class="text-on-surface-variant">Sinistro (Ragionevole)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Financial Status Ledger -->
+<div class="col-span-12 md:col-span-6 xl:col-span-3 flex flex-col justify-between h-full bg-surface-container px-space-md py-space-sm rounded-lg">
+<div>
+<span class="font-label-editorial text-label-editorial text-outline uppercase tracking-wider block mb-1">INFORMAZIONI CONTRATTUALI</span>
+<div class="space-y-1.5 font-label-numeric-sm text-label-numeric-sm">
+<div class="flex justify-between items-center py-0.5">
+<span class="text-outline">Valore Stimato:</span>
+<span class="font-label-numeric-md text-label-numeric-md text-secondary font-bold">34,0 Mln €</span>
+</div>
+<div class="flex justify-between items-center py-0.5">
+<span class="text-outline">Stipendio Netto/Anno:</span>
+<span class="font-label-numeric-md text-label-numeric-md text-on-surface font-semibold">3,6 Mln €/a</span>
+</div>
+<div class="flex justify-between items-center py-0.5">
+<span class="text-outline">Scadenza Contratto:</span>
+<span class="text-on-surface font-medium">30 Giu 2029 <span class="text-secondary">(3 anni)</span></span>
+</div>
+<div class="flex justify-between items-center py-0.5">
+<span class="text-outline">Clausola Rescissoria:</span>
+<span class="text-tertiary font-bold">65,0 Mln € (Estero)</span>
+</div>
+</div>
+</div>
+<div class="mt-2 pt-1 flex items-center justify-between font-label-numeric-sm text-label-numeric-sm text-outline">
+<span>Stato rosa: Intoccabile</span>
+<span class="text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Titolare fisso
+          </span>
+</div>
+</div>
+<!-- Header Quick Management Actions -->
+<div class="col-span-12 md:col-span-6 xl:col-span-4 flex flex-col justify-between h-full gap-space-xs">
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="h-9 px-space-sm rounded-lg bg-primary-container hover:bg-on-primary-container text-on-primary-container hover:text-on-primary font-label-editorial text-label-editorial tracking-wider uppercase transition-colors flex items-center justify-center gap-1 shadow-md" type="button">
+<span class="material-symbols-outlined text-[16px]">edit_document</span> RINNOVA CONTRATTO
+          </button>
+<button class="h-9 px-space-sm rounded-lg bg-surface-container hover:bg-surface-container-highest text-on-surface font-label-editorial text-label-editorial tracking-wider uppercase transition-colors flex items-center justify-center gap-1" type="button">
+<span class="material-symbols-outlined text-[16px]">campaign</span> Offri a Società
+          </button>
+<button class="h-8 px-space-sm rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-editorial text-label-editorial tracking-wider uppercase transition-colors flex items-center justify-center gap-1" type="button">
+<span class="material-symbols-outlined text-[16px]">tune</span> Imposta Istruzioni
+          </button>
+<button class="h-8 px-space-sm rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-editorial text-label-editorial tracking-wider uppercase transition-colors flex items-center justify-center gap-1" type="button">
+<span class="material-symbols-outlined text-[16px]">bookmark_add</span> Aggiungi a Shortlist
+          </button>
+</div>
+<div class="p-space-xs bg-surface-container-lowest rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified</span>
+<span class="font-label-editorial text-label-editorial text-on-surface uppercase">Forma Fisica: 100%</span>
+</div>
+<div class="flex items-center gap-1 font-label-numeric-sm text-label-numeric-sm">
+<span class="text-outline">Ritmo Partita:</span>
+<span class="text-secondary font-bold">96%</span>
+</div>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-sm text-label-numeric-sm font-bold uppercase">Idoneo</span>
+</div>
+</div>
+</div>
+</div>
+<!-- THREE-COLUMN HIGH-DENSITY MANAGEMENT CANVAS -->
+<div class="grid grid-cols-12 gap-space-md w-full items-start">
+<!-- COLUMN 1: ATTRIBUTES & RADAR COCKPIT (4 COLUMNS) -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-space-md">
+<!-- Attributes Box -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-md flex flex-col">
+<div class="flex items-center justify-between pb-space-xs mb-space-sm bg-surface-container-lowest px-space-sm py-1 rounded">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary">assessment</span> SCHEDA ATTRIBUTI TECNICI &amp; FISICI
+          </span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-outline">Scala 1-20</span>
+</div>
+<div class="grid grid-cols-1 gap-space-sm">
+<!-- TECNICI -->
+<div class="bg-surface-container rounded-lg p-space-xs">
+<div class="px-2 py-0.5 bg-surface-container-high rounded text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider flex justify-between">
+<span>TECNICI</span>
+<span class="text-outline font-label-numeric-sm text-label-numeric-sm">VAL</span>
+</div>
+<div class="space-y-0.5 mt-1 font-body-sm text-body-sm">
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Finalizzazione</span>
+<span class="px-1.5 py-0.5 rounded bg-primary-container text-on-primary-container font-label-numeric-md text-label-numeric-md font-bold">18</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Controllo Palla</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">17</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Dribbling</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">16</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Tiro da Lontano</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">15</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Colpo di Testa</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-bright text-on-surface font-label-numeric-md text-label-numeric-md font-semibold">14</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Tecnica</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">16</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Rigori</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">17</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Passaggi</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-bright text-on-surface font-label-numeric-md text-label-numeric-md font-semibold">13</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Punizioni</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-bright text-on-surface font-label-numeric-md text-label-numeric-md font-semibold">12</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Cross</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-bright text-on-surface font-label-numeric-md text-label-numeric-md font-semibold">11</span>
+</div>
+</div>
+</div>
+<!-- MENTALI -->
+<div class="bg-surface-container rounded-lg p-space-xs">
+<div class="px-2 py-0.5 bg-surface-container-high rounded text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider flex justify-between">
+<span>MENTALI</span>
+<span class="text-outline font-label-numeric-sm text-label-numeric-sm">VAL</span>
+</div>
+<div class="space-y-0.5 mt-1 font-body-sm text-body-sm">
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface font-medium">Freddezza</span>
+<span class="px-1.5 py-0.5 rounded bg-primary-container text-on-primary-container font-label-numeric-md text-label-numeric-md font-bold">19</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface font-medium">Senso della Posizione</span>
+<span class="px-1.5 py-0.5 rounded bg-primary-container text-on-primary-container font-label-numeric-md text-label-numeric-md font-bold">18</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface font-medium">Determinazione</span>
+<span class="px-1.5 py-0.5 rounded bg-primary-container text-on-primary-container font-label-numeric-md text-label-numeric-md font-bold">18</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Senza Palla</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">17</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Decisioni</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">16</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Impegno</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">16</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Leadership</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">15</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Concentrazione</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">15</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Visione di Gioco</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-bright text-on-surface font-label-numeric-md text-label-numeric-md font-semibold">14</span>
+</div>
+<div class="flex items-center justify-between px-2 py-0.5 hover:bg-surface-container-highest rounded transition-colors">
+<span class="text-on-surface">Coraggio</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-bright text-on-surface font-label-numeric-md text-label-numeric-md font-semibold">14</span>
+</div>
+</div>
+</div>
+<!-- FISICI -->
+<div class="bg-surface-container rounded-lg p-space-xs">
+<div class="px-2 py-0.5 bg-surface-container-high rounded text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider flex justify-between">
+<span>FISICI</span>
+<span class="text-outline font-label-numeric-sm text-label-numeric-sm">VAL</span>
+</div>
+<div class="grid grid-cols-2 gap-x-2 gap-y-0.5 mt-1 font-body-sm text-body-sm">
+<div class="flex items-center justify-between px-1.5 py-0.5 hover:bg-surface-container-highest rounded">
+<span class="text-on-surface">Velocità</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">17</span>
+</div>
+<div class="flex items-center justify-between px-1.5 py-0.5 hover:bg-surface-container-highest rounded">
+<span class="text-on-surface">Acceleraz.</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">16</span>
+</div>
+<div class="flex items-center justify-between px-1.5 py-0.5 hover:bg-surface-container-highest rounded">
+<span class="text-on-surface">Forza</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">16</span>
+</div>
+<div class="flex items-center justify-between px-1.5 py-0.5 hover:bg-surface-container-highest rounded">
+<span class="text-on-surface">Equilibrio</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">16</span>
+</div>
+<div class="flex items-center justify-between px-1.5 py-0.5 hover:bg-surface-container-highest rounded">
+<span class="text-on-surface">Integrità Fis.</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">17</span>
+</div>
+<div class="flex items-center justify-between px-1.5 py-0.5 hover:bg-surface-container-highest rounded">
+<span class="text-on-surface">Resistenza</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">15</span>
+</div>
+<div class="flex items-center justify-between px-1.5 py-0.5 hover:bg-surface-container-highest rounded">
+<span class="text-on-surface">Agilità</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-md text-label-numeric-md font-bold">15</span>
+</div>
+<div class="flex items-center justify-between px-1.5 py-0.5 hover:bg-surface-container-highest rounded">
+<span class="text-on-surface">Elevazione</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-bright text-on-surface font-label-numeric-md text-label-numeric-md font-semibold">14</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- RADAR COMPARISON CHART -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-md">
+<div class="flex items-center justify-between pb-space-xs mb-space-sm bg-surface-container-lowest px-space-sm py-1 rounded">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface">
+            CONFRONTO POLIGONALE DI RUOLO
+          </span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-outline">Vs Media Serie A (ATT)</span>
+</div>
+<!-- Radar SVG Visualization -->
+<div class="relative flex items-center justify-center p-2">
+<svg class="w-full h-56 max-w-xs overflow-visible" viewbox="0 0 300 260">
+<!-- Background Polygons -->
+<polygon fill="none" points="150,30 236,75 236,165 150,210 64,165 64,75" stroke="#30353e" stroke-dasharray="3 3" stroke-width="1"></polygon>
+<polygon fill="none" points="150,60 207,90 207,150 150,180 93,150 93,90" stroke="#252a33" stroke-width="1"></polygon>
+<polygon fill="none" points="150,90 178,105 178,135 150,150 122,135 122,105" stroke="#252a33" stroke-width="1"></polygon>
+<!-- Axis lines -->
+<line stroke="#30353e" stroke-width="1" x1="150" x2="150" y1="120" y2="30"></line>
+<line stroke="#30353e" stroke-width="1" x1="150" x2="236" y1="120" y2="75"></line>
+<line stroke="#30353e" stroke-width="1" x1="150" x2="236" y1="120" y2="165"></line>
+<line stroke="#30353e" stroke-width="1" x1="150" x2="150" y1="120" y2="210"></line>
+<line stroke="#30353e" stroke-width="1" x1="150" x2="64" y1="120" y2="165"></line>
+<line stroke="#30353e" stroke-width="1" x1="150" x2="64" y1="120" y2="75"></line>
+<!-- Serie A Average Polygon (Muted Grey) -->
+<polygon fill="#ad8887" fill-opacity="0.15" points="150,58 200,88 195,148 150,165 105,142 100,85" stroke="#ad8887" stroke-dasharray="2 2" stroke-width="1.5"></polygon>
+<!-- Matteo Valente Polygon (Vermilion Primary Tint) -->
+<polygon fill="#ff525d" fill-opacity="0.35" points="150,38 226,72 218,160 150,192 80,152 72,72" stroke="#ff525d" stroke-width="2"></polygon>
+<!-- Valente points -->
+<circle cx="150" cy="38" fill="#ffb3b2" r="3"></circle>
+<circle cx="226" cy="72" fill="#ffb3b2" r="3"></circle>
+<circle cx="218" cy="160" fill="#ffb3b2" r="3"></circle>
+<circle cx="150" cy="192" fill="#ffb3b2" r="3"></circle>
+<circle cx="80" cy="152" fill="#ffb3b2" r="3"></circle>
+<circle cx="72" cy="72" fill="#ffb3b2" r="3"></circle>
+<!-- Axis Labels -->
+<text fill="#dee2ee" font-family="Barlow Condensed" font-size="11" font-weight="700" text-anchor="middle" x="150" y="20">FINALIZZAZIONE (94%)</text>
+<text fill="#dee2ee" font-family="Barlow Condensed" font-size="11" font-weight="600" text-anchor="start" x="245" y="74">MOBILITÀ</text>
+<text fill="#dee2ee" font-family="Barlow Condensed" font-size="11" font-weight="600" text-anchor="start" x="245" y="170">FISICO</text>
+<text fill="#dee2ee" font-family="Barlow Condensed" font-size="11" font-weight="600" text-anchor="middle" x="150" y="228">AEREO</text>
+<text fill="#dee2ee" font-family="Barlow Condensed" font-size="11" font-weight="600" text-anchor="end" x="55" y="170">TATTICA</text>
+<text fill="#dee2ee" font-family="Barlow Condensed" font-size="11" font-weight="600" text-anchor="end" x="55" y="74">CREAZIONE</text>
+</svg>
+</div>
+<div class="flex items-center justify-center gap-space-lg pt-1 bg-surface-container-lowest py-1.5 rounded font-label-numeric-sm text-label-numeric-sm">
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-1.5 bg-primary-container rounded-sm inline-block"></span>
+<span class="text-on-surface font-semibold">M. Valente (SV)</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-1.5 bg-outline rounded-sm inline-block border-dotted"></span>
+<span class="text-outline">Media Punte Serie A</span>
+</div>
+</div>
+</div>
+</div>
+<!-- COLUMN 2: PSYCHOLOGY, DRESSING ROOM & TACTICS (4 COLUMNS) -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-space-md">
+<!-- Personality & Traits -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-md">
+<div class="flex items-center justify-between pb-space-xs mb-space-sm bg-surface-container-lowest px-space-sm py-1 rounded">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-tertiary">psychology</span> PERSONALITÀ &amp; CARATTERE
+          </span>
+<span class="px-1.5 py-0.2 bg-surface-container-highest text-tertiary font-label-numeric-sm text-label-numeric-sm rounded">Profilo Elite</span>
+</div>
+<div class="space-y-space-sm">
+<div class="bg-surface-container p-space-xs rounded-lg">
+<span class="font-label-editorial text-label-editorial text-outline uppercase block">TIPO DI PERSONALITÀ</span>
+<span class="font-headline-sm text-headline-sm text-on-surface uppercase">Professionale &amp; Risoluto</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-relaxed">
+              Dimostra impeccabile dedizione quotidiana all'allenamento. Gestisce la pressione dei media con naturale compostezza e trascina la squadra con un'ambizione orientata ai trofei.
+            </p>
+</div>
+<!-- Gameplay Traits -->
+<div class="bg-surface-container p-space-xs rounded-lg">
+<span class="font-label-editorial text-label-editorial text-outline uppercase block mb-1">TRATTI CARATTERISTICI DI GIOCO (PPM)</span>
+<div class="flex flex-col gap-1 font-body-sm text-body-sm">
+<div class="flex items-center gap-2 text-on-surface bg-surface-container-low px-2 py-1 rounded">
+<span class="material-symbols-outlined text-[14px] text-primary">play_arrow</span>
+<span>Tenta spesso tiri di prima intenzione</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface bg-surface-container-low px-2 py-1 rounded">
+<span class="material-symbols-outlined text-[14px] text-primary">play_arrow</span>
+<span>Taglia verso l'area partendo dalla fascia sinistra</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface bg-surface-container-low px-2 py-1 rounded">
+<span class="material-symbols-outlined text-[14px] text-primary">play_arrow</span>
+<span>Gioca costantemente sul filo del fuorigioco</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Morale & Dynamics -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-md">
+<div class="flex items-center justify-between pb-space-xs mb-space-sm bg-surface-container-lowest px-space-sm py-1 rounded">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-secondary">sentiment_very_satisfied</span> MORALE &amp; SPOGLIATOIO
+          </span>
+<div class="flex items-center gap-1 px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-numeric-sm text-label-numeric-sm font-bold">
+            In Estasi (98%)
+          </div>
+</div>
+<div class="space-y-space-sm">
+<!-- Motivi Morale -->
+<div class="space-y-1 font-body-sm text-body-sm">
+<div class="flex items-start gap-2 bg-surface-container p-space-xs rounded text-on-surface">
+<span class="material-symbols-outlined text-secondary text-[16px] shrink-0 mt-0.5">add_circle</span>
+<span>Entusiasta della recente vittoria contro Casalforte (ha firmato la rete decisiva al 38').</span>
+</div>
+<div class="flex items-start gap-2 bg-surface-container p-space-xs rounded text-on-surface">
+<span class="material-symbols-outlined text-secondary text-[16px] shrink-0 mt-0.5">add_circle</span>
+<span>Pienamente a proprio agio nel ruolo di punta centrale assegnato dallo staff tecnico.</span>
+</div>
+<div class="flex items-start gap-2 bg-surface-container p-space-xs rounded text-on-surface-variant">
+<span class="material-symbols-outlined text-tertiary text-[16px] shrink-0 mt-0.5">help</span>
+<span>Desidera discutere un adeguamento contrattuale commisurato al ruolo di capocannoniere.</span>
+</div>
+</div>
+<!-- Gruppo Spogliatoio -->
+<div class="bg-surface-container p-space-xs rounded-lg space-y-2">
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial text-outline uppercase">GERARCHIA SPOGLIATOIO</span>
+<span class="px-2 py-0.5 bg-surface-container-highest rounded text-on-surface font-label-editorial text-label-editorial uppercase">Leader del Gruppo Primario</span>
+</div>
+<div class="font-body-sm text-body-sm space-y-1">
+<div>
+<span class="text-outline block text-[11px] uppercase tracking-wider">Compagni di legame stretto:</span>
+<div class="flex flex-wrap gap-1 mt-0.5">
+<span class="px-2 py-0.5 rounded bg-surface-container-low text-on-surface font-label-numeric-sm text-label-numeric-sm">A. Falco (Capitano, DC)</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-low text-on-surface font-label-numeric-sm text-label-numeric-sm">S. Moretti (CC)</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-low text-on-surface font-label-numeric-sm text-label-numeric-sm">C. Rinaldi (TRQ)</span>
+</div>
+</div>
+<div class="pt-1">
+<span class="text-outline block text-[11px] uppercase tracking-wider">Attriti / Dinamiche interne:</span>
+<span class="text-on-surface-variant text-[12px] block">Nessun conflitto aperto. Sana competizione tecnica con F. Grassi per i piazzati.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Tactical Instructions -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-md">
+<div class="flex items-center justify-between pb-space-xs mb-space-sm bg-surface-container-lowest px-space-sm py-1 rounded">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary">sports_soccer</span> ISTRUZIONI TATTICHE INDIVIDUALI
+          </span>
+<span class="text-outline font-label-numeric-sm text-label-numeric-sm">4-3-3 Fluido</span>
+</div>
+<div class="space-y-2">
+<div class="flex items-center justify-between bg-surface-container px-3 py-2 rounded-lg">
+<div>
+<span class="font-label-editorial text-label-editorial text-outline uppercase block">RUOLO IN CAMPO:</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Attaccante Avanzato</span>
+</div>
+<span class="px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-editorial text-label-editorial uppercase">Attacco (AT)</span>
+</div>
+<div class="space-y-1">
+<span class="font-label-editorial text-label-editorial text-outline uppercase block px-1">Comandi Tattici Personali Attivi</span>
+<div class="grid grid-cols-1 gap-1 font-body-sm text-body-sm">
+<div class="flex items-center justify-between px-2.5 py-1.5 rounded bg-surface-container text-on-surface">
+<span class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                  Più tiri ravvicinati
+                </span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary uppercase">Attivo</span>
+</div>
+<div class="flex items-center justify-between px-2.5 py-1.5 rounded bg-surface-container text-on-surface">
+<span class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                  Pressing asfissiante sui difensori centrali
+                </span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary uppercase">Attivo</span>
+</div>
+<div class="flex items-center justify-between px-2.5 py-1.5 rounded bg-surface-container text-on-surface">
+<span class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                  Muoversi negli spazi interni
+                </span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary uppercase">Attivo</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- COLUMN 3: STATS, CAREER, DEVELOPMENT & SCOUT NOTICE (4 COLUMNS) -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-space-md">
+<!-- Season 2026/27 Metrics Grid -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-md">
+<div class="flex items-center justify-between pb-space-xs mb-space-sm bg-surface-container-lowest px-space-sm py-1 rounded">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-secondary">query_stats</span> RENDIMENTO 2026/27 (TUTTE LE GARE)
+          </span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">5 Gare Ufficiali</span>
+</div>
+<div class="grid grid-cols-3 gap-2 text-center">
+<div class="bg-surface-container p-2 rounded-lg">
+<span class="font-label-editorial text-label-editorial text-outline uppercase block">PRESENZE</span>
+<span class="font-headline-md text-headline-md text-on-surface">5 <span class="text-xs text-outline font-normal">(5)</span></span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-outline block">440' Giocati</span>
+</div>
+<div class="bg-surface-container p-2 rounded-lg">
+<span class="font-label-editorial text-label-editorial text-outline uppercase block">GOL SEGNATI</span>
+<span class="font-headline-md text-headline-md text-primary font-bold">6</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary block">1.20 a partita</span>
+</div>
+<div class="bg-surface-container p-2 rounded-lg">
+<span class="font-label-editorial text-label-editorial text-outline uppercase block">MEDIA VOTO</span>
+<span class="font-headline-md text-headline-md text-secondary font-bold">7.92</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary block">1° nel Campionato</span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-2 text-center mt-2">
+<div class="bg-surface-container p-1.5 rounded-lg">
+<span class="font-label-editorial text-label-editorial text-outline uppercase block">ASSIST</span>
+<span class="font-label-numeric-lg text-label-numeric-lg text-on-surface">2</span>
+</div>
+<div class="bg-surface-container p-1.5 rounded-lg">
+<span class="font-label-editorial text-label-editorial text-outline uppercase block">TIRI IN PORTA</span>
+<span class="font-label-numeric-lg text-label-numeric-lg text-on-surface">18 <span class="text-xs text-secondary font-normal">(72%)</span></span>
+</div>
+<div class="bg-surface-container p-1.5 rounded-lg">
+<span class="font-label-editorial text-label-editorial text-outline uppercase block">xG CUMULATI</span>
+<span class="font-label-numeric-lg text-label-numeric-lg text-tertiary">4.82 <span class="text-[10px] text-secondary font-bold">+1.18</span></span>
+</div>
+</div>
+</div>
+<!-- Career History Table -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-md">
+<div class="flex items-center justify-between pb-space-xs mb-space-sm bg-surface-container-lowest px-space-sm py-1 rounded">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-tertiary">history_edu</span> STORICO CARRIERA
+          </span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-outline">Totale: 148 pres / 91 gol</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-label-numeric-sm text-label-numeric-sm">
+<thead>
+<tr class="bg-surface-container-lowest text-outline font-label-editorial text-label-editorial uppercase">
+<th class="py-1 px-2">Stagione</th>
+<th class="py-1 px-2">Club</th>
+<th class="py-1 px-2">Serie</th>
+<th class="py-1 px-1 text-right">Pres</th>
+<th class="py-1 px-1 text-right">Gol</th>
+<th class="py-1 px-2 text-right">Media</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-high/30">
+<tr class="bg-surface-container/60 hover:bg-surface-container-highest transition-colors font-semibold">
+<td class="py-1.5 px-2 text-secondary">26/27</td>
+<td class="py-1.5 px-2 text-on-surface">Sporting Ventimonti</td>
+<td class="py-1.5 px-2 text-outline">Serie A</td>
+<td class="py-1.5 px-1 text-right">5</td>
+<td class="py-1.5 px-1 text-right text-primary font-bold">6</td>
+<td class="py-1.5 px-2 text-right text-secondary font-bold">7.92</td>
+</tr>
+<tr class="hover:bg-surface-container-highest transition-colors">
+<td class="py-1.5 px-2 text-on-surface">25/26</td>
+<td class="py-1.5 px-2 text-on-surface-variant">Sporting Ventimonti</td>
+<td class="py-1.5 px-2 text-outline">Serie A</td>
+<td class="py-1.5 px-1 text-right">34</td>
+<td class="py-1.5 px-1 text-right text-on-surface font-bold">22</td>
+<td class="py-1.5 px-2 text-right text-secondary">7.45</td>
+</tr>
+<tr class="hover:bg-surface-container-highest transition-colors">
+<td class="py-1.5 px-2 text-on-surface">24/25</td>
+<td class="py-1.5 px-2 text-on-surface-variant">Sporting Ventimonti</td>
+<td class="py-1.5 px-2 text-outline">Serie A</td>
+<td class="py-1.5 px-1 text-right">31</td>
+<td class="py-1.5 px-1 text-right text-on-surface font-bold">18</td>
+<td class="py-1.5 px-2 text-right text-on-surface">7.30</td>
+</tr>
+<tr class="hover:bg-surface-container-highest transition-colors">
+<td class="py-1.5 px-2 text-on-surface">23/24</td>
+<td class="py-1.5 px-2 text-on-surface-variant">Real Valdarno</td>
+<td class="py-1.5 px-2 text-outline">Serie B</td>
+<td class="py-1.5 px-1 text-right">38</td>
+<td class="py-1.5 px-1 text-right text-on-surface font-bold">26</td>
+<td class="py-1.5 px-2 text-right text-secondary">7.60</td>
+</tr>
+<tr class="hover:bg-surface-container-highest transition-colors">
+<td class="py-1.5 px-2 text-on-surface">22/23</td>
+<td class="py-1.5 px-2 text-on-surface-variant">Real Valdarno</td>
+<td class="py-1.5 px-2 text-outline">Serie C</td>
+<td class="py-1.5 px-1 text-right">33</td>
+<td class="py-1.5 px-1 text-right text-on-surface font-bold">19</td>
+<td class="py-1.5 px-2 text-right text-on-surface">7.40</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Development Curve & Notes -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-md">
+<div class="flex items-center justify-between pb-space-xs mb-space-sm bg-surface-container-lowest px-space-sm py-1 rounded">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-secondary">trending_up</span> PROGRESSIONE SVILUPPO (24 MESI)
+          </span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">+0.8 Medio</span>
+</div>
+<div class="space-y-2">
+<!-- Sparkline representation -->
+<div class="bg-surface-container p-2 rounded-lg flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-editorial text-label-editorial text-outline uppercase">INDICE DI MATURITÀ</span>
+<span class="font-label-numeric-md text-label-numeric-md text-secondary font-bold">Picco Fisico Raggiunto</span>
+</div>
+<!-- Clean SVG Sparkline -->
+<svg class="w-36 h-10 overflow-visible" viewbox="0 0 120 30">
+<path d="M 0,24 Q 30,22 50,16 T 90,8 T 120,4" fill="none" stroke="#4edea3" stroke-linecap="round" stroke-width="2.5"></path>
+<path d="M 0,24 Q 30,22 50,16 T 90,8 T 120,4 L 120,30 L 0,30 Z" fill="#4edea3" fill-opacity="0.1"></path>
+<circle cx="120" cy="4" fill="#4edea3" r="3.5"></circle>
+</svg>
+</div>
+<div class="p-space-xs bg-surface-container rounded-lg font-body-sm text-body-sm text-on-surface-variant flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary shrink-0 mt-0.5">tips_and_updates</span>
+<span><strong>Rapporto Staff:</strong> "Ha raggiunto il massimo potenziale atletico. Ampio margine di perfezionamento per visione tattica e freddezza in situazioni di contropiede."</span>
+</div>
+</div>
+</div>
+<!-- Financial & Contract Clauses Box -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-md">
+<div class="flex items-center justify-between pb-space-xs mb-space-sm bg-surface-container-lowest px-space-sm py-1 rounded">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary">account_balance_wallet</span> DETTAGLI CLAUSOLE &amp; PREMI
+          </span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-outline">Agente: M. Branchini</span>
+</div>
+<div class="space-y-1.5 font-label-numeric-sm text-label-numeric-sm">
+<div class="flex justify-between items-center bg-surface-container px-2.5 py-1 rounded">
+<span class="text-outline">Compenso Settimanale Lordo:</span>
+<span class="text-on-surface font-semibold">69.200 € / sett</span>
+</div>
+<div class="flex justify-between items-center bg-surface-container px-2.5 py-1 rounded">
+<span class="text-outline">Bonus Obiettivo Reti:</span>
+<span class="text-secondary font-medium">15.000 € a gol oltre i 15 centri</span>
+</div>
+<div class="flex justify-between items-center bg-surface-container px-2.5 py-1 rounded">
+<span class="text-outline">Premio Vittoria Scudetto:</span>
+<span class="text-on-surface font-medium">250.000 € gettone una tantum</span>
+</div>
+<div class="flex justify-between items-center bg-surface-container px-2.5 py-1 rounded">
+<span class="text-outline">Clausola Rescissione Estera:</span>
+<span class="text-tertiary font-bold">65,0 Mln € (Esercitabile a Giugno)</span>
+</div>
+</div>
+<!-- External Scout Mode Notice / Callout -->
+<div class="mt-space-md p-space-xs bg-surface-container-lowest rounded-lg border-l-2 border-primary">
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial text-primary uppercase flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">radar</span> MODALITÀ OSSERVATORE (AVVERSARI)
+            </span>
+<span class="text-[10px] font-label-numeric-sm text-outline">Info di Sistema</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline mt-1 leading-tight">
+            Se osservato da club estero/avversario: attributi visualizzati con range di confidenza (es. 15-18), stima cartellino (30-38 Mln €) e pulsante rapido "Fai un'offerta ufficiale".
+          </p>
+</div>
+</div>
+</div>
+</div>
+</div></main></div></body></html>
