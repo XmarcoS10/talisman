@@ -1,6 +1,6 @@
 // Schermata d'avvio: menu (continua o nuova carriera) e la nuova carriera in due passi — club, poi dossier e firma.
 import { useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, Check, Play, Plus } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Dices, Play, Plus } from 'lucide-react';
 import type { ManagerStyle, WorldState } from '../../engine/model.ts';
 import { newWorld } from '../../engine/world.ts';
 import { preseason } from '../../engine/friendlies.ts';
@@ -96,7 +96,6 @@ export function Start({ onLoad, onStart }: { onLoad: (w: WorldState) => void; on
         {mode === 'club' ? <>
           <div className="row wrap" style={{ justifyContent: 'space-between' }}>
             <div><span className="caps pos-good">{t('start.kicker', { s: fmtSeason(world.season) })}</span><h1 className="setup-title">{t('start.assign')}</h1></div>
-            <span className="seg-tabs"><button className="active hot"><Check size={13} /> {t('start.step1')}</button><button disabled>{t('start.step2')}</button></span>
           </div>
           <DbImport world={world} dbName={dbName} onWorld={(w, n) => { setWorld(w); setDbName(n); setClubId(null); }} />
           <ClubPicker world={world} selected={clubId} onPick={setClubId} />
@@ -112,7 +111,11 @@ export function Start({ onLoad, onStart }: { onLoad: (w: WorldState) => void; on
           {club ? <span className="row"><span className="club-code small-code">{code(club)}</span><span><b className="deal-h">{club.name}</b> <span className="tag dim">{world.competitions[club.compId]!.name}</span>
             <div className="muted small">{t('start.footLine', { v: fmtMoney(club.balance), goal: boardGoal(world, club.id) })}</div></span></span>
             : <span className="muted">{t('start.pickFirst')}</span>}
-          <button className="btn primary big" disabled={!club} onClick={() => setMode('dossier')}>{t('start.toDossier')} <ArrowRight size={16} /></button>
+          <span className="row">
+            {/* a sorpresa: il caso qui è dell'interfaccia, non del motore */}
+            <button className="btn" onClick={() => { const ids = Object.keys(world.clubs).map(Number); setClubId(ids[Math.floor(Math.random() * ids.length)]!); }}><Dices size={15} /> {t('start.surprise')}</button>
+            <button className="btn primary big" disabled={!club} onClick={() => setMode('dossier')}>{t('start.toDossier')} <ArrowRight size={16} /></button>
+          </span>
         </div>
       )}
     </div>

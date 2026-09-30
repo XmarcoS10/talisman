@@ -1,5 +1,16 @@
 # Note di rilascio
 
+## 0.12.1 — la nuova carriera e le altre schermate
+
+Ultima fase del nuovo aspetto: nuova carriera e schermate senza disegno di Stitch, provate a 1280×800.
+
+- **Nuova carriera**: nel dossier la firma sta nella colonna a destra, sempre a vista, come nel disegno; «Scegli a
+  sorpresa» pesca un club a caso; i passi 1 e 2 non sono più scritti due volte.
+- **Barra laterale**: sta tutta nello schermo, anche Classifiche e Record.
+- **Allenamento**: la familiarità mostra anche 3-2-5 e 5-4-1, e il riquadro in alto quella dei due moduli insieme se
+  ne usi uno senza palla. Nei piani partita si scelgono anche i moduli di una fase sola.
+- **Impostazioni**: un solo pulsante rosso per volta (Salva ora); le caselle di spunta hanno tutte la stessa misura.
+
 ## 0.12.0 — il vice parla alla squadra
 
 Le carriere della 0.11.0 si aprono senza cambiamenti.
@@ -257,6 +268,17 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.12.1 — the new career and the other screens (English)
+
+The last phase of the new look: the new career and the screens without a Stitch design, checked at 1280×800.
+
+- **New career**: in the dossier the signing box sits in the right column, always in view, as in the design;
+  "Surprise me" picks a random club; steps 1 and 2 are no longer shown twice.
+- **Sidebar**: fits the screen, Tables and Records included.
+- **Training**: familiarity also lists 3-2-5 and 5-4-1, and the top tile shows both formations together if you use
+  an out-of-possession one. Match plans can pick single-phase formations too.
+- **Settings**: only one red button at a time (Save now); all checkboxes are the same size.
 
 ## 0.12.0 — your assistant talks to the team (English)
 

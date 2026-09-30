@@ -76,7 +76,7 @@ export function Saves({ world, onLoad }: { world: WorldState; onLoad: (w: WorldS
             <div key={s} className="panel save-slot empty">
               <Bookmark size={20} className="muted" />
               <span><span className="caps">{t('saves.slot', { slot: s })}</span><b className="deal-h">{t('saves.freeSlot')}</b><div className="muted small">{t('saves.freeSub')}</div></span>
-              <button className="btn primary" onClick={() => save(s)}><PlusCircle size={14} /> {t('saves.createHere')}</button>
+              <button className="btn" onClick={() => save(s)}><PlusCircle size={14} /> {t('saves.createHere')}</button>
             </div>
           );
           return (

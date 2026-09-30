@@ -1,5 +1,5 @@
 // Nuova carriera, passo 2: il dossier del club (bilancio, strutture, perni della rosa, moduli adatti),
-// poi nome e filosofia dell'allenatore, e la firma.
+// poi nome e filosofia dell'allenatore, e la firma (nella colonna a destra, come nel disegno 15 di Stitch).
 import { Building2, CalendarDays, FileSignature, Landmark, Star, Users, Wallet } from 'lucide-react';
 import { FIN, STYLE } from '../../engine/balance.ts';
 import { fairPosition } from '../../engine/board/board.ts';
@@ -34,6 +34,7 @@ export function ClubDossier({ world, clubId, name, setName, style, setStyle, can
   const lines = challenge(world, c);
 
   return (
+    <div className="dossier-cols">
     <div className="stack">
       <div className="panel dossier-hero">
         <span className="dossier-crest"><Crest club={c} size={96} /></span>
@@ -52,7 +53,7 @@ export function ClubDossier({ world, clubId, name, setName, style, setStyle, can
         </div>
       </div>
 
-      <div className="grid" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', alignItems: 'start' }}>
+      <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', alignItems: 'start' }}>
         <div className="panel">
           <div className="row" style={{ justifyContent: 'space-between' }}><h2><Wallet size={18} /> {t('start.finance')}</h2><span className="tag dim">{t('start.season', { s: `${world.season % 100}/${(world.season + 1) % 100}` })}</span></div>
           <div className="mini-card"><span className="caps">{t('start.budget')}</span><b className="big-num">{fmtMoney(c.balance)}</b><div className="meter"><i style={{ width: `${Math.min(100, c.balance / Math.max(1, rev) * 100)}%` }} /></div></div>
@@ -93,14 +94,16 @@ export function ClubDossier({ world, clubId, name, setName, style, setStyle, can
         </div>
       </div>
 
+    </div>
+
       <div className="panel sign-box">
         <h2><FileSignature size={20} /> {t('start.profile')}</h2>
         <span className="muted">{t('start.profileSub', { club: c.name })}</span>
-        <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.4fr)', alignItems: 'start' }}>
+        <div className="stack">
           <label className="field"><span className="caps">{t('start.managerName')}</span>
             <input className="big-input" value={name} onChange={(e) => setName(e.target.value)} placeholder={t('start.managerPlaceholder')} maxLength={40} /></label>
           <div className="field"><span className="caps">{t('start.philosophy')}</span>
-            <div className="grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+            <div className="stack" style={{ gap: 8 }}>
               {STYLES.map((s) => (
                 <button key={s} className={`style-card ${style === s ? 'selected' : ''}`} onClick={() => setStyle(style === s ? 'none' : s)}>
                   <Users size={16} /><b>{t(`start.styleName.${s}`)}</b>

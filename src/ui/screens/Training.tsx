@@ -1,7 +1,7 @@
 import { Activity, CalendarRange, GraduationCap, HeartPulse, Layers } from 'lucide-react';
 import { DEV, TRAIN } from '../../engine/balance.ts';
 import { familiarityOf } from '../../engine/match.ts';
-import { FORMATION_IDS, TRAINING_CATS, type TrainingCat, type WorldState } from '../../engine/model.ts';
+import { ALL_FORMATIONS, TRAINING_CATS, type TrainingCat, type WorldState } from '../../engine/model.ts';
 import { age } from '../../engine/players.ts';
 import { PRESETS, planFocus, planLoad, trainingInjuryP } from '../../engine/training.ts';
 import { PosBadge, shortName } from '../bits.tsx';
@@ -36,7 +36,7 @@ export function Training({ world, onChange, onPlayer }: { world: WorldState; onC
       <div className="kpi"><span className="caps">{t('training.load')}</span><div className={`big num ${load > TRAIN.loadRef * 1.3 ? 'pos-bad' : load > TRAIN.loadRef ? 'pos-mid' : 'pos-good'}`}>{fmtN(load)} <small>/ {fmtN(TRAIN.loadRef)}</small></div>
         <div className="meter"><i className={load > TRAIN.loadRef * 1.3 ? 'bad' : load > TRAIN.loadRef ? 'warn' : ''} style={{ width: `${Math.min(100, load / (TRAIN.loadRef * 1.5) * 100)}%` }} /></div></div>
       <div className="kpi"><span className="caps">{t('training.riskAvg')}</span><div className="big num">{fmtN(avgRisk * 100, 2)}%</div><span className="muted small">{t('training.riskAvgHint')}</span></div>
-      <div className="kpi"><span className="caps">{t('training.famNow', { f: club.tactic.formation })}</span><div className="big num">{Math.round(familiarityOf(club))}%</div>
+      <div className="kpi"><span className="caps">{t('training.famNow', { f: club.tactic.formationOut ? `${club.tactic.formation} / ${club.tactic.formationOut}` : club.tactic.formation })}</span><div className="big num">{Math.round(familiarityOf(club))}%</div>
         <div className="meter"><i className="cyan" style={{ width: `${familiarityOf(club)}%` }} /></div></div>
       <div className="kpi"><span className="caps">{t('training.mentors')}</span><div className="big num">{tutored} <small>/ {mentees.length}</small></div><span className="muted small">{t('training.tutored')}</span></div>
     </div>
@@ -84,9 +84,9 @@ export function Training({ world, onChange, onPlayer }: { world: WorldState; onC
           </div>
           <div className="panel">
             <h2><Layers size={18} /> {t('training.familiarity')}</h2>
-            {FORMATION_IDS.map((f) => (
+            {ALL_FORMATIONS.map((f) => (
               <div key={f} className="attr">
-                <span className={f === club.tactic.formation ? '' : 'muted'}>{f}</span>
+                <span className={f === club.tactic.formation || f === club.tactic.formationOut ? '' : 'muted'}>{f}</span>
                 <span className="row"><Bar v={familiarityOf(club, f)} max={100} /><b className="num">{Math.round(familiarityOf(club, f))}</b></span>
               </div>
             ))}

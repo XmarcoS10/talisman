@@ -1,11 +1,12 @@
 // Foto dell'interfaccia nell'app vera a 1280×800 (interfaccia v2): Scrivania, sua modifica con la galleria, tema chiaro,
-// partita dal vivo e resoconto.
+// partita dal vivo e resoconto; nuova carriera e le altre schermate (fase 6).
 // Uso: pnpm build && npx electron tools/ui-shots.cjs [cartella]   (predefinita: la cartella temporanea del sistema)
 const { app } = require('electron');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
+app.disableHardwareAcceleration(); // con lo schermo bloccato o spento la cattura via GPU fallisce (UnknownVizError)
 require('../electron/main.cjs');
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'talisman-shots-'));
 const out = path.resolve(process.argv.find((a, i) => i > 1 && !a.endsWith('.cjs') && !a.startsWith('-')) ?? tmp);
@@ -23,7 +24,9 @@ app.on('browser-window-created', async (_e, win) => {
     fs.writeFileSync(path.join(out, `${name}.png`), (await win.webContents.capturePage()).toPNG());
     // la pagina non deve scorrere di lato a 1280×800: se succede lo si dice, con quanti pixel
     const over = await js(`(() => { const m = document.querySelector('main') ?? document.body; return m.scrollWidth - m.clientWidth; })()`);
-    console.log(`foto: ${path.join(out, name)}.png${over > 1 ? ` · ESCE DI LATO di ${over} px` : ''}`);
+    // e la barra laterale deve stare tutta nell'altezza
+    const side = await js(`(() => { const n = document.querySelector('.side-nav'); return n ? n.scrollHeight - n.clientHeight : 0; })()`);
+    console.log(`foto: ${path.join(out, name)}.png${over > 1 ? ` · ESCE DI LATO di ${over} px` : ''}${side > 1 ? ` · BARRA LATERALE TAGLIATA di ${side} px` : ''}`);
   };
   try {
     await loaded();
@@ -33,10 +36,21 @@ app.on('browser-window-created', async (_e, win) => {
     await js(`localStorage.setItem('talisman-settings', JSON.stringify({ lang: 'it', hints: false, guideDone: true, volume: { ui: 0, crowd: 0, fx: 0 } })); location.reload();`);
     await loaded();
     await wait(800);
+    // nuova carriera: scelta del club e dossier, poi di nuovo al menu
+    await click('button', 'Nuova carriera');
+    await wait(800);
+    await shot('nuova-carriera');
+    await click('.club-tile');
+    await click('button', 'Vai al dossier del club');
+    await shot('nuova-carriera-dossier');
+    await click('button', 'Indietro al menu principale');
+    await wait(500);
     await click('button', 'Slot 1');
     await wait(1500);
     await shot('scrivania');
-    for (const [nav, name] of [['Rosa', 'rosa'], ['Tattica', 'tattica'], ['Mercato', 'mercato'], ['Calendario', 'calendario'], ['Finanze', 'finanze'], ['Staff', 'staff']]) {
+    for (const [nav, name] of [['Rosa', 'rosa'], ['Tattica', 'tattica'], ['Mercato', 'mercato'], ['Calendario', 'calendario'], ['Finanze', 'finanze'], ['Staff', 'staff'],
+      ['Allenamento', 'allenamento'], ['Spogliatoio', 'spogliatoio'], ['Vivaio', 'vivaio'], ['Osservatori', 'osservatori'], ['Dirigenza', 'dirigenza'],
+      ['Storie', 'storie'], ['Classifiche', 'classifiche'], ['Record', 'record'], ['Impostazioni', 'impostazioni']]) {
       await click('.sidebar button', nav);
       await wait(800);
       await shot(name);

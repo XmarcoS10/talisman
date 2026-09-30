@@ -1,6 +1,6 @@
 // Piani partita (GUIDA §6.4, Blocco 2b, intervento 10): fino a 3, ognuno con una condizione (punteggio e minuto) e
 // quello che cambia. Scattano da soli, una volta per partita; il vice lo annuncia. Valgono solo per quella partita.
-import { FORMATION_IDS, type FormationId, type MatchPlan, type Tactic } from '../../engine/model.ts';
+import { ALL_FORMATIONS, type FormationId, type MatchPlan, type Tactic } from '../../engine/model.ts';
 import { t } from '../i18n.ts';
 
 const MINUTES = [30, 45, 55, 60, 65, 70, 75, 80, 85];
@@ -40,7 +40,7 @@ function PlanRow({ plan, onChange, onRemove }: { plan: MatchPlan; onChange: () =
       </div>
       <div className="row wrap" style={{ gap: 8 }}>
         <Pick label={t('plans.mentality')} value={s.mentality} options={[1, 2, 3, 4, 5].map((m) => [String(m), t(`mentality.${m}`)])} onChange={(v) => edit(() => { s.mentality = num(v); })} />
-        <Pick label={t('plans.formation')} value={s.formation} options={FORMATION_IDS.map((f) => [f, f])} onChange={(v) => edit(() => { s.formation = v as FormationId | undefined; /* as: opzioni qui sotto */ })} />
+        <Pick label={t('plans.formation')} value={s.formation} options={ALL_FORMATIONS.map((f) => [f, f])} onChange={(v) => edit(() => { s.formation = v as FormationId | undefined; /* as: opzioni qui sotto */ })} />
         <Pick label={t('plans.pressing')} value={s.pressing} options={[0, 1, 2].map((v) => [String(v), t(`instr.pressing.${v}`)])} onChange={(v) => edit(() => { s.pressing = num(v); })} />
         <Pick label={t('plans.line')} value={s.line} options={[0, 1, 2].map((v) => [String(v), t(`instr.line.${v}`)])} onChange={(v) => edit(() => { s.line = num(v); })} />
       </div>

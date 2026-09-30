@@ -32,7 +32,8 @@ ricostruisce in React sui token di `tokens.css`, schermata per schermata, senza 
 4. **Rosa**, **Scheda giocatore**, **Tattica**.
 5. **Calendario**, **Mercato**, **Finanze**.
 6. **Nuova carriera** e le schermate senza disegno (Allenamento, Spogliatoio, Vivaio, Osservatori, Dirigenza, Storie,
-   Classifiche, Record, Impostazioni, Coppa), con gli stessi componenti.
+   Classifiche, Record, Impostazioni, Coppa), con gli stessi componenti. Fatta nella 0.12.1: usavano già i componenti
+   comuni; sistemati dossier a due colonne, barra laterale nell'altezza (`ui-shots` lo controlla), pulsanti e caselle.
 
 Ogni fase: test verdi, typecheck, collaudo nell'app a 1280×800 in tema scuro e chiaro, foto nel registro. Si pubblica
 a fine fase 2 (0.7.0) e poi a ogni fase.
