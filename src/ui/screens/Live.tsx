@@ -11,7 +11,7 @@ import { resetTrail, type CameraMode, type Look } from '../match/renderer.ts';
 import type { ViewMode } from '../match/highlights.ts';
 import { settings, updateSettings } from '../settings.ts';
 import { useLiveLoop } from './LiveLoop.ts';
-import { Pause, Play, SkipForward, SlidersHorizontal } from 'lucide-react';
+import { CloudSun, Landmark, Pause, Play, SkipForward, SlidersHorizontal } from 'lucide-react';
 import { Hint } from '../Hint.tsx';
 import { crowdIntensity, crowdStart, crowdStop, playUi } from '../audio.ts';
 import { shortName } from '../bits.tsx';
@@ -120,12 +120,13 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
         <Scoreboard clubs={clubs} score={score} min={min} over={over} me={me} flash={moments.current.some((m) => m.kind === 'goal')}
           tactics={[{ ...run.teams[0].tactic, mentality: run.teams[0].mentality }, { ...run.teams[1].tactic, mentality: run.teams[1].mentality }]} />
         <div className="live-ctl">
-          <button className="btn primary sq" onClick={() => setPlaying(!playing)} disabled={over} aria-label={t('live.play')}>{playing ? <Pause size={16} /> : <Play size={16} />}</button>
-          <div className="seg-tabs">{SPEED_LABELS.map((l, i) => <button key={l} className={i === speed ? 'active hot' : ''} onClick={() => setSpeed(i)}>{l}</button>)}</div>
-          <button className="btn" onClick={nextEvent} disabled={over}><SkipForward size={14} /> {t('live.nextEvent')}</button>
-          <button className={`btn ${pause ? 'primary' : ''}`} onClick={() => setPause(!pause)}><SlidersHorizontal size={14} /> {t('live.tacticalPause')}</button>
-          <button className="btn" onClick={toEnd} disabled={over}>{t('live.toEnd')}</button>
-          {over && <button className="btn primary big" onClick={onFinish}>{t('live.report')}</button>}
+          {over ? <button className="btn primary big" onClick={onFinish}>{t('live.report')}</button> : <>
+            <button className="btn primary sq" onClick={() => setPlaying(!playing)} aria-label={t('live.play')}>{playing ? <Pause size={16} /> : <Play size={16} />}</button>
+            <div className="seg-tabs">{SPEED_LABELS.map((l, i) => <button key={l} className={i === speed ? 'active hot' : ''} onClick={() => setSpeed(i)}>{l}</button>)}</div>
+            <button className="btn" onClick={nextEvent}><SkipForward size={14} /> {t('live.nextEvent')}</button>
+            <button className={`btn ${pause ? 'primary' : ''}`} onClick={() => setPause(!pause)}><SlidersHorizontal size={14} /> {t('live.tacticalPause')}</button>
+            <button className="btn" onClick={toEnd}>{t('live.toEnd')}</button>
+          </>}
           {view === 'full' && <span className="muted small">{t('live.duration', { n: matchMinutes(speed) })}</span>}
         </div>
         <ViewBar view={view} camera={camera}
@@ -135,12 +136,17 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
 
       <div className="live-cols">
         <div className="stack">
-          <Shouts run={run} me={me} min={min} onDone={() => { playUi('click'); rerender(); }} />
           <LiveBench run={run} me={me} onChange={rerender} />
+          <Shouts run={run} me={me} min={min} onDone={() => { playUi('click'); rerender(); }} />
         </div>
 
         <div className="stack">
-          <OverlayChips on={overlays} onChange={(v) => { setOverlays(v); updateSettings({ overlays: v }); }} />
+          <div className="live-info">
+            <span><Landmark size={13} /> {clubs[0].stadium.name}</span>
+            {look.weather && <span><CloudSun size={13} /> {t(`wx.${look.weather.kind}`)}{look.weather.heavy ? ` · ${t('wx.heavy')}` : ''}</span>}
+            <span className="num">{clubs[0].shortName} {run.teams[0].tactic.formation} · {clubs[1].shortName} {run.teams[1].tactic.formation}</span>
+            <OverlayChips on={overlays} onChange={(v) => { setOverlays(v); updateSettings({ overlays: v }); }} />
+          </div>
           {sheetOpen && (
             <LiveSheet run={run} me={me} clubs={clubs} step={st?.i ?? 0} final={sheetOpen === 'full'} ctx={{ ...ctx, min }} clips={reel.current.clips}
               now={replay.current?.back ?? T.current} onReplay={(c) => { setSheet(null); setPlaying(true); startReplay(c.from, c.to); }}

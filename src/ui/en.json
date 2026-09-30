@@ -2005,5 +2005,7 @@
   "desk.inj.ban": "{n}-match ban",
   "desk.inj.none": "Everyone available",
   "desk.contracts.none": "No contracts expiring this year",
-  "desk.wage": "{v}/year"
+  "desk.wage": "{v}/year",
+  "live.bench": "Bench ({n})",
+  "live.energy": "Energy {n}%"
 }

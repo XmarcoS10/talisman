@@ -622,3 +622,37 @@ html.rail .shell { grid-template-columns: 80px 1fr; }
 .list-row.link:hover { color: var(--primary); }
 @media (max-width: 1279px) { .desk-cell.s-S, .desk-add.s-S { grid-column: span 6; } .desk-cell.s-M { grid-column: span 12; } }
 .with-gallery { padding-right: 380px; }
+
+/* partita dal vivo (interfaccia v2, fase 3; disegno docs/design/stitch-v2/06): parte alta su due righe, campo più grande */
+.live { gap: var(--s-2); padding: var(--s-3); }
+.live-top { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "sb ctl" "view in"; gap: var(--s-2) var(--s-5); padding: var(--s-2) var(--s-4); align-items: center; }
+.live-top .scoreboard { grid-area: sb; gap: var(--s-4); }
+.live-top .live-ctl { grid-area: ctl; justify-content: flex-end; flex-wrap: nowrap; }
+.live-top .live-ctl .btn { white-space: nowrap; padding: 7px 12px; }
+.live-top .view-bar { grid-area: view; flex-wrap: nowrap; justify-content: flex-start; }
+.live-top .inertia { grid-area: in; }
+.live-top .sb-team b { font-size: 17px; white-space: nowrap; }
+.live-top .sb-team .small { font-size: 11px; white-space: nowrap; }
+.live-top .sb-score { padding: 2px 12px; }
+.live-top .sb-score > b { font-size: 28px; }
+.live-cols { grid-template-columns: 250px minmax(0, 1fr) 320px; gap: var(--s-3); }
+.live-info { display: flex; flex-wrap: wrap; align-items: center; gap: 4px var(--s-4); font: 600 13px var(--font-title); text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-2); }
+.live-info > span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.live-info > div { margin-left: auto; }
+.live-bench td.energy { width: 64px; }
+.live-bench td.energy .meter { height: 5px; }
+.live-subs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; font-size: 12px; border-top: 1px solid var(--border); padding-top: var(--s-2); }
+.live-subs .caps { grid-column: 1 / -1; }
+.live-subs span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; overflow: hidden; }
+.shouts { grid-template-columns: 1fr; }
+.shouts .btn { padding: 8px; font: 700 14px var(--font-title); text-transform: uppercase; letter-spacing: 0.06em; }
+.live-bench td.energy .meter { display: block; width: 100%; }
+.live-top .live-ctl .seg-tabs { flex-wrap: nowrap; }
+.live-cols { grid-template-columns: 270px minmax(0, 1fr) 320px; }
+.live-subs span { text-overflow: ellipsis; }
+.live-top { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "sb in" "ctl view"; }
+.live-top .live-ctl { justify-content: flex-start; }
+.live-top .view-bar { justify-content: flex-end; }
+.live-top .view-bar > .caps { display: none; }
+.live-top .view-bar .seg-tabs { flex-wrap: nowrap; }
+.live-top .view-bar .seg-tabs button { white-space: nowrap; }

@@ -525,8 +525,8 @@
   "live.ticker": "Live ticker",
   "live.quick": "Regolazioni rapide",
   "live.quickHint": "Le modifiche valgono subito. Con la pausa tattica fermi il cronometro per pensarci.",
-  "live.squad": "In campo",
-  "live.subsLeft": "{n} cambi",
+  "live.squad": "Titolari",
+  "live.subsLeft": "{n} cambi rimasti",
   "live.replace": "Chi entra al posto di {name}?",
   "live.noSubs": "Cambi finiti o panchina vuota.",
   "live.speed": "Velocità",
@@ -2005,5 +2005,7 @@
   "desk.inj.ban": "{n} giornate di squalifica",
   "desk.inj.none": "Tutti disponibili",
   "desk.contracts.none": "Nessun contratto in scadenza quest'anno",
-  "desk.wage": "{v}/anno"
+  "desk.wage": "{v}/anno",
+  "live.bench": "Panchina ({n})",
+  "live.energy": "Energia {n}%"
 }

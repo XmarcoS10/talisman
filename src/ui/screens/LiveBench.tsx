@@ -26,13 +26,19 @@ export function LiveBench({ run, me, onChange }: { run: MatchRun; me: 0 | 1; onC
               <tr key={m.p.id} className={`clickable ${out === m ? 'me' : ''}`} onClick={() => setOut(out === m ? null : m)}>
                 <td><PosBadge pos={m.pos} /></td>
                 <td>{shortName(m.p)}{m.st.yellows > 0 && <span className="status ban"> 🟨</span>}{m.st.injured && <span className="status inj"> ✚</span>}</td>
-                <td className={`num r ${m.energy < 62 ? 'pos-bad' : m.energy < 75 ? 'pos-mid' : 'muted'}`}>{Math.round(m.energy)}</td>
+                <td className="energy" title={t('live.energy', { n: Math.round(m.energy) })}><div className="meter"><i className={m.energy < 62 ? 'bad' : m.energy < 75 ? 'warn' : ''} style={{ width: `${m.energy}%` }} /></div></td>
                 <td className={`num r ${r >= 7.5 ? 'pos-good' : r < 6 ? 'pos-bad' : ''}`}>{fmtN(r)}</td>
               </tr>
             );
           })}
         </tbody>
       </table>
+      {!out && team.bench.length > 0 && (
+        <div className="live-subs">
+          <span className="caps">{t('live.bench', { n: team.bench.length })}</span>
+          {team.bench.map((p) => <span key={p.id}><PosBadge pos={p.position} /> {shortName(p)}</span>)}
+        </div>
+      )}
       {out && (
         <div className="grid" style={{ gap: 'var(--s-2)' }}>
           <div className="muted">{t('live.replace', { name: shortName(out.p) })}</div>

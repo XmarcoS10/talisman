@@ -1,4 +1,5 @@
-// Foto dell'interfaccia nell'app vera a 1280×800 (interfaccia v2): Scrivania, sua modifica con la galleria, tema chiaro.
+// Foto dell'interfaccia nell'app vera a 1280×800 (interfaccia v2): Scrivania, sua modifica con la galleria, tema chiaro,
+// partita dal vivo e resoconto.
 // Uso: pnpm build && npx electron tools/ui-shots.cjs [cartella]   (predefinita: la cartella temporanea del sistema)
 const { app } = require('electron');
 const fs = require('node:fs');
@@ -21,6 +22,7 @@ app.on('browser-window-created', async (_e, win) => {
   try {
     await loaded();
     win.setContentSize(1280, 800);
+    win.webContents.setBackgroundThrottling(false); // la finestra può finire dietro le altre: la partita deve correre lo stesso
     win.show();
     await js(`localStorage.setItem('talisman-settings', JSON.stringify({ lang: 'it', hints: false, guideDone: true, volume: { ui: 0, crowd: 0, fx: 0 } })); location.reload();`);
     await loaded();
@@ -37,6 +39,20 @@ app.on('browser-window-created', async (_e, win) => {
     await js(`document.body.click(); true`);
     await click('.topbar .icon-btn[aria-label="Tema chiaro o scuro"]');
     await shot('scrivania-chiaro');
+    await click('.topbar .icon-btn[aria-label="Tema chiaro o scuro"]');
+    const until = async (cond, n) => { for (let i = 0; i < n && !(await js(cond)); i++) await wait(100); };
+    await click('button', 'Vai alla partita');
+    await until(`!!document.querySelector('canvas.pitch2d')`, 100);
+    await wait(4000);
+    await shot('partita');
+    await click('button', 'Salta al finale');
+    await until(`[...document.querySelectorAll('button')].some((b) => b.textContent.includes('Vai al risultato'))`, 600);
+    await shot('partita-fine');
+    await click('button', 'Vai al risultato');
+    await until(`!!document.querySelector('.modal')`, 200);
+    await shot('resoconto-fondo');
+    await js(`document.querySelectorAll('.modal, .modal *').forEach((e) => { e.scrollTop = 0; }); true`);
+    await shot('resoconto');
   } catch (e) { console.error(e); }
   app.quit();
 });
