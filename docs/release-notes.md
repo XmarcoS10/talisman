@@ -1,5 +1,29 @@
 # Note di rilascio
 
+## 0.11.0 — la tattica con e senza palla
+
+Le carriere della 0.10.0 si aprono senza cambiamenti per la tua squadra: finché non scegli un modulo senza palla, si
+gioca come prima. Le squadre dell'IA invece cambiano (vedi sotto).
+
+- **Due moduli, come in Football Manager 26**: nella Tattica scegli il modulo **con palla** e quello **senza palla**.
+  L'interruttore «Con palla / Senza palla» sopra il campo mostra le stesse undici schede nelle posizioni di ciascuna
+  fase. A ogni cambio di possesso la squadra passa da una forma all'altra, e chi deve fare più strada per rientrare
+  lascia spazio al contropiede.
+- **Ruoli senza palla** per ogni giocatore: «Tiene la posizione», «Pressa» (si stanca di più), «Copre», «Resta alto»
+  (sbocco del contropiede, non per i difensori). Senza sceglierlo resta quello di sempre.
+- **Istruzioni di squadra divise per fase**: con palla (ritmo, ampiezza, verticalità), in transizione (dopo la palla
+  persa), senza palla (pressing, linea difensiva).
+- **Due moduli nuovi**: 3-2-5 (con palla) e 5-4-1 (senza palla).
+- **Dal vivo**: nelle regolazioni rapide si cambia il modulo senza palla, e sul campo 2D si vede la squadra cambiare
+  forma.
+- **Anche l'IA** usa i due moduli: gli allenatori difensivi e da contropiede difendono in 4-4-2 o 5-3-2, quelli
+  pressing dal 4-2-3-1 pressano col 4-4-2.
+
+### Misure
+
+Nessuna coppia di moduli stacca il modulo semplice di più di 0,10 punti a partita; nelle carriere di 25 stagioni la
+correlazione fra forza e punti è 0,75, dentro il target.
+
 ## 0.10.0 — i tratti del giocatore
 
 Le carriere della 0.9.0 si aprono e ogni giocatore trova i suoi tratti. Le partite cambiano: i tratti contano in campo.
@@ -216,6 +240,30 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.11.0 — in and out of possession tactics (English)
+
+Careers from 0.10.0 open unchanged for your team: until you pick an out-of-possession formation, it plays as before.
+AI teams do change (see below).
+
+- **Two formations, as in Football Manager 26**: in Tactics you choose the **in-possession** and the
+  **out-of-possession** formation. The "In possession / Out of possession" switch above the pitch shows the same eleven
+  cards in each phase's positions. Every change of possession the team moves from one shape to the other, and players
+  with further to run back leave room for the counter.
+- **Out-of-possession roles** for every player: holds position, presses (tires more), covers, stays high (a counter
+  outlet, not for defenders). If you don't choose one, nothing changes.
+- **Team instructions split by phase**: in possession (tempo, width, directness), in transition (after losing the
+  ball), out of possession (pressing, defensive line).
+- **Two new formations**: 3-2-5 (in possession) and 5-4-1 (out of possession).
+- **Live**: the quick settings let you change the out-of-possession formation, and the 2D pitch shows the team changing
+  shape.
+- **The AI uses both too**: defensive and counter-attacking managers defend in 4-4-2 or 5-3-2, pressing ones from a
+  4-2-3-1 press in a 4-4-2.
+
+### Measurements
+
+No formation pair beats the single formation by more than 0.10 points per match; in 25-season careers the correlation
+between strength and points is 0.75, within target.
 
 ## 0.10.0 — player traits (English)
 

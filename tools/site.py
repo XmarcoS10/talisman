@@ -6,9 +6,9 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'site')
 REPO = 'https://github.com/XmarcoS10/talisman'
 SITE = 'https://xmarcos10.github.io/talisman/'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
-VERSION = '0.10.0'
+VERSION = '0.11.0'
 SIZE = '123 MB'
-SHA = '2dafbcdff7d01b0201dfd20edb39d4840ed90d8516a748cdc2ae3d1b32234400'
+SHA = '8105ef921adbcbfe4c9db3a3ab1ab672f73456c039a6e7dbe23a83ec0571dcd2'
 # pnpm sim -- --seasons 10 --seed 42 con la 0.2.0
 SIM_GOALS = {'it': '2,56', 'en': '2.56'}
 SIM_DRAWS = {'it': '23,2%', 'en': '23.2%'}
@@ -543,6 +543,7 @@ def download():
         <div class="panel">
           <h3>{x('Novità della', 'New in')} {VERSION}</h3>
           <ul class="checks">
+            <li>{x("<b>Tattica con e senza palla</b>: due moduli e un ruolo senza palla per ognuno, come in FM26.", '<b>In and out of possession tactics</b>: two formations and an out-of-possession role for everyone, as in FM26.')}</li>
             <li>{x("<b>Tratti del giocatore</b>: come in FM, contano in partita e si insegnano in allenamento.", '<b>Player traits</b>: as in FM, they count in matches and can be taught in training.')}</li>
             <li>{x("<b>Lo staff</b>: vice, preparatore e medico da assumere, ognuno col suo effetto su morale, infortuni e guarigioni.", '<b>The staff</b>: assistant, fitness coach and doctor to hire, each with an effect on morale, injuries and recoveries.')}</li>
             <li>{x("<b>Discorsi alla squadra</b>: prima, all'intervallo e a fine partita; ognuno reagisce a modo suo.", '<b>Team talks</b>: before the match, at half time and at full time; every player reacts in their own way.')}</li>
