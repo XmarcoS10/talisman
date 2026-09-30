@@ -69,8 +69,9 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   const total = score[0] + score[1];
   if (total > goals.current) { goals.current = total; playUi('goal'); }
   crowdIntensity((st?.frame?.mom ?? 0) * (me === 0 ? 1 : -1) / 100 + 0.4);
-  const ctx = context(run, me, run.frames, world.clubs[world.manager.clubId]!.playerIds
-    .reduce((s, id) => s + world.players[id]!.psych.morale, 0) / world.clubs[world.manager.clubId]!.playerIds.length);
+  // il punteggio è quello che si vede: il motore corre avanti (nei salienti di 20-30 secondi) e non va anticipato
+  const ctx = { ...context(run, me, run.frames, world.clubs[world.manager.clubId]!.playerIds
+    .reduce((s, id) => s + world.players[id]!.psych.morale, 0) / world.clubs[world.manager.clubId]!.playerIds.length), diff: score[me] - score[1 - me]! };
 
   const over = run.done && T.current >= duration(run);
   // la frase dell'analista cambia ogni 5 minuti di gioco, e al fischio finale diventa il commento alla partita

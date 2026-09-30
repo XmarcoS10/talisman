@@ -14,7 +14,8 @@ con la grafica del gioco (`docs/design/DESIGN.md`). Caratteri e immagini in ques
   pubblicata su GitHub. L'installer ha un nome fisso apposta (`artifactName` in `package.json`).
 - **Screenshot**: si rifanno dal gioco vero con
   `node tools/shots-world.ts tools/shots-save.json && pnpm build && npx electron tools/shots.cjs`
-  (usa una cartella dati temporanea: i salvataggi veri non si toccano).
+  (usa una cartella dati temporanea: i salvataggi veri non si toccano; la partita corre a 40× fino al secondo tempo,
+  senza salti, così analista e punteggio sono quelli del momento).
 - **Clip** (`site/clips/`, nella pagina Motore): `pnpm build && npx electron tools/clips.cjs`. Partono mute e in loop
   solo quando arrivano sullo schermo, così la pagina non scarica 14 MB appena si apre.
 - **Anteprima in locale**: `python -m http.server 5174 --directory site`.

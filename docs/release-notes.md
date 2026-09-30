@@ -1,5 +1,12 @@
 # Note di rilascio
 
+## 0.12.2 — l'analista non anticipa i gol
+
+- **Partita dal vivo**: nei salienti il motore calcola qualche secondo prima di quello che vedi, e l'analista leggeva
+  il punteggio del motore: poteva dire «due gol di margine» o «abbiamo appena segnato» prima che il gol comparisse.
+  Ora parla del punteggio che vedi.
+- **Sito**: foto nuove, con l'interfaccia di adesso.
+
 ## 0.12.1 — la nuova carriera e le altre schermate
 
 Ultima fase del nuovo aspetto: nuova carriera e schermate senza disegno di Stitch, provate a 1280×800.
@@ -268,6 +275,13 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.12.2 — the analyst no longer gives goals away (English)
+
+- **Live match**: in highlights the engine runs a few seconds ahead of what you see, and the analyst read the engine's
+  score: it could say "two goals up" or "we've just scored" before the goal appeared. Now it talks about the score
+  you see.
+- **Website**: new screenshots, with the current interface.
 
 ## 0.12.1 — the new career and the other screens (English)
 

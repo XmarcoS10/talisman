@@ -6,9 +6,9 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'site')
 REPO = 'https://github.com/XmarcoS10/talisman'
 SITE = 'https://xmarcos10.github.io/talisman/'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
-VERSION = '0.12.1'
+VERSION = '0.12.2'
 SIZE = '123 MB'
-SHA = '12cfbccda8b80194fe135fea3ee1a49e5a494b609f69ac58a589c0447ee2216a'
+SHA = 'e83efead1642d0e51b8463bb4b84205ed41b38d5b8055f0b11ea92b7df9aa27a'
 # pnpm sim -- --seasons 10 --seed 42 con la 0.2.0
 SIM_GOALS = {'it': '2,56', 'en': '2.56'}
 SIM_DRAWS = {'it': '23,2%', 'en': '23.2%'}
@@ -234,7 +234,7 @@ def home():
       <div class="wrap">
         <div class="head c"><div class="kicker">{x('Guarda', 'Take a look')}</div><h2>{x('Come si presenta', 'What it looks like')}</h2></div>
         <div class="grid g3">
-          {shot('tattica.jpg', x('La tattica con modulo e ruoli', 'Tactics with formation and roles'), x('tattica', 'tactics'))}
+          {shot('tattica.jpg', x('La tattica con e senza palla, come in FM26', 'Tactics in and out of possession, as in FM26'), x('tattica', 'tactics'))}
           {shot('spogliatoio.jpg', x('Il grafo dello spogliatoio', 'The dressing room graph'), x('spogliatoio', 'dressing room'))}
           {shot('mercato.jpg', x('La ricerca giocatori con stime', 'The player search with estimates'), x('mercato', 'transfers'))}
           {shot('storie.jpg', x('Una conferenza stampa', 'A press conference'), x('stampa', 'press'))}
