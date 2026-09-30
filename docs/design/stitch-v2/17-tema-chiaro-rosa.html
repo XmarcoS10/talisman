@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+
+<html class="light" lang="it"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,600&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "surface-container-lowest": "#ffffff",
+        "surface-container-low": "#f9f8f5",
+        "surface-container": "#f1eee8",
+        "surface-container-high": "#e8e5de",
+        "surface-container-highest": "#dedad2",
+        "surface": "#f2f1ed",
+        "surface-bright": "#ffffff",
+        "surface-dim": "#e3e0d8",
+        "on-surface": "#111827",
+        "on-surface-variant": "#4b5563",
+        "on-surface-muted": "#6b7280",
+        "outline": "#8f6f6e",
+        "outline-variant": "#dcd9d2",
+        "primary": "#c81e35",
+        "primary-hover": "#a71529",
+        "primary-container": "#ffdedd",
+        "on-primary": "#ffffff",
+        "on-primary-container": "#410008",
+        "secondary": "#0e7a46",
+        "secondary-container": "#d1f5e0",
+        "on-secondary-container": "#003920",
+        "tertiary": "#a94b00",
+        "tertiary-container": "#ffe0d0",
+        "on-tertiary-container": "#3a1600",
+        "error": "#ba1a1a",
+        "error-container": "#ffdad6",
+        "on-error": "#ffffff",
+        "border-warm": "#dcd9d2",
+        "border-light": "#e8e5de"
+      },
+      borderRadius: {
+        DEFAULT: "0.125rem",
+        lg: "0.25rem",
+        xl: "0.5rem",
+        full: "0.75rem"
+      },
+      spacing: {
+        "space-xs": "0.25rem",
+        "space-sm": "0.5rem",
+        "space-md": "0.75rem",
+        "space-lg": "1rem",
+        "space-xl": "1.5rem",
+        "margin": "1.25rem",
+        gutter: "1rem"
+      },
+      fontFamily: {
+        "headline-xl": ["Barlow Condensed"],
+        "headline-lg": ["Barlow Condensed"],
+        "headline-md": ["Barlow Condensed"],
+        "headline-sm": ["Barlow Condensed"],
+        "label-editorial": ["Barlow Condensed"],
+        "body-lg": ["Inter"],
+        "body-md": ["Inter"],
+        "body-sm": ["Inter"],
+        "label-numeric-lg": ["JetBrains Mono"],
+        "label-numeric-md": ["JetBrains Mono"],
+        "label-numeric-sm": ["JetBrains Mono"]
+      },
+      fontSize: {
+        "headline-xl": ["2.5rem", { lineHeight: "2.75rem", letterSpacing: "0.05em", fontWeight: "700" }],
+        "headline-lg": ["2rem", { lineHeight: "2.25rem", letterSpacing: "0.04em", fontWeight: "700" }],
+        "headline-md": ["1.5rem", { lineHeight: "1.75rem", letterSpacing: "0.03em", fontWeight: "600" }],
+        "headline-sm": ["1.125rem", { lineHeight: "1.375rem", letterSpacing: "0.025em", fontWeight: "600" }],
+        "label-editorial": ["0.8125rem", { lineHeight: "1rem", letterSpacing: "0.08em", fontWeight: "700" }],
+        "body-lg": ["1rem", { lineHeight: "1.5rem", letterSpacing: "-0.01em", fontWeight: "400" }],
+        "body-md": ["0.875rem", { lineHeight: "1.25rem", letterSpacing: "-0.005em", fontWeight: "400" }],
+        "body-sm": ["0.75rem", { lineHeight: "1rem", letterSpacing: "0em", fontWeight: "400" }],
+        "label-numeric-lg": ["1.25rem", { lineHeight: "1.5rem", letterSpacing: "-0.02em", fontWeight: "600" }],
+        "label-numeric-md": ["0.875rem", { lineHeight: "1.125rem", letterSpacing: "0em", fontWeight: "500" }],
+        "label-numeric-sm": ["0.75rem", { lineHeight: "0.875rem", letterSpacing: "0em", fontWeight: "500" }]
+      }
+    }
+  }
+};
+</script></head><body class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary selection:text-white min-w-[1280px]"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest z-50 flex flex-col justify-between border-r border-border-warm shadow-[1px_0_4px_rgba(0,0,0,0.04)]"><div class="flex flex-col h-full overflow-hidden"><div class="h-14 px-space-md flex items-center justify-between bg-surface-container-low border-b border-border-warm shrink-0"><div class="flex items-center gap-space-sm min-w-0"><img alt="Sporting Ventimonti Crest" class="h-8 w-auto object-contain shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1X5mredOhrUiLowr6013NGwvvUfkEpM-G24BaXKuIA_luyA07SGIH5j6fKJKcSmo8l-H3vgTuIdy3z6GEYyI4-_E2mYJyO8yr4VAoZkWlo0EZ7df_PB8t8J9Y7bQY0KT961cThOL0smYoo2A8cNHNHldfJpw97q5fd0qa1oDOQmcfb8CGQGTDXQeccarITXtbrY2h9j-kVtTHQfJLar3O2MrCi-ga8uXWOcSnTHm4X3eKr9zTsRnkaVXGk"/><div class="flex flex-col min-w-0 leading-none"><span class="font-headline-sm text-headline-sm uppercase text-on-surface tracking-wider truncate font-bold">Sporting Ventimonti</span><span class="font-label-editorial text-label-editorial text-on-surface-muted uppercase tracking-widest text-[10px] mt-0.5 truncate">Serie A • Stagione 2026/27</span></div></div><button aria-label="Collassa barra laterale" class="text-on-surface-muted hover:text-on-surface transition-colors p-1" type="button"><span class="material-symbols-outlined text-[18px]">menu_open</span></button></div><div class="flex-1 overflow-y-auto px-space-sm py-space-sm space-y-space-md"><nav class="space-y-space-xs"><div class="px-space-sm pt-space-xs pb-1 font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-muted text-[11px] font-semibold">Principale</div><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="scrivania" href="#"><span class="material-symbols-outlined text-[18px]">dashboard</span><span class="font-headline-sm text-headline-sm tracking-wide">Scrivania</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="storie-media" href="#"><span class="material-symbols-outlined text-[18px]">newspaper</span><span class="font-headline-sm text-headline-sm tracking-wide">Storie &amp; Media</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded bg-primary/10 text-primary font-bold shadow-sm" data-path="rosa" href="#"><span class="material-symbols-outlined text-[18px] text-primary">groups</span><span class="font-headline-sm text-headline-sm tracking-wide">Rosa</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="tattica" href="#"><span class="material-symbols-outlined text-[18px]">sports_soccer</span><span class="font-headline-sm text-headline-sm tracking-wide">Tattica</span></a></nav><nav class="space-y-space-xs"><div class="px-space-sm pt-space-xs pb-1 font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-muted text-[11px] font-semibold">Gestione</div><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="allenamento" href="#"><span class="material-symbols-outlined text-[18px]">fitness_center</span><span class="font-headline-sm text-headline-sm tracking-wide">Allenamento</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="spogliatoio" href="#"><span class="material-symbols-outlined text-[18px]">meeting_room</span><span class="font-headline-sm text-headline-sm tracking-wide">Spogliatoio</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="vivaio" href="#"><span class="material-symbols-outlined text-[18px]">school</span><span class="font-headline-sm text-headline-sm tracking-wide">Vivaio</span></a></nav><nav class="space-y-space-xs"><div class="px-space-sm pt-space-xs pb-1 font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-muted text-[11px] font-semibold">Mercato</div><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="mercato" href="#"><span class="material-symbols-outlined text-[18px]">sync_alt</span><span class="font-headline-sm text-headline-sm tracking-wide">Mercato</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="osservatori" href="#"><span class="material-symbols-outlined text-[18px]">travel_explore</span><span class="font-headline-sm text-headline-sm tracking-wide">Osservatori</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="finanze" href="#"><span class="material-symbols-outlined text-[18px]">account_balance</span><span class="font-headline-sm text-headline-sm tracking-wide">Finanze</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="dirigenza" href="#"><span class="material-symbols-outlined text-[18px]">corporate_fare</span><span class="font-headline-sm text-headline-sm tracking-wide">Dirigenza</span></a></nav><nav class="space-y-space-xs"><div class="px-space-sm pt-space-xs pb-1 font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-muted text-[11px] font-semibold">Competizioni</div><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="classifiche" href="#"><span class="material-symbols-outlined text-[18px]">format_list_numbered</span><span class="font-headline-sm text-headline-sm tracking-wide">Classifiche</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="calendario" href="#"><span class="material-symbols-outlined text-[18px]">calendar_month</span><span class="font-headline-sm text-headline-sm tracking-wide">Calendario</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="record-storia" href="#"><span class="material-symbols-outlined text-[18px]">military_tech</span><span class="font-headline-sm text-headline-sm tracking-wide">Record &amp; Storia</span></a></nav><nav class="space-y-space-xs"><div class="px-space-sm pt-space-xs pb-1 font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-muted text-[11px] font-semibold">Sistema</div><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="impostazioni" href="#"><span class="material-symbols-outlined text-[18px]">settings</span><span class="font-headline-sm text-headline-sm tracking-wide">Impostazioni</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="salvataggi" href="#"><span class="material-symbols-outlined text-[18px]">save</span><span class="font-headline-sm text-headline-sm tracking-wide">Salvataggi</span></a></nav></div><div class="p-space-sm bg-surface-container-low border-t border-border-warm shrink-0"><div class="flex items-center justify-between px-space-sm py-1.5 rounded bg-white border border-border-warm text-on-surface-variant"><div class="flex items-center gap-1.5 truncate"><span class="h-2 w-2 rounded-full bg-secondary shrink-0"></span><span class="font-label-numeric-sm text-label-numeric-sm truncate text-[11px] text-on-surface font-medium">Modalità Offline (TFM 27 v1.0.4)</span></div></div></div></div></aside><div class="pl-64 flex flex-col min-h-screen bg-surface"><header class="fixed top-0 left-64 right-0 h-14 bg-white border-b border-border-warm z-40 px-space-lg flex items-center justify-between shadow-[0_1px_4px_rgba(0,0,0,0.03)]"><div class="flex items-center gap-space-lg flex-1 min-w-0 mr-space-lg"><div class="flex items-center gap-1.5 text-on-surface px-space-sm py-1 bg-surface-container-low border border-border-warm rounded shrink-0"><span class="material-symbols-outlined text-secondary text-[18px]">calendar_today</span><span class="font-label-numeric-md text-label-numeric-md uppercase font-semibold text-on-surface whitespace-nowrap">sab 12 set 2026</span></div><div class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container-low border border-border-warm rounded shrink-0 whitespace-nowrap"><span class="font-headline-sm text-headline-sm text-on-surface-muted uppercase tracking-wider text-[12px] font-bold">Cassa:</span><span class="font-label-numeric-md text-label-numeric-md text-secondary font-bold whitespace-nowrap">45,4 Mln €</span></div><div class="relative flex-1 max-w-md"><span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-muted text-[18px]">search</span><input class="w-full h-8 pl-8 pr-3 bg-surface-container-low border border-border-warm text-on-surface placeholder:text-on-surface-muted font-body-sm text-body-sm rounded focus:bg-white focus:border-primary focus:outline-none transition-colors" placeholder="Cerca giocatori, club fittizi, staff..." type="text"/></div></div><div class="flex items-center gap-space-md shrink-0"><button class="h-9 px-space-md bg-white border border-border-warm hover:bg-surface-container text-on-surface flex items-center gap-space-sm rounded transition-colors shadow-sm" type="button"><span class="material-symbols-outlined text-[18px] text-on-surface-variant">live_tv</span><span class="font-headline-sm text-headline-sm uppercase tracking-wider font-semibold">Guarda la partita</span></button><button class="h-9 px-space-lg bg-primary hover:bg-primary-hover text-on-primary flex items-center gap-space-sm rounded shadow-[0_2px_8px_rgba(200,30,53,0.3)] transition-all font-semibold" type="button"><span class="font-headline-md text-headline-md uppercase tracking-wider leading-none">Avanza</span><span class="bg-white/20 text-white font-label-numeric-sm text-label-numeric-sm px-1.5 py-0.5 rounded leading-none uppercase text-[10px] font-bold">Spazio</span><span class="material-symbols-outlined text-[18px]">fast_forward</span></button><div class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 ml-1 text-primary"><span class="material-symbols-outlined text-[18px]">person</span></div></div></header><main class="relative pt-14 bg-surface flex-1 w-full min-h-[calc(100vh-3.5rem)]"><div class="flex flex-col w-full p-space-md space-y-space-md">
+<!-- SUB-BANNER / HERO INFORMATIVO SQUADRA -->
+<div class="w-full bg-white border border-border-warm rounded-lg p-space-md shadow-sm">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<!-- Intestazione Principale -->
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[28px]">groups</span>
+</div>
+<div>
+<div class="flex items-center gap-space-sm">
+<h1 class="font-headline-lg text-headline-lg uppercase tracking-wide text-on-surface leading-none font-bold">
+              Rosa della Prima Squadra
+            </h1>
+<span class="bg-secondary-container border border-secondary/30 text-on-secondary-container font-label-numeric-sm text-label-numeric-sm px-2 py-0.5 rounded uppercase font-bold tracking-tight">
+              25 / 25 Iscritti
+            </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-muted mt-1">
+            Stagione 2026/27 • Serie A Enilive • Sporting Ventimonti F.C. • Centro Tecnico "Colle Fiorito"
+          </p>
+</div>
+</div>
+<!-- Quick Actions Header -->
+<div class="flex items-center gap-space-sm">
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-muted text-[16px]">person_search</span>
+<input class="w-full h-8 pl-8 pr-3 bg-white border border-border-warm text-on-surface placeholder:text-on-surface-muted font-body-sm text-body-sm rounded focus:border-primary focus:outline-none transition-colors" id="playerSearchInput" placeholder="Cerca calciatore, ruolo..." type="text"/>
+</div>
+<button class="h-8 px-space-md bg-white border border-border-warm hover:bg-surface-container text-on-surface flex items-center gap-1.5 rounded transition-colors shadow-sm" title="Personalizza colonne visibili" type="button">
+<span class="material-symbols-outlined text-[16px] text-on-surface-muted">view_column</span>
+<span class="font-label-editorial text-label-editorial uppercase">Filtra Colonne</span>
+</button>
+<button class="h-8 px-space-md bg-white border border-border-warm hover:bg-surface-container text-on-surface flex items-center gap-1.5 rounded transition-colors shadow-sm" title="Esporta la rosa in formato CSV" type="button">
+<span class="material-symbols-outlined text-[16px] text-on-surface-muted">file_download</span>
+<span class="font-label-editorial text-label-editorial uppercase">Esporta CSV</span>
+</button>
+</div>
+</div>
+<!-- Squad KPI Ticker Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-space-sm mt-space-md">
+<!-- KPI 1: Età Media -->
+<div class="bg-surface-container-low border border-border-warm px-space-md py-2.5 rounded flex items-center justify-between shadow-xs">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded bg-secondary/10 flex items-center justify-center text-secondary border border-secondary/20">
+<span class="material-symbols-outlined text-[18px]">timelapse</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-muted">Età Media</span>
+<span class="font-label-numeric-lg text-label-numeric-lg text-on-surface font-bold">26,6 <span class="font-body-sm text-body-sm text-on-surface-muted font-normal">anni</span></span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary bg-white border border-secondary/30 px-1.5 py-0.5 rounded font-bold">6ª più giovane</span>
+</div>
+</div>
+<!-- KPI 2: Monte Ingaggi -->
+<div class="bg-surface-container-low border border-border-warm px-space-md py-2.5 rounded flex items-center justify-between shadow-xs">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+<span class="material-symbols-outlined text-[18px]">payments</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-muted">Monte Ingaggi</span>
+<span class="font-label-numeric-lg text-label-numeric-lg text-on-surface font-bold whitespace-nowrap">37,1 <span class="font-body-sm text-body-sm text-on-surface-muted font-normal">Mln €/a</span></span>
+</div>
+</div>
+<div class="text-right flex flex-col items-end whitespace-nowrap">
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">Tetto 38,0 Mln €</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold whitespace-nowrap">+900k margine</span>
+</div>
+</div>
+<!-- KPI 3: Vivaio & Under 21 -->
+<div class="bg-surface-container-low border border-border-warm px-space-md py-2.5 rounded flex items-center justify-between shadow-xs">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded bg-amber-500/10 flex items-center justify-center text-tertiary border border-amber-500/20">
+<span class="material-symbols-outlined text-[18px]">school</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-muted">Under 21 in Rosa</span>
+<span class="font-label-numeric-lg text-label-numeric-lg text-on-surface font-bold">5 <span class="font-body-sm text-body-sm text-on-surface-muted font-normal">elementi</span></span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-numeric-sm text-label-numeric-sm text-tertiary bg-white border border-tertiary/30 px-1.5 py-0.5 rounded font-semibold">3 vivaio club</span>
+</div>
+</div>
+<!-- KPI 4: Gerarchia Spogliatoio -->
+<div class="bg-surface-container-low border border-border-warm px-space-md py-2.5 rounded flex items-center justify-between shadow-xs">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-[18px]">badge</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-muted">Status Gerarchico</span>
+<span class="font-label-numeric-md text-label-numeric-md text-on-surface mt-0.5 font-bold whitespace-nowrap">4 Chiave • 11 Titolari</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant bg-white border border-border-warm px-1.5 py-0.5 rounded font-medium">10 Riserve</span>
+</div>
+</div>
+</div>
+</div>
+<!-- CONTENITORE PRINCIPALE TABELLA E CONTROLLI -->
+<div class="bg-white border border-border-warm rounded-lg shadow-sm overflow-hidden">
+<!-- VISTA A SCHEDE (ORIZZONTALE EDITORIALE) -->
+<div class="bg-surface-container-low border-b border-border-warm px-space-md flex items-center justify-between">
+<div class="flex items-center gap-space-xs overflow-x-auto">
+<button class="px-space-md py-2.5 font-headline-sm text-headline-sm uppercase tracking-wider text-primary border-b-2 border-primary bg-white font-bold" type="button">
+        Generale
+      </button>
+<button class="px-space-md py-2.5 font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface-muted hover:text-on-surface transition-colors font-semibold" type="button">
+        Contratti
+      </button>
+<button class="px-space-md py-2.5 font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface-muted hover:text-on-surface transition-colors font-semibold" type="button">
+        Forma &amp; Stat
+      </button>
+<button class="px-space-md py-2.5 font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface-muted hover:text-on-surface transition-colors font-semibold" type="button">
+        Report Medico
+      </button>
+<button class="px-space-md py-2.5 font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface-muted hover:text-on-surface transition-colors font-semibold" type="button">
+        Tecnici
+      </button>
+<button class="px-space-md py-2.5 font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface-muted hover:text-on-surface transition-colors font-semibold" type="button">
+        Mentali
+      </button>
+<button class="px-space-md py-2.5 font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface-muted hover:text-on-surface transition-colors font-semibold" type="button">
+        Fisici
+      </button>
+</div>
+<!-- Indicatore Limite Registrazione Serie A -->
+<div class="hidden xl:flex items-center gap-2 py-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted">
+        Regolamento Serie A: max 25 calciatori Over-22 (Rispettato: 20 Over-22 + 5 U21)
+      </span>
+</div>
+</div>
+<!-- BARRA FILTRI RAPIDI & OPZIONI DI DENSITA' -->
+<div class="px-space-md py-2 bg-white border-b border-border-warm flex flex-wrap items-center justify-between gap-space-md">
+<div class="flex items-center gap-1.5 flex-wrap">
+<button class="h-7 px-3 bg-primary text-white font-label-editorial text-label-editorial uppercase rounded flex items-center gap-1 shadow-sm font-bold" type="button">
+        Tutti (25)
+      </button>
+<button class="h-7 px-3 bg-surface-container-low hover:bg-surface-container border border-border-warm text-on-surface font-label-editorial text-label-editorial uppercase rounded transition-colors font-semibold" type="button">
+        POR (3)
+      </button>
+<button class="h-7 px-3 bg-surface-container-low hover:bg-surface-container border border-border-warm text-on-surface font-label-editorial text-label-editorial uppercase rounded transition-colors font-semibold" type="button">
+        DIF (8)
+      </button>
+<button class="h-7 px-3 bg-surface-container-low hover:bg-surface-container border border-border-warm text-on-surface font-label-editorial text-label-editorial uppercase rounded transition-colors font-semibold" type="button">
+        CEN (8)
+      </button>
+<button class="h-7 px-3 bg-surface-container-low hover:bg-surface-container border border-border-warm text-on-surface font-label-editorial text-label-editorial uppercase rounded transition-colors font-semibold" type="button">
+        ATT (6)
+      </button>
+<div class="w-[1px] h-4 bg-border-warm mx-1"></div>
+<button class="h-7 px-2.5 bg-surface-container-low hover:bg-surface-container border border-border-warm text-on-surface font-label-editorial text-label-editorial uppercase rounded flex items-center gap-1.5 transition-colors font-semibold" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+        In Scadenza 2027 (4)
+      </button>
+<button class="h-7 px-2.5 bg-surface-container-low hover:bg-surface-container border border-border-warm text-on-surface font-label-editorial text-label-editorial uppercase rounded flex items-center gap-1.5 transition-colors font-semibold" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+        Indisponibili (2)
+      </button>
+</div>
+<!-- Ordinamento & Visualizzazione -->
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-2">
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface-muted">Ordina per:</span>
+<button class="h-7 px-2 bg-white border border-border-warm hover:bg-surface-container text-on-surface rounded font-label-editorial text-label-editorial uppercase flex items-center gap-1 transition-colors" type="button">
+<span>Ruolo Tattico Naturale</span>
+<span class="material-symbols-outlined text-[14px]">expand_more</span>
+</button>
+</div>
+<div class="flex items-center bg-surface-container border border-border-warm rounded p-0.5">
+<button class="px-2 py-0.5 bg-white text-primary rounded font-label-editorial text-label-editorial uppercase shadow-xs font-bold" type="button">
+          Dettagliata
+        </button>
+<button class="px-2 py-0.5 text-on-surface-muted hover:text-on-surface rounded font-label-editorial text-label-editorial uppercase transition-colors" type="button">
+          Compatta
+        </button>
+</div>
+</div>
+</div>
+<!-- TABELLA DATI COMPLETA (25 CALCIATORI INVENTATI SPORTING VENTIMONTI) -->
+<div class="w-full overflow-x-auto">
+<table class="w-full border-collapse text-left select-none">
+<!-- Intestazioni Colonne -->
+<thead>
+<tr class="h-8 bg-surface-container-low border-b border-border-warm text-on-surface-muted font-label-editorial text-label-editorial uppercase tracking-wider text-[11px]">
+<th class="w-10 px-2 text-center" title="Stato e Avvisi">Stato</th>
+<th class="w-10 px-2 text-center">N° ⇅</th>
+<th class="w-28 px-3">Ruolo ⇅</th>
+<th class="w-64 px-3">Calciatore ⇅</th>
+<th class="w-14 px-2 text-center">Età ⇅</th>
+<th class="w-24 px-2 text-center">Abilità (CA)</th>
+<th class="w-24 px-2 text-center">Potenziale (PA)</th>
+<th class="w-40 px-3">Condizione / Forma</th>
+<th class="w-28 px-3">Morale ⇅</th>
+<th class="w-28 px-3 text-right">Valore ⇅</th>
+<th class="w-28 px-3 text-right">Stipendio ⇅</th>
+<th class="w-20 px-2 text-center">Scadenza ⇅</th>
+<th class="w-12 px-2 text-center">Azioni</th>
+</tr>
+</thead>
+<!-- 25 Righe Giocatori -->
+<tbody class="divide-y divide-border-light font-body-sm text-body-sm bg-white">
+<!-- 1. Peretti, Luca (POR) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]" title="Condizione ottimale">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">1</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-label-editorial text-[11px] font-bold">POR</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">POR</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Peretti, Luca</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">31</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★★☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★★☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 96%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">96%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">7.1 • 6.9 • 7.4</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/50 text-secondary border border-secondary/20 font-label-editorial text-[11px] uppercase font-bold">Ottimo</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">8,5 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">2,1 Mln €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2028</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 2. Falco, Andrea (DC - CAPITANO) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]" title="Idoneo e in forma">verified</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">2</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-label-editorial text-[11px] font-bold">DC</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">TD</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Falco, Andrea</span>
+<span class="px-1 py-0.2 bg-primary text-white font-label-editorial text-[9px] rounded font-bold uppercase">C</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">32</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★★☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★★☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 92%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">92%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">7.4 • 7.3 • 7.5</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/50 text-secondary border border-secondary/20 font-label-editorial text-[11px] uppercase font-bold">Ottimo</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">6,2 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">2,4 Mln €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-tertiary font-bold bg-amber-50 border border-amber-200 rounded">2027</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 3. De Luca, Marco (TS) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">3</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-label-editorial text-[11px] font-bold">TS</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">CLS</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">De Luca, Marco</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">25</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★☆☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★★☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 98%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">98%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">6.8 • 7.0 • 6.7</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/50 text-secondary border border-secondary/20 font-label-editorial text-[11px] uppercase font-bold">Molto Buono</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">11,5 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">1,4 Mln €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2029</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 4. Antonelli, Dario (MED) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-tertiary text-[16px]" title="Diffidato (4 ammonizioni)">warning</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">4</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200 font-label-editorial text-[11px] font-bold">MED</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">CC</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Antonelli, Dario</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">28</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★★☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★★☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-amber-500 h-full" style="width: 88%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-tertiary font-bold">88%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">7.2 • 7.5 • 7.1</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-editorial text-[11px] uppercase font-bold">Buono</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">14,0 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">2,2 Mln €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2028</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 5. Marini, Edoardo (DC) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">5</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-label-editorial text-[11px] font-bold">DC</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">DC</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Marini, Edoardo</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">27</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★☆☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★☆☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 95%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">95%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">6.9 • 6.8 • 7.1</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-editorial text-[11px] uppercase font-bold">Buono</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">7,8 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">1,2 Mln €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2029</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 6. Moretti, Simone (CC) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">6</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200 font-label-editorial text-[11px] font-bold">CC</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">MED</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Moretti, Simone</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">26</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★★☆</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★★★</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 94%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">94%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">7.6 • 7.4 • 8.0</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/50 text-secondary border border-secondary/20 font-label-editorial text-[11px] uppercase font-bold">Ottimo</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">22,0 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">2,8 Mln €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2030</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 7. Giani, Federico (AD) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">7</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200 font-label-editorial text-[11px] font-bold">AD</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">ED</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇦🇷</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Giani, Federico</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">24</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★★☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★★☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 91%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">91%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">7.3 • 6.9 • 7.2</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/50 text-secondary border border-secondary/20 font-label-editorial text-[11px] uppercase font-bold">Molto Buono</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">17,5 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">1,9 Mln €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2029</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 8. Rinaldi, Christian (TRQ) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">8</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200 font-label-editorial text-[11px] font-bold">TRQ</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">CC</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Rinaldi, Christian</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">23</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★★☆</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★★★</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 97%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">97%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">7.8 • 8.1 • 7.4</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/50 text-secondary border border-secondary/20 font-label-editorial text-[11px] uppercase font-bold">Ottimo</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">24,5 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">2,6 Mln €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2030</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 9. Valente, Matteo (ATT - CAPOCANNONIERE & ACTIVE SELECTION) -->
+<tr class="h-9 bg-primary/5 hover:bg-primary/10 transition-colors group cursor-pointer relative" title="Clicca per aprire la scheda dettagliata di Matteo Valente">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]" title="Condizione strepitosa">star</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-primary font-bold">9</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-primary text-white font-label-editorial text-[11px] font-bold">ATT</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">PC</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-bold text-on-surface group-hover:text-primary transition-colors truncate">Valente, Matteo</span>
+<span class="px-1 py-0.2 bg-secondary-container text-on-secondary-container border border-secondary/30 font-label-editorial text-[9px] rounded font-bold uppercase">Top Scorer</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-semibold">27</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★★★</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★★★</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 100%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">100%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold text-[11px] ml-1">8.4 • 8.6 • 7.9</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-secondary text-white font-label-editorial text-[11px] uppercase font-bold shadow-xs">In Estasi</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-primary font-bold whitespace-nowrap">34,0 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface font-bold whitespace-nowrap">3,6 Mln €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-semibold">2029</td>
+<td class="px-2 text-center">
+<button class="text-primary hover:text-primary-hover p-1"><span class="material-symbols-outlined text-[16px]">arrow_forward</span></button>
+</td>
+</tr>
+<!-- 10. Baroni, Jacopo (AS) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">10</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200 font-label-editorial text-[11px] font-bold">AS</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">CLS</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇧🇷</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Baroni, Jacopo</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">25</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★★☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★★☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 93%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">93%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">7.2 • 7.0 • 7.5</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/50 text-secondary border border-secondary/20 font-label-editorial text-[11px] uppercase font-bold">Ottimo</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">19,0 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">2,1 Mln €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2029</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 11. Conti, Gabriele (TD) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">11</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-label-editorial text-[11px] font-bold">TD</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">CLD</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Conti, Gabriele</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">26</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★☆☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★★☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 90%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">90%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">6.9 • 7.1 • 6.8</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-editorial text-[11px] uppercase font-bold">Buono</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">9,5 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">1,3 Mln €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2028</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 12. Colombo, Davide (POR - 2°) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">12</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-label-editorial text-[11px] font-bold">POR</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">POR</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Colombo, Davide</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">28</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★☆☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★☆☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 100%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">100%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">-</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-editorial text-[11px] uppercase font-bold">Buono</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">2,5 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">650 mila €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-tertiary font-bold bg-amber-50 border border-amber-200 rounded">2027</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 13. Ferri, Nicola (DC) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">13</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-label-editorial text-[11px] font-bold">DC</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">DC</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Ferri, Nicola</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">22</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★☆☆☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★★☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 95%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">95%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">6.6 • 6.7</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/50 text-secondary border border-secondary/20 font-label-editorial text-[11px] uppercase font-bold">Molto Buono</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">4,8 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">750 mila €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2029</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 14. Bellini, Tommaso (CC) - INFORTUNATO -->
+<tr class="h-9 bg-rose-50/60 hover:bg-rose-50 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-error text-[16px]" title="Infortunato: Distorsione alla caviglia (2-3 settimane)">medical_services</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-error font-bold">14</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200 font-label-editorial text-[11px] font-bold">CC</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">MED</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-error group-hover:text-primary transition-colors truncate">Bellini, Tommaso</span>
+<span class="px-1 py-0.2 bg-error text-white font-label-editorial text-[9px] rounded font-bold uppercase">INF</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">29</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★☆☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★☆☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-error h-full" style="width: 58%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-error font-bold">58%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">6.5 • 6.8</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-tertiary font-label-editorial text-[11px] uppercase font-bold">Preoccupato</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">5,0 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">1,1 Mln €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-tertiary font-bold bg-amber-50 border border-amber-200 rounded">2027</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 15. Neri, Alessio (TS) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">15</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-label-editorial text-[11px] font-bold">TS</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">DC</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇫🇷</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Neri, Alessio</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">21</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★☆☆☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★★☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 99%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">99%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">-</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/50 text-secondary border border-secondary/20 font-label-editorial text-[11px] uppercase font-bold">Ottimo</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">3,2 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">450 mila €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2030</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 16. Grassi, Filippo (ATT) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">16</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200 font-label-editorial text-[11px] font-bold">ATT</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">AS</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Grassi, Filippo</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">20</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★☆☆☆</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★★★</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 100%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">100%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">7.0</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/50 text-secondary border border-secondary/20 font-label-editorial text-[11px] uppercase font-bold">Ottimo</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">6,5 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">350 mila €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2031</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 17. Sartori, Lorenzo (ED) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">17</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200 font-label-editorial text-[11px] font-bold">ED</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">AD</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Sartori, Lorenzo</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">24</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★☆☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★★☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 92%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">92%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">6.8 • 6.9</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-editorial text-[11px] uppercase font-bold">Buono</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">8,2 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">950 mila €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2029</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 18. Vitali, Pietro (MED) - SCONTENTO MINUTAGGIO -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-tertiary text-[16px]" title="Scontento: Chiede maggior tempo di gioco">sentiment_dissatisfied</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">18</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200 font-label-editorial text-[11px] font-bold">MED</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">DC</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Vitali, Pietro</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">30</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★☆☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★☆☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-amber-500 h-full" style="width: 86%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-tertiary font-bold">86%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">6.4</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-amber-50 text-tertiary border border-amber-200 font-label-editorial text-[11px] uppercase font-bold">Frustrato</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">3,8 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">1,0 Mln €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2028</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 19. Serra, Gianluca (ES) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">19</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200 font-label-editorial text-[11px] font-bold">ES</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">AS</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇪🇸</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Serra, Gianluca</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">25</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★☆☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★★☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 95%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">95%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">7.1 • 6.9</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/50 text-secondary border border-secondary/20 font-label-editorial text-[11px] uppercase font-bold">Molto Buono</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">11,0 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">1,5 Mln €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2029</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 20. Pellegrini, Mattia (ATT) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">20</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200 font-label-editorial text-[11px] font-bold">ATT</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">PC</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Pellegrini, Mattia</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">28</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★☆☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★☆☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 93%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">93%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">7.0 • 7.2 • 6.7</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-editorial text-[11px] uppercase font-bold">Buono</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">9,0 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">1,7 Mln €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2028</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 21. Costa, Fabio (TD) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">21</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-label-editorial text-[11px] font-bold">TD</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">DC</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Costa, Fabio</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">22</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★☆☆☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★★☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 96%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">96%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">6.8</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-editorial text-[11px] uppercase font-bold">Buono</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">4,5 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">600 mila €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2030</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 22. Zanetti, Roberto (POR - 3°) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">22</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-label-editorial text-[11px] font-bold">POR</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">POR</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Zanetti, Roberto</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">19</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★☆☆☆☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★★☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 100%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">100%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">-</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/50 text-secondary border border-secondary/20 font-label-editorial text-[11px] uppercase font-bold">Ottimo</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">850 mila €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">180 mila €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2031</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 23. Lombardi, Manuel (CC) - SQUALIFICATO -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-error text-[16px]" title="Squalificato per 1 turno di campionato">block</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">23</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200 font-label-editorial text-[11px] font-bold">CC</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">TRQ</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇩🇪</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Lombardi, Manuel</span>
+<span class="px-1 py-0.2 bg-amber-600 text-white font-label-editorial text-[9px] rounded font-bold uppercase">SQU</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">27</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★★☆☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★☆☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 90%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">90%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">6.7 • 6.9</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-rose-50 text-error border border-rose-200 font-label-editorial text-[11px] uppercase font-bold">Rabbioso</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">7,0 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">1,4 Mln €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2028</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 24. Grosso, Daniele (DC) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">24</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-label-editorial text-[11px] font-bold">DC</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">DC</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇮🇹</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Grosso, Daniele</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">33</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★☆☆☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★☆☆☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-amber-500 h-full" style="width: 82%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-tertiary font-bold">82%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">6.5</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-editorial text-[11px] uppercase font-bold">Buono</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">1,8 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">800 mila €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-tertiary font-bold bg-amber-50 border border-amber-200 rounded">2027</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+<!-- 25. Riva, Stefano (ATT) -->
+<tr class="h-9 hover:bg-surface-container-low/70 transition-colors group">
+<td class="px-2 text-center">
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</td>
+<td class="px-2 text-center font-label-numeric-md text-label-numeric-md text-on-surface font-bold">25</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200 font-label-editorial text-[11px] font-bold">ATT</span>
+<span class="font-body-sm text-[11px] text-on-surface-muted">AD</span>
+</div>
+</td>
+<td class="px-3">
+<div class="flex items-center gap-1.5">
+<span class="text-sm">🇺🇾</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface group-hover:text-primary transition-colors truncate">Riva, Stefano</span>
+</div>
+</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface">21</td>
+<td class="px-2 text-center text-tertiary tracking-tighter text-xs">★★☆☆☆</td>
+<td class="px-2 text-center text-on-surface-muted tracking-tighter text-xs">★★★★☆</td>
+<td class="px-3">
+<div class="flex items-center gap-2">
+<div class="w-14 bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 94%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">94%</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-muted text-[11px] ml-1">6.9 • 7.1</span>
+</div>
+</td>
+<td class="px-3">
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/50 text-secondary border border-secondary/20 font-label-editorial text-[11px] uppercase font-bold">Ottimo</span>
+</td>
+<td class="px-3 text-right font-label-numeric-md text-label-numeric-md text-on-surface font-semibold whitespace-nowrap">5,2 Mln €</td>
+<td class="px-3 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-muted whitespace-nowrap">500 mila €/a</td>
+<td class="px-2 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface font-medium">2030</td>
+<td class="px-2 text-center">
+<button class="text-on-surface-muted hover:text-on-surface p-1"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- FOOTER DELLA TABELLA E METRICHE DI CONTO -->
+<div class="h-10 px-space-md bg-surface-container-low border-t border-border-warm flex items-center justify-between">
+<div class="flex items-center gap-space-lg text-on-surface-muted font-label-numeric-sm text-label-numeric-sm">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-on-surface">Visualizzati <strong>25 su 25</strong> calciatori della rosa registrata</span>
+</div>
+<div class="hidden md:flex items-center gap-1.5">
+<span>Valore complessivo parco giocatori:</span>
+<strong class="text-on-surface font-bold">246,8 Mln €</strong>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface-muted tracking-wider">
+        Prossimo match: <span class="text-on-surface font-bold">Sporting Ventimonti vs Casalforte (Dom 13 Set)</span>
+</span>
+<button class="h-7 px-3 bg-white border border-border-warm hover:bg-surface-container text-on-surface rounded font-label-editorial text-label-editorial uppercase flex items-center gap-1 transition-colors shadow-xs" type="button">
+<span class="material-symbols-outlined text-[16px] text-on-surface-muted">fact_check</span>
+<span class="font-semibold">Gestisci Numeri di Maglia</span>
+</button>
+</div>
+</div>
+</div>
+<!-- SCRIPT DI RICERCA INTERATTIVA RAPIDA NELLA TABELLA -->
+<script>
+    (function() {
+      const searchInput = document.getElementById('playerSearchInput');
+      if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+          const filter = e.target.value.toLowerCase().trim();
+          const rows = document.querySelectorAll('tbody tr');
+          rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            if (text.includes(filter)) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
+        });
+      }
+    })();
+  </script>
+</div></main></div></body></html>
