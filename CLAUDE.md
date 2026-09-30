@@ -104,7 +104,8 @@ Scrivania a riquadri: catalogo in `screens/DeskWidgets.tsx` (taglie S/M/L su 12 
 `engine/talks.ts`: `talkResponse` (carattere, morale, punteggio) per i sei toni. Prima e all'intervallo `run.talk` somma
 `MATCH.talkBoost` al logit dei giocatori in campo; a fine partita `fullTimeTalk` muove morale e fiducia (`PSYCH.talkMorale`,
 `talkTrust`) sul mondo già chiuso (in `App.tsx`, dopo `closeDay`). Nelle partite non seguite li fa il vice (`viceTalk` in
-`playMatch`, 0.12.0: più è bravo più toni conosce). L'IA non ne fa.
+`playMatch`, 0.12.0: più è bravo più toni conosce). L'IA non ne fa. Colloqui individuali (0.13.0): `holdChat` in
+`talks.ts`, lodare o criticare il rendimento (`PSYCH.chat*`); uno a settimana, ricavato dal registro delle cause.
 
 ## Staff (0.9.0)
 `engine/staff.ts`: vice, preparatore e medico solo per il club dell'utente (`world.staff`, schema 31), bravura 1-20, a 10

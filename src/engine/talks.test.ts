@@ -1,7 +1,7 @@
 // Discorsi alla squadra (0.8.0): le regole di reazione e l'effetto del discorso di fine partita.
 import { describe, expect, it } from 'vitest';
 import { ensureStaff } from './staff.ts';
-import { fullTimeTalk, reactions, talkResponse, viceTalk } from './talks.ts';
+import { canChat, chatResponse, fullTimeTalk, holdChat, reactions, talkResponse, viceTalk } from './talks.ts';
 import { advance, newWorld } from './world.ts';
 
 const w = newWorld(11);
@@ -47,5 +47,27 @@ describe('discorsi alla squadra', () => {
     const v = newWorld(5);
     ensureStaff(v);
     while (!v.news.some((n) => n.key === 'news.viceTalk')) expect(advance(v).length).toBeGreaterThan(0);
+  });
+
+  it('colloquio: lodare chi gioca bene convince, criticarlo è ingiusto; il professionista che gioca male accetta la critica', () => {
+    const inForm = { ...p, form: [7.5, 7.4, 7.8] };
+    const poor = { ...p, form: [6.0, 6.1, 5.9], personality: { ...p.personality, pressureTolerance: 15, professionalism: 16 } };
+    expect(chatResponse(inForm, 'praiseForm').r).toBe(1);
+    expect(chatResponse(inForm, 'criticiseForm').why).toBe('unfair');
+    expect(chatResponse(poor, 'criticiseForm').why).toBe('fair');
+    expect(chatResponse(poor, 'praiseForm').r).toBeLessThan(0);
+  });
+
+  it('colloquio: muove morale e fiducia, e con lo stesso giocatore uno a settimana', () => {
+    const q = w.players[club.playerIds[3]!]!;
+    q.form = [7.6, 7.5, 7.7];
+    const before = q.psych.trust;
+    expect(canChat(w, q)).toBe(true);
+    expect(holdChat(w, q, 'praiseForm')?.r).toBe(1);
+    expect(q.psych.trust).toBeGreaterThan(before);
+    expect(canChat(w, q)).toBe(false);
+    expect(holdChat(w, q, 'praiseForm')).toBeNull();
+    w.day += 7;
+    expect(canChat(w, q)).toBe(true);
   });
 });

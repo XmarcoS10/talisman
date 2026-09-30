@@ -67,6 +67,12 @@ app.on('browser-window-created', async (_e, win) => {
     await click('tbody tr');
     await wait(800);
     await shot('giocatore');
+    // colloquio individuale (0.13.0): la risposta del giocatore nel pannello umore
+    await click('main .seg-tabs button', 'Dinamiche');
+    await wait(400);
+    await click('button', 'Lodare il rendimento');
+    await js(`document.querySelector('main').scrollTop = 1e5; true`);
+    await shot('colloquio');
     await click('.sidebar button', 'Scrivania');
     await wait(500);
     await click('.desk-head button', 'Personalizza');

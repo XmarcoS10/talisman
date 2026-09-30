@@ -1,12 +1,15 @@
 // Pannelli del profilo giocatore della fase F5: umore e spogliatoio, sviluppo col "perché" (Causal Log).
+import { useState } from 'react';
 import { exclude, makePromise, moraleParts, moraleTarget, reinstate, squadStatus } from '../../engine/morale.ts';
 import type { Player, WorldState } from '../../engine/model.ts';
+import { CHATS, canChat, holdChat } from '../../engine/talks.ts';
 import { validMentor } from '../../engine/training.ts';
 import { shortName } from '../bits.tsx';
 import { fmtDate, fmtSeason, t, tEvent } from '../i18n.ts';
 import { moraleClass } from './Graph.tsx';
 
 export function PeoplePanel({ world, p, onChange, onPlayer }: { world: WorldState; p: Player; onChange: () => void; onPlayer: (id: number) => void }) {
+  const [reply, setReply] = useState<{ id: number; r: number; why: string } | null>(null);
   const club = p.clubId !== null ? world.clubs[p.clubId] : undefined;
   if (!club) return null;
   const mine = club.id === world.manager.clubId;
@@ -43,6 +46,17 @@ export function PeoplePanel({ world, p, onChange, onPlayer }: { world: WorldStat
               <button className="btn" onClick={() => act(() => makePromise(world, p, 'minutes'))}>{t('people.promiseMinutes')}</button>
             </>}
           <button className="btn" onClick={() => act(() => (excluded ? reinstate : exclude)(world, club, p))}>{t(excluded ? 'people.reinstate' : 'people.exclude')}</button>
+        </div>
+      )}
+      {mine && (
+        <div className="stack" style={{ gap: 6 }}>
+          <span className="caps">{t('people.chat')}</span>
+          <div className="row" style={{ flexWrap: 'wrap' }}>
+            {CHATS.map((k) => <button key={k} className="btn" disabled={!canChat(world, p)} onClick={() => act(() => { const r = holdChat(world, p, k); if (r) setReply({ id: p.id, ...r }); })}>{t(`chat.${k}`)}</button>)}
+          </div>
+          {reply?.id === p.id
+            ? <span className={reply.r >= 0.8 ? 'pos-good' : reply.r < 0 ? 'pos-bad' : 'muted'}>{t(`chat.why.${reply.why}`)}</span>
+            : !canChat(world, p) && <span className="muted small">{t('chat.wait')}</span>}
         </div>
       )}
     </div>

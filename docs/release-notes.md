@@ -1,5 +1,16 @@
 # Note di rilascio
 
+## 0.13.0 — i colloqui individuali
+
+Le carriere della 0.12 si aprono senza cambiamenti.
+
+- **Colloqui con un giocatore**, come in FM: nel profilo, scheda Dinamiche, puoi **lodare** o **criticare** il suo
+  rendimento. Come la prende dipende da come sta giocando (la media degli ultimi tre voti) e dal carattere: lodare chi
+  gioca bene lo convince, chi gioca male no; criticare chi gioca bene è ingiusto, chi regge male la pressione ci
+  resta male, un professionista che sta giocando male la prende come uno stimolo. Il giocatore ti risponde, e morale e
+  fiducia si muovono.
+- Con lo stesso giocatore **un colloquio a settimana**, e le lodi rendono sempre meno a chi ha già piena fiducia in te.
+
 ## 0.12.2 — l'analista non anticipa i gol
 
 - **Partita dal vivo**: nei salienti il motore calcola qualche secondo prima di quello che vedi, e l'analista leggeva
@@ -275,6 +286,17 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.13.0 — one-to-one talks (English)
+
+Careers from 0.12 open unchanged.
+
+- **One-to-one talks with a player**, as in FM: in the profile, Dynamics tab, you can **praise** or **criticise** their
+  form. How they take it depends on how they are playing (the average of the last three ratings) and on their
+  character: praising a player in form convinces them, praising one out of form does not; criticising a player in form
+  is unfair, one who handles pressure badly takes it hard, a professional who is playing badly takes it as a spur.
+  The player answers you, and morale and trust move.
+- **One talk a week** with the same player, and praise gives less and less to those who already trust you fully.
 
 ## 0.12.2 — the analyst no longer gives goals away (English)
 

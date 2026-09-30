@@ -61,3 +61,51 @@ export function fullTimeTalk(world: WorldState, club: Club, kind: Talk, diff: nu
     return r;
   });
 }
+
+// --- colloqui individuali (0.13.0, come le interazioni di FM): lodare o criticare il rendimento di un giocatore ---
+export const CHATS = ['praiseForm', 'criticiseForm'] as const;
+export type Chat = (typeof CHATS)[number];
+
+/** media degli ultimi tre voti, null se non ha ancora giocato */
+const recentForm = (p: Player) => (p.form.length ? p.form.slice(-3).reduce((s, v) => s + v, 0) / Math.min(3, p.form.length) : null);
+
+/**
+ * come la prende: `r` come nei discorsi (1 bene, negativo male) e il perché, che il giocatore dice.
+ * Lodare chi gioca bene lo convince, chi gioca male no; criticare chi gioca bene è ingiusto, chi regge male la
+ * pressione ci resta male, un professionista che sta giocando male la prende come uno stimolo.
+ */
+export function chatResponse(p: Player, kind: Chat): { r: number; why: string } {
+  const f = recentForm(p);
+  const good = f !== null && f >= PSYCH.chatGoodForm, bad = f !== null && f < PSYCH.chatBadForm;
+  if (kind === 'praiseForm') return good ? { r: 1, why: 'deserved' } : bad ? { r: -0.5, why: 'empty' } : { r: 0.3, why: 'fine' };
+  if (good) return { r: -1, why: 'unfair' };
+  if (p.personality.pressureTolerance <= 8) return { r: -0.8, why: 'hurt' };
+  if (bad) return p.personality.professionalism >= 12 ? { r: 1, why: 'fair' } : { r: 0.3, why: 'accepts' };
+  return { r: -0.3, why: 'harsh' };
+}
+
+/** giorno dell'ultimo colloquio con lui in questa stagione (dal registro delle cause: nessun campo in più nel mondo) */
+export function lastChat(world: WorldState, p: Player): number | null {
+  for (let i = world.causal.length - 1; i >= 0; i--) {
+    const e = world.causal[i]!;
+    if (e.playerId === p.id && e.season === world.season && e.key.startsWith('cause.chat')) return e.day;
+  }
+  return null;
+}
+
+export const canChat = (world: WorldState, p: Player) => {
+  const d = lastChat(world, p);
+  return d === null || world.day - d >= PSYCH.chatEvery;
+};
+
+/** colloquio con un giocatore dell'utente: morale e fiducia, e la causa nel profilo (che fa anche da attesa) */
+export function holdChat(world: WorldState, p: Player, kind: Chat): { r: number; why: string } | null {
+  if (p.clubId !== world.manager.clubId || !canChat(world, p)) return null;
+  const res = chatResponse(p, kind);
+  // rende sempre meno a chi ha già fiducia piena (a 50 tutto, a 75 metà): lodare tutti ogni settimana non basta
+  const k = res.r > 0 ? Math.min(1, 2 * (1 - p.psych.trust / 100)) : 1;
+  p.psych.morale = Math.round(clamp(p.psych.morale + PSYCH.chatMorale * res.r * k, 0, 100) * 10) / 10;
+  p.psych.trust = Math.round(clamp(p.psych.trust + PSYCH.chatTrust * res.r * k, 0, 100) * 10) / 10;
+  addCause(world, p, res.r >= 0.8 ? 'cause.chatGood' : res.r < 0 ? 'cause.chatBad' : 'cause.chatFlat', { talk: `chat.${kind}` });
+  return res;
+}

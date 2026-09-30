@@ -6,9 +6,9 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'site')
 REPO = 'https://github.com/XmarcoS10/talisman'
 SITE = 'https://xmarcos10.github.io/talisman/'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
-VERSION = '0.12.2'
+VERSION = '0.13.0'
 SIZE = '123 MB'
-SHA = 'e83efead1642d0e51b8463bb4b84205ed41b38d5b8055f0b11ea92b7df9aa27a'
+SHA = '095dd5d0bef4ec5b25c5b569647a1905a67e4f9f1a1dfbc7831e7040b3de4e3f'
 # pnpm sim -- --seasons 10 --seed 42 con la 0.2.0
 SIM_GOALS = {'it': '2,56', 'en': '2.56'}
 SIM_DRAWS = {'it': '23,2%', 'en': '23.2%'}
@@ -543,6 +543,7 @@ def download():
         <div class="panel">
           <h3>{x('Novità della', 'New in')} {VERSION}</h3>
           <ul class="checks">
+            <li>{x("<b>Colloqui individuali</b>: lodare o criticare il rendimento di un giocatore, che risponde a modo suo.", "<b>One-to-one talks</b>: praise or criticise a player's form, and they answer in their own way.")}</li>
             <li>{x("<b>Il vice parla alla squadra</b> quando giochi con «Solo il risultato»; l'IA usa i ruoli senza palla.", '<b>Your assistant gives the team talks</b> when you play "Result only"; the AI uses out-of-possession roles.')}</li>
             <li>{x("<b>Tattica con e senza palla</b>: due moduli e un ruolo senza palla per ognuno, come in FM26.", '<b>In and out of possession tactics</b>: two formations and an out-of-possession role for everyone, as in FM26.')}</li>
             <li>{x("<b>Tratti del giocatore</b>: come in FM, contano in partita e si insegnano in allenamento.", '<b>Player traits</b>: as in FM, they count in matches and can be taught in training.')}</li>

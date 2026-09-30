@@ -120,6 +120,12 @@ export const PSYCH = {
   // discorso di fine partita (talks.ts): morale e fiducia per chi lo prende bene, in meno per chi lo prende male
   talkMorale: 5,
   talkTrust: 2,
+  // colloqui individuali (talks.ts): come i discorsi ma per uno solo, al massimo uno a settimana per giocatore
+  chatMorale: 6,
+  chatTrust: 3,
+  chatEvery: 7,
+  chatGoodForm: 7, // media degli ultimi tre voti: gioca bene
+  chatBadForm: 6.5, // gioca male
 } as const;
 
 // --- motore partita L2 (GUIDA §6) ---
