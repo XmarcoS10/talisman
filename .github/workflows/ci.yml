@@ -13,4 +13,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm test
-      - run: pnpm bench --max 7
+      # le macchine di GitHub oscillano: lo stesso codice ha segnato fra 4,1 e 7,0 ms (30/09, 0.9.0-0.11.0), mentre in
+      # locale restava fermo a 5,5. Il limite ferma i rallentamenti veri, non il rumore.
+      - run: pnpm bench --max 8
