@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="it"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,600&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"surface-container-low":"#171c24","on-secondary-fixed-variant":"#005236","secondary":"#4edea3","on-primary-fixed-variant":"#92001f","error":"#ffb4ab","primary-fixed":"#ffdad9","inverse-surface":"#dee2ee","tertiary":"#ffb95f","tertiary-fixed-dim":"#ffb95f","on-surface":"#dee2ee","secondary-container":"#00a572","surface-bright":"#343942","on-background":"#dee2ee","tertiary-container":"#ca8100","tertiary-fixed":"#ffddb8","on-primary-fixed":"#410008","on-primary-container":"#5b000f","on-error-container":"#ffdad6","on-error":"#690005","on-secondary-container":"#00311f","secondary-fixed-dim":"#4edea3","background":"#0f141c","surface":"#0f141c","on-secondary-fixed":"#002113","surface-variant":"#30353e","surface-dim":"#0f141c","error-container":"#93000a","inverse-primary":"#bf002b","on-tertiary":"#472a00","inverse-on-surface":"#2c3139","surface-container-high":"#252a33","surface-container-highest":"#30353e","surface-container":"#1b2028","surface-tint":"#ffb3b2","primary":"#ffb3b2","primary-container":"#ff525d","on-tertiary-container":"#3e2400","on-primary":"#680013","on-tertiary-fixed":"#2a1700","surface-container-lowest":"#090e16","on-tertiary-fixed-variant":"#653e00","secondary-fixed":"#6ffbbe","on-surface-variant":"#e6bdbb","outline-variant":"#5d3f3f","on-secondary":"#003824","primary-fixed-dim":"#ffb3b2","outline":"#ad8887"},borderRadius:{DEFAULT:"0.125rem",lg:"0.25rem",xl:"0.5rem",full:"0.75rem"},spacing:{"space-md":"0.75rem",margin:"1.25rem","space-lg":"1rem","space-sm":"0.5rem","space-xs":"0.25rem","space-xl":"1.5rem",gutter:"1rem"},fontFamily:{"headline-lg":["Barlow Condensed"],"body-sm":["Inter"],"body-md":["Inter"],"label-numeric-md":["JetBrains Mono"],"label-numeric-lg":["JetBrains Mono"],"body-lg":["Inter"],"headline-xl":["Barlow Condensed"],"label-editorial":["Barlow Condensed"],"headline-sm":["Barlow Condensed"],"label-numeric-sm":["JetBrains Mono"],"headline-md":["Barlow Condensed"]},fontSize:{"headline-lg":["2rem",{lineHeight:"2.25rem",letterSpacing:"0.04em",fontWeight:"700"}],"body-sm":["0.75rem",{lineHeight:"1rem",letterSpacing:"0em",fontWeight:"400"}],"body-md":["0.875rem",{lineHeight:"1.25rem",letterSpacing:"-0.005em",fontWeight:"400"}],"label-numeric-md":["0.875rem",{lineHeight:"1.125rem",letterSpacing:"0em",fontWeight:"500"}],"label-numeric-lg":["1.25rem",{lineHeight:"1.5rem",letterSpacing:"-0.02em",fontWeight:"600"}],"body-lg":["1rem",{lineHeight:"1.5rem",letterSpacing:"-0.01em",fontWeight:"400"}],"headline-xl":["2.5rem",{lineHeight:"2.75rem",letterSpacing:"0.05em",fontWeight:"700"}],"label-editorial":["0.8125rem",{lineHeight:"1rem",letterSpacing:"0.08em",fontWeight:"700"}],"headline-sm":["1.125rem",{lineHeight:"1.375rem",letterSpacing:"0.025em",fontWeight:"600"}],"label-numeric-sm":["0.75rem",{lineHeight:"0.875rem",letterSpacing:"0em",fontWeight:"500"}],"headline-md":["1.5rem",{lineHeight:"1.75rem",letterSpacing:"0.03em",fontWeight:"600"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary min-w-[1280px]"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.5)]"><div class="flex flex-col h-full overflow-hidden"><div class="h-14 px-space-md flex items-center justify-between bg-surface-container-low shrink-0"><div class="flex items-center gap-space-sm min-w-0"><img alt="Sporting Ventimonti Crest" class="h-8 w-auto object-contain shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1X5mredOhrUiLowr6013NGwvvUfkEpM-G24BaXKuIA_luyA07SGIH5j6fKJKcSmo8l-H3vgTuIdy3z6GEYyI4-_E2mYJyO8yr4VAoZkWlo0EZ7df_PB8t8J9Y7bQY0KT961cThOL0smYoo2A8cNHNHldfJpw97q5fd0qa1oDOQmcfb8CGQGTDXQeccarITXtbrY2h9j-kVtTHQfJLar3O2MrCi-ga8uXWOcSnTHm4X3eKr9zTsRnkaVXGk"/><div class="flex flex-col min-w-0 leading-none"><span class="font-headline-sm text-headline-sm uppercase text-on-surface tracking-wider truncate">Sporting Ventimonti</span><span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase tracking-widest text-[10px] mt-0.5 truncate">Serie A • Stagione 2026/27</span></div></div><button aria-label="Collassa barra laterale" class="text-on-surface-variant hover:text-on-surface transition-colors p-1" type="button"><span class="material-symbols-outlined text-[18px]">menu_open</span></button></div><div class="flex-1 overflow-y-auto px-space-sm py-space-sm space-y-space-md"><nav class="space-y-space-xs" data-active-classes="bg-surface-container text-primary font-semibold"><div class="px-space-sm pt-space-xs pb-1 font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-variant text-[11px]">PRINCIPALE</div><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="scrivania" href="#">Scrivania</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="storie-media" href="#">Storie &amp; Media</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="rosa" href="#">Rosa</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="tattica" href="#">Tattica</a></nav><nav class="space-y-space-xs" data-active-classes="bg-surface-container text-primary font-semibold"><div class="px-space-sm pt-space-xs pb-1 font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-variant text-[11px]">GESTIONE</div><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="allenamento" href="#">Allenamento</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="spogliatoio" href="#">Spogliatoio</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="vivaio" href="#">Vivaio</a></nav><nav class="space-y-space-xs" data-active-classes="bg-surface-container text-primary-container font-semibold shadow-[inset_0_0_12px_rgba(255,82,93,0.18)]"><div class="px-space-sm pt-space-xs pb-1 font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-variant text-[11px]">MERCATO</div><a aria-current="page" class="block px-space-sm py-1.5 rounded transition-colors tracking-wide bg-surface-container text-primary-container font-semibold shadow-[inset_0_0_12px_rgba(255,82,93,0.18)]" data-path="mercato" href="#">Mercato</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="osservatori" href="#">Osservatori</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="finanze" href="#">Finanze</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="dirigenza" href="#">Dirigenza</a></nav><nav class="space-y-space-xs" data-active-classes="bg-surface-container text-primary font-semibold"><div class="px-space-sm pt-space-xs pb-1 font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-variant text-[11px]">COMPETIZIONI</div><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="classifiche" href="#">Classifiche</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="calendario" href="#">Calendario</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="record-storia" href="#">Record &amp; Storia</a></nav><nav class="space-y-space-xs" data-active-classes="bg-surface-container text-primary font-semibold"><div class="px-space-sm pt-space-xs pb-1 font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-variant text-[11px]">IMPOSTAZIONI</div><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="impostazioni" href="#">Impostazioni</a><a class="block px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-headline-sm text-headline-sm tracking-wide" data-path="salvataggi" href="#">Salvataggi</a></nav></div><div class="p-space-sm bg-surface-container-low shrink-0"><div class="flex items-center justify-between px-space-sm py-1.5 rounded bg-surface-container-lowest text-on-surface-variant"><div class="flex items-center gap-1.5 truncate"><span class="h-2 w-2 rounded-full bg-secondary shrink-0"></span><span class="font-label-numeric-sm text-label-numeric-sm truncate text-[11px]">Modalità Offline (TFM 27 v1.0.4)</span></div></div></div></div></aside><div class="pl-64 flex flex-col min-h-screen"><header class="fixed top-0 left-64 right-0 h-14 bg-surface-container-low z-40 px-space-lg flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.3)]"><div class="flex items-center gap-space-lg flex-1 min-w-0 mr-space-lg"><div class="flex items-center gap-1.5 text-on-surface px-space-sm py-1 bg-surface-container rounded shrink-0"><span class="material-symbols-outlined text-secondary text-[18px]">calendar_today</span><span class="font-label-numeric-md text-label-numeric-md uppercase">SAB 12 SET 2026</span></div><div class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container rounded shrink-0"><span class="font-headline-sm text-headline-sm text-on-surface-variant uppercase tracking-wider text-[12px]">CASSA:</span><span class="font-label-numeric-md text-label-numeric-md text-secondary font-semibold">45,4 Mln €</span></div><div class="relative flex-1 max-w-md"><span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span><input class="w-full h-8 pl-8 pr-3 bg-surface-container-lowest text-on-surface placeholder:text-on-surface-variant font-body-sm text-body-sm rounded focus:bg-surface-container focus:outline-none transition-colors" placeholder="Cerca giocatori, club fittizi, staff..." type="text"/></div></div><div class="flex items-center gap-space-md shrink-0"><button class="h-9 px-space-md bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center gap-space-sm rounded transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">live_tv</span><span class="font-headline-sm text-headline-sm uppercase tracking-wider">GUARDA LA PARTITA</span></button><button class="h-9 px-space-lg bg-primary-container hover:bg-primary-container text-on-primary flex items-center gap-space-sm rounded shadow-[0_1px_8px_rgba(255,82,93,0.3)] transition-all" type="button"><span class="font-headline-md text-headline-md uppercase tracking-wider leading-none">AVANZA</span><span class="bg-on-primary text-primary-container font-label-numeric-sm text-label-numeric-sm px-1.5 py-0.5 rounded leading-none uppercase text-[10px] font-bold">SPAZIO</span><span class="material-symbols-outlined text-[18px]">fast_forward</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0 ml-1"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-14 bg-surface flex-1 w-full min-h-[calc(100vh-3.5rem)]"><div class="flex flex-col w-full text-on-surface">
+<!-- TOP CONTEXT TICKER & MARKET STATUS -->
+<section class="w-full bg-surface-container-lowest px-margin py-space-sm flex flex-col gap-space-sm shadow-md">
+<div class="flex items-center justify-between gap-space-lg flex-wrap">
+<!-- Left: Title & Session Status -->
+<div class="flex items-center gap-space-md min-w-0">
+<div class="flex items-center justify-center w-9 h-9 bg-primary-container text-on-primary rounded">
+<span class="material-symbols-outlined text-[20px]">swap_horiz</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-sm">
+<h1 class="font-headline-md text-headline-md uppercase tracking-wider text-on-surface">Calciomercato &amp; Trattative</h1>
+<span class="px-2 py-0.5 rounded bg-tertiary-container text-on-tertiary font-label-editorial text-label-editorial uppercase tracking-wider text-[11px]">Sessione Estiva In Corso</span>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant flex items-center gap-1.5 mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-tertiary">schedule</span>
+            Chiusura tra 18 giorni • Slot Extracomunitari Disponibili: 2/2
+          </span>
+</div>
+</div>
+<!-- Center: Key Financial Indicators -->
+<div class="flex items-center gap-space-sm flex-wrap">
+<div class="bg-surface-container px-space-md py-1.5 rounded flex items-center gap-space-sm shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[18px]">account_balance_wallet</span>
+<div class="flex flex-col leading-none">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[10px]">Budget Trasferimenti</span>
+<span class="font-label-numeric-md text-label-numeric-md text-secondary font-semibold whitespace-nowrap">28,4 Mln € <span class="text-on-surface-variant text-[11px] font-normal">/ 45,4 Mln €</span></span>
+</div>
+</div>
+<div class="bg-surface-container px-space-md py-1.5 rounded flex items-center gap-space-sm shadow-sm">
+<span class="material-symbols-outlined text-tertiary text-[18px]">payments</span>
+<div class="flex flex-col leading-none">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[10px]">Tetto Ingaggi Libero</span>
+<span class="font-label-numeric-md text-label-numeric-md text-tertiary font-semibold whitespace-nowrap">1,8 Mln €/a</span>
+</div>
+</div>
+<div class="bg-surface-container px-space-md py-1.5 rounded flex items-center gap-space-sm shadow-sm">
+<span class="material-symbols-outlined text-primary-container text-[18px]">handshake</span>
+<div class="flex flex-col leading-none">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[10px]">Trattative Attive</span>
+<span class="font-label-numeric-md text-label-numeric-md text-primary font-semibold whitespace-nowrap">3 in corso</span>
+</div>
+</div>
+</div>
+<!-- Right: Global Actions -->
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="h-8 px-space-md bg-surface-container hover:bg-surface-container-high text-on-surface rounded flex items-center gap-1.5 font-label-editorial text-label-editorial uppercase tracking-wider transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">view_column</span>
+          Filtra Colonne
+        </button>
+<button class="h-8 px-space-md bg-surface-container hover:bg-surface-container-high text-on-surface rounded flex items-center gap-1.5 font-label-editorial text-label-editorial uppercase tracking-wider transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">file_download</span>
+          Esporta CSV
+        </button>
+<button class="h-8 px-space-md bg-surface-bright hover:bg-surface-container-highest text-on-surface rounded flex items-center gap-1.5 font-headline-sm text-headline-sm uppercase tracking-wider text-primary transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">person_search</span>
+          Richiedi Report Rapido
+        </button>
+</div>
+</div>
+</section>
+<!-- WORKSPACE: 3-PANE GRID -->
+<div class="p-margin grid grid-cols-12 gap-gutter items-start">
+<!-- 1. LEFT FILTER SIDEBAR (~260px Equivalent: 2 cols on wide) -->
+<aside class="col-span-12 xl:col-span-3 2xl:col-span-2 bg-surface-container-low rounded p-space-md flex flex-col gap-space-md shadow-md">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">tune</span>
+<span class="font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface">Filtri Scouting</span>
+</div>
+<button class="text-on-surface-variant hover:text-primary font-label-editorial text-label-editorial uppercase tracking-wider text-[10px] transition-colors" type="button">
+          Azzera Filtri
+        </button>
+</div>
+<!-- Quick Role Pills -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[11px]">Macro Ruolo</label>
+<div class="grid grid-cols-5 gap-1">
+<button class="py-1 bg-surface-container text-on-surface-variant hover:bg-surface-container-high rounded text-center font-label-editorial text-label-editorial text-[11px]" type="button">TUTTI</button>
+<button class="py-1 bg-surface-container text-on-surface-variant hover:bg-surface-container-high rounded text-center font-label-editorial text-label-editorial text-[11px]" type="button">POR</button>
+<button class="py-1 bg-primary-container text-on-primary font-bold rounded text-center font-label-editorial text-label-editorial text-[11px]" type="button">DIF</button>
+<button class="py-1 bg-surface-container text-on-surface-variant hover:bg-surface-container-high rounded text-center font-label-editorial text-label-editorial text-[11px]" type="button">CEN</button>
+<button class="py-1 bg-surface-container text-on-surface-variant hover:bg-surface-container-high rounded text-center font-label-editorial text-label-editorial text-[11px]" type="button">ATT</button>
+</div>
+<!-- Specific Positions -->
+<div class="grid grid-cols-4 gap-1 mt-1">
+<button class="py-1 bg-surface-bright text-primary font-bold rounded text-center font-label-numeric-sm text-label-numeric-sm" type="button">DC</button>
+<button class="py-1 bg-surface-container text-on-surface-variant hover:text-on-surface rounded text-center font-label-numeric-sm text-label-numeric-sm" type="button">TD</button>
+<button class="py-1 bg-surface-container text-on-surface-variant hover:text-on-surface rounded text-center font-label-numeric-sm text-label-numeric-sm" type="button">TS</button>
+<button class="py-1 bg-surface-container text-on-surface-variant hover:text-on-surface rounded text-center font-label-numeric-sm text-label-numeric-sm" type="button">MED</button>
+</div>
+</div>
+<!-- Age Range -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between items-center">
+<label class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[11px]">Fascia d'Età</label>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-semibold">18 - 25 anni</span>
+</div>
+<div class="relative w-full h-2 bg-surface-container-highest rounded flex items-center">
+<div class="absolute left-1/4 right-1/4 h-2 bg-secondary rounded"></div>
+<div class="absolute left-1/4 w-3.5 h-3.5 bg-on-surface rounded-full shadow cursor-pointer -translate-x-1/2"></div>
+<div class="absolute right-1/4 w-3.5 h-3.5 bg-on-surface rounded-full shadow cursor-pointer translate-x-1/2"></div>
+</div>
+</div>
+<!-- Max Transfer Value -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between items-center">
+<label class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[11px]">Valore Cartellino Max</label>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface font-semibold">Fino a 25,0 Mln €</span>
+</div>
+<div class="relative w-full h-2 bg-surface-container-highest rounded flex items-center">
+<div class="w-3/5 h-2 bg-primary rounded"></div>
+<div class="absolute left-3/5 w-3.5 h-3.5 bg-primary-container rounded-full shadow cursor-pointer -translate-x-1/2"></div>
+</div>
+</div>
+<!-- Wage Ceiling -->
+<div class="flex flex-col gap-1">
+<label class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[11px]">Ingaggio Annuo Massimo</label>
+<div class="relative">
+<select class="w-full h-8 px-2 bg-surface-container text-on-surface font-body-sm text-body-sm rounded focus:bg-surface-container-high focus:outline-none appearance-none">
+<option>Fino a 1,5 Mln €/a</option>
+<option selected="">Fino a 2,5 Mln €/a</option>
+<option>Fino a 3,5 Mln €/a</option>
+<option>Senza Limiti</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-[16px]">expand_more</span>
+</div>
+</div>
+<!-- Competition / League -->
+<div class="flex flex-col gap-1">
+<label class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[11px]">Campionato / Provenienza</label>
+<div class="relative">
+<select class="w-full h-8 px-2 bg-surface-container text-on-surface font-body-sm text-body-sm rounded focus:bg-surface-container-high focus:outline-none appearance-none">
+<option selected="">Lega Prima Nazionale</option>
+<option>Divisione B</option>
+<option>Liga Iberica</option>
+<option>Torneo Renano</option>
+<option>Tutti i campionati esteri</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-[16px]">expand_more</span>
+</div>
+</div>
+<!-- Boolean Toggles -->
+<div class="flex flex-col gap-2 pt-1">
+<!-- Toggle 1 -->
+<label class="flex items-center justify-between cursor-pointer group">
+<span class="font-body-sm text-body-sm text-on-surface group-hover:text-primary transition-colors">Contratti in scadenza (&lt; 12m)</span>
+<span class="w-7 h-4 bg-secondary rounded-full relative flex items-center transition-colors">
+<span class="w-3 h-3 bg-surface-container-lowest rounded-full absolute right-0.5"></span>
+</span>
+</label>
+<!-- Toggle 2 -->
+<label class="flex items-center justify-between cursor-pointer group">
+<span class="font-body-sm text-body-sm text-on-surface group-hover:text-primary transition-colors">Report alta confidenza (&gt; 75%)</span>
+<span class="w-7 h-4 bg-secondary rounded-full relative flex items-center transition-colors">
+<span class="w-3 h-3 bg-surface-container-lowest rounded-full absolute right-0.5"></span>
+</span>
+</label>
+<!-- Toggle 3 -->
+<label class="flex items-center justify-between cursor-pointer group">
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Trasferimento immediato</span>
+<span class="w-7 h-4 bg-surface-container-highest rounded-full relative flex items-center transition-colors">
+<span class="w-3 h-3 bg-surface-container-low rounded-full absolute left-0.5"></span>
+</span>
+</label>
+<!-- Toggle 4 -->
+<label class="flex items-center justify-between cursor-pointer group">
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Clausola rescissoria attiva</span>
+<span class="w-7 h-4 bg-surface-container-highest rounded-full relative flex items-center transition-colors">
+<span class="w-3 h-3 bg-surface-container-low rounded-full absolute left-0.5"></span>
+</span>
+</label>
+</div>
+<button class="mt-2 w-full h-9 bg-primary-container hover:bg-primary-container text-on-primary font-headline-sm text-headline-sm uppercase tracking-wider rounded flex items-center justify-center gap-1.5 shadow transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">filter_alt</span>
+        Applica 5 Filtri Attivi
+      </button>
+</aside>
+<!-- 2. CENTRAL SCOUTING & MARKET DATA TABLE -->
+<main class="col-span-12 xl:col-span-5 2xl:col-span-6 flex flex-col gap-space-sm min-w-0">
+<!-- Tab Bar & Live Search -->
+<div class="bg-surface-container-low rounded p-1.5 flex items-center justify-between gap-space-sm flex-wrap shadow-sm">
+<div class="flex items-center gap-1 overflow-x-auto">
+<button class="h-8 px-space-md bg-surface-container text-primary font-semibold rounded font-headline-sm text-headline-sm uppercase tracking-wider flex items-center gap-1.5 shrink-0 shadow-sm" type="button">
+<span>Tutti i Giocatori</span>
+<span class="bg-surface-bright text-on-surface font-label-numeric-sm text-label-numeric-sm px-1.5 py-0.2 rounded text-[11px]">42</span>
+</button>
+<button class="h-8 px-space-md text-on-surface-variant hover:text-on-surface rounded font-headline-sm text-headline-sm uppercase tracking-wider flex items-center gap-1.5 shrink-0 transition-colors" type="button">
+<span>Seguiti Staff</span>
+<span class="bg-surface-container text-on-surface-variant font-label-numeric-sm text-label-numeric-sm px-1.5 py-0.2 rounded text-[11px]">12</span>
+</button>
+<button class="h-8 px-space-md text-on-surface-variant hover:text-on-surface rounded font-headline-sm text-headline-sm uppercase tracking-wider flex items-center gap-1.5 shrink-0 transition-colors" type="button">
+<span>Offerte Inviate</span>
+<span class="bg-primary-container text-on-primary font-label-numeric-sm text-label-numeric-sm px-1.5 py-0.2 rounded text-[11px] font-bold">3</span>
+</button>
+<button class="h-8 px-space-md text-on-surface-variant hover:text-on-surface rounded font-headline-sm text-headline-sm uppercase tracking-wider flex items-center gap-1.5 shrink-0 transition-colors" type="button">
+<span>Lista Cessioni</span>
+<span class="bg-surface-container text-on-surface-variant font-label-numeric-sm text-label-numeric-sm px-1.5 py-0.2 rounded text-[11px]">8</span>
+</button>
+</div>
+<div class="relative flex-1 min-w-[160px] max-w-xs">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]">search</span>
+<input class="w-full h-8 pl-8 pr-2.5 bg-surface-container-lowest text-on-surface placeholder:text-on-surface-variant font-body-sm text-body-sm rounded focus:bg-surface-container focus:outline-none" placeholder="Filtra nominativo o club..." type="text"/>
+</div>
+</div>
+<!-- Scannable Tactical Data Table -->
+<div class="bg-surface-container-low rounded overflow-hidden shadow-md">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-lowest text-on-surface-variant font-headline-sm text-headline-sm uppercase tracking-wider text-[11px] h-8">
+<th class="px-space-md py-1">Calciatore</th>
+<th class="px-space-sm py-1">Ruolo</th>
+<th class="px-space-sm py-1">Club</th>
+<th class="px-space-sm py-1">Abilità / Pot.</th>
+<th class="px-space-sm py-1">Confidenza</th>
+<th class="px-space-sm py-1 text-right">Valore Stimato</th>
+<th class="px-space-sm py-1 text-right">Ingaggio</th>
+<th class="px-space-sm py-1 text-center">Scad.</th>
+<th class="px-space-md py-1 text-center">Azione</th>
+</tr>
+</thead>
+<tbody class="divide-y-0 text-body-sm font-body-sm">
+<!-- Player Row 1 -->
+<tr class="bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer group">
+<td class="px-space-md py-2.5">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded bg-surface-container-highest flex items-center justify-center text-on-surface font-headline-sm text-headline-sm font-bold shrink-0">
+                      DB
+                    </div>
+<div class="flex flex-col leading-tight min-w-0">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface group-hover:text-primary transition-colors truncate">Dario Bellomo</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">23 anni • ITA</span>
+</div>
+</div>
+</td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-bright text-tertiary font-label-numeric-sm text-label-numeric-sm font-semibold">TRQ / CC</span>
+</td>
+<td class="px-space-sm py-2.5 text-on-surface-variant truncate max-w-[130px]">
+                  Polisportiva Miravalle
+                </td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<div class="flex items-center gap-1 text-tertiary">
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold">3.5★</span>
+<span class="text-on-surface-variant text-[11px]">(4.5★)</span>
+</div>
+</td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<div class="w-12 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="w-[92%] h-full bg-secondary"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-semibold">92%</span>
+</div>
+</td>
+<td class="px-space-sm py-2.5 text-right font-label-numeric-sm text-label-numeric-sm font-semibold text-on-surface whitespace-nowrap">
+                  16,0 – 20,5 Mln €
+                </td>
+<td class="px-space-sm py-2.5 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-variant whitespace-nowrap">
+                  1,4 Mln €/a
+                </td>
+<td class="px-space-sm py-2.5 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">
+                  2027
+                </td>
+<td class="px-space-md py-2.5 text-center whitespace-nowrap">
+<button class="px-2.5 py-1 rounded bg-surface-bright hover:bg-primary-container hover:text-on-primary text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider transition-colors shadow-sm" type="button">
+                    Offri
+                  </button>
+</td>
+</tr>
+<!-- Player Row 2: SELECTED / UNDER NEGOTIATION -->
+<tr class="bg-surface-bright text-on-surface shadow-[inset_3px_0_0_0_#ff525d] cursor-pointer">
+<td class="px-space-md py-2.5">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded bg-primary-container text-on-primary flex items-center justify-center font-headline-sm text-headline-sm font-bold shrink-0">
+                      LD
+                    </div>
+<div class="flex flex-col leading-tight min-w-0">
+<span class="font-headline-sm text-headline-sm uppercase text-primary font-bold truncate">Lucas Danvers</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">22 anni • NED</span>
+</div>
+</div>
+</td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-primary-container text-on-primary font-label-numeric-sm text-label-numeric-sm font-bold">DC / TD</span>
+</td>
+<td class="px-space-sm py-2.5 text-primary-fixed-dim font-medium truncate max-w-[130px]">
+                  Castel Rivo
+                </td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<div class="flex items-center gap-1 text-tertiary">
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold">3.5★</span>
+<span class="text-secondary text-[11px] font-semibold">(5.0★)</span>
+</div>
+</td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<div class="w-12 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="w-[85%] h-full bg-secondary"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-semibold">85%</span>
+</div>
+</td>
+<td class="px-space-sm py-2.5 text-right font-label-numeric-sm text-label-numeric-sm font-bold text-secondary whitespace-nowrap">
+                  12,0 – 15,0 Mln €
+                </td>
+<td class="px-space-sm py-2.5 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface whitespace-nowrap">
+                  850 mila €/a
+                </td>
+<td class="px-space-sm py-2.5 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">
+                  2027
+                </td>
+<td class="px-space-md py-2.5 text-center whitespace-nowrap">
+<span class="px-2 py-1 rounded bg-tertiary-container text-on-tertiary font-label-editorial text-label-editorial uppercase tracking-wider text-[11px] font-bold animate-pulse">
+                    In Trattativa
+                  </span>
+</td>
+</tr>
+<!-- Player Row 3 -->
+<tr class="bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer group">
+<td class="px-space-md py-2.5">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded bg-surface-container-highest flex items-center justify-center text-on-surface font-headline-sm text-headline-sm font-bold shrink-0">
+                      MK
+                    </div>
+<div class="flex flex-col leading-tight min-w-0">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface group-hover:text-primary transition-colors truncate">Milan Kovačević</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">25 anni • SRB</span>
+</div>
+</div>
+</td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-bright text-primary font-label-numeric-sm text-label-numeric-sm font-semibold">PC</span>
+</td>
+<td class="px-space-sm py-2.5 text-on-surface-variant truncate max-w-[130px]">
+                  Stella Alpina
+                </td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<div class="flex items-center gap-1 text-tertiary">
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold">4.0★</span>
+<span class="text-on-surface-variant text-[11px]">(4.0★)</span>
+</div>
+</td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<div class="w-12 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="w-[78%] h-full bg-tertiary"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-tertiary font-semibold">78%</span>
+</div>
+</td>
+<td class="px-space-sm py-2.5 text-right font-label-numeric-sm text-label-numeric-sm font-semibold text-on-surface whitespace-nowrap">
+                  18,5 – 24,0 Mln €
+                </td>
+<td class="px-space-sm py-2.5 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-variant whitespace-nowrap">
+                  2,1 Mln €/a
+                </td>
+<td class="px-space-sm py-2.5 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">
+                  2028
+                </td>
+<td class="px-space-md py-2.5 text-center whitespace-nowrap">
+<button class="px-2.5 py-1 rounded bg-surface-bright hover:bg-primary-container hover:text-on-primary text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider transition-colors shadow-sm" type="button">
+                    Offri
+                  </button>
+</td>
+</tr>
+<!-- Player Row 4 -->
+<tr class="bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer group">
+<td class="px-space-md py-2.5">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded bg-surface-container-highest flex items-center justify-center text-on-surface font-headline-sm text-headline-sm font-bold shrink-0">
+                      SE
+                    </div>
+<div class="flex flex-col leading-tight min-w-0">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface group-hover:text-primary transition-colors truncate">Samuel Echeverria</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">21 anni • COL</span>
+</div>
+</div>
+</td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-bright text-tertiary font-label-numeric-sm text-label-numeric-sm font-semibold">AS / Ala</span>
+</td>
+<td class="px-space-sm py-2.5 text-on-surface-variant truncate max-w-[130px]">
+                  Lanificio Sestri
+                </td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<div class="flex items-center gap-1 text-tertiary">
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold">3.0★</span>
+<span class="text-secondary text-[11px] font-semibold">(4.5★)</span>
+</div>
+</td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<div class="w-12 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="w-[80%] h-full bg-secondary"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-semibold">80%</span>
+</div>
+</td>
+<td class="px-space-sm py-2.5 text-right font-label-numeric-sm text-label-numeric-sm font-semibold text-on-surface whitespace-nowrap">
+                  7,5 – 10,2 Mln €
+                </td>
+<td class="px-space-sm py-2.5 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-variant whitespace-nowrap">
+                  750 mila €/a
+                </td>
+<td class="px-space-sm py-2.5 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">
+                  2029
+                </td>
+<td class="px-space-md py-2.5 text-center whitespace-nowrap">
+<button class="px-2.5 py-1 rounded bg-surface-bright hover:bg-primary-container hover:text-on-primary text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider transition-colors shadow-sm" type="button">
+                    Offri
+                  </button>
+</td>
+</tr>
+<!-- Player Row 5 -->
+<tr class="bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer group">
+<td class="px-space-md py-2.5">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded bg-surface-container-highest flex items-center justify-center text-on-surface font-headline-sm text-headline-sm font-bold shrink-0">
+                      YM
+                    </div>
+<div class="flex flex-col leading-tight min-w-0">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface group-hover:text-primary transition-colors truncate">Yannick Morel</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">24 anni • FRA</span>
+</div>
+</div>
+</td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-bright text-tertiary font-label-numeric-sm text-label-numeric-sm font-semibold">MED</span>
+</td>
+<td class="px-space-sm py-2.5 text-on-surface-variant truncate max-w-[130px]">
+                  Aurora Montelupo
+                </td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<div class="flex items-center gap-1 text-tertiary">
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold">3.5★</span>
+<span class="text-on-surface-variant text-[11px]">(4.0★)</span>
+</div>
+</td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<div class="w-12 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="w-[90%] h-full bg-secondary"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-semibold">90%</span>
+</div>
+</td>
+<td class="px-space-sm py-2.5 text-right font-label-numeric-sm text-label-numeric-sm font-semibold text-on-surface whitespace-nowrap">
+                  11,0 – 14,0 Mln €
+                </td>
+<td class="px-space-sm py-2.5 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-variant whitespace-nowrap">
+                  1,3 Mln €/a
+                </td>
+<td class="px-space-sm py-2.5 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">
+                  2027
+                </td>
+<td class="px-space-md py-2.5 text-center whitespace-nowrap">
+<button class="px-2.5 py-1 rounded bg-surface-bright hover:bg-primary-container hover:text-on-primary text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider transition-colors shadow-sm" type="button">
+                    Offri
+                  </button>
+</td>
+</tr>
+<!-- Player Row 6 -->
+<tr class="bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer group">
+<td class="px-space-md py-2.5">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded bg-surface-container-highest flex items-center justify-center text-on-surface font-headline-sm text-headline-sm font-bold shrink-0">
+                      AM
+                    </div>
+<div class="flex flex-col leading-tight min-w-0">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface group-hover:text-primary transition-colors truncate">Alvaro Menendez</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">26 anni • ESP</span>
+</div>
+</div>
+</td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<span class="px-1.5 py-0.5 rounded bg-surface-bright text-secondary font-label-numeric-sm text-label-numeric-sm font-semibold">TD</span>
+</td>
+<td class="px-space-sm py-2.5 text-on-surface-variant truncate max-w-[130px]">
+                  Torpedo Danubio
+                </td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<div class="flex items-center gap-1 text-tertiary">
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold">3.5★</span>
+<span class="text-on-surface-variant text-[11px]">(4.0★)</span>
+</div>
+</td>
+<td class="px-space-sm py-2.5 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<div class="w-12 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="w-[74%] h-full bg-tertiary"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-tertiary font-semibold">74%</span>
+</div>
+</td>
+<td class="px-space-sm py-2.5 text-right font-label-numeric-sm text-label-numeric-sm font-semibold text-on-surface whitespace-nowrap">
+                  8,0 – 11,5 Mln €
+                </td>
+<td class="px-space-sm py-2.5 text-right font-label-numeric-sm text-label-numeric-sm text-on-surface-variant whitespace-nowrap">
+                  950 mila €/a
+                </td>
+<td class="px-space-sm py-2.5 text-center font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">
+                  2027
+                </td>
+<td class="px-space-md py-2.5 text-center whitespace-nowrap">
+<button class="px-2.5 py-1 rounded bg-surface-bright hover:bg-primary-container hover:text-on-primary text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider transition-colors shadow-sm" type="button">
+                    Offri
+                  </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Pagination & Counter -->
+<div class="px-space-md py-space-sm bg-surface-container-lowest flex items-center justify-between">
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">
+            Mostrati 6 di 42 calciatori osservati • Pagina 1 di 7
+          </span>
+<div class="flex items-center gap-1">
+<button class="w-7 h-7 rounded bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" disabled="" type="button">
+<span class="material-symbols-outlined text-[16px]">chevron_left</span>
+</button>
+<span class="px-2 py-0.5 rounded bg-surface-bright text-on-surface font-label-numeric-sm text-label-numeric-sm">1</span>
+<button class="w-7 h-7 rounded bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Quick Scouting Insight / Visual Matrix Banner -->
+<div class="bg-surface-container-low rounded p-space-md flex items-center justify-between gap-space-md shadow-sm">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-10 h-10 rounded bg-surface-container flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[24px]">verified</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface">Rete Osservatori: Monitoraggio Europa Centrale</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">3 nuovi profili raccomandati dal capo scout Fabrizio Corradi per il ruolo di difensore centrale moderno.</span>
+</div>
+</div>
+<button class="h-8 px-space-md bg-surface-container hover:bg-surface-container-high text-on-surface rounded font-label-editorial text-label-editorial uppercase tracking-wider whitespace-nowrap transition-colors" type="button">
+          Apri Dossier Scout
+        </button>
+</div>
+</main>
+<!-- 3. RIGHT DOCKED NEGOTIATION DRAWER (~380px Equivalent: 4 cols) -->
+<section class="col-span-12 xl:col-span-4 2xl:col-span-4 bg-surface-container-low rounded flex flex-col shadow-xl">
+<!-- Negotiation Header Strip -->
+<div class="p-space-md bg-surface-container flex items-center justify-between rounded-t">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary animate-ping"></span>
+<span class="font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface">Pannello Trattativa In Corso</span>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-tertiary px-2 py-0.5 rounded bg-tertiary-container/30 uppercase tracking-widest text-[11px] font-semibold">
+          Scadenza 48h
+        </span>
+</div>
+<!-- Player & Seller Banner -->
+<div class="p-space-md flex flex-col gap-space-sm bg-surface-container-lowest">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-12 h-12 rounded bg-surface-container-high flex items-center justify-center text-primary font-headline-lg text-headline-lg font-bold">
+              LD
+            </div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-headline-md text-headline-md uppercase text-on-surface">Lucas Danvers</span>
+<span class="px-1.5 py-0.2 bg-primary-container text-on-primary rounded font-label-numeric-sm text-label-numeric-sm text-[10px] font-bold">DC / TD</span>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">22 anni • Castel Rivo (Valutazione Cartellino: ~14,0 Mln €)</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary text-[22px]">verified_user</span>
+</div>
+<!-- Club Feedback Alert Box -->
+<div class="p-space-sm rounded bg-surface-container flex flex-col gap-1 shadow-inner">
+<div class="flex items-center gap-1.5 text-tertiary font-headline-sm text-headline-sm uppercase text-[12px]">
+<span class="material-symbols-outlined text-[16px]">feedback</span>
+<span>Controfferta Ricevuta dal Castel Rivo</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface leading-tight">
+            "Il Castel Rivo rifiuta l'offerta iniziale di 11 Mln € ma è disposto a trattare per 13,8 Mln € con bonus e percentuale futura rivendita."
+          </p>
+</div>
+</div>
+<!-- Financial Recap Mini-Bar -->
+<div class="grid grid-cols-3 gap-1 px-space-md py-2 bg-surface-container-low text-center">
+<div class="flex flex-col">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[10px]">Cassa Totale</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface font-semibold">45,4 Mln €</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[10px]">Budget Cartellini</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-semibold">28,4 Mln €</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[10px]">Margine Ingaggi</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-tertiary font-semibold">1,8 Mln €/a</span>
+</div>
+</div>
+<!-- Interactive Negotiation Form -->
+<div class="p-space-md flex flex-col gap-space-md">
+<!-- Transfer Fee Stepper -->
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-center">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[11px]">Nostra Proposta Cartellino (Fisso)</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-tertiary font-medium">Richiesta Castel Rivo: 13,8 Mln €</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 rounded bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">remove</span>
+</button>
+<div class="flex-1 h-8 bg-surface-container-lowest rounded flex items-center justify-center font-label-numeric-md text-label-numeric-md font-bold text-on-surface">
+              12,5 Mln €
+            </div>
+<button class="w-8 h-8 rounded bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</button>
+</div>
+</div>
+<!-- Contract Length Selector -->
+<div class="flex flex-col gap-1">
+<label class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[11px]">Durata Contratto Calciatore</label>
+<div class="grid grid-cols-3 gap-1">
+<button class="py-1 bg-surface-container hover:bg-surface-container-high text-on-surface-variant rounded text-center font-label-editorial text-label-editorial text-[12px]" type="button">3 ANNI</button>
+<button class="py-1 bg-primary-container text-on-primary font-bold rounded text-center font-label-editorial text-label-editorial text-[12px] shadow-sm" type="button">4 ANNI (2030)</button>
+<button class="py-1 bg-surface-container hover:bg-surface-container-high text-on-surface-variant rounded text-center font-label-editorial text-label-editorial text-[12px]" type="button">5 ANNI</button>
+</div>
+</div>
+<!-- Proposed Wage & Bonuses -->
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="flex flex-col gap-1">
+<label class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[10px]">Ingaggio Annuale Offerto</label>
+<div class="h-8 px-2 bg-surface-container-lowest rounded flex items-center justify-between font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">
+<span>1,6 Mln €/a</span>
+<span class="text-on-surface-variant text-[10px] font-normal">+35%</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[10px]">Bonus Presenze (&gt;20 p.)</label>
+<div class="h-8 px-2 bg-surface-container-lowest rounded flex items-center justify-between font-label-numeric-sm text-label-numeric-sm text-on-surface">
+<span>350 mila €</span>
+</div>
+</div>
+</div>
+<!-- Clauses & Fees -->
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="flex flex-col gap-1">
+<label class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[10px]">Gettone Scudetto / Coppe</label>
+<div class="h-8 px-2 bg-surface-container-lowest rounded flex items-center justify-between font-label-numeric-sm text-label-numeric-sm text-on-surface">
+<span>500 mila €</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[10px]">Futura Rivendita (Sell-on)</label>
+<div class="h-8 px-2 bg-surface-container-lowest rounded flex items-center justify-between font-label-numeric-sm text-label-numeric-sm text-tertiary font-bold">
+<span>15%</span>
+</div>
+</div>
+</div>
+<!-- Agent Fee & Total Package Calculation -->
+<div class="p-space-sm bg-surface-container rounded flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Commissione Procuratore:</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface">850 mila €</span>
+</div>
+<div class="flex items-center justify-between pt-1 font-headline-sm text-headline-sm uppercase text-on-surface">
+<span>Costo Totale Immediato:</span>
+<span class="text-primary font-label-numeric-md text-label-numeric-md font-bold whitespace-nowrap">13,35 Mln €</span>
+</div>
+<span class="text-[10px] font-label-numeric-sm text-label-numeric-sm text-on-surface-variant text-right">Impatto immediato sulla Cassa di Sporting Ventimonti</span>
+</div>
+<!-- Negotiation Decision Actions -->
+<div class="flex flex-col gap-2 pt-1">
+<button class="w-full h-10 bg-primary-container hover:bg-primary-container text-on-primary font-headline-sm text-headline-sm uppercase tracking-wider rounded flex items-center justify-center gap-1.5 shadow transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">send</span>
+            Invia Nuova Proposta (12,5 Mln €)
+          </button>
+<button class="w-full h-9 bg-surface-container hover:bg-surface-container-high text-secondary font-headline-sm text-headline-sm uppercase tracking-wider rounded flex items-center justify-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">done_all</span>
+            Accetta Controfferta (13,8 Mln €)
+          </button>
+<button class="py-1 text-center font-label-editorial text-label-editorial uppercase tracking-wider text-error/80 hover:text-error transition-colors text-[11px]" type="button">
+            Abbandona Trattativa Definitivamente
+          </button>
+</div>
+<!-- Negotiation Log History -->
+<div class="pt-2 flex flex-col gap-1">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant text-[10px]">Cronologia Operazione</span>
+<div class="p-2 bg-surface-container-lowest rounded flex flex-col gap-1 font-body-sm text-body-sm text-[12px]">
+<div class="flex items-start gap-1.5 text-on-surface-variant">
+<span class="text-error font-bold">•</span>
+<span>Ieri: Inviata prima offerta da 11,0 Mln € (Rifiutata dal Castel Rivo)</span>
+</div>
+<div class="flex items-start gap-1.5 text-tertiary">
+<span class="font-bold">•</span>
+<span>Oggi: Ricevuta controfferta ufficiale del D.S. avversario (13,8 Mln €)</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div></main></div></body></html>
