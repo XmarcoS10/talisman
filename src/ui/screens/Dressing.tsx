@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Crown, Handshake, MessageCircleWarning, Network, Swords } from 'lucide-react';
-import { moraleParts, squadStatus } from '../../engine/morale.ts';
+import { makePromise, moraleParts, squadStatus } from '../../engine/morale.ts';
+import { canChat, holdChat } from '../../engine/talks.ts';
 import { Rng } from '../../engine/rng.ts';
 import { influence, leaders, mediate, sideWith } from '../../engine/social.ts';
 import type { Feud, WorldState } from '../../engine/model.ts';
@@ -12,6 +13,7 @@ import { Graph, moraleClass } from './Graph.tsx';
 export function Dressing({ world, onChange, onPlayer }: { world: WorldState; onChange: () => void; onPlayer: (id: number) => void }) {
   const club = world.clubs[world.manager.clubId]!;
   const [msg, setMsg] = useState<string | null>(null);
+  const [reply, setReply] = useState<{ id: number; r: number; why: string } | null>(null);
   const infl = influence(world, club);
   const players = club.playerIds.map((id) => world.players[id]!);
   const status = squadStatus(world, club);
@@ -89,9 +91,17 @@ export function Dressing({ world, onChange, onPlayer }: { world: WorldState; onC
           <h2><MessageCircleWarning size={18} /> {t('dressing.requests')}</h2>
           {requests.length === 0 && <div className="muted">{t('dressing.noRequests')}</div>}
           {requests.map((p) => (
-            <div key={p.id} className="attr clickable" onClick={() => onPlayer(p.id)}>
-              <span><PosBadge pos={p.position} /> {shortName(p)}</span>
-              <span className="muted">{t(`sstatus.${status.get(p.id)}`)} · <b className={`num m-text-${moraleClass(p.psych.morale)}`}>{Math.round(p.psych.morale)}</b></span>
+            <div key={p.id} className="request">
+              <div className="attr clickable" onClick={() => onPlayer(p.id)}>
+                <span><PosBadge pos={p.position} /> {shortName(p)}</span>
+                <span className="muted">{t(`sstatus.${status.get(p.id)}`)} · <b className={`num m-text-${moraleClass(p.psych.morale)}`}>{Math.round(p.psych.morale)}</b></span>
+              </div>
+              {/* come in FM: si risponde qui, promettendo spazio o chiedendo di guadagnarselo */}
+              <div className="row wrap">
+                <button className="btn small" onClick={() => { makePromise(world, p, 'minutes'); onChange(); }}>{t('people.promiseMinutes')}</button>
+                <button className="btn small" disabled={!canChat(world, p)} onClick={() => { const r = holdChat(world, p, 'earnIt'); if (r) setReply({ id: p.id, ...r }); onChange(); }}>{t('chat.earnIt')}</button>
+              </div>
+              {reply?.id === p.id && <span className={`small ${reply.r > 0 ? 'pos-good' : 'pos-bad'}`}>{t(`chat.why.${reply.why}`)}</span>}
             </div>
           ))}
         </div>

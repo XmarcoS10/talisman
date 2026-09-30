@@ -73,6 +73,14 @@ app.on('browser-window-created', async (_e, win) => {
     await click('button', 'Lodare il rendimento');
     await js(`document.querySelector('main').scrollTop = 1e5; true`);
     await shot('colloquio');
+    // richiesta nello Spogliatoio: «il posto deve guadagnarselo»
+    await click('.sidebar button', 'Spogliatoio');
+    await wait(600);
+    await wait(800);
+    console.log('richiesta cliccata:', await click('.request button', 'guadagnarselo'));
+    await wait(300);
+    await js(`document.querySelector('.request')?.scrollIntoView({ block: 'center' }); true`);
+    await shot('spogliatoio-richiesta');
     await click('.sidebar button', 'Scrivania');
     await wait(500);
     await click('.desk-head button', 'Personalizza');

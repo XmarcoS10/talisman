@@ -70,4 +70,11 @@ describe('discorsi alla squadra', () => {
     w.day += 7;
     expect(canChat(w, q)).toBe(true);
   });
+
+  it("«il posto deve guadagnarselo»: il professionista capisce, l'ambizioso che non lo è vuole giocare subito", () => {
+    const pro = { ...p, personality: { ...p.personality, professionalism: 16, ambition: 18 } };
+    const hungry = { ...p, personality: { ...p.personality, professionalism: 8, ambition: 18 } };
+    expect(chatResponse(pro, 'earnIt').why).toBe('understands');
+    expect(chatResponse(hungry, 'earnIt').r).toBe(-1);
+  });
 });

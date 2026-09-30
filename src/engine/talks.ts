@@ -63,8 +63,9 @@ export function fullTimeTalk(world: WorldState, club: Club, kind: Talk, diff: nu
 }
 
 // --- colloqui individuali (0.13.0, come le interazioni di FM): lodare o criticare il rendimento di un giocatore ---
-export const CHATS = ['praiseForm', 'criticiseForm'] as const;
-export type Chat = (typeof CHATS)[number];
+export const CHATS = ['praiseForm', 'criticiseForm'] as const; // quelli del profilo
+/** earnIt: risposta a chi chiede più minuti (Spogliatoio), «il posto te lo devi guadagnare» */
+export type Chat = (typeof CHATS)[number] | 'earnIt';
 
 /** media degli ultimi tre voti, null se non ha ancora giocato */
 const recentForm = (p: Player) => (p.form.length ? p.form.slice(-3).reduce((s, v) => s + v, 0) / Math.min(3, p.form.length) : null);
@@ -75,12 +76,18 @@ const recentForm = (p: Player) => (p.form.length ? p.form.slice(-3).reduce((s, v
  * pressione ci resta male, un professionista che sta giocando male la prende come uno stimolo.
  */
 export function chatResponse(p: Player, kind: Chat): { r: number; why: string } {
+  const c = p.personality;
+  if (kind === 'earnIt') {
+    // chi punta in alto e non è un professionista vuole spazio adesso; il professionista capisce
+    if (c.ambition >= 15 && c.professionalism < 12) return { r: -1, why: 'wantsMore' };
+    return c.professionalism >= 12 ? { r: 0.5, why: 'understands' } : { r: -0.3, why: 'disappointed' };
+  }
   const f = recentForm(p);
   const good = f !== null && f >= PSYCH.chatGoodForm, bad = f !== null && f < PSYCH.chatBadForm;
   if (kind === 'praiseForm') return good ? { r: 1, why: 'deserved' } : bad ? { r: -0.5, why: 'empty' } : { r: 0.3, why: 'fine' };
   if (good) return { r: -1, why: 'unfair' };
-  if (p.personality.pressureTolerance <= 8) return { r: -0.8, why: 'hurt' };
-  if (bad) return p.personality.professionalism >= 12 ? { r: 1, why: 'fair' } : { r: 0.3, why: 'accepts' };
+  if (c.pressureTolerance <= 8) return { r: -0.8, why: 'hurt' };
+  if (bad) return c.professionalism >= 12 ? { r: 1, why: 'fair' } : { r: 0.3, why: 'accepts' };
   return { r: -0.3, why: 'harsh' };
 }
 

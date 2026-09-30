@@ -1,5 +1,12 @@
 # Note di rilascio
 
+## 0.13.1 — le richieste nello Spogliatoio
+
+- **Chi chiede di parlarti** (Spogliatoio) ora ha la risposta lì, come in FM: **prometti più spazio**, oppure
+  **il posto deve guadagnarselo**. Il professionista capisce e si rimbocca le maniche; l'ambizioso che non è un
+  professionista vuole giocare subito e la prende male; gli altri restano poco convinti. Anche qui un colloquio a
+  settimana con lo stesso giocatore.
+
 ## 0.13.0 — i colloqui individuali
 
 Le carriere della 0.12 si aprono senza cambiamenti.
@@ -286,6 +293,13 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.13.1 — requests in the dressing room (English)
+
+- **Players asking to talk to you** (Dressing room) now get their answer right there, as in FM: **promise more playing
+  time**, or **they must earn their place**. A professional understands and gets to work; an ambitious player who is
+  not a professional wants to play now and takes it badly; the others stay unconvinced. One talk a week with the
+  same player here too.
 
 ## 0.13.0 — one-to-one talks (English)
 
