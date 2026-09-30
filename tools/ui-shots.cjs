@@ -30,6 +30,18 @@ app.on('browser-window-created', async (_e, win) => {
     await click('button', 'Slot 1');
     await wait(1500);
     await shot('scrivania');
+    for (const [nav, name] of [['Rosa', 'rosa'], ['Tattica', 'tattica'], ['Mercato', 'mercato'], ['Calendario', 'calendario'], ['Finanze', 'finanze']]) {
+      await click('.sidebar button', nav);
+      await wait(800);
+      await shot(name);
+    }
+    await click('.sidebar button', 'Rosa');
+    await wait(500);
+    await click('tbody tr');
+    await wait(800);
+    await shot('giocatore');
+    await click('.sidebar button', 'Scrivania');
+    await wait(500);
     await click('.desk-head button', 'Personalizza');
     await click('.desk-add');
     await shot('scrivania-modifica');

@@ -656,3 +656,16 @@ html.rail .shell { grid-template-columns: 80px 1fr; }
 .live-top .view-bar > .caps { display: none; }
 .live-top .view-bar .seg-tabs { flex-wrap: nowrap; }
 .live-top .view-bar .seg-tabs button { white-space: nowrap; }
+/* tattica a 1280×800: il campo stringe un po' e le istruzioni vanno a capo invece di uscire dallo schermo */
+.tactics { grid-template-columns: minmax(340px, 440px) minmax(0, 1fr); }
+.seg-row { flex-wrap: wrap; }
+.seg { flex-wrap: wrap; max-width: 100%; }
+/* mercato sotto i 1440 px: i filtri vanno sopra la tabella, in orizzontale, e la tabella ha tutta la larghezza */
+@media (max-width: 1439px) {
+  .market-grid { grid-template-columns: minmax(0, 1fr); }
+  .market-grid > .filters { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); align-items: start; }
+  .market-grid > .filters > :first-child { grid-column: 1 / -1; }
+  .market-grid > .filters { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+  .market-grid > .filters > .caps, .market-grid > .filters > .mini-card, .market-grid > .filters > .btn, .market-grid > .filters .toggle-card small { display: none; }
+}
+.market-grid > .panel:last-child { overflow-x: auto; }
