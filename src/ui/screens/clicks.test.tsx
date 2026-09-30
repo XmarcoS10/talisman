@@ -10,6 +10,7 @@ import { Guide } from '../Guide.tsx';
 import { DEFAULTS, settings, updateSettings } from '../settings.ts';
 import { talkFor } from '../../engine/transfers/market.ts';
 import { Deal } from './Deal.tsx';
+import { Desk } from './Desk.tsx';
 import { Fixtures } from './Fixtures.tsx';
 import { Market } from './Market.tsx';
 import { PressRoom } from './PressRoom.tsx';
@@ -171,5 +172,24 @@ describe('i clic del collaudatore', () => {
     click(find(box, 'button', t('guide.skip')));
     expect(box.querySelector('.guide')).toBeNull();
     expect(settings().guideDone).toBe(true);
+  });
+
+  it('Scrivania: si personalizza, si salva e resta', () => {
+    updateSettings({ desk: DEFAULTS.desk });
+    const nop = () => {};
+    const box = mount(<Desk world={world()} onNav={nop} onChange={nop} onPlayer={nop} />);
+    const cells = () => [...box.querySelectorAll('.desk-cell')].map((c) => c.getAttribute('aria-label'));
+    expect(cells()).toContain(t('desk.w.table'));
+    click(find(box, 'button', t('desk.customize')));
+    click(find(box, `.desk-cell[aria-label="${t('desk.w.table')}"] button[aria-label="${t('desk.edit.remove')}"]`));
+    click(find(box, '.desk-tools .desk-sizes button', 'S')); // resta S: la prima è Posizione, solo S
+    click(find(box, '.desk-add'));
+    click(find(box, '.chips button', t('desk.cat.club')));
+    click(find(box, '.gallery-item', t('desk.w.board')).querySelector('button')!);
+    click(find(box, '.desk-banner button', t('desk.edit.save')));
+    expect(settings().desk.preset).toBe('custom');
+    expect(cells()).not.toContain(t('desk.w.table'));
+    expect(cells()).toContain(t('desk.w.board'));
+    updateSettings({ desk: DEFAULTS.desk });
   });
 });

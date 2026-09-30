@@ -1,140 +1,103 @@
-// Scrivania (specifiche §3.3): riquadri del momento, la prossima gara con i due pulsanti che servono,
-// la guida della prima stagione, le notizie e la mini classifica con le zone.
-import { CalendarDays, Clock, Landmark, ListChecks, Newspaper, Play, Route, Trophy } from 'lucide-react';
-import { fxLabel } from '../league.ts';
-import { expected } from '../../engine/board/board.ts';
-import type { WorldState } from '../../engine/model.ts';
-import { fixturesOn, nextMatchDay, standings } from '../../engine/world.ts';
-import { Crest } from '../Crest.tsx';
-import { Kit } from '../Kit.tsx';
-import { awayWearsAlt } from '../procgen/kit.ts';
-import { team } from '../bits.tsx';
-import { kickoff } from '../calendar.ts';
-import { fmtDate, fmtMoney, fmtSeason, t, tEvent } from '../i18n.ts';
-import { outcome } from './Fixtures.tsx';
-import { boardGoal } from './Start.tsx';
-import { Guide } from '../Guide.tsx';
-import type { NavName } from '../Sidebar.tsx';
-import { DeskStories } from './Stories.tsx';
-import { LeagueTable } from './Tables.tsx';
-import { Offers } from './Offers.tsx';
+// Scrivania personalizzabile (interfaccia v2, fase 2; disegni docs/design/stitch-v2/01-04): riquadri su una griglia a
+// 12 colonne. Si sceglie un layout pronto o si entra in «Personalizza»: si spostano (trascinando o con le frecce),
+// si cambia taglia, si tolgono e si aggiungono dalla galleria. Il layout sta nelle impostazioni del giocatore.
+import { ChevronLeft, ChevronRight, GripVertical, LayoutGrid, Plus, RotateCcw, Settings2, X } from 'lucide-react';
+import { useState } from 'react';
+import { settings, updateSettings } from '../settings.ts';
+import { t } from '../i18n.ts';
+import type { DeskCtx } from './DeskParts.tsx';
+import { CATEGORIES, type DeskItem, PRESETS, type Preset, type Size, WIDGETS, type WidgetId } from './DeskWidgets.tsx';
 
-const FL = { W: 'w', D: 'd', L: 'l' } as const;
+const PRESET_NAMES: Preset[] = ['coach', 'director', 'essential'];
 
-type Props = { world: WorldState; onNav: (n: NavName) => void; onWatch?: () => void; onChange: () => void; onPlayer: (id: number) => void };
+export function Desk(ctx: DeskCtx) {
+  const [draft, setDraft] = useState<DeskItem[] | null>(null); // la disposizione mentre la si modifica
+  const [gallery, setGallery] = useState(false);
+  const [drag, setDrag] = useState<number | null>(null);
+  const [, redraw] = useState(0);
+  const layout = settings().desk;
+  const saved = layout.preset === 'custom' ? layout.custom : PRESETS[layout.preset];
+  const items = (draft ?? saved).filter((i) => WIDGETS[i.id]?.sizes.includes(i.size)); // un layout salvato male non rompe la schermata
 
-export function Desk({ world, onNav, onWatch, onChange, onPlayer }: Props) {
-  const clubId = world.manager.clubId;
-  const club = world.clubs[clubId]!;
-  const comp = world.competitions[club.compId]!;
-  const mine = comp.fixtures.filter((f) => f.home === clubId || f.away === clubId);
-  const day = nextMatchDay(world);
-  const next = day === null ? undefined : fixturesOn(world, day).find((f) => f.home === clubId || f.away === clubId);
-  const played = mine.filter((f) => f.result);
-  const table = standings(world, comp);
-  const rankOf = (id: number) => table.findIndex((r) => r.clubId === id) + 1;
-  const squad = club.playerIds.map((id) => world.players[id]!);
-  const morale = Math.round(squad.reduce((s, p) => s + p.psych.morale, 0) / Math.max(1, squad.length));
-  const last5 = played.slice(-5);
-  const news = world.news.filter((n) => n.season === world.season).slice(-7).reverse();
+  const choose = (v: string) => { updateSettings({ desk: { ...layout, preset: v as Preset | 'custom' } }); redraw((x) => x + 1); };
+  const edit = (f: (d: DeskItem[]) => DeskItem[]) => setDraft(f([...items]));
+  const move = (from: number, to: number) => edit((d) => { const [x] = d.splice(from, 1); d.splice(Math.max(0, Math.min(d.length, to)), 0, x!); return d; });
+  const save = () => { updateSettings({ desk: { preset: 'custom', custom: items } }); setDraft(null); setGallery(false); };
 
   return (
-    <div className="stack">
-      <div className="kpis">
-        <div className="kpi"><span className="caps">{t('desk.kpi.pos')}</span><div className="big">{rankOf(clubId)}° <small>/ {table.length}</small></div>
-          <span className="muted small">{t('desk.kpi.target', { n: expected(world, club) })}</span></div>
-        <div className="kpi"><span className="caps">{t('desk.form')}</span>
-          <span className="form-row" style={{ minHeight: 30, alignItems: 'center' }}>{last5.length ? last5.map((fx) => <span key={fx.day} className={`form ${outcome(fx, clubId)}`}>{t(`col.${FL[outcome(fx, clubId)!]}`)}</span>) : <span className="muted">—</span>}</span>
-          <span className="muted small">{t('desk.kpi.pts', { n: table[rankOf(clubId) - 1]?.pts ?? 0 })}</span></div>
-        <div className="kpi"><span className="caps">{t('fin.balance')}</span><div className="big num">{fmtMoney(club.balance)}</div>
-          <span className="muted small">{t('desk.kpi.board', { n: Math.round(world.manager.board.trust.board) })}</span></div>
-        <div className="kpi"><span className="caps">{t('desk.kpi.morale')}</span><div className="big num">{morale}<small>/100</small></div>
-          <div className="meter"><i className={morale < 45 ? 'bad' : morale < 60 ? 'warn' : ''} style={{ width: `${morale}%` }} /></div></div>
+    <div className={`stack ${draft && gallery ? 'with-gallery' : ''}`}>
+      {draft ? (
+        <div className="desk-banner">
+          <span className="row"><GripVertical size={16} /> {t('desk.edit.hint')}</span>
+          <span className="row">
+            <button className="btn" onClick={() => setGallery(true)}><Plus size={14} /> {t('desk.addWidget')}</button>
+            <button className="btn" onClick={() => setDraft(PRESETS.coach)}><RotateCcw size={14} /> {t('desk.edit.reset')}</button>
+            <button className="btn" onClick={() => { setDraft(null); setGallery(false); }}>{t('desk.edit.cancel')}</button>
+            <button className="btn primary" onClick={save}>{t('desk.edit.save')}</button>
+          </span>
+        </div>
+      ) : (
+        <div className="row desk-head">
+          <label className="row small"><LayoutGrid size={15} /> {t('desk.layout')}
+            <select value={layout.preset} onChange={(e) => choose(e.target.value)} aria-label={t('desk.layout')}>
+              {PRESET_NAMES.map((p) => <option key={p} value={p}>{t(`desk.preset.${p}`)}</option>)}
+              {layout.custom.length > 0 && <option value="custom">{t('desk.preset.custom')}</option>}
+            </select></label>
+          <button className="btn" onClick={() => setDraft(items)}><Settings2 size={14} /> {t('desk.customize')}</button>
+        </div>
+      )}
+
+      <div className={`desk-grid ${draft ? 'editing' : ''}`}>
+        {items.map((it, i) => {
+          const W = WIDGETS[it.id];
+          return (
+            <section key={it.id} className={`desk-cell s-${it.size} ${drag === i ? 'dragging' : ''}`} aria-label={t(`desk.w.${it.id}`)}
+              onDragOver={draft ? (e) => e.preventDefault() : undefined} onDrop={draft ? () => { if (drag !== null) move(drag, i); setDrag(null); } : undefined}>
+              {draft && (
+                <div className="desk-tools">
+                  <span className="desk-grip" draggable onDragStart={() => setDrag(i)} onDragEnd={() => setDrag(null)} title={t('desk.edit.drag')}><GripVertical size={15} /></span>
+                  <b>{t(`desk.w.${it.id}`)}</b>
+                  <span className="desk-sizes">{W.sizes.map((s) => (
+                    <button key={s} className={s === it.size ? 'on' : ''} aria-pressed={s === it.size} onClick={() => edit((d) => { d[i] = { ...it, size: s as Size }; return d; })}>{s}</button>
+                  ))}</span>
+                  <button onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={t('desk.edit.left')}><ChevronLeft size={15} /></button>
+                  <button onClick={() => move(i, i + 1)} disabled={i === items.length - 1} aria-label={t('desk.edit.right')}><ChevronRight size={15} /></button>
+                  <button onClick={() => edit((d) => d.filter((_, j) => j !== i))} aria-label={t('desk.edit.remove')}><X size={15} /></button>
+                </div>
+              )}
+              <div className="desk-body" data-empty={t('desk.edit.empty')} inert={draft ? true : undefined}><W.view {...ctx} /></div>
+            </section>
+          );
+        })}
+        {draft && <button className="desk-add s-S" onClick={() => setGallery(true)}><Plus size={22} /> {t('desk.addWidget')}</button>}
       </div>
 
-      <div className="cols2">
-        <div className="stack">
-          <div className="panel match-hero">
-            <div className="row" style={{ justifyContent: 'space-between' }}>
-              <h2><CalendarDays size={18} /> {t('desk.nextMatch')}</h2>
-              {next && <span className="tag">{fxLabel(next, comp.name)}</span>}
-            </div>
-            {next ? <>
-              <div className="score">
-                <div className="grid" style={{ justifyItems: 'center', gap: 6 }}><Crest club={world.clubs[next.home]!} size={72} /><b className="deal-h">{world.clubs[next.home]!.name}</b><Kit club={world.clubs[next.home]!} size={36} /></div>
-                <div className="grid" style={{ justifyItems: 'center', gap: 6 }}>
-                  <span className="vs">VS</span>
-                  <span className="num small"><CalendarDays size={12} /> {fmtDate(world.season, next.day)}</span>
-                  <span className="num small"><Clock size={12} /> {kickoff(world, next)}</span>
-                  <span className="tag dim">{t(next.home === clubId ? 'desk.home' : 'desk.away')}</span>
-                </div>
-                <div className="grid" style={{ justifyItems: 'center', gap: 6 }}><Crest club={world.clubs[next.away]!} size={72} /><b className="deal-h">{world.clubs[next.away]!.name}</b><Kit club={world.clubs[next.away]!} away={awayWearsAlt(world.clubs[next.home]!, world.clubs[next.away]!)} size={36} /></div>
-              </div>
-              <div className="row wrap" style={{ justifyContent: 'space-between' }}>
-                <span className="muted small"><Landmark size={12} /> {world.clubs[next.home]!.stadium.name}{played.length > 0 && ` · ${t('desk.opponentPos', { pos: rankOf(next.home === clubId ? next.away : next.home) })}`}</span>
-                <span className="row">
-                  <button className="btn" onClick={() => onNav('tactics')}><Route size={14} /> {t('desk.setLineup')}</button>
-                  {onWatch && <button className="btn primary" onClick={onWatch}><Play size={14} /> {t('desk.goMatch')}</button>}
-                </span>
-              </div>
-            </> : <div className="muted">{t('desk.noMatch')}</div>}
-          </div>
-
-          <Offers world={world} onChange={onChange} onPlayer={onPlayer} />
-          <Guide onNav={onNav} />
-          <DeskStories world={world} />
-
-          <div className="panel">
-            <h2><Newspaper size={18} /> {t('desk.news')}</h2>
-            {news.map((n, i) => {
-              // le richieste degli agenti portano al giocatore, dove c'è il contratto da rinnovare (collaudo: non si trovava)
-              const pid = typeof n.vars.pid === 'number' && world.players[n.vars.pid] ? n.vars.pid : null;
-              return (
-                <div key={`n${i}`} className="feed-row" style={{ gridTemplateColumns: '92px 1fr' }}>
-                  <span className="num muted small">{fmtDate(n.season, n.day)}</span>
-                  {pid !== null
-                    ? <button className="link" style={{ textAlign: 'left' }} onClick={() => onPlayer(pid)}>{tEvent(n.key, n.vars)} ›</button>
-                    : <span>{tEvent(n.key, n.vars)}</span>}
-                </div>
-              );
-            })}
-            {[...played].reverse().slice(0, 4).map((fx) => (
-              <div key={fx.day} className="feed-row" style={{ gridTemplateColumns: '92px 1fr' }}>
-                <span className="num muted small">{fmtDate(world.season, fx.day)}</span>
-                <span className="row"><span className={`form ${outcome(fx, clubId)}`}>{t(`col.${FL[outcome(fx, clubId)!]}`)}</span>
-                  {t('desk.resultNews', { home: world.clubs[fx.home]!.name, away: world.clubs[fx.away]!.name, hg: fx.result!.hg, ag: fx.result!.ag })}</span>
-              </div>
-            ))}
-            <div className="muted small">{t('desk.welcome', { manager: world.manager.name, club: team(club, 'di'), goal: boardGoal(world, clubId).toLowerCase() })}</div>
-          </div>
-        </div>
-
-        <div className="stack">
-          <div className="panel">
-            <div className="row" style={{ justifyContent: 'space-between' }}>
-              <h2><ListChecks size={18} /> {t('desk.table')}</h2>
-              <button className="link small" onClick={() => onNav('tables')}>{t('desk.fullTable')} ›</button>
-            </div>
-            <LeagueTable world={world} compId={comp.id} highlight={clubId} compact />
-            <div className="row muted small">
-              {comp.promote > 0 && <span className="pos-good">▌ {t(comp.level === 1 ? 'tables.title' : 'tables.promotion')}</span>}
-              {comp.relegate > 0 && <span className="pos-bad">▌ {t('tables.relegation')}</span>}
-            </div>
-          </div>
-          {world.history.length > 0 && (
-            <div className="panel">
-              <h2><Trophy size={18} /> {t('desk.history')}</h2>
-              {world.history.filter((h) => h.compId === comp.id).slice(-5).reverse().map((h) => (
-                <div key={h.season} className="row">
-                  <span className="num muted">{fmtSeason(h.season)}</span>
-                  <Crest club={world.clubs[h.championId]!} size={18} />
-                  <span>{world.clubs[h.championId]!.name}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+      {draft && gallery && <Gallery onDesk={items.map((i) => i.id)} onClose={() => setGallery(false)}
+        onAdd={(id) => edit((d) => [...d, { id, size: WIDGETS[id].sizes[0]! }])} />}
     </div>
+  );
+}
+
+function Gallery({ onDesk, onAdd, onClose }: { onDesk: WidgetId[]; onAdd: (id: WidgetId) => void; onClose: () => void }) {
+  const [cat, setCat] = useState<(typeof CATEGORIES)[number] | 'all'>('all');
+  const ids = (Object.keys(WIDGETS) as WidgetId[]).filter((id) => cat === 'all' || WIDGETS[id].cat === cat);
+  return (
+    <aside className="desk-gallery" aria-label={t('desk.gallery')}>
+      <div className="row" style={{ justifyContent: 'space-between' }}>
+        <h2>{t('desk.gallery')}</h2>
+        <button className="icon-btn" onClick={onClose} aria-label={t('desk.edit.close')}><X size={18} /></button>
+      </div>
+      <div className="chips">
+        {(['all', ...CATEGORIES] as const).map((c) => <button key={c} className={cat === c ? 'active' : ''} onClick={() => setCat(c)}>{t(`desk.cat.${c}`)}</button>)}
+      </div>
+      {ids.map((id) => (
+        <div key={id} className="gallery-item">
+          <span><b>{t(`desk.w.${id}`)}</b><small className="muted">{t(`desk.wd.${id}`)}</small><small className="caps">{t('desk.sizes', { s: WIDGETS[id].sizes.join(', ') })}</small></span>
+          {onDesk.includes(id)
+            ? <span className="tag dim">{t('desk.onDesk')}</span>
+            : <button className="btn primary" onClick={() => onAdd(id)}><Plus size={14} /> {t('desk.add')}</button>}
+        </div>
+      ))}
+    </aside>
   );
 }

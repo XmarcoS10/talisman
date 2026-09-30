@@ -1,0 +1,159 @@
+// Riquadri della Scrivania presi dalla versione di prima: numeri del momento, prossima partita, notizie, classifica, albo.
+import { CalendarDays, Clock, Landmark, ListChecks, Newspaper, Play, Route, Trophy } from 'lucide-react';
+import { fxLabel } from '../league.ts';
+import { expected } from '../../engine/board/board.ts';
+import type { ClubId, WorldState } from '../../engine/model.ts';
+import { fixturesOn, nextMatchDay, standings } from '../../engine/world.ts';
+import { Crest } from '../Crest.tsx';
+import { Kit } from '../Kit.tsx';
+import { awayWearsAlt } from '../procgen/kit.ts';
+import { team } from '../bits.tsx';
+import { kickoff } from '../calendar.ts';
+import { fmtDate, fmtMoney, fmtSeason, t, tEvent } from '../i18n.ts';
+import { outcome } from './Fixtures.tsx';
+import { boardGoal } from './Start.tsx';
+import type { NavName } from '../Sidebar.tsx';
+import { LeagueTable } from './Tables.tsx';
+
+export const FL = { W: 'w', D: 'd', L: 'l' } as const;
+
+/** quello che serve a tutti i riquadri */
+export interface DeskCtx { world: WorldState; onNav: (n: NavName) => void; onWatch?: () => void; onChange: () => void; onPlayer: (id: number) => void }
+
+const mine = (w: WorldState) => {
+  const clubId = w.manager.clubId;
+  const club = w.clubs[clubId]!;
+  const comp = w.competitions[club.compId]!;
+  const table = standings(w, comp);
+  const played = comp.fixtures.filter((f) => f.result && (f.home === clubId || f.away === clubId));
+  return { clubId, club, comp, table, played, rankOf: (id: ClubId) => table.findIndex((r) => r.clubId === id) + 1 };
+};
+
+export function KpiPos({ world }: DeskCtx) {
+  const { club, clubId, table, rankOf } = mine(world);
+  return <div className="kpi"><span className="caps">{t('desk.kpi.pos')}</span><div className="big">{rankOf(clubId)}° <small>/ {table.length}</small></div>
+    <span className="muted small">{t('desk.kpi.target', { n: expected(world, club) })}</span></div>;
+}
+
+export function KpiForm({ world }: DeskCtx) {
+  const { clubId, table, played, rankOf } = mine(world);
+  const last5 = played.slice(-5);
+  return <div className="kpi"><span className="caps">{t('desk.form')}</span>
+    <span className="form-row" style={{ minHeight: 30, alignItems: 'center' }}>{last5.length ? last5.map((fx) => <span key={fx.day} className={`form ${outcome(fx, clubId)}`}>{t(`col.${FL[outcome(fx, clubId)!]}`)}</span>) : <span className="muted">—</span>}</span>
+    <span className="muted small">{t('desk.kpi.pts', { n: table[rankOf(clubId) - 1]?.pts ?? 0 })}</span></div>;
+}
+
+export function KpiCash({ world }: DeskCtx) {
+  const { club } = mine(world);
+  return <div className="kpi"><span className="caps">{t('fin.balance')}</span><div className="big num">{fmtMoney(club.balance)}</div>
+    <span className="muted small">{t('desk.kpi.board', { n: Math.round(world.manager.board.trust.board) })}</span></div>;
+}
+
+export function KpiMorale({ world }: DeskCtx) {
+  const squad = mine(world).club.playerIds.map((id) => world.players[id]!);
+  const morale = Math.round(squad.reduce((s, p) => s + p.psych.morale, 0) / Math.max(1, squad.length));
+  return <div className="kpi"><span className="caps">{t('desk.kpi.morale')}</span><div className="big num">{morale}<small>/100</small></div>
+    <div className="meter"><i className={morale < 45 ? 'bad' : morale < 60 ? 'warn' : ''} style={{ width: `${morale}%` }} /></div></div>;
+}
+
+export function NextMatch({ world, onNav, onWatch }: DeskCtx) {
+  const { clubId, comp, played, rankOf } = mine(world);
+  const day = nextMatchDay(world);
+  const next = day === null ? undefined : fixturesOn(world, day).find((f) => f.home === clubId || f.away === clubId);
+  const side = (id: ClubId, away = false) => (
+    <div className="grid" style={{ justifyItems: 'center', gap: 6 }}><Crest club={world.clubs[id]!} size={72} /><b className="deal-h">{world.clubs[id]!.name}</b>
+      <Kit club={world.clubs[id]!} away={away && !!next && awayWearsAlt(world.clubs[next.home]!, world.clubs[next.away]!)} size={36} /></div>
+  );
+  return (
+    <div className="panel match-hero">
+      <div className="row" style={{ justifyContent: 'space-between' }}>
+        <h2><CalendarDays size={18} /> {t('desk.nextMatch')}</h2>
+        {next && <span className="tag">{fxLabel(next, comp.name)}</span>}
+      </div>
+      {next ? <>
+        <div className="score">
+          {side(next.home)}
+          <div className="grid" style={{ justifyItems: 'center', gap: 6 }}>
+            <span className="vs">VS</span>
+            <span className="num small"><CalendarDays size={12} /> {fmtDate(world.season, next.day)}</span>
+            <span className="num small"><Clock size={12} /> {kickoff(world, next)}</span>
+            <span className="tag dim">{t(next.home === clubId ? 'desk.home' : 'desk.away')}</span>
+          </div>
+          {side(next.away, true)}
+        </div>
+        <div className="row wrap" style={{ justifyContent: 'space-between' }}>
+          <span className="muted small"><Landmark size={12} /> {world.clubs[next.home]!.stadium.name}{played.length > 0 && ` · ${t('desk.opponentPos', { pos: rankOf(next.home === clubId ? next.away : next.home) })}`}</span>
+          <span className="row">
+            <button className="btn" onClick={() => onNav('tactics')}><Route size={14} /> {t('desk.setLineup')}</button>
+            {onWatch && <button className="btn primary" onClick={onWatch}><Play size={14} /> {t('desk.goMatch')}</button>}
+          </span>
+        </div>
+      </> : <div className="muted">{t('desk.noMatch')}</div>}
+    </div>
+  );
+}
+
+export function News({ world, onPlayer }: DeskCtx) {
+  const { club, clubId, played } = mine(world);
+  const news = world.news.filter((n) => n.season === world.season).slice(-7).reverse();
+  return (
+    <div className="panel">
+      <h2><Newspaper size={18} /> {t('desk.news')}</h2>
+      {news.map((n, i) => {
+        // le richieste degli agenti portano al giocatore, dove c'è il contratto da rinnovare (collaudo: non si trovava)
+        const pid = typeof n.vars.pid === 'number' && world.players[n.vars.pid] ? n.vars.pid : null;
+        return (
+          <div key={`n${i}`} className="feed-row" style={{ gridTemplateColumns: '92px 1fr' }}>
+            <span className="num muted small">{fmtDate(n.season, n.day)}</span>
+            {pid !== null
+              ? <button className="link" style={{ textAlign: 'left' }} onClick={() => onPlayer(pid)}>{tEvent(n.key, n.vars)} ›</button>
+              : <span>{tEvent(n.key, n.vars)}</span>}
+          </div>
+        );
+      })}
+      {[...played].reverse().slice(0, 4).map((fx) => (
+        <div key={fx.day} className="feed-row" style={{ gridTemplateColumns: '92px 1fr' }}>
+          <span className="num muted small">{fmtDate(world.season, fx.day)}</span>
+          <span className="row"><span className={`form ${outcome(fx, clubId)}`}>{t(`col.${FL[outcome(fx, clubId)!]}`)}</span>
+            {t('desk.resultNews', { home: world.clubs[fx.home]!.name, away: world.clubs[fx.away]!.name, hg: fx.result!.hg, ag: fx.result!.ag })}</span>
+        </div>
+      ))}
+      <div className="muted small">{t('desk.welcome', { manager: world.manager.name, club: team(club, 'di'), goal: boardGoal(world, clubId).toLowerCase() })}</div>
+    </div>
+  );
+}
+
+export function Table({ world, onNav }: DeskCtx) {
+  const { clubId, comp } = mine(world);
+  return (
+    <div className="panel">
+      <div className="row" style={{ justifyContent: 'space-between' }}>
+        <h2><ListChecks size={18} /> {t('desk.table')}</h2>
+        <button className="link small" onClick={() => onNav('tables')}>{t('desk.fullTable')} ›</button>
+      </div>
+      <LeagueTable world={world} compId={comp.id} highlight={clubId} compact />
+      <div className="row muted small">
+        {comp.promote > 0 && <span className="pos-good">▌ {t(comp.level === 1 ? 'tables.title' : 'tables.promotion')}</span>}
+        {comp.relegate > 0 && <span className="pos-bad">▌ {t('tables.relegation')}</span>}
+      </div>
+    </div>
+  );
+}
+
+export function History({ world }: DeskCtx) {
+  const { comp } = mine(world);
+  const rows = world.history.filter((h) => h.compId === comp.id).slice(-5).reverse();
+  if (!rows.length) return null;
+  return (
+    <div className="panel">
+      <h2><Trophy size={18} /> {t('desk.history')}</h2>
+      {rows.map((h) => (
+        <div key={h.season} className="row">
+          <span className="num muted">{fmtSeason(h.season)}</span>
+          <Crest club={world.clubs[h.championId]!} size={18} />
+          <span>{world.clubs[h.championId]!.name}</span>
+        </div>
+      ))}
+    </div>
+  );
+}

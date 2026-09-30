@@ -26,7 +26,7 @@ Marco non programma: fa collaudo, playtest e decisioni. Il codice lo scrive Clau
 `pnpm sim -- --seasons 10 --seed 42` · `pnpm sim -- --matches 3000` (bilanciamento motore partita)
 `pnpm sim -- --career 25 --seed 42` (carriere lunghe: inflazione, distacco A–B, bancarotte) · `pnpm sim -- --dev 10` (curve di sviluppo) · `pnpm sim -- --psych 20` (A/B della psicologia, ~5 min)
 `pnpm bench` (ms a partita del motore, guardia nella CI) · `pnpm build && npx electron tools/live-check.cjs` (partita 2D nell'app
-vera: fps, foto; THROTTLE=4 = portatile medio) · `npx electron tools/clips.cjs` (clip del sito) · `GOLDEN=update pnpm vitest run golden` (golden master del motore:
+vera: fps, foto; THROTTLE=4 = portatile medio) · `npx electron tools/ui-shots.cjs [cartella]` (foto dell'interfaccia a 1280×800, dopo `pnpm build`) · `npx electron tools/clips.cjs` (clip del sito) · `GOLDEN=update pnpm vitest run golden` (golden master del motore:
 si aggiorna solo apposta, con il motivo nel commit)
 
 ## Persone (F5)
@@ -94,6 +94,11 @@ Giornata, fine stagione, apertura e chiusura della giornata seguita girano in `u
 chiamato da `engine-client.ts`): il mondo va e torna come testo serializzato e si sostituisce (`setWorld`), le partite
 tornano come chiavi. La partita guardata si gioca nel thread dell'interfaccia (costa ~0,07 ms ad azione). Se il worker
 non c'è, `handle` gira sul posto. Prova nell'app vera: `pnpm build && npx electron tools/worker-check.cjs`.
+
+## Interfaccia v2 (0.7.0, `docs/design/ui-v2-piano.md`)
+Cornice alla Openfoot (`Sidebar.tsx`, `Topbar.tsx`: «Continua» col menu dal vivo / solo risultato, `settings.matchMode`) con lo
+stile di Stitch (`docs/design/stitch-v2/`): `--primary` rosso per pulsanti e selezioni, `--accent` verde per ciò che va bene.
+Scrivania a riquadri: catalogo in `screens/DeskWidgets.tsx` (taglie S/M/L su 12 colonne, layout pronti), layout in `settings.desk`.
 
 ## Salvataggi e diagnostica
 In Electron gli slot sono file in `%APPDATA%/talisman/saves` (preload `electron/preload.cjs`), con intestazione davanti

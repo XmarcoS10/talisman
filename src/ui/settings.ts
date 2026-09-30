@@ -2,6 +2,7 @@
 // Stanno nel localStorage: sono comodità di chi usa questo computer, e il gioco funziona anche se si perdono.
 
 import type { ViewMode } from './match/highlights.ts';
+import type { DeskItem, Preset } from './screens/DeskWidgets.tsx';
 import type { CameraMode } from './match/renderer.ts';
 import type { OverlayKind } from './match/overlays.ts';
 
@@ -26,15 +27,18 @@ export interface Settings {
   overlays: OverlayKind[]; // partita: sovrapposizioni tattiche accese
   lang: Lang | ''; // lingua (Blocco 5); vuota finché non la si sceglie alla prima apertura
   theme: 'dark' | 'light' | 'system'; // tema (0.3.0); «system» segue il sistema operativo
+  desk: DeskLayout;
   matchMode: MatchMode; // «Continua» nel giorno della propria partita: guardarla dal vivo o avere solo il risultato
 }
 
 export type MatchMode = 'live' | 'result';
+/** Scrivania (interfaccia v2): un layout pronto o quello composto dal giocatore */
+export interface DeskLayout { preset: Preset | 'custom'; custom: DeskItem[] }
 
 const KEY = 'talisman-settings';
 export const DEFAULTS: Settings = { hints: true, seen: [], visited: [], guideDone: false, volume: { ui: 0.5, crowd: 0.4, fx: 0.65 },
   muteOnBlur: true, autosave: true, pauseNews: true, currency: 'EUR', dateFmt: 'long', win: '', rail: false,
-  view: 'highlights', camera: 'follow', overlays: [], lang: '', theme: 'dark', matchMode: 'live' };
+  view: 'highlights', camera: 'follow', overlays: [], lang: '', theme: 'dark', matchMode: 'live', desk: { preset: 'coach', custom: [] } };
 
 let cache: Settings | null = null;
 

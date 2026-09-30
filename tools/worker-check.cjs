@@ -16,14 +16,14 @@ app.on('browser-window-created', async (_e, win) => {
   const loaded = () => new Promise((r) => win.webContents.once('did-finish-load', r));
   const js = (code) => win.webContents.executeJavaScript(code);
   const click = (text) => js(`(() => { const b = [...document.querySelectorAll('button')].find((b) => b.textContent.includes(${JSON.stringify(text)})); if (b) b.click(); return !!b; })()`);
-  const date = () => js(`document.querySelector('.topbar .pill')?.textContent ?? ''`);
+  const date = () => js(`document.querySelector('.top-title .small')?.textContent ?? ''`);
   const until = async (cond, ms = 15000) => { for (let t = 0; t < ms; t += 100) { if (await js(cond)) return true; await wait(100); } return false; };
   const errors = [];
   win.webContents.on('console-message', (ev, level, message) => { const msg = ev?.message ?? message; if (String(msg).startsWith('T ')) console.log(msg); const lv = ev?.level ?? level; if (lv === 'error' || lv === 3) errors.push(ev?.message ?? message); });
   try {
     await loaded();
     win.show();
-    await js(`localStorage.setItem('talisman-settings', JSON.stringify({ lang: 'it', hints: false, seen: [], visited: ['board', 'squad', 'tactics', 'training', 'live'], guideDone: true, volume: { ui: 0, crowd: 0, fx: 0 } })); location.reload();`);
+    await js(`localStorage.setItem('talisman-settings', JSON.stringify({ lang: 'it', hints: false, seen: [], visited: ['board', 'squad', 'tactics', 'training', 'live'], guideDone: true, volume: { ui: 0, crowd: 0, fx: 0 }, matchMode: 'result' })); location.reload();`);
     await loaded();
     await wait(800);
     await click('Slot 1');
@@ -45,7 +45,7 @@ app.on('browser-window-created', async (_e, win) => {
     // una partita guardata fino al risultato
     let watched = false;
     for (let i = 0; i < 6 && !watched; i++) {
-      if (await click('Guarda la partita')) { watched = true; break; }
+      if (await click('Vai alla partita')) { watched = true; break; }
       await js(`window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' })); true`);
       await until(`!document.querySelector('.busy')`);
       await wait(400);
