@@ -83,10 +83,10 @@ export function injure(rng: Rng, p: Player, ctx: InjuryCtx | 'relapse'): InjuryT
 export function heal(p: Player, days: number) {
   const c = p.condition;
   if (c.injuryDays > 0) {
-    c.injuryDays = Math.max(0, c.injuryDays - days);
+    c.injuryDays = Math.max(0, Math.round(c.injuryDays - days)); // giorni interi anche col medico che accelera
     if (c.injuryDays === 0 && c.injury) c.relapse = Math.min(28, Math.round(c.injury.total * TRAIN.relapseWindow));
   } else if (c.relapse > 0) {
-    c.relapse = Math.max(0, c.relapse - days);
+    c.relapse = Math.max(0, Math.round(c.relapse - days));
     if (c.relapse === 0) c.injury = null;
   }
 }

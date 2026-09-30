@@ -2,18 +2,18 @@
 // (senza titolo le quotidiane, poi Club e Mondo), impostazioni e uscita in fondo.
 import { useEffect, useReducer } from 'react';
 import { ArrowLeftRight, BriefcaseBusiness, CalendarDays, ChartColumn, Dumbbell, GraduationCap, Landmark, LayoutDashboard, LogOut, Medal,
-  Network, Newspaper, PanelLeftClose, PanelLeftOpen, Route, ScanSearch, Settings, User, Users, type LucideIcon } from 'lucide-react';
+  Network, Newspaper, PanelLeftClose, PanelLeftOpen, Route, ScanSearch, Settings, User, UserCog, Users, type LucideIcon } from 'lucide-react';
 import type { WorldState } from '../engine/model.ts';
 import { settings, updateSettings } from './settings.ts';
 import { Crest } from './Crest.tsx';
 import { t } from './i18n.ts';
 
-export type NavName = 'desk' | 'stories' | 'squad' | 'tactics' | 'training' | 'dressing' | 'youth' | 'market' | 'scouts' | 'finance' | 'board' | 'tables' | 'fixtures' | 'records' | 'saves';
+export type NavName = 'desk' | 'stories' | 'squad' | 'tactics' | 'training' | 'dressing' | 'youth' | 'market' | 'scouts' | 'staff' | 'finance' | 'board' | 'tables' | 'fixtures' | 'records' | 'saves';
 
 const GROUPS: [string, [NavName, LucideIcon][]][] = [
   ['', [['desk', LayoutDashboard], ['stories', Newspaper], ['fixtures', CalendarDays]]],
   ['club', [['squad', Users], ['tactics', Route], ['training', Dumbbell], ['dressing', Network], ['youth', GraduationCap],
-    ['scouts', ScanSearch], ['finance', Landmark], ['market', ArrowLeftRight], ['board', BriefcaseBusiness]]],
+    ['staff', UserCog], ['scouts', ScanSearch], ['finance', Landmark], ['market', ArrowLeftRight], ['board', BriefcaseBusiness]]],
   ['world', [['tables', ChartColumn], ['records', Medal]]],
 ];
 

@@ -17,6 +17,7 @@ import { Market } from './Market.tsx';
 import { PlayerView } from './PlayerView.tsx';
 import { Records } from './Records.tsx';
 import { Scouts } from './Scouts.tsx';
+import { Staff } from './Staff.tsx';
 import { Squad } from './Squad.tsx';
 import { Stories } from './Stories.tsx';
 import { Tables } from './Tables.tsx';
@@ -41,6 +42,7 @@ function screens(w: WorldState): [string, ReactElement][] {
     ['Vivaio', <Youth world={w} onPlayer={nop} onChange={nop} />],
     ['Mercato', <Market world={w} onPlayer={nop} onOffer={nop} />],
     ['Osservatori', <Scouts world={w} onChange={nop} onPlayer={nop} />],
+    ['Staff', <Staff world={w} onChange={nop} />],
     ['Finanze', <Finance world={w} />],
     ['Dirigenza', <BoardView world={w} onChange={nop} />],
     ['Classifiche', <Tables world={w} clubId={me} onPlayer={nop} onClub={nop} />],

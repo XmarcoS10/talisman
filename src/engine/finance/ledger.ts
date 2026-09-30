@@ -2,6 +2,7 @@
 // Entrate: biglietti (dinamici), diritti tv, sponsor, merchandising, premi, cessioni.
 // Uscite: stipendi, staff, stadio, acquisti. Il fair play finanziario è progressivo, non una condanna.
 import { FIN } from '../balance.ts';
+import { staffWages } from '../staff.ts';
 import type { Books, Club, ClubId, Competition, Fixture, WorldState } from '../model.ts';
 import { addNews } from '../news.ts';
 import { clamp, pointsPerGame } from '../util.ts';
@@ -41,7 +42,8 @@ export function estimate(world: WorldState, club: Club): number {
 
 export const wageBill = (world: WorldState, club: Club) =>
   club.playerIds.reduce((a, id) => a + world.players[id]!.contract.wage, 0)
-  + club.scoutIds.reduce((a, id) => a + (world.scouts[id]?.wage ?? 0), 0);
+  + club.scoutIds.reduce((a, id) => a + (world.scouts[id]?.wage ?? 0), 0)
+  + staffWages(world, club.id); // vice, preparatore e medico (solo il club dell'utente)
 
 /** spese fisse di una settimana: stipendi, staff, stadio */
 export function weekCosts(world: WorldState, weeks: number) {

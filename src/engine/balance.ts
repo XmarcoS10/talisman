@@ -554,6 +554,17 @@ export const CONTRACT = {
 } as const;
 
 // --- scouting e informazione imperfetta (GUIDA §7.6) ---
+/** staff del club dell'utente (staff.ts): a bravura 10 nessun effetto; ±1 = bravura 20 o quasi 1 */
+export const STAFF = {
+  pool: 4, // candidati liberi per ruolo
+  poolMean: 11,
+  wageBase: 120_000,
+  wagePerSkill: 30_000, // bravura 10 ≈ 420 mila € l'anno
+  physioHeal: 0.25, // guarigione più veloce (o più lenta) del 25% al massimo
+  fitnessInjury: 0.25, // infortuni in allenamento in meno (o in più)
+  assistantMorale: 3, // punti di morale verso cui tende lo spogliatoio
+} as const;
+
 export const SCOUT = {
   // quello che si sa gratis
   publicBase: 8,

@@ -22,6 +22,7 @@ import { Market } from './screens/Market.tsx';
 import { Saves } from './screens/Saves.tsx';
 import { Scouts } from './screens/Scouts.tsx';
 import { Squad } from './screens/Squad.tsx';
+import { Staff } from './screens/Staff.tsx';
 import { Stories } from './screens/Stories.tsx';
 import { Start } from './screens/Start.tsx';
 import { Tables } from './screens/Tables.tsx';
@@ -30,10 +31,10 @@ import { Training } from './screens/Training.tsx';
 import { Youth } from './screens/Youth.tsx';
 import { Topbar } from './Topbar.tsx';
 import { fullTimeTalk } from '../engine/talks.ts';
+import { ensureStaff } from '../engine/staff.ts';
 import { screenArt } from './art.ts';
 import { Sidebar, type NavName } from './Sidebar.tsx';
 import { currentSlot, saveTo, startClock } from './storage.ts';
-
 type Screen =
   | { name: NavName }
   | { name: 'player'; id: number; back: Screen; deal?: boolean }
@@ -129,7 +130,8 @@ export function App(_: { lang: string }) { // `lang`: cambiando lingua l'app si 
     return () => window.removeEventListener('keydown', onKey);
   }, [onAdvance, modal, world, liveDay]);
 
-  const open = (w: WorldState) => { setWorld(w); setScreen({ name: 'desk' }); setModal(null); setLiveDay(null); };
+  // ensureStaff: le carriere di prima dello staff lo trovano subito
+  const open = (w: WorldState) => { ensureStaff(w); setWorld(w); setScreen({ name: 'desk' }); setModal(null); setLiveDay(null); };
   if (!world) return <Start onLoad={open} onStart={(w) => { startClock(); autosave(w); open(w); }} />;
   if (liveDay) {
     return (
@@ -166,10 +168,8 @@ export function App(_: { lang: string }) { // `lang`: cambiando lingua l'app si 
       <Topbar ref={searchRef} world={world} title={title} onBack={'back' in screen ? () => setScreen(screen.back) : undefined}
         onPlayer={openPlayer} onClub={openClub} matchDay={myMatchDay} seasonOver={isSeasonOver(world)}
         onContinue={() => onContinue.current()} onSave={() => { const ok = autosave(world); rerender(); return ok; }} />
-
       <Sidebar world={world} active={screen.name} onNav={(n) => setScreen({ name: n })}
         onQuit={() => { if (autosave(world)) setWorld(null); else rerender(); }} />
-
       <main {...screenArt(screen.name)}>
         <Alerts items={alerts} onClose={() => setAlerts([])} />
         {(HINTS as readonly string[]).includes(screen.name) && <Hint key={screen.name} id={screen.name as (typeof HINTS)[number]} />}
@@ -182,6 +182,7 @@ export function App(_: { lang: string }) { // `lang`: cambiando lingua l'app si 
         {screen.name === 'youth' && <Youth world={world} onPlayer={openPlayer} onChange={changed} />}
         {screen.name === 'market' && <Market world={world} onPlayer={openPlayer} onOffer={(id) => openPlayer(id, true)} />}
         {screen.name === 'scouts' && <Scouts world={world} onChange={changed} onPlayer={openPlayer} />}
+        {screen.name === 'staff' && <Staff world={world} onChange={changed} />}
         {screen.name === 'finance' && <Finance world={world} />}
         {screen.name === 'board' && <BoardView world={world} onChange={changed} />}
         {screen.name === 'tables' && <Tables world={world} clubId={club.id} onPlayer={openPlayer} onClub={openClub} />}
@@ -191,7 +192,6 @@ export function App(_: { lang: string }) { // `lang`: cambiando lingua l'app si 
         {screen.name === 'player' && <PlayerView key={screen.id} startDeal={screen.deal} world={world} playerId={screen.id} onBack={() => setScreen(screen.back)} onClub={openClub} onChange={changed} onPlayer={openPlayer} />}
         {screen.name === 'club' && <ClubView world={world} clubId={screen.id} onPlayer={openPlayer} onBack={() => setScreen(screen.back)} />}
       </main>
-
       {modal?.kind === 'match' && <MatchModal world={world} fx={modal.fx} others={modal.others} onClose={() => setModal(null)} />}
       {modal?.kind === 'season' && <SeasonModal world={world} summary={modal.summary} myPos={modal.myPos} onClose={() => setModal(null)} onQuit={() => { setModal(null); setWorld(null); }} />}
     </div>

@@ -10,6 +10,10 @@ export type CompId = string;
 export type AgentId = number;
 export type ScoutId = number;
 export type CoachId = number;
+export type StaffRole = 'assistant' | 'fitness' | 'physio';
+
+/** vice, preparatore, medico del club dell'utente e liberi da assumere (staff.ts, schema 31) */
+export interface StaffMember { id: number; name: string; nation: string; role: StaffRole; skill: number; wage: number; clubId: ClubId | null }
 
 export const POSITIONS = ['GK', 'DL', 'DC', 'DR', 'DM', 'ML', 'MC', 'MR', 'AML', 'AMC', 'AMR', 'ST'] as const;
 export type Position = (typeof POSITIONS)[number];
@@ -578,4 +582,6 @@ export interface WorldState {
   nextAgentId: number;
   nextScoutId: number;
   nextCoachId: number;
+  staff: Record<number, StaffMember>; // staff dell'utente e candidati (0.8.x, schema 31)
+  nextStaffId: number;
 }

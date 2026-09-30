@@ -1,5 +1,6 @@
 // Allenamento settimanale (GUIDA §7.1-7.2): carico, condizione, infortuni, sviluppo, mentori, familiarità col modulo.
-import { DEV, STYLE, TRAIN } from './balance.ts';
+import { DEV, STAFF, STYLE, TRAIN } from './balance.ts';
+import { staffEdge } from './staff.ts';
 import { developPlayer, type DevContext } from './development.ts';
 import { injure, injuryRisk, relapseRisk } from './injuries.ts';
 import { FORMATION_IDS, type Club, type Player, type TrainingCat, type WorldState } from './model.ts';
@@ -64,7 +65,7 @@ export function trainWeek(world: WorldState, club: Club, rng: Rng) {
     c.fitness = Math.max(20, c.fitness - (injured ? 0 : load * TRAIN.fitnessPerLoad));
     c.fatigue = Math.round(Math.max(0, Math.min(100, c.fatigue + load * TRAIN.fatigueLoad * trains - TRAIN.fatigueRecovery - restSlots * TRAIN.fatigueRest)) * 10) / 10;
     c.sharpness = Math.max(20, Math.min(100, c.sharpness - TRAIN.sharpDecay + (injured ? 0 : count(plan, 'match') * TRAIN.sharpPartitella)));
-    if (!injured && rng.next() < trainingInjuryP(p, plan, world.season)) {
+    if (!injured && rng.next() < trainingInjuryP(p, plan, world.season) * (1 - STAFF.fitnessInjury * staffEdge(world, club.id, 'fitness'))) {
       const relapse = c.relapse > 0 && rng.next() < 0.5;
       const type = injure(rng, p, relapse ? 'relapse' : rng.next() < 0.5 ? 'muscle' : 'overuse');
       if (me) {

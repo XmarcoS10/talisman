@@ -30,7 +30,7 @@ app.on('browser-window-created', async (_e, win) => {
     await click('button', 'Slot 1');
     await wait(1500);
     await shot('scrivania');
-    for (const [nav, name] of [['Rosa', 'rosa'], ['Tattica', 'tattica'], ['Mercato', 'mercato'], ['Calendario', 'calendario'], ['Finanze', 'finanze']]) {
+    for (const [nav, name] of [['Rosa', 'rosa'], ['Tattica', 'tattica'], ['Mercato', 'mercato'], ['Calendario', 'calendario'], ['Finanze', 'finanze'], ['Staff', 'staff']]) {
       await click('.sidebar button', nav);
       await wait(800);
       await shot(name);
