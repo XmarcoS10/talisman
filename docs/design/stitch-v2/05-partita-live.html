@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="it"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-secondary-fixed-variant": "#005236",
+          "on-tertiary-fixed": "#2a1700",
+          "surface-container-lowest": "#090e16",
+          "secondary": "#4edea3",
+          "on-primary-fixed": "#410008",
+          "on-tertiary-fixed-variant": "#653e00",
+          "primary-fixed-dim": "#ffb3b2",
+          "on-primary": "#680013",
+          "tertiary": "#ffb95f",
+          "inverse-primary": "#bf002b",
+          "inverse-on-surface": "#2c3139",
+          "primary-fixed": "#ffdad9",
+          "on-tertiary-container": "#3e2400",
+          "error-container": "#93000a",
+          "on-error": "#690005",
+          "surface-variant": "#30353e",
+          "inverse-surface": "#dee2ee",
+          "surface-tint": "#ffb3b2",
+          "secondary-container": "#00a572",
+          "tertiary-fixed-dim": "#ffb95f",
+          "tertiary-fixed": "#ffddb8",
+          "error": "#ffb4ab",
+          "surface": "#0f141c",
+          "outline": "#ad8887",
+          "surface-container": "#1b2028",
+          "surface-container-low": "#171c24",
+          "surface-container-high": "#252a33",
+          "tertiary-container": "#ca8100",
+          "surface-dim": "#0f141c",
+          "secondary-fixed": "#6ffbbe",
+          "on-surface": "#dee2ee",
+          "primary-container": "#ff525d",
+          "on-error-container": "#ffdad6",
+          "on-primary-container": "#5b000f",
+          "primary": "#ffb3b2",
+          "on-tertiary": "#472a00",
+          "on-secondary-fixed": "#002113",
+          "on-secondary-container": "#00311f",
+          "background": "#0f141c",
+          "on-secondary": "#003824",
+          "on-primary-fixed-variant": "#92001f",
+          "surface-bright": "#343942",
+          "surface-container-highest": "#30353e",
+          "on-background": "#dee2ee",
+          "on-surface-variant": "#e6bdbb",
+          "outline-variant": "#5d3f3f",
+          "secondary-fixed-dim": "#4edea3"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "spacing": {
+          "space-xl": "1.5rem",
+          "space-lg": "1rem",
+          "gutter": "1rem",
+          "margin": "1.25rem",
+          "space-md": "0.75rem",
+          "space-sm": "0.5rem",
+          "space-xs": "0.25rem"
+        },
+        "fontFamily": {
+          "body-md": [
+            "Inter"
+          ],
+          "headline-lg": [
+            "Barlow Condensed"
+          ],
+          "headline-xl": [
+            "Barlow Condensed"
+          ],
+          "label-numeric-sm": [
+            "JetBrains Mono"
+          ],
+          "body-sm": [
+            "Inter"
+          ],
+          "label-editorial": [
+            "Barlow Condensed"
+          ],
+          "headline-sm": [
+            "Barlow Condensed"
+          ],
+          "label-numeric-lg": [
+            "JetBrains Mono"
+          ],
+          "body-lg": [
+            "Inter"
+          ],
+          "label-numeric-md": [
+            "JetBrains Mono"
+          ],
+          "headline-md": [
+            "Barlow Condensed"
+          ]
+        },
+        "fontSize": {
+          "body-md": [
+            "0.875rem",
+            {
+              "lineHeight": "1.25rem",
+              "letterSpacing": "-0.005em",
+              "fontWeight": "400"
+            }
+          ],
+          "headline-lg": [
+            "2rem",
+            {
+              "lineHeight": "2.25rem",
+              "letterSpacing": "0.04em",
+              "fontWeight": "700"
+            }
+          ],
+          "headline-xl": [
+            "2.5rem",
+            {
+              "lineHeight": "2.75rem",
+              "letterSpacing": "0.05em",
+              "fontWeight": "700"
+            }
+          ],
+          "label-numeric-sm": [
+            "0.75rem",
+            {
+              "lineHeight": "0.875rem",
+              "letterSpacing": "0em",
+              "fontWeight": "500"
+            }
+          ],
+          "body-sm": [
+            "0.75rem",
+            {
+              "lineHeight": "1rem",
+              "letterSpacing": "0em",
+              "fontWeight": "400"
+            }
+          ],
+          "label-editorial": [
+            "0.8125rem",
+            {
+              "lineHeight": "1rem",
+              "letterSpacing": "0.08em",
+              "fontWeight": "700"
+            }
+          ],
+          "headline-sm": [
+            "1.125rem",
+            {
+              "lineHeight": "1.375rem",
+              "letterSpacing": "0.025em",
+              "fontWeight": "600"
+            }
+          ],
+          "label-numeric-lg": [
+            "1.25rem",
+            {
+              "lineHeight": "1.5rem",
+              "letterSpacing": "-0.02em",
+              "fontWeight": "600"
+            }
+          ],
+          "body-lg": [
+            "1rem",
+            {
+              "lineHeight": "1.5rem",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "400"
+            }
+          ],
+          "label-numeric-md": [
+            "0.875rem",
+            {
+              "lineHeight": "1.125rem",
+              "letterSpacing": "0em",
+              "fontWeight": "500"
+            }
+          ],
+          "headline-md": [
+            "1.5rem",
+            {
+              "lineHeight": "1.75rem",
+              "letterSpacing": "0.03em",
+              "fontWeight": "600"
+            }
+          ]
+        }
+      },
+    },
+  }</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="h-12 px-space-md flex items-center gap-space-sm bg-surface-container-lowest"><img alt="Minimalist geometric football club shield crest for fictional club 'Sporting Ventimonti' (SV), diagonally split deep navy and crimson red with gold/white monogram initials 'SV' and a clean star on top, flat vector sports crest.. Brand logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wdtkip5X18SHcxOlfJCQJUYrB8weixm6Oblbw-K5rKQJnvHnsd9hIvboxdPE1xrtKsPTe-92cHw5GN3e1uXgQFKQXxIT7rCKNy-K7gPIpn93t6b0SVPxC3PTAdq4sKL45_A5IM1MNpQEtVWpK50JDDuCHiOBqcs-S5WO4je5ap4nPhjZXjFqTwrgTYqOiBnX3RXP-FVCJpZ0hZ4k6rqB-i6ZKR58JnhXNrEM3kqv7vW19KaXY44iSOIQk"/><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm uppercase tracking-wider text-on-surface truncate leading-none">TFM 27</span><span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase truncate tracking-widest">Sporting Ventimonti</span></div></div><div class="overflow-y-auto px-space-xs py-space-sm"><nav class="flex flex-col gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-bold rounded-lg shadow-sm"><div class="px-space-sm pt-space-xs pb-1 font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant/70">Principale</div><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="scrivania" href="#"><span class="material-symbols-outlined text-[18px]">dashboard</span><span class="font-body-md text-body-md">Scrivania</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="storie-and-media" href="#"><span class="material-symbols-outlined text-[18px]">newspaper</span><span class="font-body-md text-body-md">Storie &amp; Media</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="rosa" href="#"><span class="material-symbols-outlined text-[18px]">groups</span><span class="font-body-md text-body-md">Rosa</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="tattica" href="#"><span class="material-symbols-outlined text-[18px]">strategy</span><span class="font-body-md text-body-md">Tattica</span></a><div class="px-space-sm pt-space-sm pb-1 font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant/70">Gestione</div><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="allenamento" href="#"><span class="material-symbols-outlined text-[18px]">fitness_center</span><span class="font-body-md text-body-md">Allenamento</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="spogliatoio" href="#"><span class="material-symbols-outlined text-[18px]">diversity_3</span><span class="font-body-md text-body-md">Spogliatoio</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="vivaio" href="#"><span class="material-symbols-outlined text-[18px]">school</span><span class="font-body-md text-body-md">Vivaio</span></a><div class="px-space-sm pt-space-sm pb-1 font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant/70">Mercato</div><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="mercato" href="#"><span class="material-symbols-outlined text-[18px]">currency_exchange</span><span class="font-body-md text-body-md">Mercato</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="osservatori" href="#"><span class="material-symbols-outlined text-[18px]">travel_explore</span><span class="font-body-md text-body-md">Osservatori</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="finanze" href="#"><span class="material-symbols-outlined text-[18px]">account_balance</span><span class="font-body-md text-body-md">Finanze</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="dirigenza" href="#"><span class="material-symbols-outlined text-[18px]">corporate_fare</span><span class="font-body-md text-body-md">Dirigenza</span></a><div class="px-space-sm pt-space-sm pb-1 font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant/70">Competizioni</div><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="classifiche" href="#"><span class="material-symbols-outlined text-[18px]">leaderboard</span><span class="font-body-md text-body-md">Classifiche</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="calendario" href="#"><span class="material-symbols-outlined text-[18px]">calendar_month</span><span class="font-body-md text-body-md">Calendario</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="record-and-storia" href="#"><span class="material-symbols-outlined text-[18px]">military_tech</span><span class="font-body-md text-body-md">Record &amp; Storia</span></a><div class="px-space-sm pt-space-sm pb-1 font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant/70">Impostazioni</div><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="impostazioni" href="#"><span class="material-symbols-outlined text-[18px]">tune</span><span class="font-body-md text-body-md">Impostazioni</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="salvataggi" href="#"><span class="material-symbols-outlined text-[18px]">save</span><span class="font-body-md text-body-md">Salvataggi</span></a></nav></div></div><div class="p-space-sm bg-surface-container-lowest flex items-center justify-between"><div class="flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-secondary"></span><span class="font-label-editorial text-label-editorial text-on-surface uppercase tracking-wider">MODALITÀ OFFLINE</span></div><span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">v27.4.0</span></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-12 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-md"><div class="flex items-center gap-space-lg"><img alt="Minimalist geometric football club shield crest for fictional club 'Sporting Ventimonti' (SV), diagonally split deep navy and crimson red with gold/white monogram initials 'SV' and a clean star on top, flat vector sports crest.. Brand logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wdtkip5X18SHcxOlfJCQJUYrB8weixm6Oblbw-K5rKQJnvHnsd9hIvboxdPE1xrtKsPTe-92cHw5GN3e1uXgQFKQXxIT7rCKNy-K7gPIpn93t6b0SVPxC3PTAdq4sKL45_A5IM1MNpQEtVWpK50JDDuCHiOBqcs-S5WO4je5ap4nPhjZXjFqTwrgTYqOiBnX3RXP-FVCJpZ0hZ4k6rqB-i6ZKR58JnhXNrEM3kqv7vW19KaXY44iSOIQk"/><span class="font-headline-sm text-headline-sm uppercase tracking-wide text-on-surface hidden xl:inline">TFM 27</span><div class="flex items-center gap-space-sm bg-surface-container-low px-space-sm py-1 rounded-lg"><span class="material-symbols-outlined text-[16px] text-tertiary">calendar_today</span><span class="font-label-numeric-md text-label-numeric-md font-semibold text-on-surface">SAB 12 SET 2026</span></div><div class="flex items-center gap-space-sm bg-surface-container-low px-space-sm py-1 rounded-lg"><span class="material-symbols-outlined text-[16px] text-secondary">payments</span><span class="font-label-numeric-md text-label-numeric-md font-semibold text-secondary">45,4 Mln €</span></div><div class="relative hidden lg:flex items-center"><span class="material-symbols-outlined text-[18px] text-on-surface-variant absolute left-2 pointer-events-none">search</span><input class="bg-surface-container-low text-on-surface placeholder:text-on-surface-variant text-body-sm font-body-sm pl-8 pr-3 py-1 rounded-lg w-60 focus:bg-surface-container-high transition-colors outline-none" placeholder="Cerca calciatore, staff, club..." type="text"/></div></div><div class="flex items-center gap-space-md"><a class="h-8 px-space-md rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-editorial text-label-editorial uppercase flex items-center gap-space-xs transition-colors" data-path="live-match" href="#"><span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>GUARDA LA PARTITA</a><button class="h-8 px-space-md rounded-lg bg-primary-container hover:bg-inverse-primary text-on-primary-container hover:text-on-primary font-label-editorial text-label-editorial uppercase tracking-wider flex items-center gap-space-xs transition-colors shadow-sm" type="button">AVANZA <span class="font-label-numeric-sm text-label-numeric-sm opacity-80">[SPAZIO]</span><span class="material-symbols-outlined text-[18px]">fast_forward</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-12 bg-surface w-full px-space-lg min-h-screen"><div class="flex flex-col w-full h-[calc(100vh-3.25rem)] overflow-hidden select-none text-on-surface">
+<!-- TOP BAR OVERLAY / SCOREBOARD & CONTROLS -->
+<header class="flex-shrink-0 flex flex-col bg-surface-container-low px-space-md py-1.5 shadow-md">
+<div class="flex items-center justify-between gap-space-md">
+<!-- SCOREBOARD -->
+<div class="flex items-center gap-space-md">
+<!-- Home Team -->
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-surface-container-lowest shadow-sm">
+<svg class="w-7 h-7" viewbox="0 0 100 100">
+<polygon fill="#0f141c" points="50,4 92,20 84,78 50,96 16,78 8,20"></polygon>
+<path d="M50,4 L92,20 L84,78 L50,96 Z" fill="#92001f"></path>
+<path d="M50,4 L8,20 L16,78 L50,96 Z" fill="#0f141c"></path>
+<polygon fill="#ca8100" points="50,14 54,26 67,26 56,34 60,46 50,38 40,46 44,34 33,26 46,26"></polygon>
+<text fill="#ffffff" font-family="'Barlow Condensed', sans-serif" font-size="26" font-weight="700" text-anchor="middle" x="50" y="65">SV</text>
+</svg>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm uppercase tracking-wider leading-none text-on-surface">Sp. Ventimonti</span>
+<span class="font-label-editorial text-label-editorial text-primary tracking-widest uppercase">Casa</span>
+</div>
+</div>
+<!-- Score Badge -->
+<div class="flex items-center bg-surface-container-lowest px-space-md py-1 rounded-lg gap-space-md shadow-inner">
+<span class="font-headline-lg text-headline-lg font-bold text-primary leading-none">1</span>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant opacity-60 leading-none">–</span>
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface leading-none">0</span>
+</div>
+<!-- Away Team -->
+<div class="flex items-center gap-space-sm">
+<div class="flex flex-col items-end">
+<span class="font-headline-sm text-headline-sm uppercase tracking-wider leading-none text-on-surface">U. Casalforte</span>
+<span class="font-label-editorial text-label-editorial text-secondary tracking-widest uppercase">Trasferta</span>
+</div>
+<div class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-surface-container-lowest shadow-sm">
+<svg class="w-7 h-7" viewbox="0 0 100 100">
+<polygon fill="#003824" points="50,4 92,20 84,78 50,96 16,78 8,20"></polygon>
+<path d="M50,4 L92,20 L84,78 L50,96 Z" fill="#00a572"></path>
+<circle cx="50" cy="46" fill="#ffb95f" r="20"></circle>
+<text fill="#002113" font-family="'Barlow Condensed', sans-serif" font-size="22" font-weight="700" text-anchor="middle" x="50" y="53">UC</text>
+</svg>
+</div>
+</div>
+<!-- Minute Pill -->
+<div class="flex items-center gap-1.5 bg-surface-container-high px-space-sm py-1 rounded-lg">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-label-numeric-md text-label-numeric-md font-semibold text-primary">63'</span>
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant opacity-80">2° TEMPO</span>
+</div>
+</div>
+<!-- PLAYBACK & SPEED CONTROLS -->
+<div class="flex items-center gap-space-xs">
+<button class="w-8 h-8 rounded-lg bg-surface-container-high hover:bg-surface-bright flex items-center justify-center text-on-surface transition-colors" id="btn-play-pause" title="Riprendi / Pausa" type="button">
+<span class="material-symbols-outlined text-[20px]" id="play-pause-icon">pause</span>
+</button>
+<div class="flex items-center bg-surface-container-lowest p-0.5 rounded-lg">
+<button class="speed-btn px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface font-label-numeric-sm text-label-numeric-sm font-semibold transition-colors" type="button">1×</button>
+<button class="speed-btn px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-numeric-sm text-label-numeric-sm font-semibold transition-colors" type="button">2×</button>
+<button class="speed-btn px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface font-label-numeric-sm text-label-numeric-sm font-semibold transition-colors" type="button">5×</button>
+</div>
+<div class="h-5 w-[1px] bg-surface-container-highest mx-0.5"></div>
+<button class="px-space-sm h-8 rounded-lg bg-surface-container-high hover:bg-surface-bright font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">skip_next</span>
+<span>Prossimo</span>
+</button>
+<button class="px-space-sm h-8 rounded-lg bg-tertiary-container hover:bg-tertiary text-on-tertiary-container font-label-editorial text-label-editorial uppercase tracking-wider flex items-center gap-1 transition-colors shadow-sm font-bold" type="button">
+<span class="material-symbols-outlined text-[16px]">timer_pause</span>
+<span>Pausa Tattica</span>
+</button>
+<button class="px-space-sm h-8 rounded-lg bg-surface-container-high hover:bg-surface-bright font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant hover:text-on-surface flex items-center gap-1 transition-colors" type="button">
+<span>Salta Fine</span>
+<span class="material-symbols-outlined text-[16px]">fast_forward</span>
+</button>
+</div>
+<!-- VIEW MODE & CAMERA SELECTORS -->
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center bg-surface-container-lowest p-0.5 rounded-lg">
+<button class="px-2 py-0.5 rounded bg-surface-container-high text-primary font-label-editorial text-label-editorial uppercase tracking-wider" type="button">Salienti</button>
+<button class="px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider" type="button">Estesa</button>
+<button class="px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider" type="button">Completa</button>
+</div>
+<div class="flex items-center bg-surface-container-lowest p-0.5 rounded-lg">
+<button class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[14px]">videocam</span>
+<span>Campo</span>
+</button>
+<button class="px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider" type="button">Segui</button>
+<button class="px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider" type="button">Vicina</button>
+</div>
+</div>
+</div>
+<!-- MATCH MOMENTUM TIMELINE (0' - 90') -->
+<div class="relative w-full mt-1.5 pt-1 pb-0.5">
+<div class="relative h-6 w-full bg-surface-container-lowest rounded overflow-hidden flex items-center">
+<!-- SVG Momentum Waves -->
+<svg class="absolute inset-0 w-full h-full preserve-3d" preserveaspectratio="none" viewbox="0 0 1000 40">
+<defs>
+<lineargradient id="momHome" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#ff525d" stop-opacity="0.85"></stop>
+<stop offset="100%" stop-color="#ff525d" stop-opacity="0.1"></stop>
+</lineargradient>
+<lineargradient id="momAway" x1="0" x2="0" y1="1" y2="0">
+<stop offset="0%" stop-color="#00a572" stop-opacity="0.85"></stop>
+<stop offset="100%" stop-color="#00a572" stop-opacity="0.1"></stop>
+</lineargradient>
+</defs>
+<!-- Center midline -->
+<line stroke="#30353e" stroke-dasharray="2 2" stroke-width="1" x1="0" x2="1000" y1="20" y2="20"></line>
+<!-- Dominance wave home (top half) -->
+<path d="M0,20 Q60,10 120,8 T240,14 T360,4 T420,18 T480,20 L480,20 L0,20 Z" fill="url(#momHome)"></path>
+<path d="M480,20 Q560,7 640,6 T700,20 L700,20 L480,20 Z" fill="url(#momHome)"></path>
+<!-- Dominance wave away (bottom half) -->
+<path d="M140,20 Q200,32 280,30 T340,20 L340,20 L140,20 Z" fill="url(#momAway)"></path>
+<path d="M480,20 Q530,34 580,28 T620,20 L620,20 L480,20 Z" fill="url(#momAway)"></path>
+</svg>
+<!-- Minute markers -->
+<div class="absolute inset-0 flex justify-between px-2 items-center pointer-events-none text-on-surface-variant font-label-numeric-sm text-label-numeric-sm opacity-50">
+<span>0'</span>
+<span class="border-l border-surface-variant/50 h-3"></span>
+<span>15'</span>
+<span class="border-l border-surface-variant/50 h-3"></span>
+<span>30'</span>
+<span class="border-l border-surface-variant/80 h-4"></span>
+<span>45' INT</span>
+<span class="border-l border-surface-variant/50 h-3"></span>
+<span>60'</span>
+<span class="border-l border-surface-variant/50 h-3"></span>
+<span>75'</span>
+<span class="border-l border-surface-variant/50 h-3"></span>
+<span>90'</span>
+</div>
+<!-- Event Badges -->
+<!-- 38' Goal SV -->
+<div class="absolute left-[42.2%] -translate-x-1/2 flex items-center justify-center z-10" title="38' Gol: Valente (Sporting Ventimonti)">
+<div class="w-4 h-4 rounded-full bg-secondary text-surface-container-lowest flex items-center justify-center shadow">
+<span class="material-symbols-outlined text-[11px] font-bold">sports_soccer</span>
+</div>
+</div>
+<!-- 52' Yellow Card Marini -->
+<div class="absolute left-[57.7%] -translate-x-1/2 flex items-center justify-center z-10" title="52' Cartellino Giallo: Marini">
+<div class="w-2.5 h-3.5 bg-tertiary rounded-[1px] shadow-sm"></div>
+</div>
+<!-- 60' Sub UC -->
+<div class="absolute left-[66.6%] -translate-x-1/2 flex items-center justify-center z-10" title="60' Sostituzione Casalforte">
+<span class="material-symbols-outlined text-[13px] text-on-surface bg-surface-container-high rounded-full p-0.5">swap_horiz</span>
+</div>
+<!-- Current time scrubber needle (63') -->
+<div class="absolute left-[70%] top-0 bottom-0 w-[2px] bg-primary z-20 shadow-[0_0_8px_#ff525d]">
+<div class="w-2 h-2 rounded-full bg-primary -ml-[3px] -mt-[1px]"></div>
+</div>
+</div>
+</div>
+</header>
+<!-- MAIN MATCH THREE-COLUMN STAGE -->
+<div class="flex-1 grid grid-cols-12 gap-space-sm p-space-sm min-h-0 overflow-hidden">
+<!-- LEFT COLUMN: SQUADRA IN CAMPO & COMANDI BORDOCAMPO (~240px equivalent) -->
+<section class="col-span-3 lg:col-span-2 flex flex-col gap-space-xs min-h-0 bg-surface-container-low rounded-lg p-space-xs shadow-sm">
+<div class="flex items-center justify-between px-space-xs py-1">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">groups</span>
+<span class="font-headline-sm text-headline-sm uppercase tracking-wide">In Campo (11)</span>
+</div>
+<span class="font-label-editorial text-label-editorial text-secondary bg-surface-container-lowest px-1.5 py-0.5 rounded">5 SOST. RIMASTE</span>
+</div>
+<!-- Lineup List (Dense & tabular) -->
+<div class="flex-1 overflow-y-auto pr-0.5 flex flex-col gap-0.5">
+<!-- 1. Peretti -->
+<div class="flex items-center justify-between px-1.5 py-1 rounded bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant w-6 text-center bg-surface-container-lowest rounded">POR</span>
+<span class="font-body-sm text-body-sm font-medium truncate">1. Peretti</span>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<div class="w-8 h-1.5 bg-surface-container-lowest rounded-full overflow-hidden" title="Condizione 88%">
+<div class="h-full bg-secondary" style="width: 88%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold text-secondary bg-surface-container-lowest px-1 rounded">7,1</span>
+</div>
+</div>
+<!-- 2. Rinaldi -->
+<div class="flex items-center justify-between px-1.5 py-1 rounded bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant w-6 text-center bg-surface-container-lowest rounded">TD</span>
+<span class="font-body-sm text-body-sm font-medium truncate">2. Rinaldi</span>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<div class="w-8 h-1.5 bg-surface-container-lowest rounded-full overflow-hidden" title="Condizione 76%">
+<div class="h-full bg-secondary" style="width: 76%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold text-on-surface bg-surface-container-lowest px-1 rounded">6,8</span>
+</div>
+</div>
+<!-- 3. Marini (Yellow Card) -->
+<div class="flex items-center justify-between px-1.5 py-1 rounded bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant w-6 text-center bg-surface-container-lowest rounded">DC</span>
+<span class="font-body-sm text-body-sm font-medium truncate">3. Marini</span>
+<span class="w-1.5 h-2.5 bg-tertiary rounded-[1px] flex-shrink-0" title="Ammonito 52'"></span>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<div class="w-8 h-1.5 bg-surface-container-lowest rounded-full overflow-hidden" title="Condizione 72%">
+<div class="h-full bg-secondary" style="width: 72%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold text-tertiary bg-surface-container-lowest px-1 rounded">6,4</span>
+</div>
+</div>
+<!-- 5. Baroni -->
+<div class="flex items-center justify-between px-1.5 py-1 rounded bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant w-6 text-center bg-surface-container-lowest rounded">DC</span>
+<span class="font-body-sm text-body-sm font-medium truncate">5. Baroni</span>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<div class="w-8 h-1.5 bg-surface-container-lowest rounded-full overflow-hidden" title="Condizione 81%">
+<div class="h-full bg-secondary" style="width: 81%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold text-secondary bg-surface-container-lowest px-1 rounded">7,3</span>
+</div>
+</div>
+<!-- 6. De Luca -->
+<div class="flex items-center justify-between px-1.5 py-1 rounded bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant w-6 text-center bg-surface-container-lowest rounded">TS</span>
+<span class="font-body-sm text-body-sm font-medium truncate">6. De Luca</span>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<div class="w-8 h-1.5 bg-surface-container-lowest rounded-full overflow-hidden" title="Condizione 69%">
+<div class="h-full bg-tertiary" style="width: 69%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold text-on-surface bg-surface-container-lowest px-1 rounded">6,9</span>
+</div>
+</div>
+<!-- 4. Falco (C) -->
+<div class="flex items-center justify-between px-1.5 py-1 rounded bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant w-6 text-center bg-surface-container-lowest rounded">MED</span>
+<span class="font-body-sm text-body-sm font-medium truncate">4. Falco</span>
+<span class="font-label-editorial text-label-editorial text-tertiary font-bold">(C)</span>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<div class="w-8 h-1.5 bg-surface-container-lowest rounded-full overflow-hidden" title="Condizione 75%">
+<div class="h-full bg-secondary" style="width: 75%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold text-secondary bg-surface-container-lowest px-1 rounded">7,5</span>
+</div>
+</div>
+<!-- 8. Moretti -->
+<div class="flex items-center justify-between px-1.5 py-1 rounded bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant w-6 text-center bg-surface-container-lowest rounded">CC</span>
+<span class="font-body-sm text-body-sm font-medium truncate">8. Moretti</span>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<div class="w-8 h-1.5 bg-surface-container-lowest rounded-full overflow-hidden" title="Condizione 62%">
+<div class="h-full bg-tertiary" style="width: 62%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold text-on-surface bg-surface-container-lowest px-1 rounded">6,7</span>
+</div>
+</div>
+<!-- 10. Giani -->
+<div class="flex items-center justify-between px-1.5 py-1 rounded bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant w-6 text-center bg-surface-container-lowest rounded">CC</span>
+<span class="font-body-sm text-body-sm font-medium truncate">10. Giani</span>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<div class="w-8 h-1.5 bg-surface-container-lowest rounded-full overflow-hidden" title="Condizione 70%">
+<div class="h-full bg-secondary" style="width: 70%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold text-secondary bg-surface-container-lowest px-1 rounded">7,2</span>
+</div>
+</div>
+<!-- 7. Conti -->
+<div class="flex items-center justify-between px-1.5 py-1 rounded bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant w-6 text-center bg-surface-container-lowest rounded">AD</span>
+<span class="font-body-sm text-body-sm font-medium truncate">7. Conti</span>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<div class="w-8 h-1.5 bg-surface-container-lowest rounded-full overflow-hidden" title="Condizione 65%">
+<div class="h-full bg-tertiary" style="width: 65%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold text-secondary bg-surface-container-lowest px-1 rounded">7,6</span>
+</div>
+</div>
+<!-- 11. Antonelli -->
+<div class="flex items-center justify-between px-1.5 py-1 rounded bg-surface-container hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant w-6 text-center bg-surface-container-lowest rounded">AS</span>
+<span class="font-body-sm text-body-sm font-medium truncate">11. Antonelli</span>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<div class="w-8 h-1.5 bg-surface-container-lowest rounded-full overflow-hidden" title="Condizione 74%">
+<div class="h-full bg-secondary" style="width: 74%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold text-on-surface bg-surface-container-lowest px-1 rounded">6,8</span>
+</div>
+</div>
+<!-- 9. Valente (Goal 38') -->
+<div class="flex items-center justify-between px-1.5 py-1 rounded bg-primary-container/20 hover:bg-primary-container/30 transition-colors">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-label-editorial text-label-editorial text-primary font-bold w-6 text-center bg-surface-container-lowest rounded">ATT</span>
+<span class="font-body-sm text-body-sm font-bold truncate text-primary">9. Valente</span>
+<span class="material-symbols-outlined text-[13px] text-secondary flex-shrink-0" title="Gol al 38'">sports_soccer</span>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<div class="w-8 h-1.5 bg-surface-container-lowest rounded-full overflow-hidden" title="Condizione 82%">
+<div class="h-full bg-secondary" style="width: 82%"></div>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm font-bold text-on-secondary-container bg-secondary-container px-1 rounded">8,1</span>
+</div>
+</div>
+</div>
+<!-- Panchina Accordion Preview -->
+<div class="flex-shrink-0 bg-surface-container-lowest rounded p-1.5">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider">Panchina (9)</span>
+<span class="font-label-numeric-sm text-label-numeric-sm">Disponibili</span>
+</div>
+<div class="flex items-center gap-1 mt-1 text-on-surface-variant font-body-sm text-body-sm truncate">
+<span class="bg-surface-container px-1 rounded">12. Colombo</span>
+<span class="bg-surface-container px-1 rounded">14. Ferri</span>
+<span class="bg-surface-container px-1 rounded">18. Parisi</span>
+<span class="bg-surface-container px-1 rounded">21. Bianchi</span>
+</div>
+</div>
+<!-- Touchline Shouts (Urla da bordocampo) -->
+<div class="flex-shrink-0 bg-surface-container-lowest rounded p-1.5 flex flex-col gap-1">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-tertiary">record_voice_over</span>
+<span>Urla da Bordocampo</span>
+</span>
+<div class="grid grid-cols-3 gap-1">
+<button class="shout-btn py-1 rounded bg-surface-container hover:bg-surface-container-high text-center font-label-editorial text-label-editorial uppercase tracking-wider transition-colors active:bg-secondary-container" type="button">
+            Incoraggia
+          </button>
+<button class="shout-btn py-1 rounded bg-surface-container hover:bg-surface-container-high text-center font-label-editorial text-label-editorial uppercase tracking-wider transition-colors active:bg-primary-container text-primary" type="button">
+            Chiedi +
+          </button>
+<button class="shout-btn py-1 rounded bg-surface-container hover:bg-surface-container-high text-center font-label-editorial text-label-editorial uppercase tracking-wider transition-colors active:bg-tertiary-container" type="button">
+            Calma
+          </button>
+</div>
+</div>
+</section>
+<!-- CENTER COLUMN: 2D PITCH & LIVE COMMENTARY TICKER (MAIN THEATER) -->
+<main class="col-span-6 lg:col-span-7 flex flex-col min-h-0 bg-surface-container-lowest rounded-lg p-space-xs gap-space-xs shadow-md">
+<!-- Pitch Header Info Strip -->
+<div class="flex-shrink-0 flex items-center justify-between px-space-xs py-0.5">
+<div class="flex items-center gap-space-sm font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary">stadium</span>
+<span>Stadio Ventimonti Arena</span>
+</span>
+<span>•</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-secondary">rainy</span>
+<span>Meteo: Pioggia leggera • Terreno scivoloso</span>
+</span>
+</div>
+<div class="flex items-center gap-2 font-label-editorial text-label-editorial text-on-surface-variant">
+<span class="flex items-center gap-1">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+<span>Sporting Ventimonti (4-3-3)</span>
+</span>
+<span class="flex items-center gap-1">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<span>Casalforte (3-5-2)</span>
+</span>
+</div>
+</div>
+<!-- 2D PITCH CONTAINER -->
+<div class="relative flex-1 w-full bg-[#122b1d] rounded overflow-hidden shadow-inner flex items-center justify-center min-h-[360px]">
+<!-- Grass Mowing Stripes & Pitch Markings SVG -->
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 1000 620">
+<defs>
+<!-- Grass stripe pattern -->
+<pattern height="620" id="mowing" patternunits="userSpaceOnUse" width="100">
+<rect fill="#143121" height="620" width="50" x="0" y="0"></rect>
+<rect fill="#10291b" height="620" width="50" x="50" y="0"></rect>
+</pattern>
+</defs>
+<rect fill="url(#mowing)" height="620" width="1000"></rect>
+<!-- Pitch Outer boundary border -->
+<rect fill="none" height="570" stroke="rgba(255,255,255,0.4)" stroke-width="2" width="930" x="35" y="25"></rect>
+<!-- Halfway line -->
+<line stroke="rgba(255,255,255,0.4)" stroke-width="2" x1="500" x2="500" y1="25" y2="595"></line>
+<!-- Center circle & spot -->
+<circle cx="500" cy="310" fill="none" r="75" stroke="rgba(255,255,255,0.4)" stroke-width="2"></circle>
+<circle cx="500" cy="310" fill="rgba(255,255,255,0.7)" r="3"></circle>
+<!-- LEFT PENALTY BOX (Ventimonti Defending) -->
+<rect fill="none" height="340" stroke="rgba(255,255,255,0.4)" stroke-width="2" width="140" x="35" y="140"></rect>
+<!-- Left Goal Area -->
+<rect fill="none" height="190" stroke="rgba(255,255,255,0.4)" stroke-width="2" width="48" x="35" y="215"></rect>
+<!-- Left Penalty Spot -->
+<circle cx="130" cy="310" fill="rgba(255,255,255,0.7)" r="3"></circle>
+<!-- Left Penalty Arc -->
+<path d="M 175,260 A 75 75 0 0 1 175,360" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"></path>
+<!-- Left Goal Frame Outer -->
+<rect fill="none" height="90" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" width="17" x="18" y="265"></rect>
+<!-- RIGHT PENALTY BOX (Casalforte Defending) -->
+<rect fill="none" height="340" stroke="rgba(255,255,255,0.4)" stroke-width="2" width="140" x="825" y="140"></rect>
+<!-- Right Goal Area -->
+<rect fill="none" height="190" stroke="rgba(255,255,255,0.4)" stroke-width="2" width="48" x="917" y="215"></rect>
+<!-- Right Penalty Spot -->
+<circle cx="870" cy="310" fill="rgba(255,255,255,0.7)" r="3"></circle>
+<!-- Right Penalty Arc -->
+<path d="M 825,260 A 75 75 0 0 0 825,360" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"></path>
+<!-- Right Goal Frame Outer -->
+<rect fill="none" height="90" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" width="17" x="965" y="265"></rect>
+<!-- Corner Arcs -->
+<path d="M 35,42 A 17 17 0 0 0 52,25" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"></path>
+<path d="M 35,578 A 17 17 0 0 1 52,595" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"></path>
+<path d="M 965,42 A 17 17 0 0 1 948,25" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"></path>
+<path d="M 965,578 A 17 17 0 0 0 948,595" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"></path>
+<!-- TACTICAL PASS ARROW from #9 Valente to #7 Conti -->
+<defs>
+<marker id="arrow" markerheight="6" markerwidth="6" orient="auto-start-reverse" refx="5" refy="5" viewbox="0 0 10 10">
+<path d="M 0 1 L 10 5 L 0 9 z" fill="#ffb95f"></path>
+</marker>
+</defs>
+<path class="animate-pulse" d="M 720,295 Q 770,240 810,185" fill="none" marker-end="url(#arrow)" stroke="#ffb95f" stroke-dasharray="6,4" stroke-width="2.5"></path>
+</svg>
+<!-- 22 TACTICAL FIELD NODES (Absolute Percentages) -->
+<!-- VENTIMONTI (HOME - ATTACKING RIGHT) -->
+<!-- 1. Peretti (GK) -->
+<div class="absolute left-[7%] top-[50%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-[#1b2028] border-2 border-primary flex items-center justify-center text-primary font-label-numeric-sm text-label-numeric-sm font-bold shadow">1</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Peretti</span>
+</div>
+<!-- 2. Rinaldi (TD) -->
+<div class="absolute left-[34%] top-[20%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold shadow">2</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Rinaldi</span>
+</div>
+<!-- 3. Marini (DC) -->
+<div class="absolute left-[26%] top-[38%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold shadow">3</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Marini</span>
+</div>
+<!-- 5. Baroni (DC) -->
+<div class="absolute left-[26%] top-[62%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold shadow">5</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Baroni</span>
+</div>
+<!-- 6. De Luca (TS) -->
+<div class="absolute left-[33%] top-[80%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold shadow">6</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">De Luca</span>
+</div>
+<!-- 4. Falco (MED) -->
+<div class="absolute left-[44%] top-[50%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold shadow">4</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Falco</span>
+</div>
+<!-- 8. Moretti (CC) -->
+<div class="absolute left-[54%] top-[34%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold shadow">8</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Moretti</span>
+</div>
+<!-- 10. Giani (CC) -->
+<div class="absolute left-[55%] top-[65%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold shadow">10</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Giani</span>
+</div>
+<!-- 7. Conti (AD) -->
+<div class="absolute left-[82%] top-[24%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold shadow ring-2 ring-primary">7</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-primary bg-surface/90 px-1 rounded mt-0.5 font-bold">Conti</span>
+</div>
+<!-- 11. Antonelli (AS) -->
+<div class="absolute left-[74%] top-[78%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold shadow">11</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Antonelli</span>
+</div>
+<!-- 9. VALENTE (BALL CARRIER - HIGHLIGHTED) -->
+<div class="absolute left-[71%] top-[48%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-30">
+<!-- Floating Live Tooltip -->
+<div class="absolute -top-7 whitespace-nowrap bg-surface-container-lowest/95 text-primary border border-primary/40 px-2 py-0.5 rounded shadow-lg flex items-center gap-1 font-label-editorial text-[10px] uppercase tracking-wider animate-bounce">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>9. Valente (Palla al piede • 24 km/h)</span>
+</div>
+<div class="relative">
+<div class="w-7 h-7 rounded-full bg-primary text-on-primary font-label-numeric-sm text-label-numeric-sm font-bold flex items-center justify-center shadow-lg ring-4 ring-primary/40">
+              9
+            </div>
+<!-- The Ball -->
+<div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-white rounded-full border border-black shadow flex items-center justify-center animate-spin">
+<div class="w-1.5 h-1.5 bg-black rounded-full"></div>
+</div>
+</div>
+<span class="font-label-editorial text-[10px] uppercase font-bold text-primary bg-surface/95 px-1 rounded mt-0.5">Valente</span>
+</div>
+<!-- CASALFORTE (AWAY - DEFENDING RIGHT / ATTACKING LEFT) -->
+<!-- 1. Baresi (GK Casalforte) -->
+<div class="absolute left-[94%] top-[50%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center opacity-90">
+<div class="w-6 h-6 rounded-full bg-surface-container-highest text-secondary border border-secondary flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold">1</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-secondary/90 bg-surface/80 px-1 rounded mt-0.5">Sarti</span>
+</div>
+<!-- Casalforte Defenders (3) -->
+<div class="absolute left-[84%] top-[38%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center opacity-90">
+<div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold">2</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Riva</span>
+</div>
+<div class="absolute left-[83%] top-[52%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center opacity-90">
+<div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold">5</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Neri</span>
+</div>
+<div class="absolute left-[83%] top-[68%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center opacity-90">
+<div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold">3</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Pellegrini</span>
+</div>
+<!-- Casalforte Midfielders (5) -->
+<div class="absolute left-[68%] top-[20%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center opacity-90">
+<div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold">7</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Zanetti</span>
+</div>
+<div class="absolute left-[65%] top-[38%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center opacity-90">
+<div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold">8</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Costa</span>
+</div>
+<div class="absolute left-[63%] top-[50%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center opacity-90">
+<div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold">4</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Grosso</span>
+</div>
+<div class="absolute left-[64%] top-[64%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center opacity-90">
+<div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold">10</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Valli</span>
+</div>
+<div class="absolute left-[66%] top-[82%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center opacity-90">
+<div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold">11</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Serra</span>
+</div>
+<!-- Casalforte Strikers (2) -->
+<div class="absolute left-[48%] top-[38%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center opacity-90">
+<div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold">9</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Lombardi</span>
+</div>
+<div class="absolute left-[46%] top-[60%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center opacity-90">
+<div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-label-numeric-sm text-label-numeric-sm font-bold">19</div>
+<span class="font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface/80 bg-surface/80 px-1 rounded mt-0.5">Bernardi</span>
+</div>
+</div>
+<!-- MATCH COMMENTARY TICKER (Immediately below pitch) -->
+<div class="flex-shrink-0 bg-surface-container flex items-center justify-between px-space-sm py-1.5 rounded gap-space-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="flex items-center gap-1 bg-surface-container-lowest px-1.5 py-0.5 rounded flex-shrink-0">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-ping"></span>
+<span class="font-label-numeric-md text-label-numeric-md font-bold text-primary">62:45</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface truncate">
+<span class="font-bold text-primary">Valente</span> protegge palla al limite dell'area avversaria, supera Costa in dribbling e cerca l'inserimento rapido di <span class="font-bold text-on-surface">Conti</span> sulla corsia destra...
+          </p>
+</div>
+<div class="flex items-center gap-1 flex-shrink-0">
+<button class="p-1 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" title="Cronaca precedente" type="button">
+<span class="material-symbols-outlined text-[18px]">expand_less</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" title="Storico cronaca" type="button">
+<span class="material-symbols-outlined text-[18px]">history</span>
+</button>
+</div>
+</div>
+</main>
+<!-- RIGHT COLUMN: ANALYTICS, L'ANALISTA ADVICE & QUICK TACTICS (~280px equivalent) -->
+<section class="col-span-3 lg:col-span-3 flex flex-col gap-space-xs min-h-0 bg-surface-container-low rounded-lg p-space-xs shadow-sm overflow-y-auto">
+<!-- ANALYTICS TABS -->
+<div class="flex-shrink-0 flex items-center bg-surface-container-lowest p-0.5 rounded">
+<button class="flex-1 py-1 rounded bg-surface-container text-primary font-label-editorial text-label-editorial uppercase tracking-wider text-center font-bold" type="button">Statistiche</button>
+<button class="flex-1 py-1 rounded text-on-surface-variant hover:text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider text-center" type="button">Pressing</button>
+<button class="flex-1 py-1 rounded text-on-surface-variant hover:text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider text-center" type="button">Passaggi</button>
+<button class="flex-1 py-1 rounded text-on-surface-variant hover:text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider text-center" type="button">Duelli</button>
+</div>
+<!-- LIVE STATS COMPARISON MATRIX -->
+<div class="flex-shrink-0 bg-surface-container rounded p-space-xs flex flex-col gap-1.5">
+<!-- Header row -->
+<div class="flex items-center justify-between font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant px-1">
+<span class="text-primary font-bold">SV (57%)</span>
+<span>PARAMETRI PARTITA</span>
+<span class="text-secondary font-bold">UC (43%)</span>
+</div>
+<!-- xG Row -->
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center justify-between font-label-numeric-sm text-label-numeric-sm px-1">
+<span class="font-bold text-primary">1,24</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Goal Previsti (xG)</span>
+<span class="font-bold text-secondary">0,61</span>
+</div>
+<div class="flex h-1.5 w-full bg-surface-container-lowest rounded-full overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 67%"></div>
+<div class="bg-secondary-container h-full ml-auto" style="width: 33%"></div>
+</div>
+</div>
+<!-- Possesso Palla -->
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center justify-between font-label-numeric-sm text-label-numeric-sm px-1">
+<span class="font-bold text-on-surface">57%</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Possesso Palla</span>
+<span class="font-bold text-on-surface">43%</span>
+</div>
+<div class="flex h-1.5 w-full bg-surface-container-lowest rounded-full overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 57%"></div>
+<div class="bg-secondary-container h-full ml-auto" style="width: 43%"></div>
+</div>
+</div>
+<!-- Tiri in porta -->
+<div class="flex items-center justify-between font-label-numeric-sm text-label-numeric-sm px-1 py-0.5 bg-surface-container-lowest/50 rounded">
+<span class="font-bold text-primary">9 (4)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Tiri (In Porta)</span>
+<span class="font-bold text-secondary">5 (1)</span>
+</div>
+<!-- Angoli & Falli in grid -->
+<div class="grid grid-cols-2 gap-1 text-center font-label-numeric-sm text-label-numeric-sm">
+<div class="bg-surface-container-lowest/50 p-1 rounded">
+<span class="text-on-surface-variant font-label-editorial text-label-editorial uppercase block">Calci d'angolo</span>
+<span class="font-bold text-primary">5</span> – <span class="font-bold text-secondary">2</span>
+</div>
+<div class="bg-surface-container-lowest/50 p-1 rounded">
+<span class="text-on-surface-variant font-label-editorial text-label-editorial uppercase block">Falli Commessi</span>
+<span class="font-bold text-primary">7</span> – <span class="font-bold text-secondary">11</span>
+</div>
+</div>
+</div>
+<!-- ADVICE CARD: L'ANALISTA -->
+<div class="flex-shrink-0 bg-surface-container-lowest rounded p-space-xs flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5 text-tertiary">
+<span class="material-symbols-outlined text-[16px]">insights</span>
+<span class="font-headline-sm text-headline-sm uppercase tracking-wide leading-none">L'Analista</span>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm bg-surface-container px-1 py-0.5 rounded text-on-surface-variant">61'</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface leading-snug">
+          Casalforte soffre il pressing sulla fascia sinistra. <strong class="text-primary font-medium">Valente</strong> sta vincendo l'80% dei duelli aerei: sfruttare i cross anticipati per Conti ed Antonelli.
+        </p>
+</div>
+<!-- QUICK TACTICAL CONTROLS (MODIFICHE TATTICHE RAPIDE) -->
+<div class="flex-1 bg-surface-container rounded p-space-xs flex flex-col justify-between gap-1.5">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm uppercase tracking-wider flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+<span>Modifiche Tattiche Rapide</span>
+</span>
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+<!-- Mentalità Segmented Bar -->
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface-variant">Mentalità di Squadra</span>
+<span class="font-label-editorial text-label-editorial text-primary font-bold uppercase">Positiva</span>
+</div>
+<div class="grid grid-cols-5 gap-0.5 bg-surface-container-lowest p-0.5 rounded">
+<button class="py-0.5 text-center font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface-variant hover:text-on-surface" type="button">Dif</button>
+<button class="py-0.5 text-center font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface-variant hover:text-on-surface" type="button">Prud</button>
+<button class="py-0.5 text-center font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface-variant hover:text-on-surface" type="button">Equil</button>
+<button class="py-0.5 text-center font-label-editorial text-[9px] uppercase tracking-tighter bg-primary-container text-on-primary-container font-bold rounded" type="button">Posit</button>
+<button class="py-0.5 text-center font-label-editorial text-[9px] uppercase tracking-tighter text-on-surface-variant hover:text-on-surface" type="button">Off</button>
+</div>
+</div>
+<!-- Direct Selectors Grid -->
+<div class="grid grid-cols-2 gap-1 text-left">
+<!-- Intensità Pressing -->
+<div class="flex flex-col gap-0.5">
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface-variant">Pressing</span>
+<div class="flex bg-surface-container-lowest p-0.5 rounded">
+<button class="flex-1 py-0.5 font-label-editorial text-[9px] uppercase text-on-surface-variant" type="button">Med</button>
+<button class="flex-1 py-0.5 font-label-editorial text-[9px] uppercase bg-surface-container-high text-primary font-bold rounded" type="button">Alta</button>
+</div>
+</div>
+<!-- Ritmo Gioco -->
+<div class="flex flex-col gap-0.5">
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface-variant">Ritmo Gioco</span>
+<div class="flex bg-surface-container-lowest p-0.5 rounded">
+<button class="flex-1 py-0.5 font-label-editorial text-[9px] uppercase text-on-surface-variant" type="button">Std</button>
+<button class="flex-1 py-0.5 font-label-editorial text-[9px] uppercase bg-surface-container-high text-primary font-bold rounded" type="button">Alto</button>
+</div>
+</div>
+<!-- Linea Difensiva -->
+<div class="flex flex-col gap-0.5">
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface-variant">Linea Difensiva</span>
+<div class="flex bg-surface-container-lowest p-0.5 rounded">
+<button class="flex-1 py-0.5 font-label-editorial text-[9px] uppercase bg-surface-container-high text-on-surface font-bold rounded" type="button">Media</button>
+<button class="flex-1 py-0.5 font-label-editorial text-[9px] uppercase text-on-surface-variant" type="button">Alta</button>
+</div>
+</div>
+<!-- Passaggi -->
+<div class="flex flex-col gap-0.5">
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface-variant">Passaggi</span>
+<div class="flex bg-surface-container-lowest p-0.5 rounded">
+<button class="flex-1 py-0.5 font-label-editorial text-[9px] uppercase bg-surface-container-high text-on-surface font-bold rounded" type="button">Corti</button>
+<button class="flex-1 py-0.5 font-label-editorial text-[9px] uppercase text-on-surface-variant" type="button">Diretti</button>
+</div>
+</div>
+</div>
+<!-- Alla perdita palla -->
+<div class="flex items-center justify-between bg-surface-container-lowest px-1.5 py-1 rounded">
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface-variant">Transizione Difensiva</span>
+<span class="font-label-editorial text-label-editorial text-secondary font-bold uppercase bg-surface-container px-1 rounded">Contropressing</span>
+</div>
+<!-- APPLY TACTICS CTA BUTTON -->
+<button class="w-full h-8 mt-1 rounded bg-primary-container hover:bg-inverse-primary text-on-primary-container hover:text-on-primary font-label-editorial text-label-editorial uppercase tracking-wider font-bold flex items-center justify-center gap-1.5 transition-colors shadow" id="btn-apply-tactics" type="button">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span>Applica Tattica</span>
+</button>
+</div>
+</section>
+</div>
+</div>
+<script>
+  // Play/Pause button interaction
+  const playBtn = document.getElementById('btn-play-pause');
+  const playIcon = document.getElementById('play-pause-icon');
+  let isPlaying = true;
+
+  if (playBtn && playIcon) {
+    playBtn.addEventListener('click', () => {
+      isPlaying = !isPlaying;
+      playIcon.textContent = isPlaying ? 'pause' : 'play_arrow';
+      playBtn.classList.toggle('bg-primary-container', !isPlaying);
+      playBtn.classList.toggle('text-on-primary-container', !isPlaying);
+    });
+  }
+
+  // Speed buttons toggle
+  const speedButtons = document.querySelectorAll('.speed-btn');
+  speedButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      speedButtons.forEach(b => {
+        b.className = 'speed-btn px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface font-label-numeric-sm text-label-numeric-sm font-semibold transition-colors';
+      });
+      btn.className = 'speed-btn px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-numeric-sm text-label-numeric-sm font-semibold transition-colors';
+    });
+  });
+
+  // Touchline shouts feedback
+  const shoutButtons = document.querySelectorAll('.shout-btn');
+  shoutButtons.forEach(shout => {
+    shout.addEventListener('click', () => {
+      const origText = shout.textContent;
+      shout.textContent = 'Inviato!';
+      shout.classList.add('bg-secondary', 'text-on-secondary');
+      setTimeout(() => {
+        shout.textContent = origText;
+        shout.classList.remove('bg-secondary', 'text-on-secondary');
+      }, 1500);
+    });
+  });
+
+  // Apply tactics visual confirmation
+  const applyBtn = document.getElementById('btn-apply-tactics');
+  if (applyBtn) {
+    applyBtn.addEventListener('click', () => {
+      const originalHTML = applyBtn.innerHTML;
+      applyBtn.innerHTML = '<span class="material-symbols-outlined text-[16px]">done_all</span><span>Istruzioni Trasmesse!</span>';
+      applyBtn.classList.remove('bg-primary-container', 'text-on-primary-container');
+      applyBtn.classList.add('bg-secondary-container', 'text-on-secondary-container');
+      setTimeout(() => {
+        applyBtn.innerHTML = originalHTML;
+        applyBtn.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+        applyBtn.classList.add('bg-primary-container', 'text-on-primary-container');
+      }, 1800);
+    });
+  }
+</script></main></div></body></html>
