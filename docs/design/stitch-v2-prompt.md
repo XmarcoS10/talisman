@@ -119,3 +119,11 @@ Also show a small "Layout" menu with presets: "Allenatore" (matches, squad, tabl
 
 Content fixes for this screen: remove the betting odds ("Quote scommesse") — the game has no betting; remove "Rivedi il discorso motivazionale / Prepara discorso" — there is no team talk feature. Everything else in the widgets must use data the game already has: results, table, cash, board trust, morale, injuries, contracts, scout estimates as star ranges, news, press conferences, weather, referee, opposing coach.
 ```
+
+## Rotta dopo Stitch (30/09)
+
+Decisione di Marco: prima si finiscono tutte le schermate con Stitch; poi, costruendole in React, l'estetica va
+indirizzata verso la struttura e l'HUD di Openfoot Manager (barra laterale richiudibile con allenatore e club, barra in
+alto con titolo e data, ricerca, Salva e un grande «Continua» con menu; filtri a pastiglie per categoria), tenendo
+l'identità di TFM. Obiettivo di fondo: Football Manager 26. Le funzioni nuove (discorsi, staff, tattica con e senza
+palla) vengono dopo.
