@@ -1,5 +1,20 @@
 # Note di rilascio
 
+## 0.10.0 — i tratti del giocatore
+
+Le carriere della 0.9.0 si aprono e ogni giocatore trova i suoi tratti. Le partite cambiano: i tratti contano in campo.
+
+- **Tratti come in Football Manager**: «Tenta spesso tiri da fuori», «Porta spesso palla», «Tenta spesso il passaggio
+  filtrante», «Gioca palloni semplici», «Crossa appena può», «Si inserisce in area», «Resta sempre dietro», «Entra spesso
+  in scivolata» e, per i portieri, «Esce spesso dai pali». Si vedono nel profilo; dei giocatori degli altri club solo
+  quando gli osservatori li conoscono.
+- **Contano in partita**: chi ha un tratto decide diversamente (tira di più da fuori, cerca il dribbling, si inserisce,
+  contrasta di più e fa più falli...).
+- **Si insegnano**: dal profilo di un tuo giocatore «Insegna un tratto», oppure «Disimpara». Servono settimane: i
+  giovani e i professionisti imparano prima, il vice bravo aiuta, chi ha il morale a terra non ascolta. Due tratti
+  opposti non stanno insieme. Quando ha imparato arriva la notizia.
+- Con i tratti le partite hanno un po' più di tiri e gol (2,59 a partita, prima 2,46), sempre nei target.
+
 ## 0.9.0 — lo staff
 
 Le carriere della 0.8.0 si aprono senza cambiamenti e trovano subito uno staff medio.
@@ -201,6 +216,20 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.10.0 — player traits (English)
+
+Careers from 0.9.0 open and every player finds their traits. Matches change: traits count on the pitch.
+
+- **Traits as in Football Manager**: tries long-range shots, runs with ball often, tries killer balls often, plays short
+  simple passes, crosses early, gets into the opposition area, stays back at all times, dives into tackles and, for
+  goalkeepers, rushes out of goal. They show in the profile; for other clubs' players only once scouts know them.
+- **They count in matches**: a player with a trait decides differently (shoots more from distance, looks for the
+  dribble, makes runs into the box, tackles more and fouls more...).
+- **They can be taught**: from one of your players' profile, "Teach a trait" or "Unlearn". It takes weeks: young players
+  and professionals learn faster, a good assistant helps, players with very low morale won't listen. Opposite traits
+  can't be held together. News arrives when it's learned.
+- With traits matches have slightly more shots and goals (2.59 per match, 2.46 before), within targets.
 
 ## 0.9.0 — the staff (English)
 
