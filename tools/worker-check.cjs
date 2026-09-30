@@ -52,6 +52,8 @@ app.on('browser-window-created', async (_e, win) => {
       await js(`window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' })); true`);
       await wait(300);
     }
+    await until(`!!document.querySelector('.live-talk')`);
+    await click('Nessun discorso'); // discorso prima della partita (0.8.0)
     await until(`!!document.querySelector('canvas.pitch2d')`);
     await wait(3000);
     const liveLong = await js('window.__long.splice(0)');

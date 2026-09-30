@@ -117,6 +117,9 @@ export const PSYCH = {
   // promesse ed esclusioni
   promiseWindow: 8,
   promiseNeed: { starter: 6, minutes: 3 },
+  // discorso di fine partita (talks.ts): morale e fiducia per chi lo prende bene, in meno per chi lo prende male
+  talkMorale: 5,
+  talkTrust: 2,
 } as const;
 
 // --- motore partita L2 (GUIDA §6) ---
@@ -333,6 +336,7 @@ export const MATCH = {
   shoutEvery: 15, // minuti tra un'indicazione e la successiva
   shoutBoost: 0.03, // logit in più per chi risponde bene (≈ 15 punti di morale)
   shoutBackfire: 0.02, // logit in meno per chi la prende male
+  talkBoost: 0.03, // discorso prima della partita o all'intervallo: logit per chi lo prende bene (talks.ts), in meno per chi lo prende male
 
   // transizioni (Blocco 2b, intervento 6): i secondi dopo un cambio di possesso
   transWindow: 8, // secondi dopo il recupero in cui si è "in transizione"…

@@ -20,11 +20,13 @@ import { t } from '../i18n.ts';
 import { LiveAnalyst } from './LiveAnalyst.tsx';
 import { LiveBench } from './LiveBench.tsx';
 import { LiveSheet } from './LiveSheet.tsx';
+import { LiveTalk } from './LiveTalk.tsx';
+import { talkResponse, type Talk } from '../../engine/talks.ts';
 import { Seg } from './Tactics.tsx';
 
 const INSTR = ['pressing', 'tempo', 'width', 'line', 'directness', 'counterPress'] as const;
 
-export function Live({ world, live, onFinish }: { world: WorldState; live: LiveDay; onFinish: () => void }) {
+export function Live({ world, live, onFinish }: { world: WorldState; live: LiveDay; onFinish: (talk?: Talk) => void }) {
   const { run, fx } = live;
   const me: 0 | 1 = fx.home === world.manager.clubId ? 0 : 1;
   const clubs = [world.clubs[fx.home]!, world.clubs[fx.away]!] as const;
@@ -36,6 +38,8 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   const [camera, setCamera] = useState<CameraMode>(settings().camera);
   const [overlays, setOverlays] = useState(settings().overlays);
   const [pause, setPause] = useState(false); // pausa tattica
+  const [preTalk, setPreTalk] = useState(true); // discorso prima del calcio d'inizio: la partita aspetta
+  const endTalk = useRef<Talk | undefined>(undefined); // discorso di fine partita, applicato al mondo a partita chiusa
   const [sheetOpen, setSheet] = useState<'half' | 'full' | null>(null); // tabellino
   const halfShown = useRef(false);
   const [phrase, setPhrase] = useState<{ id: string; vars: Record<string, string | number> } | null>(null);
@@ -52,7 +56,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   }));
 
   const { T, reel, moments, replay, startReplay, stopReplay, overlays: ov } = useLiveLoop(run, canvas, look, mirror,
-    { playing: playing && !pause, speed, view, camera, overlays }, rerender);
+    { playing: playing && !pause && !preTalk, speed, view, camera, overlays }, rerender);
   const clip = view === 'full' ? null : reel.current.at(T.current);
 
   const st = sample(run, T.current, mirror);
@@ -111,6 +115,11 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
     resetTrail();
     setPlaying(false);
   };
+  // reazioni ai discorsi: in campo durante la partita, tutta la rosa a fine partita (col punteggio finale)
+  const onPitch = (rs: number[]) => run.teams[me].on.map((m, i) => ({ name: shortName(m.p), r: rs[i]! }));
+  const diffNow = () => score[me] - score[1 - me]!;
+  const talkOf = (k: Talk, diff: number) => world.clubs[world.manager.clubId]!.playerIds.map((id) => world.players[id]!)
+    .map((p) => ({ name: shortName(p), r: talkResponse(p, k, diff) }));
   const tac = world.clubs[world.manager.clubId]!.tactic;
   const setTac = <K extends keyof Tactic>(k: K, v: Tactic[K]) => { ov.current.snapshot(min); tac[k] = v; run.teams[me].baseMentality = tac.mentality; rerender(); };
 
@@ -120,7 +129,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
         <Scoreboard clubs={clubs} score={score} min={min} over={over} me={me} flash={moments.current.some((m) => m.kind === 'goal')}
           tactics={[{ ...run.teams[0].tactic, mentality: run.teams[0].mentality }, { ...run.teams[1].tactic, mentality: run.teams[1].mentality }]} />
         <div className="live-ctl">
-          {over ? <button className="btn primary big" onClick={onFinish}>{t('live.report')}</button> : <>
+          {over ? <button className="btn primary big" onClick={() => onFinish(endTalk.current)}>{t('live.report')}</button> : <>
             <button className="btn primary sq" onClick={() => setPlaying(!playing)} aria-label={t('live.play')}>{playing ? <Pause size={16} /> : <Play size={16} />}</button>
             <div className="seg-tabs">{SPEED_LABELS.map((l, i) => <button key={l} className={i === speed ? 'active hot' : ''} onClick={() => setSpeed(i)}>{l}</button>)}</div>
             <button className="btn" onClick={nextEvent}><SkipForward size={14} /> {t('live.nextEvent')}</button>
@@ -150,16 +159,18 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
           {sheetOpen && (
             <LiveSheet run={run} me={me} clubs={clubs} step={st?.i ?? 0} final={sheetOpen === 'full'} ctx={{ ...ctx, min }} clips={reel.current.clips}
               now={replay.current?.back ?? T.current} onReplay={(c) => { setSheet(null); setPlaying(true); startReplay(c.from, c.to); }}
-              onClose={() => { setSheet(null); setPlaying(true); }} onFinish={onFinish} />
+              onClose={() => { setSheet(null); setPlaying(true); }} onFinish={() => onFinish(endTalk.current)}
+              talk={sheetOpen === 'full' ? (k) => { endTalk.current = k; return talkOf(k, diffNow()); } : (k) => onPitch(run.talk(me, k))} />
           )}
-          <div className="pitch-wrap" hidden={!!sheetOpen}>
+          {preTalk && <LiveTalk phase="pre" react={(k) => onPitch(run.talk(me, k))} onDone={() => setPreTalk(false)} />}
+          <div className="pitch-wrap" hidden={!!sheetOpen || preTalk}>
             <canvas ref={canvas} className="pitch2d" />
             <span className="attack-dir">{t('live.attackRight', { club: clubs[me].shortName })}</span>
             {view !== 'full' && !clip && !over && !replay.current && <SkipCard min={min} />}
             {replay.current && <ReplayTag onSkip={stopReplay} />}
           </div>
           {!sheetOpen && <ClipStrip clips={reel.current.clips} now={replay.current?.back ?? T.current} me={me} onReplay={(c) => startReplay(c.from, c.to)} />}
-          <div className="panel say">
+          <div className="panel say" hidden={preTalk}>
             {lines(run.frames, st?.i ?? 0, look.names, 3, view !== 'full').map((l, i, a) => (
               <div key={`${l.key}${i}`} className={`${i === a.length - 1 ? 'now' : 'muted'} ${l.big ? 'big' : ''}`}>{t(l.key, l.vars)}</div>
             ))}

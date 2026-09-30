@@ -100,6 +100,11 @@ Cornice alla Openfoot (`Sidebar.tsx`, `Topbar.tsx`: «Continua» col menu dal vi
 stile di Stitch (`docs/design/stitch-v2/`): `--primary` rosso per pulsanti e selezioni, `--accent` verde per ciò che va bene.
 Scrivania a riquadri: catalogo in `screens/DeskWidgets.tsx` (taglie S/M/L su 12 colonne, layout pronti), layout in `settings.desk`.
 
+## Discorsi alla squadra (0.8.0)
+`engine/talks.ts`: `talkResponse` (carattere, morale, punteggio) per i sei toni. Prima e all'intervallo `run.talk` somma
+`MATCH.talkBoost` al logit dei giocatori in campo; a fine partita `fullTimeTalk` muove morale e fiducia (`PSYCH.talkMorale`,
+`talkTrust`) sul mondo già chiuso (in `App.tsx`, dopo `closeDay`). Solo nelle partite guardate dal vivo; l'IA non ne fa.
+
 ## Salvataggi e diagnostica
 In Electron gli slot sono file in `%APPDATA%/talisman/saves` (preload `electron/preload.cjs`), con intestazione davanti
 al mondo; il registro degli errori è in `%APPDATA%/talisman/logs`. Nel browser resta il localStorage.

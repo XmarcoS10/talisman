@@ -29,6 +29,7 @@ import { Tactics } from './screens/Tactics.tsx';
 import { Training } from './screens/Training.tsx';
 import { Youth } from './screens/Youth.tsx';
 import { Topbar } from './Topbar.tsx';
+import { fullTimeTalk } from '../engine/talks.ts';
 import { screenArt } from './art.ts';
 import { Sidebar, type NavName } from './Sidebar.tsx';
 import { currentSlot, saveTo, startClock } from './storage.ts';
@@ -132,8 +133,12 @@ export function App(_: { lang: string }) { // `lang`: cambiando lingua l'app si 
   if (!world) return <Start onLoad={open} onStart={(w) => { startClock(); autosave(w); open(w); }} />;
   if (liveDay) {
     return (
-      <Live world={world} live={liveDay} onFinish={async () => {
-        const { world: w, json, played } = await closeDay(world, liveDay);
+      <Live world={world} live={liveDay} onFinish={async (talk) => {
+        const { world: w, json: closed, played } = await closeDay(world, liveDay);
+        // discorso di fine partita: sul mondo appena chiuso, poi si salva quello
+        const fx = played[0]!, me = w.manager.clubId;
+        if (talk) fullTimeTalk(w, w.clubs[me]!, talk, (fx.home === me ? 1 : -1) * (fx.result!.hg - fx.result!.ag));
+        const json = talk ? undefined : closed;
         setLiveDay(null);
         markVisited('live'); // prima partita guidata: fatta
         const others = played.slice(1).filter((f) => (played[0]!.cup ? f.cup : !f.cup && w.clubs[f.home]!.compId === w.clubs[w.manager.clubId]!.compId));

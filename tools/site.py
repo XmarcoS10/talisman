@@ -6,7 +6,7 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'site')
 REPO = 'https://github.com/XmarcoS10/talisman'
 SITE = 'https://xmarcos10.github.io/talisman/'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
-VERSION = '0.7.0'
+VERSION = '0.8.0'
 SIZE = '123 MB'
 SHA = 'b885583b9dcd2f029b1b399f68ebf3a74ef92c3c1f7d0a8f66dcdd1d84bf2719'
 # pnpm sim -- --seasons 10 --seed 42 con la 0.2.0
@@ -543,6 +543,7 @@ def download():
         <div class="panel">
           <h3>{x('Novità della', 'New in')} {VERSION}</h3>
           <ul class="checks">
+            <li>{x('<b>Discorsi alla squadra</b>: prima, all'intervallo e a fine partita; ognuno reagisce a modo suo.', '<b>Team talks</b>: before the match, at half time and at full time; each player reacts in his own way.')}</li>
             <li>{x('<b>Interfaccia nuova</b>: cornice con «Continua» e il suo menu, Scrivania a riquadri da personalizzare.', '<b>New interface</b>: a new frame with Continue and its menu, a desk of tiles you can customise.')}</li>
             <li>{x('<b>Rifinito giocando</b>: «Avanza» senza clic a vuoto, report e analista più chiari, decimali giusti.', '<b>Polished by playing</b>: no empty clicks on Continue, clearer reports and analyst, proper decimals.')}</li>
             <li>{x('<b>La costruzione</b>: la squadra più forte fa girare palla, e un cambio di gioco apre la difesa avversaria.', '<b>The build-up</b>: the stronger side keeps the ball moving, and a switch of play opens up the opposing defence.')}</li>

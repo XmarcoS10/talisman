@@ -1,6 +1,7 @@
 // Motore partita L2 a zone (GUIDA §6.2): una sequenza di decisioni del portatore di palla, con le posizioni dei 22
 // che si muovono fra un'azione e l'altra. Lo stato sta in `state.ts`; qui c'è il ciclo: posizioni, pressione,
 // scelta, esecuzione, tempo che passa (docs/03-match-engine.md).
+import { talkResponse, type Talk } from '../talks.ts';
 import { MATCH } from '../balance.ts';
 import type { MatchEvent, Player } from '../model.ts';
 import type { Rng } from '../rng.ts';
@@ -35,6 +36,8 @@ export interface MatchRun {
   shout(side: 0 | 1, kind: Shout): boolean;
   /** minuto da cui si può dare la prossima indicazione */
   nextShout(side: 0 | 1): number;
+  /** discorso alla squadra (prima della partita, all'intervallo): la reazione di ognuno in campo */
+  talk(side: 0 | 1, kind: Talk): number[];
   rating(m: MP): number;
   /** gioca fino alla fine e restituisce il risultato */
   result(): SimOutput;
@@ -132,6 +135,10 @@ export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
       return true;
     },
     nextShout: (side) => st.shoutAt[side]!,
+    talk(side, kind) {
+      const diff = st.score[side] - st.score[1 - side]!;
+      return teams[side].on.map((m) => { const r = talkResponse(m.p, kind, diff); m.mod += MATCH.talkBoost * r; return r; });
+    },
     sub(side, outId, inId) {
       const tm = teams[side];
       const out = tm.on.find((m) => m.p.id === outId);

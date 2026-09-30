@@ -8,6 +8,8 @@ import { sheet, type SheetSide, type ShotDot } from '../match/sheet.ts';
 import { shortName } from '../bits.tsx';
 import { fmtN, t } from '../i18n.ts';
 import { ClipStrip } from './LiveParts.tsx';
+import { LiveTalk, type Reaction } from './LiveTalk.tsx';
+import type { Talk } from '../../engine/talks.ts';
 
 const ROWS: { key: string; get: (s: SheetSide) => number | string }[] = [
   { key: 'xg', get: (s) => fmtN(s.xg, 2) },
@@ -38,9 +40,11 @@ function ShotMap({ shots, me }: { shots: ShotDot[]; me: 0 | 1 }) {
   );
 }
 
-export function LiveSheet({ run, me, clubs, step, final, ctx, clips, now, onReplay, onClose, onFinish }: {
+export function LiveSheet({ run, me, clubs, step, final, ctx, clips, now, onReplay, onClose, onFinish, talk }: {
   run: MatchRun; me: 0 | 1; clubs: readonly [Club, Club]; step: number; final: boolean; ctx: Ctx;
   clips: Clip[]; now: number; onReplay: (c: Clip) => void; onClose: () => void; onFinish: () => void;
+  /** discorso all'intervallo o a fine partita */
+  talk: (k: Talk) => Reaction[];
 }) {
   const { sides, shots } = sheet(run.frames, step);
   const best = [...run.teams[0].played, ...run.teams[1].played].sort((a, b) => run.rating(b) - run.rating(a)).slice(0, 3);
@@ -51,6 +55,7 @@ export function LiveSheet({ run, me, clubs, step, final, ctx, clips, now, onRepl
         <h2>{t(final ? 'sheet.final' : 'sheet.half')}</h2>
         <b className="num">{clubs[0].shortName} {sides[0].goals} : {sides[1].goals} {clubs[1].shortName}</b>
       </div>
+      <LiveTalk key={final ? 'full' : 'half'} phase={final ? 'full' : 'half'} react={talk} />
       <div className="sheet-grid">
         <div className="sheet-stats">
           {ROWS.map((r) => (

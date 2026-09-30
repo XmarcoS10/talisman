@@ -669,3 +669,11 @@ html.rail .shell { grid-template-columns: 80px 1fr; }
   .market-grid > .filters > .caps, .market-grid > .filters > .mini-card, .market-grid > .filters > .btn, .market-grid > .filters .toggle-card small { display: none; }
 }
 .market-grid > .panel:last-child { overflow-x: auto; }
+
+/* discorso alla squadra (0.8.0) */
+.live-talk { gap: var(--s-3); }
+.talk-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); }
+.talk-grid .answer-card { display: flex; align-items: center; gap: 10px; text-align: left; }
+.talk-grid .answer-card span { display: flex; flex-direction: column; gap: 2px; }
+.talk-grid .answer-card svg { color: var(--primary); flex: none; }
+[hidden] { display: none !important; }

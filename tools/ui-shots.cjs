@@ -54,11 +54,16 @@ app.on('browser-window-created', async (_e, win) => {
     await click('.topbar .icon-btn[aria-label="Tema chiaro o scuro"]');
     const until = async (cond, n) => { for (let i = 0; i < n && !(await js(cond)); i++) await wait(100); };
     await click('button', 'Vai alla partita');
-    await until(`!!document.querySelector('canvas.pitch2d')`, 100);
+    await until(`!!document.querySelector('.live-talk')`, 100);
+    await shot('discorso');
+    await click('.live-talk .answer-card', 'Motivare');
+    await shot('discorso-reazione');
+    await click('.live-talk .btn', "Calcio d'inizio");
     await wait(4000);
     await shot('partita');
     await click('button', 'Salta al finale');
     await until(`[...document.querySelectorAll('button')].some((b) => b.textContent.includes('Vai al risultato'))`, 600);
+    await click('.live-sheet .answer-card', 'Lodare');
     await shot('partita-fine');
     await click('button', 'Vai al risultato');
     await until(`!!document.querySelector('.modal')`, 200);
