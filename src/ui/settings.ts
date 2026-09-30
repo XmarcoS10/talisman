@@ -26,12 +26,15 @@ export interface Settings {
   overlays: OverlayKind[]; // partita: sovrapposizioni tattiche accese
   lang: Lang | ''; // lingua (Blocco 5); vuota finché non la si sceglie alla prima apertura
   theme: 'dark' | 'light' | 'system'; // tema (0.3.0); «system» segue il sistema operativo
+  matchMode: MatchMode; // «Continua» nel giorno della propria partita: guardarla dal vivo o avere solo il risultato
 }
+
+export type MatchMode = 'live' | 'result';
 
 const KEY = 'talisman-settings';
 export const DEFAULTS: Settings = { hints: true, seen: [], visited: [], guideDone: false, volume: { ui: 0.5, crowd: 0.4, fx: 0.65 },
   muteOnBlur: true, autosave: true, pauseNews: true, currency: 'EUR', dateFmt: 'long', win: '', rail: false,
-  view: 'highlights', camera: 'follow', overlays: [], lang: '', theme: 'dark' };
+  view: 'highlights', camera: 'follow', overlays: [], lang: '', theme: 'dark', matchMode: 'live' };
 
 let cache: Settings | null = null;
 

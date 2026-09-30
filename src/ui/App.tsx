@@ -2,12 +2,11 @@ import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import type { Fixture, NewsItem, WorldState } from '../engine/model.ts';
 import { fixturesOn, isSeasonOver, nextMatchDay, standings, type LiveDay, type SeasonSummary } from '../engine/world.ts';
 import { advanceWorld, closeDay, endSeasonWorld, openDay } from './engine-client.ts';
-import { Banknote, CalendarDays, Play, User } from 'lucide-react';
 import { HINTS, Hint } from './Hint.tsx';
 import { applyWin, markVisited, settings } from './settings.ts';
 import { Alerts, critical } from './Alerts.tsx';
 import { playUi } from './audio.ts';
-import { fmtDate, fmtMoney, t } from './i18n.ts';
+import { t } from './i18n.ts';
 import { BoardView } from './screens/BoardView.tsx';
 import { ClubView } from './screens/ClubView.tsx';
 import { Desk } from './screens/Desk.tsx';
@@ -29,7 +28,7 @@ import { Tables } from './screens/Tables.tsx';
 import { Tactics } from './screens/Tactics.tsx';
 import { Training } from './screens/Training.tsx';
 import { Youth } from './screens/Youth.tsx';
-import { Search } from './Search.tsx';
+import { Topbar } from './Topbar.tsx';
 import { screenArt } from './art.ts';
 import { Sidebar, type NavName } from './Sidebar.tsx';
 import { currentSlot, saveTo, startClock } from './storage.ts';
@@ -78,6 +77,7 @@ export function App(_: { lang: string }) { // `lang`: cambiando lingua l'app si 
   const [alerts, setAlerts] = useState<NewsItem[]>([]);
   const [, rerender] = useReducer((x: number) => x + 1, 0); // il motore muta il mondo sul posto
   const searchRef = useRef<HTMLInputElement>(null);
+  const onContinue = useRef(() => {}); // «Continua»: la barra in alto e lo Spazio fanno la stessa cosa
 
   // il motore gira nel worker: intanto l'interfaccia resta viva, ma non si tocca il mondo che sta per essere sostituito
   const [busy, setBusy] = useState(false);
@@ -122,7 +122,7 @@ export function App(_: { lang: string }) { // `lang`: cambiando lingua l'app si 
       if (e.key !== ' ' || typing || liveDay) return;
       e.preventDefault();
       if (modal) setModal(null);
-      else onAdvance();
+      else onContinue.current();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -151,23 +151,16 @@ export function App(_: { lang: string }) { // `lang`: cambiando lingua l'app si 
   // gioca il club dell'utente nel prossimo turno? allora si può seguire dal vivo
   const day = nextMatchDay(world);
   const myMatchDay = day !== null && fixturesOn(world, day).some((f) => !f.result && (f.home === club.id || f.away === club.id));
+  onContinue.current = () => { if (myMatchDay && settings().matchMode === 'live' && !isSeasonOver(world)) watch(); else onAdvance(); };
+  const title = screen.name === 'player' ? t('top.player') : screen.name === 'club' ? world.clubs[screen.id]!.name : t(`nav.${screen.name}`);
 
   return (
     <div className="shell">
       {!lastSaveOk && <div className="save-failed">{t('save.failed')}</div>}
       {busy && <div className="busy" aria-busy="true" />}
-      <header className="topbar">
-        <div className="brand"><img src="icon-64.png" alt="" width={30} height={30} /><div>TFM <b>27</b><small>MANAGER</small></div></div>
-        <Search ref={searchRef} world={world} onPlayer={openPlayer} onClub={openClub} />
-        <div className="spacer" />
-        <span className="pill num"><CalendarDays size={15} />{fmtDate(world.season, world.day)}</span>
-        <span className="pill num" title={t('top.balance')}><Banknote size={15} />{fmtMoney(club.balance)}</span>
-        {myMatchDay && <button className="btn" onClick={watch}><Play size={14} /> {t('top.watch')}</button>}
-        <button className="btn primary big" onClick={onAdvance} title={t('top.advanceHint')}>
-          {t(isSeasonOver(world) ? 'top.endSeason' : 'top.advance')} ▸
-        </button>
-        <span className="avatar" title={world.manager.name}><User size={17} /></span>
-      </header>
+      <Topbar ref={searchRef} world={world} title={title} onBack={'back' in screen ? () => setScreen(screen.back) : undefined}
+        onPlayer={openPlayer} onClub={openClub} matchDay={myMatchDay} seasonOver={isSeasonOver(world)}
+        onContinue={() => onContinue.current()} onSave={() => { const ok = autosave(world); rerender(); return ok; }} />
 
       <Sidebar world={world} active={screen.name} onNav={(n) => setScreen({ name: n })}
         onQuit={() => { if (autosave(world)) setWorld(null); else rerender(); }} />

@@ -8,12 +8,13 @@ const light = css.slice(css.indexOf(":root[data-theme='light'] {"));
 const tok = (name: string) => light.match(new RegExp(`--${name}: (#[0-9a-f]{6})`))![1]!;
 
 describe('tema chiaro', () => {
-  const text = ['text-1', 'text-2', 'text-3', 'accent', 'warning', 'negative', 'data-1', 'cyan-soft', 'gold', 'badge-def', 'badge-mid', 'badge-att'];
+  const text = ['primary', 'text-1', 'text-2', 'text-3', 'accent', 'warning', 'negative', 'data-1', 'cyan-soft', 'gold', 'badge-def', 'badge-mid', 'badge-att'];
   it.each(text)('%s si legge su bianco e sul fondo', (name) => {
     expect(contrast(tok(name), tok('surface-1'))).toBeGreaterThanOrEqual(4.5);
     expect(contrast(tok(name), tok('bg-0'))).toBeGreaterThanOrEqual(4.5);
   });
-  it('il testo dei pulsanti principali si legge sul verde', () => {
+  it('il testo dei pulsanti principali si legge sul rosso e sul verde', () => {
+    expect(contrast(tok('primary-ink'), tok('primary'))).toBeGreaterThanOrEqual(4.5);
     expect(contrast(tok('accent-ink'), tok('accent'))).toBeGreaterThanOrEqual(4.5);
   });
 });
