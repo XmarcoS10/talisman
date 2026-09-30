@@ -543,7 +543,7 @@ def download():
         <div class="panel">
           <h3>{x('Novità della', 'New in')} {VERSION}</h3>
           <ul class="checks">
-            <li>{x('<b>Discorsi alla squadra</b>: prima, all'intervallo e a fine partita; ognuno reagisce a modo suo.', '<b>Team talks</b>: before the match, at half time and at full time; each player reacts in his own way.')}</li>
+            <li>{x("<b>Discorsi alla squadra</b>: prima, all'intervallo e a fine partita; ognuno reagisce a modo suo.", '<b>Team talks</b>: before the match, at half time and at full time; every player reacts in their own way.')}</li>
             <li>{x('<b>Interfaccia nuova</b>: cornice con «Continua» e il suo menu, Scrivania a riquadri da personalizzare.', '<b>New interface</b>: a new frame with Continue and its menu, a desk of tiles you can customise.')}</li>
             <li>{x('<b>Rifinito giocando</b>: «Avanza» senza clic a vuoto, report e analista più chiari, decimali giusti.', '<b>Polished by playing</b>: no empty clicks on Continue, clearer reports and analyst, proper decimals.')}</li>
             <li>{x('<b>La costruzione</b>: la squadra più forte fa girare palla, e un cambio di gioco apre la difesa avversaria.', '<b>The build-up</b>: the stronger side keeps the ball moving, and a switch of play opens up the opposing defence.')}</li>
