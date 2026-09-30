@@ -772,6 +772,11 @@ export const COACH = {
     counter: { '4-3-3': '4-4-2', '4-2-3-1': '4-4-2', '3-5-2': '5-3-2' },
     pressing: { '4-2-3-1': '4-4-2' },
   } as Record<string, Partial<Record<FormationId, FormationId>>>,
+  // e i ruoli senza palla, per posizione nel modulo senza palla (dove il ruolo non è adatto, resta quello con palla)
+  outRoles: {
+    pressing: { ST: 'press', AML: 'press', AMC: 'press', AMR: 'press' },
+    counter: { ST: 'outlet' },
+  } as Record<string, Partial<Record<string, 'holdShape' | 'press' | 'cover' | 'outlet'>>>, // as: tabella per stile e posizione
   sackFrom: 10, // giornate giocate prima che si possa esonerare
   sackGap: 5, // posizioni sotto il blasone
   sackP: 0.03, // probabilità a settimana, per posizione oltre la soglia

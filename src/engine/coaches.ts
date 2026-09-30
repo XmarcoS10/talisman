@@ -5,7 +5,8 @@
 import { COACH } from './balance.ts';
 import { fairPosition } from './board/board.ts';
 import { bestFormation, pickXI, xiStrength } from './match.ts';
-import { defaultRoles } from './match/tactics.ts';
+import { oopRolesFor } from './match/roles.ts';
+import { defaultRoles, FORMATIONS, phaseMap } from './match/tactics.ts';
 import { COACH_STYLES, FORMATION_IDS, type Club, type Coach, type WorldState } from './model.ts';
 import { NATIONS } from './names.ts';
 import { addNews } from './news.ts';
@@ -40,10 +41,18 @@ export function coachTactics(world: WorldState, club: Club) {
     const gap = xiStrength(pickXI(world, club, best)) - xiStrength(pickXI(world, club, coach.formation));
     if (gap <= COACH.formationSlack) formation = coach.formation;
   }
-  const s = COACH.styles[coach?.style ?? 'balanced'];
+  const style = coach?.style ?? 'balanced';
+  const s = COACH.styles[style];
+  // modulo e ruoli senza palla dello stile (FM26)
+  const out = COACH.outShape[style]?.[formation] ?? formation, want = COACH.outRoles[style];
+  const map = phaseMap(formation, out);
+  const rolesOut = want && FORMATIONS[formation].map((_, i) => {
+    const pos = FORMATIONS[out][map[i]!]!.pos, r = want[pos];
+    return r && oopRolesFor(pos).includes(r) ? r : null;
+  });
   Object.assign(club.tactic, { formation, roles: defaultRoles(formation), mentality: 3 + s.mentality, pressing: s.pressing, tempo: s.tempo,
     width: s.width, line: s.line, directness: s.directness, counterPress: s.counterPress,
-    formationOut: COACH.outShape[coach?.style ?? 'balanced']?.[formation], rolesOut: undefined }); // modulo senza palla dello stile (FM26)
+    formationOut: out === formation ? undefined : out, rolesOut });
 }
 
 /** chi prende una panchina: il senza panchina col blasone più adatto al club */

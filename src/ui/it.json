@@ -24,6 +24,7 @@
   "nav.saves": "Impostazioni & Salvataggi",
   "top.advanceHint": "Continua (barra spaziatrice) · Cerca (/)",
   "search.placeholder": "Cerca giocatori e club  ( / )",
+  "news.viceTalk": "Il vice {name} ha parlato alla squadra: prima della partita «{talk}», alla fine «{talkEnd}».",
   "news.injury": "{name} si è infortunato ({injury}): starà fuori circa {days} giorni.",
   "news.trainingInjury": "{name} si è fatto male in allenamento ({injury}): {days} giorni di stop.",
   "news.bustup": "Lite in allenamento tra {a} e {b}.",

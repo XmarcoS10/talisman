@@ -2,13 +2,15 @@
 import { MATCH, TRAIN } from './balance.ts';
 import { injure, matchInjuryP, relapseRisk } from './injuries.ts';
 import { afterMatch } from './morale.ts';
-import { simulate, type SimOutput, type TeamSetup } from './match/engine.ts';
+import { runMatch, type SimOutput, type TeamSetup } from './match/engine.ts';
 import { oopRolesFor, validRole } from './match/roles.ts';
 import { FORMATIONS, defaultRoles, phaseMap, type Slot } from './match/tactics.ts';
 import { FORMATION_IDS, type Club, type ClubId, type FormationId, type Fixture, type Player, type Tactic, type WorldState } from './model.ts';
 import { addCause, addNews, pName } from './news.ts';
 import { ratingAt } from './players.ts';
 import { refereeFor, refFactor } from './referees.ts';
+import { staffOf } from './staff.ts';
+import { fullTimeTalk, viceTalk } from './talks.ts';
 import { weatherFor, weatherFx } from './weather.ts';
 import { clamp } from './util.ts';
 import type { Rng } from './rng.ts';
@@ -136,8 +138,21 @@ export function matchSetups(world: WorldState, fx: Fixture, live = false): [Team
   }) as [TeamSetup, TeamSetup];
 }
 
+/** partita non seguita dal vivo; se gioca l'utente, i discorsi (prima e alla fine) li fa il suo vice */
 export function playMatch(world: WorldState, rng: Rng, fx: Fixture) {
-  applyMatch(world, rng, fx, simulate(rng, matchSetups(world, fx)));
+  const run = runMatch(rng, matchSetups(world, fx));
+  const me = world.manager.clubId;
+  const side = fx.home === me ? 0 : fx.away === me ? 1 : -1;
+  const vice = side < 0 ? undefined : staffOf(world, me, 'assistant');
+  const pre = vice && viceTalk(run.teams[side as 0 | 1].on.map((m) => m.p), vice.skill, 0); // as: side ≥ 0 qui
+  if (pre) run.talk(side as 0 | 1, pre);
+  applyMatch(world, rng, fx, run.result());
+  if (!vice || !pre) return;
+  const club = world.clubs[me]!;
+  const diff = (side === 0 ? 1 : -1) * (fx.result!.hg - fx.result!.ag);
+  const end = viceTalk(club.playerIds.map((id) => world.players[id]!), vice.skill, diff);
+  fullTimeTalk(world, club, end, diff);
+  addNews(world, 'news.viceTalk', { name: vice.name, talk: `talk.${pre}`, talkEnd: `talk.${end}` });
 }
 
 /** scrive nel mondo quello che è successo in partita: statistiche, condizione, infortuni, cartellini, spogliatoio */

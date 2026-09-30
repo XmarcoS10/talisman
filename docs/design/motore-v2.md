@@ -692,3 +692,12 @@ correlazione forza-punti **0,64** (era circa 0,72 dopo la fase di costruzione: i
 dalla forza, aggiungono caso); con le coppie dell'IA **0,75**, dentro il target. Distacco A-B (11,4 e 10,6) e
 bancarotte (3,2 e 4,4 ogni 10 stagioni) fuori target in tutte e due, come prima. Da tenere d'occhio: se una
 prossima misura riporta la correlazione sotto 0,72, la prima cosa da guardare è la nascita dei tratti (`TRAIT.born*`).
+
+**Ruoli senza palla dell'IA** (0.12.0, `COACH.outRoles`). Stessa misura, 6 stagioni, semi 42 e 7:
+- base (solo i moduli): +3,2 … −5,1 e +2,9 … −5,5;
+- pressing = attaccanti «Pressa», contropiede = centravanti «Resta alto», difensivi = esterni «Copre»: difensivi −11,2
+  e −6,1, contropiede +1,3 e +3,4. Coprire con gli esterni svuota il centrocampo: tolto;
+- senza i difensivi (tenuto): +3,4 … −3,8 e +3,1 … −2,6; carriera 25 stagioni correlazione 0,81, distacco A-B 14,1 e
+  bancarotte 3,2 ogni 10 stagioni (fuori target come prima).
+
+I calci piazzati restano sulle posizioni di sempre: come in FM, hanno schemi loro e non seguono il modulo senza palla.

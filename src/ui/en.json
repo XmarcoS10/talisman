@@ -24,6 +24,7 @@
   "nav.saves": "Settings & Saves",
   "top.advanceHint": "Continue (space bar) · Search (/)",
   "search.placeholder": "Search players and clubs  ( / )",
+  "news.viceTalk": "Your assistant {name} gave the team talks: before the match “{talk}”, at full time “{talkEnd}”.",
   "news.injury": "{name} is injured ({injury}): out for about {days} days.",
   "news.trainingInjury": "{name} got hurt in training ({injury}): {days} days out.",
   "news.bustup": "Training ground bust-up between {a} and {b}.",

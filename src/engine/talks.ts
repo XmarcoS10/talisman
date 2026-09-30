@@ -35,6 +35,20 @@ export const reactions = (rs: number[]) => ({
   flat: rs.filter((r) => r >= 0 && r < 0.8).length,
 });
 
+/**
+ * il tono che sceglie il vice nelle partite non seguite dal vivo: il migliore per la rosa fra quelli che conosce.
+ * Più è bravo più toni conosce (TALKS in ordine: a 10 calma, motivare, pretendere; a 20 anche lode e delusione).
+ */
+export function viceTalk(ps: Player[], skill: number, diff: number): Talk {
+  const known = TALKS.slice(0, clamp(Math.round((skill * TALKS.length) / 20), 2, TALKS.length));
+  let best: Talk = known[0]!, top = -Infinity;
+  for (const k of known) {
+    const s = ps.reduce((a, p) => a + talkResponse(p, k, diff), 0);
+    if (s > top) { top = s; best = k; }
+  }
+  return best;
+}
+
 /** discorso a fine partita: il morale e la fiducia di tutta la rosa, con la causa scritta nel profilo */
 export function fullTimeTalk(world: WorldState, club: Club, kind: Talk, diff: number): number[] {
   return club.playerIds.map((id) => {

@@ -1,5 +1,22 @@
 # Note di rilascio
 
+## 0.12.0 — il vice parla alla squadra
+
+Le carriere della 0.11.0 si aprono senza cambiamenti.
+
+- **Il vice fa i discorsi** nelle partite giocate con «Solo il risultato»: prima della partita e alla fine, come
+  quando in FM li deleghi. Sceglie il tono migliore per la rosa fra quelli che conosce: un vice scarso sa solo
+  calmare e motivare, uno bravo sa anche lodare dopo una vittoria o mostrarsi deluso dopo una sconfitta. Nelle notizie
+  trovi quali toni ha usato, nel profilo dei giocatori chi l'ha presa bene o male.
+- **L'IA usa i ruoli senza palla**: gli allenatori pressing fanno pressare attaccanti e trequartisti, quelli da
+  contropiede lasciano alto il centravanti come sbocco.
+
+### Misure
+
+Punti sopra le attese per stile (`tools/diag-coaches.ts`, 6 stagioni): la forbice fra lo stile migliore e il peggiore
+scende da 8,3 a 7,2 punti (seme 42) e da 8,4 a 5,7 (seme 7). Carriere di 25 stagioni: correlazione forza-punti 0,81
+(target 0,75-0,85).
+
 ## 0.11.0 — la tattica con e senza palla
 
 Le carriere della 0.10.0 si aprono senza cambiamenti per la tua squadra: finché non scegli un modulo senza palla, si
@@ -240,6 +257,17 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.12.0 — your assistant talks to the team (English)
+
+Careers from 0.11.0 open unchanged.
+
+- **Your assistant gives the team talks** in matches played with "Result only": before kick-off and at full time, as
+  when you delegate them in FM. They pick the best tone for the squad among the ones they know: a poor assistant can
+  only calm or motivate, a good one can also praise after a win or show disappointment after a defeat. The news says
+  which tones were used, and player profiles say who took it well or badly.
+- **The AI uses out-of-possession roles**: pressing managers have forwards and attacking midfielders press, counter-
+  attacking managers leave the striker high as an outlet.
 
 ## 0.11.0 — in and out of possession tactics (English)
 

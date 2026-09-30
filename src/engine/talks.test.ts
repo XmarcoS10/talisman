@@ -1,7 +1,8 @@
 // Discorsi alla squadra (0.8.0): le regole di reazione e l'effetto del discorso di fine partita.
 import { describe, expect, it } from 'vitest';
-import { fullTimeTalk, reactions, talkResponse } from './talks.ts';
-import { newWorld } from './world.ts';
+import { ensureStaff } from './staff.ts';
+import { fullTimeTalk, reactions, talkResponse, viceTalk } from './talks.ts';
+import { advance, newWorld } from './world.ts';
 
 const w = newWorld(11);
 const club = w.clubs[w.competitions.ITA1!.clubIds[2]!]!;
@@ -34,5 +35,17 @@ describe('discorsi alla squadra', () => {
     expect(after.every((m, i) => m >= before[i]!)).toBe(true);
     expect(w.causal.length - causes).toBe(club.playerIds.length);
     expect(reactions(rs)).toEqual({ good: rs.length, flat: 0, bad: 0 });
+  });
+
+  it('il vice sceglie fra i toni che conosce: da bravo loda chi vince, da scarso no', () => {
+    const ps = club.playerIds.map((id) => w.players[id]!);
+    expect(viceTalk(ps, 20, 3)).toBe('praise');
+    expect(['calm', 'motivate']).toContain(viceTalk(ps, 3, 3));
+  });
+
+  it('nelle partite non seguite il vice fa i discorsi e lo dice nelle notizie', () => {
+    const v = newWorld(5);
+    ensureStaff(v);
+    while (!v.news.some((n) => n.key === 'news.viceTalk')) expect(advance(v).length).toBeGreaterThan(0);
   });
 });

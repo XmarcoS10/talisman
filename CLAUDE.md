@@ -103,7 +103,8 @@ Scrivania a riquadri: catalogo in `screens/DeskWidgets.tsx` (taglie S/M/L su 12 
 ## Discorsi alla squadra (0.8.0)
 `engine/talks.ts`: `talkResponse` (carattere, morale, punteggio) per i sei toni. Prima e all'intervallo `run.talk` somma
 `MATCH.talkBoost` al logit dei giocatori in campo; a fine partita `fullTimeTalk` muove morale e fiducia (`PSYCH.talkMorale`,
-`talkTrust`) sul mondo già chiuso (in `App.tsx`, dopo `closeDay`). Solo nelle partite guardate dal vivo; l'IA non ne fa.
+`talkTrust`) sul mondo già chiuso (in `App.tsx`, dopo `closeDay`). Nelle partite non seguite li fa il vice (`viceTalk` in
+`playMatch`, 0.12.0: più è bravo più toni conosce). L'IA non ne fa.
 
 ## Staff (0.9.0)
 `engine/staff.ts`: vice, preparatore e medico solo per il club dell'utente (`world.staff`, schema 31), bravura 1-20, a 10
@@ -119,7 +120,7 @@ niente caso del mondo), si insegnano o disimparano in allenamento (`weekTraits`,
 `Tactic.formationOut` e `rolesOut` (schema 33, facoltativi): modulo e ruolo senza palla. `phaseMap` (match/tactics.ts)
 abbina gli slot; nel motore contano solo in `shapeDef` (`MP.ox, oy, oHold`), nella pressione (`oPress`) e nella fatica
 (`oDrain`). Moduli di una fase sola in `PHASE_FORMATIONS` (3-2-5, 5-4-1), fuori da `FORMATION_IDS` (l'IA non li pesca).
-IA: `COACH.outShape` per stile. Misura: `node tools/diag-phases.ts`; diario in `docs/design/motore-v2.md` §12.
+IA: `COACH.outShape` e `COACH.outRoles` per stile. Misura: `node tools/diag-phases.ts`; diario in `docs/design/motore-v2.md` §12.
 
 ## Salvataggi e diagnostica
 In Electron gli slot sono file in `%APPDATA%/talisman/saves` (preload `electron/preload.cjs`), con intestazione davanti
