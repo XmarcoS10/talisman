@@ -1,7 +1,7 @@
 // Stato esplicito di una partita (Blocco 2a): tutto quello che il motore ricorda fra un'azione e l'altra sta qui,
 // e i moduli (posizionamento, pressione, esecuzione, eventi, piazzati, cambi, voti) lo ricevono come parametro.
 import { FLAGS, MATCH, REFEREE } from '../balance.ts';
-import { traitBits } from '../traits.ts';
+import { TRAIT_BIT, traitBits } from '../traits.ts';
 import { CALM, type WeatherFx } from '../weather.ts';
 import type { Club, MatchEvent, MatchEventType, MatchResult, Player, PlayerInstr, Position, SideStats, Tactic } from '../model.ts';
 import type { Rng } from '../rng.ts';
@@ -223,7 +223,7 @@ const dayMod = (p: Player, fam: number) =>
   - MATCH.famK * Math.max(0, 1 - fam / 90);
 export const mp = (player: Player, slot: Slot, role: RoleId, fam: number, from = 0, ins: PlayerInstr = {}): MP =>
   ({ p: player, pos: slot.pos, hx: slot.x, hy: slot.y, roleId: role, role: ROLES[role], marked: 0, x: slot.x, y: slot.y, tx: slot.x, ty: slot.y,
-    jx: 0, jy: 0, run: false, runRoll: 1, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from), ins, tr: traitBits(player),
+    jx: 0, jy: 0, run: false, runRoll: 1, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from), ins, tr: traitBits(player) | (ins.tackle ? TRAIT_BIT.divesIn : 0),
     ox: slot.x, oy: slot.y, oHold: ROLES[role].hold, oPress: ROLES[role].press, oDrain: 1, si: 0 });
 
 /** la fase senza palla del giocatore: il suo posto nel modulo senza palla e il suo ruolo senza palla */

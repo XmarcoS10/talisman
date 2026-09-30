@@ -1,6 +1,7 @@
 // Tratti del giocatore (0.10.0): nascono da soli senza toccare il caso, si imparano in allenamento, gli opposti si escludono.
 import { describe, expect, it } from 'vitest';
-import { bornTraits, conflicts, learnRate, startLearning, teachable, weekTraits } from './traits.ts';
+import { mp } from './match/state.ts';
+import { TRAIT_BIT, bornTraits, conflicts, learnRate, startLearning, teachable, weekTraits } from './traits.ts';
 import { advance, newWorld } from './world.ts';
 
 const w = newWorld(21);
@@ -49,4 +50,12 @@ describe('tratti del giocatore', () => {
     for (let i = 0; i < 3; i++) advance(w);
     expect((p.learning?.progress ?? 100) > 0).toBe(true);
   }, 60_000);
+
+  it("l'istruzione «entrate decise» vale in partita come il tratto «entra in scivolata»", () => {
+    const w = newWorld(3);
+    const p = { ...Object.values(w.players)[0]!, traits: [] };
+    const slot = { pos: 'DC' as const, x: 2, y: 4 };
+    expect(mp(p, slot, 'cb', 90, 0, {}).tr & TRAIT_BIT.divesIn).toBe(0);
+    expect(mp(p, slot, 'cb', 90, 0, { tackle: true }).tr & TRAIT_BIT.divesIn).toBe(TRAIT_BIT.divesIn);
+  });
 });

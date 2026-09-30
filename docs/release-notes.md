@@ -1,5 +1,14 @@
 # Note di rilascio
 
+## 0.13.2 — istruzioni individuali per fase
+
+I salvataggi passano alla versione 34, senza cambiamenti per la tua squadra.
+
+- **Istruzioni per il giocatore divise per fase**, come in FM26: in Tattica, selezionando un giocatore, trovi
+  «Con palla» (tiro, ampiezza, inserimenti, resta dietro) e «Senza palla» (marcatura stretta e, nuova,
+  **entrate decise**: vince più palloni ma fa più falli, come chi ha il tratto «Entra in scivolata»).
+- **Tattica**: con un giocatore selezionato la tabella dei candidati non esce più di lato.
+
 ## 0.13.1 — le richieste nello Spogliatoio
 
 - **Chi chiede di parlarti** (Spogliatoio) ora ha la risposta lì, come in FM: **prometti più spazio**, oppure
@@ -293,6 +302,15 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.13.2 — player instructions by phase (English)
+
+Saves move to version 34, with no change for your team.
+
+- **Player instructions split by phase**, as in FM26: in Tactics, selecting a player shows "In possession" (shooting,
+  width, runs, stay back) and "Out of possession" (tight marking and, new, **tackle harder**: wins more balls but
+  commits more fouls, like a player with the "Dives into tackles" trait).
+- **Tactics**: with a player selected, the candidates table no longer overflows sideways.
 
 ## 0.13.1 — requests in the dressing room (English)
 

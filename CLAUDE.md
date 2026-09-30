@@ -121,7 +121,7 @@ niente caso del mondo), si insegnano o disimparano in allenamento (`weekTraits`,
 `Tactic.formationOut` e `rolesOut` (schema 33, facoltativi): modulo e ruolo senza palla. `phaseMap` (match/tactics.ts)
 abbina gli slot; nel motore contano solo in `shapeDef` (`MP.ox, oy, oHold`), nella pressione (`oPress`) e nella fatica
 (`oDrain`). Moduli di una fase sola in `PHASE_FORMATIONS` (3-2-5, 5-4-1), fuori da `FORMATION_IDS` (l'IA non li pesca).
-IA: `COACH.outShape` e `COACH.outRoles` per stile. Misura: `node tools/diag-phases.ts`; diario in `docs/design/motore-v2.md` §12.
+IA: `COACH.outShape` e `COACH.outRoles` per stile. Istruzione individuale `tackle` (schema 34) = bit del tratto `divesIn` in `mp`. Misura: `node tools/diag-phases.ts`; diario in `docs/design/motore-v2.md` §12.
 
 ## Salvataggi e diagnostica
 In Electron gli slot sono file in `%APPDATA%/talisman/saves` (preload `electron/preload.cjs`), con intestazione davanti

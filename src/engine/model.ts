@@ -289,6 +289,7 @@ export interface PlayerInstr {
   width?: number; // 0 stringi, 1 normale, 2 resta largo
   runs?: number; // 0 inserimenti di meno, 1 normale, 2 di più
   stayBack?: boolean; // in possesso non sale oltre la metà campo
+  tackle?: boolean; // senza palla: entrate decise (nel motore come il tratto «Entra in scivolata»: più palle vinte, più falli)
 }
 
 /** piano partita: se il punteggio è così dal minuto `from`, cambia mentalità, modulo, pressing e linea */

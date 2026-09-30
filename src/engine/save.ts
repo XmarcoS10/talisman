@@ -11,7 +11,7 @@ import { assignAgents } from './transfers/agents.ts';
 import { makeScouts } from './scouting/scouts.ts';
 import { newBoard } from './board/board.ts';
 
-export const SCHEMA_VERSION = 33;
+export const SCHEMA_VERSION = 34;
 
 // MIGRATIONS[n] porta un save dalla versione n+1 alla n+2. Mai modificarne una già pubblicata.
 // I save vecchi non hanno tipi: si lavora su oggetti generici.
@@ -166,6 +166,8 @@ const MIGRATIONS: ((w: Raw) => void)[] = [
   // 31 → 32 (0.10.0, tratti del giocatore): quelli di nascita, ricavati da id e attributi (niente caso)
   (w) => { for (const p of Object.values(w.players as Obj)) { p.learning = null; p.traits = bornTraits(p as unknown as Player); } }, // bornTraits legge solo id, ruolo e attributi
   // 32 → 33 (tattica con e senza palla, FM26): nessuno; senza `formationOut` e `rolesOut` si gioca col modulo unico di prima
+  () => {},
+  // 33 → 34 (0.13.2, istruzioni individuali per fase): nessuno; senza `tackle` si entra come prima
   () => {},
 ];
 

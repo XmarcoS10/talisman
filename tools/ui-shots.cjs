@@ -62,6 +62,11 @@ app.on('browser-window-created', async (_e, win) => {
     await click('.phase-tabs button', 'Senza palla');
     await wait(500);
     await shot('tattica-senza-palla');
+    // istruzioni individuali divise per fase: si apre il primo giocatore di movimento
+    await js(`document.querySelectorAll('.slot-dot')[5]?.click(); true`);
+    await wait(400);
+    await js(`[...document.querySelectorAll('h2')].find((h) => h.textContent.startsWith('Istruzioni per'))?.scrollIntoView({ block: 'center' }); true`);
+    await shot('istruzioni-giocatore');
     await click('.sidebar button', 'Rosa');
     await wait(500);
     await click('tbody tr');
