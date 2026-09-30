@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="it"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-error": "#690005",
+          "on-tertiary-container": "#3e2400",
+          "on-tertiary-fixed-variant": "#653e00",
+          "on-background": "#dee2ee",
+          "secondary-fixed-dim": "#4edea3",
+          "surface-container-highest": "#30353e",
+          "surface-variant": "#30353e",
+          "inverse-on-surface": "#2c3139",
+          "surface-dim": "#0f141c",
+          "primary-container": "#ff525d",
+          "on-secondary-fixed": "#002113",
+          "on-surface-variant": "#e6bdbb",
+          "error": "#ffb4ab",
+          "tertiary-fixed-dim": "#ffb95f",
+          "surface": "#0f141c",
+          "on-tertiary": "#472a00",
+          "error-container": "#93000a",
+          "secondary": "#4edea3",
+          "secondary-container": "#00a572",
+          "on-secondary": "#003824",
+          "on-primary": "#680013",
+          "on-primary-fixed-variant": "#92001f",
+          "surface-bright": "#343942",
+          "surface-container-high": "#252a33",
+          "tertiary": "#ffb95f",
+          "surface-container-low": "#171c24",
+          "primary-fixed-dim": "#ffb3b2",
+          "on-secondary-container": "#00311f",
+          "surface-container-lowest": "#090e16",
+          "outline": "#ad8887",
+          "on-primary-container": "#5b000f",
+          "surface-tint": "#ffb3b2",
+          "on-tertiary-fixed": "#2a1700",
+          "on-error-container": "#ffdad6",
+          "primary-fixed": "#ffdad9",
+          "on-surface": "#dee2ee",
+          "inverse-surface": "#dee2ee",
+          "background": "#0f141c",
+          "on-secondary-fixed-variant": "#005236",
+          "secondary-fixed": "#6ffbbe",
+          "tertiary-fixed": "#ffddb8",
+          "surface-container": "#1b2028",
+          "inverse-primary": "#bf002b",
+          "primary": "#ffb3b2",
+          "on-primary-fixed": "#410008",
+          "outline-variant": "#5d3f3f",
+          "tertiary-container": "#ca8100"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "spacing": {
+          "space-md": "0.75rem",
+          "space-sm": "0.5rem",
+          "space-xs": "0.25rem",
+          "margin": "1.25rem",
+          "space-xl": "1.5rem",
+          "gutter": "1rem",
+          "space-lg": "1rem"
+        },
+        "fontFamily": {
+          "body-lg": [
+            "Inter"
+          ],
+          "label-numeric-md": [
+            "JetBrains Mono"
+          ],
+          "headline-lg": [
+            "Barlow Condensed"
+          ],
+          "headline-md": [
+            "Barlow Condensed"
+          ],
+          "label-numeric-lg": [
+            "JetBrains Mono"
+          ],
+          "label-numeric-sm": [
+            "JetBrains Mono"
+          ],
+          "body-sm": [
+            "Inter"
+          ],
+          "headline-xl": [
+            "Barlow Condensed"
+          ],
+          "body-md": [
+            "Inter"
+          ],
+          "headline-sm": [
+            "Barlow Condensed"
+          ],
+          "label-editorial": [
+            "Barlow Condensed"
+          ]
+        },
+        "fontSize": {
+          "body-lg": [
+            "1rem",
+            {
+              "lineHeight": "1.5rem",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "400"
+            }
+          ],
+          "label-numeric-md": [
+            "0.875rem",
+            {
+              "lineHeight": "1.125rem",
+              "letterSpacing": "0em",
+              "fontWeight": "500"
+            }
+          ],
+          "headline-lg": [
+            "2rem",
+            {
+              "lineHeight": "2.25rem",
+              "letterSpacing": "0.04em",
+              "fontWeight": "700"
+            }
+          ],
+          "headline-md": [
+            "1.5rem",
+            {
+              "lineHeight": "1.75rem",
+              "letterSpacing": "0.03em",
+              "fontWeight": "600"
+            }
+          ],
+          "label-numeric-lg": [
+            "1.25rem",
+            {
+              "lineHeight": "1.5rem",
+              "letterSpacing": "-0.02em",
+              "fontWeight": "600"
+            }
+          ],
+          "label-numeric-sm": [
+            "0.75rem",
+            {
+              "lineHeight": "0.875rem",
+              "letterSpacing": "0em",
+              "fontWeight": "500"
+            }
+          ],
+          "body-sm": [
+            "0.75rem",
+            {
+              "lineHeight": "1rem",
+              "letterSpacing": "0em",
+              "fontWeight": "400"
+            }
+          ],
+          "headline-xl": [
+            "2.5rem",
+            {
+              "lineHeight": "2.75rem",
+              "letterSpacing": "0.05em",
+              "fontWeight": "700"
+            }
+          ],
+          "body-md": [
+            "0.875rem",
+            {
+              "lineHeight": "1.25rem",
+              "letterSpacing": "-0.005em",
+              "fontWeight": "400"
+            }
+          ],
+          "headline-sm": [
+            "1.125rem",
+            {
+              "lineHeight": "1.375rem",
+              "letterSpacing": "0.025em",
+              "fontWeight": "600"
+            }
+          ],
+          "label-editorial": [
+            "0.8125rem",
+            {
+              "lineHeight": "1rem",
+              "letterSpacing": "0.08em",
+              "fontWeight": "700"
+            }
+          ]
+        }
+      },
+    },
+  }</script></head><body class="bg-background font-body-md text-body-md text-on-surface min-h-screen antialiased selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 w-full z-50 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.4)]"><div class="h-12 w-full px-gutter flex items-center justify-between gap-space-lg"><div class="flex items-center gap-space-md"><a class="flex items-center gap-space-xs px-space-sm py-1 bg-surface-container rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="main-menu" href="#"><span class="material-symbols-outlined text-[18px]">arrow_back</span><span class="font-label-editorial text-label-editorial uppercase tracking-wider">Torna al Menu Principale</span></a><div class="h-4 w-px bg-surface-variant"></div><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm uppercase text-primary-container tracking-wider">TFM 27</span><span class="font-label-editorial text-label-editorial px-1.5 py-0.5 rounded-sm bg-surface-container-high text-on-surface-variant uppercase">Setup Carriera</span></div></div><nav class="flex items-center gap-space-sm" data-active-classes="bg-primary-container text-on-primary-container font-headline-sm text-headline-sm"><a class="px-space-md py-1 rounded-lg text-on-surface-variant font-headline-sm text-headline-sm uppercase tracking-wider hover:bg-surface-container hover:text-on-surface transition-colors" data-path="assegnazione-panchina" href="#">1. Assegnazione Panchina</a><span class="material-symbols-outlined text-outline text-[16px]">chevron_right</span><a aria-current="page" class="px-space-md py-1 rounded-lg uppercase tracking-wider transition-colors bg-primary-container text-on-primary-container font-headline-sm text-headline-sm" data-path="dossier-e-firma" href="#">2. Dossier &amp; Firma</a></nav><div class="flex items-center gap-space-sm"><button class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Audio Regolazione" type="button"><span class="material-symbols-outlined text-[18px]">volume_up</span></button><button class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Preferenze Tattiche &amp; Grafiche" type="button"><span class="material-symbols-outlined text-[18px]">settings</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center ml-space-xs"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-12 bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- Status & Breadcrumb Micro-bar -->
+<div class="w-full bg-surface-container-lowest px-gutter py-space-xs flex items-center justify-between text-on-surface-variant font-label-numeric-sm text-label-numeric-sm shadow-sm">
+<div class="flex items-center gap-space-md">
+<span class="flex items-center gap-1.5 text-secondary"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>FASE 02: STIPULA DEL CONTRATTO TECNICO</span>
+<span class="text-surface-variant">•</span>
+<span class="text-on-surface-variant">COMMISSIONE DI LEGA: PROTOCOLLO ID #27-VM-984</span>
+</div>
+<div class="flex items-center gap-space-sm font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant">
+<span>CAMPIONATO DI RIFERIMENTO: SERIE A TFM</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-primary font-label-numeric-sm">TEMPO RESIDUO: ILLIMITATO</span>
+</div>
+</div>
+<!-- Main Multi-Column High Density Workspace -->
+<div class="w-full p-gutter grid grid-cols-12 gap-gutter items-start">
+<!-- LEFT COLUMN: Dossier Club (7 Columns) -->
+<section class="col-span-12 xl:col-span-7 flex flex-col gap-space-md">
+<!-- Club Hero Dossier Card -->
+<div class="bg-surface-container-low rounded-lg p-space-md shadow-md flex flex-col gap-space-sm relative overflow-hidden">
+<div class="absolute right-0 top-0 translate-x-8 -translate-y-8 w-44 h-44 rounded-full bg-gradient-to-br from-primary-container/10 via-transparent to-transparent pointer-events-none"></div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<!-- Geometric Shield Emblem -->
+<div class="w-14 h-14 rounded-lg bg-surface-container-high flex items-center justify-center relative shadow-sm shrink-0">
+<svg class="w-10 h-10 text-primary-container" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M12 2L4 5V11C4 16.5 7.5 21 12 22C16.5 21 20 16.5 20 11V5L12 2Z" fill="#1b2028"></path>
+<path d="M12 6L17 11L12 16L7 11L12 6Z" fill="currentColor"></path>
+<circle cx="12" cy="11" fill="#0f141c" r="2"></circle>
+</svg>
+<span class="absolute -bottom-1 -right-1 font-label-numeric-sm text-[10px] bg-surface-container-lowest text-secondary px-1 rounded">1913</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-sm flex-wrap">
+<h1 class="font-headline-lg text-headline-lg uppercase text-on-surface tracking-wide leading-none">Sporting Ventimonti</h1>
+<span class="px-2 py-0.5 rounded bg-surface-container font-label-editorial text-label-editorial text-secondary uppercase tracking-widest">Fondato nel 1913</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant font-label-numeric-sm text-label-numeric-sm mt-1">
+<span class="material-symbols-outlined text-[16px] text-primary">stadium</span>
+<span class="text-on-surface">Stadio Ventimonti Arena</span>
+<span class="text-surface-variant">•</span>
+<span>18.420 posti (manto sintetico 4G)</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-xs self-start md:self-auto bg-surface-container px-space-sm py-1.5 rounded">
+<span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase">Reputazione:</span>
+<span class="font-label-numeric-md text-label-numeric-md text-tertiary">★★★☆☆</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">(68/100)</span>
+</div>
+</div>
+<!-- 2-Line Club Story -->
+<p class="font-body-md text-body-md text-on-surface-variant leading-snug line-clamp-2">
+          Nato dalle ceneri dei cantieri navali del litorale tirrenico nel 1913, lo Sporting Ventimonti ha conquistato la massima serie unendo una tifoseria passionale a una gestione societaria ferrea e votata al lancio dei giovani talenti.
+        </p>
+<!-- Prognosi & Finanze Matrix Strip -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm pt-space-xs">
+<!-- Pronostico -->
+<div class="bg-surface-container p-space-sm rounded flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant font-label-editorial text-label-editorial uppercase">
+<span>Pronostico Media Stampa</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">trending_up</span>
+</div>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-headline-md text-headline-md text-on-surface uppercase">5° Posto</span>
+<span class="px-2 py-0.5 rounded bg-secondary/15 text-secondary font-label-editorial text-label-editorial uppercase">Zona Coppe</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1 rounded overflow-hidden mt-1.5">
+<div class="bg-secondary h-full" style="width: 72%;"></div>
+</div>
+<span class="font-label-numeric-sm text-[11px] text-on-surface-variant mt-1 text-right">Probabilità qualificazione: 72%</span>
+</div>
+<!-- Finanze -->
+<div class="bg-surface-container p-space-sm rounded flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant font-label-editorial text-label-editorial uppercase">
+<span>Solidità Finanziaria</span>
+<span class="px-1.5 py-0.2 rounded bg-tertiary-container/30 text-tertiary-fixed-dim font-label-numeric-sm text-[11px] uppercase font-bold">RATING A-</span>
+</div>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-label-numeric-lg text-label-numeric-lg text-on-surface font-semibold">45,4 Mln €</span>
+<span class="font-label-editorial text-label-editorial text-secondary uppercase">Cassa Attiva</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1 rounded overflow-hidden mt-1.5">
+<div class="bg-primary-container h-full" style="width: 28%;"></div>
+</div>
+<span class="font-label-numeric-sm text-[11px] text-on-surface-variant mt-1">Debiti Dilazionati Sotto Controllo (12,8 Mln €)</span>
+</div>
+</div>
+</div>
+<!-- Strutture del Club (Facilities) -->
+<div class="bg-surface-container-low rounded-lg p-space-md shadow-md flex flex-col gap-space-sm">
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-headline-sm text-headline-sm uppercase tracking-wide text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-primary">domain</span>
+            Infrastrutture &amp; Strutture Societarie
+          </span>
+<span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase">Verifica Licenza TFM 2027</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-sm">
+<!-- Facility 1 -->
+<div class="bg-surface-container p-space-sm rounded flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface-variant">Centro Sportivo</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">4 / 5</span>
+</div>
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface">Ottime</span>
+<div class="flex gap-1 mt-0.5">
+<span class="h-1.5 flex-1 rounded bg-secondary"></span>
+<span class="h-1.5 flex-1 rounded bg-secondary"></span>
+<span class="h-1.5 flex-1 rounded bg-secondary"></span>
+<span class="h-1.5 flex-1 rounded bg-secondary"></span>
+<span class="h-1.5 flex-1 rounded bg-surface-container-highest"></span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Strumentazione medica all'avanguardia</span>
+</div>
+<!-- Facility 2 -->
+<div class="bg-surface-container p-space-sm rounded flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface-variant">Settore Giovanile</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary font-bold">4 / 5</span>
+</div>
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface">Vivaio Nazionale</span>
+<div class="flex gap-1 mt-0.5">
+<span class="h-1.5 flex-1 rounded bg-secondary"></span>
+<span class="h-1.5 flex-1 rounded bg-secondary"></span>
+<span class="h-1.5 flex-1 rounded bg-secondary"></span>
+<span class="h-1.5 flex-1 rounded bg-secondary"></span>
+<span class="h-1.5 flex-1 rounded bg-surface-container-highest"></span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Reclutamento U18 su scala nazionale</span>
+</div>
+<!-- Facility 3 -->
+<div class="bg-surface-container p-space-sm rounded flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface-variant">Stadio Di Casa</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-tertiary font-bold">COMUNALE</span>
+</div>
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface truncate">Manutenzione Recente</span>
+<div class="flex gap-1 mt-0.5">
+<span class="h-1.5 flex-1 rounded bg-tertiary"></span>
+<span class="h-1.5 flex-1 rounded bg-tertiary"></span>
+<span class="h-1.5 flex-1 rounded bg-tertiary"></span>
+<span class="h-1.5 flex-1 rounded bg-surface-container-highest"></span>
+<span class="h-1.5 flex-1 rounded bg-surface-container-highest"></span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Convenzione fino al 2035 rinnovabile</span>
+</div>
+</div>
+</div>
+<!-- Tre Giocatori Chiave (Procedural Initials / Badges - strictly no photos) -->
+<div class="bg-surface-container-low rounded-lg p-space-md shadow-md flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm uppercase tracking-wide text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-secondary">star</span>
+            Tre Giocatori Chiave del Progetto
+          </span>
+<span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase">Rilevamento Dati Ufficiale</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-sm">
+<!-- Player 1 -->
+<div class="bg-surface-container hover:bg-surface-container-high transition-colors p-space-sm rounded flex flex-col justify-between group">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded bg-primary-container text-on-primary-container font-headline-md text-headline-md flex items-center justify-center shrink-0 font-bold shadow-sm">
+                MV
+              </div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface truncate">Matteo Valente</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-primary">27 anni • Centravanti (P)</span>
+</div>
+</div>
+<div class="mt-space-sm pt-space-xs border-t-0 bg-surface-container-low/60 p-1.5 rounded flex flex-col gap-0.5">
+<div class="flex justify-between items-center text-on-surface-variant font-label-editorial text-[11px] uppercase">
+<span>Ruolo Tattico:</span>
+<span class="text-on-surface font-semibold">Leader Tecnico</span>
+</div>
+<div class="font-label-numeric-sm text-label-numeric-sm text-secondary font-semibold">
+                Valore: 8,5 - 11,2 Mln €
+              </div>
+<span class="font-body-sm text-[11px] text-on-surface-variant italic truncate">Cannonieri Serie A (17 gol st. scorsa)</span>
+</div>
+</div>
+<!-- Player 2 -->
+<div class="bg-surface-container hover:bg-surface-container-high transition-colors p-space-sm rounded flex flex-col justify-between group">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded bg-surface-container-highest text-secondary-fixed font-headline-md text-headline-md flex items-center justify-center shrink-0 font-bold shadow-sm">
+                SM
+              </div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface truncate">Stefano Moretti</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary">26 anni • Regista Arretrato</span>
+</div>
+</div>
+<div class="mt-space-sm pt-space-xs border-t-0 bg-surface-container-low/60 p-1.5 rounded flex flex-col gap-0.5">
+<div class="flex justify-between items-center text-on-surface-variant font-label-editorial text-[11px] uppercase">
+<span>Ruolo Tattico:</span>
+<span class="text-on-surface font-semibold">Geometrie &amp; Piazzati</span>
+</div>
+<div class="font-label-numeric-sm text-label-numeric-sm text-secondary font-semibold">
+                Valore: 6,0 - 8,4 Mln €
+              </div>
+<span class="font-body-sm text-[11px] text-on-surface-variant italic truncate">Precisione passaggi chiave 89,4%</span>
+</div>
+</div>
+<!-- Player 3 -->
+<div class="bg-surface-container hover:bg-surface-container-high transition-colors p-space-sm rounded flex flex-col justify-between group">
+<div class="flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded bg-surface-container-highest text-tertiary-fixed font-headline-md text-headline-md flex items-center justify-center shrink-0 font-bold shadow-sm">
+                MP
+              </div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface truncate">Marco Peretti</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-tertiary">29 anni • Portiere (POR)</span>
+</div>
+</div>
+<div class="mt-space-sm pt-space-xs border-t-0 bg-surface-container-low/60 p-1.5 rounded flex flex-col gap-0.5">
+<div class="flex justify-between items-center text-on-surface-variant font-label-editorial text-[11px] uppercase">
+<span>Ruolo Tattico:</span>
+<span class="text-on-surface font-semibold">Capitano Rosa</span>
+</div>
+<div class="font-label-numeric-sm text-label-numeric-sm text-secondary font-semibold">
+                Valore: 4,2 - 5,8 Mln €
+              </div>
+<span class="font-body-sm text-[11px] text-on-surface-variant italic truncate">Sicurezza tra i pali e voce carismatica</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Modulo Ideale Consigliato & Mini Pitch -->
+<div class="bg-surface-container-low rounded-lg p-space-md shadow-md flex flex-col sm:flex-row gap-space-md items-center justify-between">
+<div class="flex flex-col gap-space-xs flex-1">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-secondary">schema</span>
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-on-surface-variant">Assetto Consigliato dallo Staff</span>
+</div>
+<span class="font-headline-md text-headline-md uppercase text-on-surface tracking-wide">4-2-3-1 Largo (Fluido &amp; Pressione Alta)</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Ottimizzato per massimizzare la precisione nei lanci di Stefano Moretti verso l'inserimento degli esterni d'attacco a supporto diretto di Matteo Valente.
+          </p>
+<div class="flex items-center gap-space-sm mt-1">
+<span class="px-2 py-0.5 rounded bg-surface-container font-label-editorial text-label-editorial text-secondary uppercase">Pressing: Alto</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-label-editorial text-label-editorial text-on-surface uppercase">Ampiezza: Estesa</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-label-editorial text-label-editorial text-tertiary uppercase">Ritmo: Diretto</span>
+</div>
+</div>
+<!-- Tactical Mini Pitch Preview Component -->
+<div class="w-48 h-36 bg-surface-container rounded-lg p-2 relative flex flex-col justify-between shrink-0 shadow-inner overflow-hidden">
+<!-- Pitch Grass Lines -->
+<div class="absolute inset-x-2 inset-y-2 rounded bg-surface-container-high/40 flex flex-col justify-between pointer-events-none">
+<div class="w-full h-px bg-surface-variant/40"></div>
+<div class="w-full h-px bg-surface-variant/40"></div>
+<div class="w-full h-px bg-surface-variant/40"></div>
+<div class="w-full h-px bg-surface-variant/40"></div>
+</div>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="w-14 h-14 rounded-full bg-transparent border-0 ring-1 ring-surface-variant/30"></div>
+<div class="w-full h-px bg-surface-variant/30 absolute"></div>
+</div>
+<!-- Strikers (1) -->
+<div class="flex justify-center z-10">
+<div class="w-5 h-5 rounded-full bg-primary-container text-on-primary-container font-label-numeric-sm text-[10px] font-bold flex items-center justify-center shadow" title="Centravanti: Valente">9</div>
+</div>
+<!-- Attacking Midfielders (3) -->
+<div class="flex justify-between px-4 z-10">
+<div class="w-4 h-4 rounded-full bg-surface-container-highest text-secondary font-label-numeric-sm text-[9px] font-bold flex items-center justify-center">7</div>
+<div class="w-4 h-4 rounded-full bg-surface-container-highest text-secondary font-label-numeric-sm text-[9px] font-bold flex items-center justify-center">10</div>
+<div class="w-4 h-4 rounded-full bg-surface-container-highest text-secondary font-label-numeric-sm text-[9px] font-bold flex items-center justify-center">11</div>
+</div>
+<!-- Defensive Midfielders (2) -->
+<div class="flex justify-center gap-6 z-10">
+<div class="w-4 h-4 rounded-full bg-secondary text-on-secondary font-label-numeric-sm text-[9px] font-bold flex items-center justify-center" title="Regista: Moretti">8</div>
+<div class="w-4 h-4 rounded-full bg-surface-container-highest text-on-surface font-label-numeric-sm text-[9px] font-bold flex items-center justify-center">4</div>
+</div>
+<!-- Defenders (4) -->
+<div class="flex justify-between px-2 z-10">
+<div class="w-4 h-4 rounded-full bg-surface-container-highest text-on-surface font-label-numeric-sm text-[9px] flex items-center justify-center">2</div>
+<div class="w-4 h-4 rounded-full bg-surface-container-highest text-on-surface font-label-numeric-sm text-[9px] flex items-center justify-center">5</div>
+<div class="w-4 h-4 rounded-full bg-surface-container-highest text-on-surface font-label-numeric-sm text-[9px] flex items-center justify-center">6</div>
+<div class="w-4 h-4 rounded-full bg-surface-container-highest text-on-surface font-label-numeric-sm text-[9px] flex items-center justify-center">3</div>
+</div>
+<!-- Goalkeeper (1) -->
+<div class="flex justify-center z-10">
+<div class="w-4 h-4 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-numeric-sm text-[9px] font-bold flex items-center justify-center" title="Capitano: Peretti">1</div>
+</div>
+</div>
+</div>
+</section>
+<!-- RIGHT COLUMN: Profilo Allenatore, Filosofia & Salvataggio (5 Columns) -->
+<section class="col-span-12 xl:col-span-5 flex flex-col gap-space-md">
+<!-- Box Profilo Manager -->
+<div class="bg-surface-container-low rounded-lg p-space-md shadow-md flex flex-col gap-space-sm">
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-headline-sm text-headline-sm uppercase tracking-wide text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-primary">badge</span>
+            Scheda Personale Nuovo Tecnico
+          </span>
+<span class="font-label-editorial text-label-editorial text-secondary uppercase">Stagione 2026/27</span>
+</div>
+<form class="flex flex-col gap-space-sm" onsubmit="return false;">
+<!-- Nome e Cognome -->
+<div class="flex flex-col gap-1">
+<label class="font-label-editorial text-label-editorial uppercase text-on-surface-variant flex items-center justify-between" for="coach-name">
+<span>Nome e Cognome del Manager</span>
+<span class="text-primary font-label-numeric-sm text-[10px]">*OBBLIGATORIO</span>
+</label>
+<div class="relative">
+<input class="w-full h-9 bg-surface-container px-space-sm font-body-md text-body-md text-on-surface rounded focus:outline-none focus:ring-1 focus:ring-primary-container transition-all" id="coach-name" type="text" value="Marco Ferretti"/>
+<span class="material-symbols-outlined absolute right-2.5 top-2 text-[18px] text-on-surface-variant pointer-events-none">edit</span>
+</div>
+</div>
+<!-- Dual Field: Nazionalità & Età -->
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="flex flex-col gap-1">
+<label class="font-label-editorial text-label-editorial uppercase text-on-surface-variant" for="coach-nat">Nazionalità</label>
+<select class="w-full h-9 bg-surface-container px-space-sm font-body-md text-body-md text-on-surface rounded focus:outline-none focus:ring-1 focus:ring-primary-container" id="coach-nat">
+<option selected="">Italiana</option>
+<option>Spagnola</option>
+<option>Francese</option>
+<option>Tedesca</option>
+<option>Inglese</option>
+<option>Argentina</option>
+<option>Brasiliana</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-editorial text-label-editorial uppercase text-on-surface-variant" for="coach-age">Età / Nascita</label>
+<input class="w-full h-9 bg-surface-container px-space-sm font-body-md text-body-md text-on-surface rounded focus:outline-none focus:ring-1 focus:ring-primary-container" id="coach-age" type="text" value="42 anni (14 Maggio 1984)"/>
+</div>
+</div>
+</form>
+</div>
+<!-- Filosofia Allenatore Opzionale (Card radio selection) -->
+<div class="bg-surface-container-low rounded-lg p-space-md shadow-md flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm uppercase tracking-wide text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-primary">psychology</span>
+            Filosofia Direttiva di Gestione
+          </span>
+<span class="font-label-editorial text-label-editorial text-on-surface-variant uppercase">Seleziona 1 Bonus</span>
+</div>
+<div class="flex flex-col gap-space-xs" id="philosophy-container">
+<!-- Card 1: Gestore -->
+<div class="cursor-pointer bg-surface-container hover:bg-surface-container-high transition-all p-space-sm rounded flex items-start gap-space-sm" id="phil-gestore" onclick="selectPhilosophy('gestore')">
+<div class="mt-0.5 w-4 h-4 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0 phil-dot">
+<span class="w-2 h-2 rounded-full bg-transparent phil-inner"></span>
+</div>
+<div class="flex flex-col flex-1">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface">Gestore Carismatico</span>
+<span class="font-label-editorial text-label-editorial text-secondary uppercase">Spogliatoio</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                Bonus: Morale spogliatoio +15%, recupero rapido post-sconfitte, meno attriti con la dirigenza.
+              </p>
+</div>
+</div>
+<!-- Card 2: Tattico (SELECTED STATE) -->
+<div class="cursor-pointer bg-surface-container-high transition-all p-space-sm rounded flex items-start gap-space-sm shadow-sm" id="phil-tattico" onclick="selectPhilosophy('tattico')">
+<div class="mt-0.5 w-4 h-4 rounded-full bg-primary-container flex items-center justify-center shrink-0 phil-dot">
+<span class="w-2 h-2 rounded-full bg-on-primary-container phil-inner"></span>
+</div>
+<div class="flex flex-col flex-1">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface">Mente Tattica</span>
+<span class="font-label-editorial text-label-editorial text-primary-container uppercase font-bold">ATTIVO (DEFAULT)</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-0.5">
+                Bonus: Assimilazione moduli +20%, adattamento in-match ai cambi avversari più efficace.
+              </p>
+</div>
+</div>
+<!-- Card 3: Scopritore -->
+<div class="cursor-pointer bg-surface-container hover:bg-surface-container-high transition-all p-space-sm rounded flex items-start gap-space-sm" id="phil-scopritore" onclick="selectPhilosophy('scopritore')">
+<div class="mt-0.5 w-4 h-4 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0 phil-dot">
+<span class="w-2 h-2 rounded-full bg-transparent phil-inner"></span>
+</div>
+<div class="flex flex-col flex-1">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface">Scopritore di Talenti</span>
+<span class="font-label-editorial text-label-editorial text-tertiary uppercase">Next-Gen</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                Bonus: Crescita giovani U21 +25%, costo osservatori ridotto del 15%.
+              </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Selezione Slot di Salvataggio -->
+<div class="bg-surface-container-low rounded-lg p-space-md shadow-md flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm uppercase tracking-wide text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-primary">save</span>
+            Assegnazione Slot Archivio Carriera
+          </span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">SSD NVMe</span>
+</div>
+<div class="flex flex-col gap-space-xs" id="slot-container">
+<!-- Slot 1: Nuovo Salvataggio (Selected) -->
+<div class="cursor-pointer bg-surface-container-high p-space-sm rounded flex items-center justify-between transition-all" id="slot-1" onclick="selectSlot('slot-1')">
+<div class="flex items-center gap-space-sm">
+<span class="font-label-numeric-md text-label-numeric-md font-bold text-primary-container">SLOT 01</span>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface font-semibold">Carriera Sporting Ventimonti 2026/27</span>
+<span class="font-label-numeric-sm text-[11px] text-secondary">Pronto per la scrittura (File nuovo)</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary text-[20px]">radio_button_checked</span>
+</div>
+<!-- Slot 2: Occupato -->
+<div class="cursor-pointer bg-surface-container opacity-80 hover:opacity-100 p-space-sm rounded flex items-center justify-between transition-all" id="slot-2" onclick="selectSlot('slot-2')">
+<div class="flex items-center gap-space-sm">
+<span class="font-label-numeric-md text-label-numeric-md font-bold text-on-surface-variant">SLOT 02</span>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface">Lanificio Sestri — Stagione 2025/26</span>
+<span class="font-label-numeric-sm text-[11px] text-tertiary">Occupato (Sovrascrittura richiesta)</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">radio_button_unchecked</span>
+</div>
+<!-- Slot 3: Vuoto -->
+<div class="cursor-pointer bg-surface-container opacity-70 hover:opacity-100 p-space-sm rounded flex items-center justify-between transition-all" id="slot-3" onclick="selectSlot('slot-3')">
+<div class="flex items-center gap-space-sm">
+<span class="font-label-numeric-md text-label-numeric-md font-bold text-on-surface-variant">SLOT 03</span>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface-variant">[Spazio Vuoto Disponibile]</span>
+<span class="font-label-numeric-sm text-[11px] text-on-surface-variant">Capacità: 120 MB</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">radio_button_unchecked</span>
+</div>
+</div>
+</div>
+<!-- Box Riepilogo Contrattuale -->
+<div class="bg-surface-container-high rounded-lg p-space-sm shadow-md flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-editorial text-label-editorial uppercase text-on-surface-variant">
+<span class="flex items-center gap-1 text-primary"><span class="material-symbols-outlined text-[16px]">verified</span>Condizioni Ufficiali C.d.A.</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary">CLAUSOLA ATTIVA</span>
+</div>
+<div class="font-body-md text-body-md text-on-surface font-medium leading-relaxed">
+          Contratto offerto: Biennale fino al 30 Giugno 2028 • Stipendio: 650.000 €/a
+        </div>
+</div>
+<!-- Action Buttons Footer for Screen 2 -->
+<div class="flex flex-col sm:flex-row items-center gap-space-sm mt-space-xs">
+<button class="w-full sm:w-auto px-space-md py-2.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 shrink-0" type="button">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+<span>Indietro al Club</span>
+</button>
+<button class="w-full flex-1 px-space-lg py-3 rounded bg-primary-container hover:bg-inverse-primary text-on-primary font-headline-md text-headline-md uppercase tracking-wider transition-all duration-150 flex items-center justify-center gap-space-sm shadow-lg active:scale-[0.99] group" id="sign-btn" type="button">
+<span class="material-symbols-outlined text-[22px] group-hover:rotate-12 transition-transform">draw</span>
+<span>Firma il Contratto e Inizia</span>
+</button>
+</div>
+</section>
+</div>
+<script>
+    // Philosophy selector micro-interaction
+    function selectPhilosophy(type) {
+      const items = ['gestore', 'tattico', 'scopritore'];
+      items.forEach(item => {
+        const el = document.getElementById('phil-' + item);
+        const dot = el.querySelector('.phil-dot');
+        const inner = el.querySelector('.phil-inner');
+        if (item === type) {
+          el.className = 'cursor-pointer bg-surface-container-high transition-all p-space-sm rounded flex items-start gap-space-sm shadow-sm';
+          dot.className = 'mt-0.5 w-4 h-4 rounded-full bg-primary-container flex items-center justify-center shrink-0 phil-dot';
+          inner.className = 'w-2 h-2 rounded-full bg-on-primary-container phil-inner';
+        } else {
+          el.className = 'cursor-pointer bg-surface-container hover:bg-surface-container-high transition-all p-space-sm rounded flex items-start gap-space-sm';
+          dot.className = 'mt-0.5 w-4 h-4 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0 phil-dot';
+          inner.className = 'w-2 h-2 rounded-full bg-transparent phil-inner';
+        }
+      });
+    }
+
+    // Save slot selector micro-interaction
+    function selectSlot(slotId) {
+      ['slot-1', 'slot-2', 'slot-3'].forEach(id => {
+        const el = document.getElementById(id);
+        const icon = el.querySelector('.material-symbols-outlined');
+        if (id === slotId) {
+          el.className = 'cursor-pointer bg-surface-container-high p-space-sm rounded flex items-center justify-between transition-all';
+          icon.textContent = 'radio_button_checked';
+          icon.className = 'material-symbols-outlined text-primary text-[20px]';
+        } else {
+          el.className = 'cursor-pointer bg-surface-container opacity-75 hover:opacity-100 p-space-sm rounded flex items-center justify-between transition-all';
+          icon.textContent = 'radio_button_unchecked';
+          icon.className = 'material-symbols-outlined text-on-surface-variant text-[20px]';
+        }
+      });
+    }
+
+    // Signature micro-animation trigger
+    document.getElementById('sign-btn').addEventListener('click', function() {
+      this.classList.add('opacity-90');
+      const textSpan = this.querySelector('span:last-child');
+      const oldText = textSpan.textContent;
+      textSpan.textContent = "AUTENTICAZIONE IN CORSO...";
+      setTimeout(() => {
+        textSpan.textContent = "CONTRATTO DEPOSITATO!";
+        setTimeout(() => {
+          textSpan.textContent = oldText;
+          this.classList.remove('opacity-90');
+        }, 1200);
+      }, 700);
+    });
+  </script>
+</div></main><footer class="w-full bg-surface-container-lowest py-space-sm px-gutter flex items-center justify-between text-on-surface-variant"><div class="flex items-center gap-space-md font-label-numeric-sm text-label-numeric-sm"><span class="flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-secondary"></span>DATABASE STATUS: ATTIVO (v27.4.0)</span><span>BUILD ENGINE: SIM-CORE 9.2</span></div><div class="font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-variant">© 2027 TACTIC F.C. MANAGER • CALCOLO STRATEGICO AD ALTA DENSITÀ</div></footer></body></html>

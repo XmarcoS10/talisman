@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="it"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-error": "#690005",
+          "on-tertiary-container": "#3e2400",
+          "on-tertiary-fixed-variant": "#653e00",
+          "on-background": "#dee2ee",
+          "secondary-fixed-dim": "#4edea3",
+          "surface-container-highest": "#30353e",
+          "surface-variant": "#30353e",
+          "inverse-on-surface": "#2c3139",
+          "surface-dim": "#0f141c",
+          "primary-container": "#ff525d",
+          "on-secondary-fixed": "#002113",
+          "on-surface-variant": "#e6bdbb",
+          "error": "#ffb4ab",
+          "tertiary-fixed-dim": "#ffb95f",
+          "surface": "#0f141c",
+          "on-tertiary": "#472a00",
+          "error-container": "#93000a",
+          "secondary": "#4edea3",
+          "secondary-container": "#00a572",
+          "on-secondary": "#003824",
+          "on-primary": "#680013",
+          "on-primary-fixed-variant": "#92001f",
+          "surface-bright": "#343942",
+          "surface-container-high": "#252a33",
+          "tertiary": "#ffb95f",
+          "surface-container-low": "#171c24",
+          "primary-fixed-dim": "#ffb3b2",
+          "on-secondary-container": "#00311f",
+          "surface-container-lowest": "#090e16",
+          "outline": "#ad8887",
+          "on-primary-container": "#5b000f",
+          "surface-tint": "#ffb3b2",
+          "on-tertiary-fixed": "#2a1700",
+          "on-error-container": "#ffdad6",
+          "primary-fixed": "#ffdad9",
+          "on-surface": "#dee2ee",
+          "inverse-surface": "#dee2ee",
+          "background": "#0f141c",
+          "on-secondary-fixed-variant": "#005236",
+          "secondary-fixed": "#6ffbbe",
+          "tertiary-fixed": "#ffddb8",
+          "surface-container": "#1b2028",
+          "inverse-primary": "#bf002b",
+          "primary": "#ffb3b2",
+          "on-primary-fixed": "#410008",
+          "outline-variant": "#5d3f3f",
+          "tertiary-container": "#ca8100"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "spacing": {
+          "space-md": "0.75rem",
+          "space-sm": "0.5rem",
+          "space-xs": "0.25rem",
+          "margin": "1.25rem",
+          "space-xl": "1.5rem",
+          "gutter": "1rem",
+          "space-lg": "1rem"
+        },
+        "fontFamily": {
+          "body-lg": [
+            "Inter"
+          ],
+          "label-numeric-md": [
+            "JetBrains Mono"
+          ],
+          "headline-lg": [
+            "Barlow Condensed"
+          ],
+          "headline-md": [
+            "Barlow Condensed"
+          ],
+          "label-numeric-lg": [
+            "JetBrains Mono"
+          ],
+          "label-numeric-sm": [
+            "JetBrains Mono"
+          ],
+          "body-sm": [
+            "Inter"
+          ],
+          "headline-xl": [
+            "Barlow Condensed"
+          ],
+          "body-md": [
+            "Inter"
+          ],
+          "headline-sm": [
+            "Barlow Condensed"
+          ],
+          "label-editorial": [
+            "Barlow Condensed"
+          ]
+        },
+        "fontSize": {
+          "body-lg": [
+            "1rem",
+            {
+              "lineHeight": "1.5rem",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "400"
+            }
+          ],
+          "label-numeric-md": [
+            "0.875rem",
+            {
+              "lineHeight": "1.125rem",
+              "letterSpacing": "0em",
+              "fontWeight": "500"
+            }
+          ],
+          "headline-lg": [
+            "2rem",
+            {
+              "lineHeight": "2.25rem",
+              "letterSpacing": "0.04em",
+              "fontWeight": "700"
+            }
+          ],
+          "headline-md": [
+            "1.5rem",
+            {
+              "lineHeight": "1.75rem",
+              "letterSpacing": "0.03em",
+              "fontWeight": "600"
+            }
+          ],
+          "label-numeric-lg": [
+            "1.25rem",
+            {
+              "lineHeight": "1.5rem",
+              "letterSpacing": "-0.02em",
+              "fontWeight": "600"
+            }
+          ],
+          "label-numeric-sm": [
+            "0.75rem",
+            {
+              "lineHeight": "0.875rem",
+              "letterSpacing": "0em",
+              "fontWeight": "500"
+            }
+          ],
+          "body-sm": [
+            "0.75rem",
+            {
+              "lineHeight": "1rem",
+              "letterSpacing": "0em",
+              "fontWeight": "400"
+            }
+          ],
+          "headline-xl": [
+            "2.5rem",
+            {
+              "lineHeight": "2.75rem",
+              "letterSpacing": "0.05em",
+              "fontWeight": "700"
+            }
+          ],
+          "body-md": [
+            "0.875rem",
+            {
+              "lineHeight": "1.25rem",
+              "letterSpacing": "-0.005em",
+              "fontWeight": "400"
+            }
+          ],
+          "headline-sm": [
+            "1.125rem",
+            {
+              "lineHeight": "1.375rem",
+              "letterSpacing": "0.025em",
+              "fontWeight": "600"
+            }
+          ],
+          "label-editorial": [
+            "0.8125rem",
+            {
+              "lineHeight": "1rem",
+              "letterSpacing": "0.08em",
+              "fontWeight": "700"
+            }
+          ]
+        }
+      },
+    },
+  }</script></head><body class="bg-background font-body-md text-body-md text-on-surface min-h-screen antialiased selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 w-full z-50 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.4)]"><div class="h-12 w-full px-gutter flex items-center justify-between gap-space-lg"><div class="flex items-center gap-space-md"><a class="flex items-center gap-space-xs px-space-sm py-1 bg-surface-container rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="main-menu" href="#"><span class="material-symbols-outlined text-[18px]">arrow_back</span><span class="font-label-editorial text-label-editorial uppercase tracking-wider">Torna al Menu Principale</span></a><div class="h-4 w-px bg-surface-variant"></div><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm uppercase text-primary-container tracking-wider">TFM 27</span><span class="font-label-editorial text-label-editorial px-1.5 py-0.5 rounded-sm bg-surface-container-high text-on-surface-variant uppercase">Setup Carriera</span></div></div><nav class="flex items-center gap-space-sm" data-active-classes="bg-primary-container text-on-primary-container font-headline-sm text-headline-sm"><a aria-current="page" class="px-space-md py-1 rounded-lg uppercase tracking-wider transition-colors bg-primary-container text-on-primary-container font-headline-sm text-headline-sm" data-path="assegnazione-panchina" href="#">1. Assegnazione Panchina</a><span class="material-symbols-outlined text-outline text-[16px]">chevron_right</span><a class="px-space-md py-1 rounded-lg text-on-surface-variant font-headline-sm text-headline-sm uppercase tracking-wider hover:bg-surface-container hover:text-on-surface transition-colors" data-path="dossier-e-firma" href="#">2. Dossier &amp; Firma</a></nav><div class="flex items-center gap-space-sm"><button class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Audio Regolazione" type="button"><span class="material-symbols-outlined text-[18px]">volume_up</span></button><button class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Preferenze Tattiche &amp; Grafiche" type="button"><span class="material-symbols-outlined text-[18px]">settings</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center ml-space-xs"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-12 bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- Command Strip / Data Header -->
+<section class="w-full bg-surface-container-low px-gutter py-space-md shadow-md">
+<div class="w-full flex flex-col gap-space-sm">
+<!-- Top Line: Title Context & Search + Sort -->
+<div class="flex flex-wrap items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs text-primary-container">
+<span class="material-symbols-outlined text-[20px]">sports_soccer</span>
+<span class="font-headline-md text-headline-md tracking-wider uppercase text-on-surface">Assegnazione Panchina</span>
+</div>
+<span class="font-label-numeric-sm text-label-numeric-sm bg-surface-container px-space-xs py-0.5 rounded text-on-surface-variant">54 CLUB DISPONIBILI</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-secondary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> STAGIONE 2026/27 INIZIALIZZATA
+          </span>
+</div>
+<div class="flex items-center gap-space-md flex-1 max-w-xl justify-end">
+<div class="relative w-full max-w-xs">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-outline text-[16px]">search</span>
+<input class="w-full h-8 pl-8 pr-3 bg-surface-container-lowest text-on-surface rounded font-body-sm text-body-sm focus:outline-none focus:bg-surface-container focus:text-on-surface transition-colors placeholder:text-outline" id="club-search" placeholder="Cerca club o città fittizia..." type="text"/>
+</div>
+<div class="flex items-center gap-1.5 shrink-0 bg-surface-container px-space-xs py-1 rounded">
+<span class="material-symbols-outlined text-outline text-[16px]">swap_vert</span>
+<select class="bg-transparent text-on-surface font-label-editorial text-label-editorial uppercase cursor-pointer focus:outline-none" id="club-sort">
+<option class="bg-surface-container-high text-on-surface" value="rep">Ordina: Reputazione (Decrescente)</option>
+<option class="bg-surface-container-high text-on-surface" value="budget">Ordina: Budget Trasferimenti</option>
+<option class="bg-surface-container-high text-on-surface" value="squad">Ordina: Forza Rosa</option>
+<option class="bg-surface-container-high text-on-surface" value="year">Ordina: Anno Fondazione</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Filter Rows -->
+<div class="flex flex-col gap-space-xs pt-1">
+<!-- League Filters -->
+<div class="flex flex-wrap items-center gap-1.5">
+<span class="font-label-editorial text-label-editorial text-outline uppercase tracking-wider w-24 shrink-0">Lega:</span>
+<button class="filter-league-btn px-2.5 py-1 rounded bg-primary-container text-on-primary-container font-headline-sm text-headline-sm uppercase tracking-wider shadow-sm transition-all" data-league="all" type="button">Tutte le Leghe</button>
+<button class="filter-league-btn px-2.5 py-1 rounded bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-headline-sm text-headline-sm uppercase tracking-wider transition-all" data-league="serie-a" type="button">Serie A (16 Club)</button>
+<button class="filter-league-btn px-2.5 py-1 rounded bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-headline-sm text-headline-sm uppercase tracking-wider transition-all" data-league="serie-b" type="button">Serie B (18 Club)</button>
+<button class="filter-league-btn px-2.5 py-1 rounded bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-headline-sm text-headline-sm uppercase tracking-wider transition-all" data-league="serie-c" type="button">Serie C (20 Club)</button>
+</div>
+<!-- Board Objective Filters -->
+<div class="flex flex-wrap items-center gap-1.5">
+<span class="font-label-editorial text-label-editorial text-outline uppercase tracking-wider w-24 shrink-0">Obiettivo CDA:</span>
+<button class="filter-obj-btn px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-editorial text-label-editorial uppercase tracking-wider" data-obj="all" type="button">Tutti gli Obiettivi</button>
+<button class="filter-obj-btn px-2 py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-editorial text-label-editorial uppercase tracking-wider transition-all" data-obj="scudetto" type="button">Lotta Scudetto</button>
+<button class="filter-obj-btn px-2 py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-editorial text-label-editorial uppercase tracking-wider transition-all" data-obj="coppe" type="button">Zona Coppe</button>
+<button class="filter-obj-btn px-2 py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-editorial text-label-editorial uppercase tracking-wider transition-all" data-obj="meta" type="button">Metà Classifica</button>
+<button class="filter-obj-btn px-2 py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-editorial text-label-editorial uppercase tracking-wider transition-all" data-obj="salvezza" type="button">Salvezza Tranquilla</button>
+<button class="filter-obj-btn px-2 py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-editorial text-label-editorial uppercase tracking-wider transition-all" data-obj="evita" type="button">Evita Retrocessione</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Club Registry Grid -->
+<section class="w-full px-gutter py-space-lg pb-28">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-md" id="clubs-grid">
+<!-- Club Card 1: Sporting Ventimonti (Active Selected Default) -->
+<article class="club-card relative cursor-pointer flex flex-col justify-between bg-surface-container-low rounded-xl p-space-md shadow-xl transition-all duration-200 group ring-2 ring-primary-container" data-budget="28,4 Mln €" data-club-id="ventimonti" data-club-name="Sporting Ventimonti" data-league="Serie A" data-obj="Qualificazione Europea" data-wage="34,2 Mln €/a">
+<!-- Top Status Banner -->
+<div class="flex items-center justify-between gap-space-xs pb-space-xs">
+<span class="inline-flex items-center gap-1 font-label-numeric-sm text-label-numeric-sm bg-primary-container text-on-primary-container px-2 py-0.5 rounded font-semibold tracking-wider">
+<span class="material-symbols-outlined text-[13px]">check_circle</span> SELEZIONATO
+          </span>
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider px-2 py-0.5 bg-secondary-container/20 text-secondary rounded">
+            Serie A • Zona Coppe
+          </span>
+</div>
+<!-- Crest + Heading Block -->
+<div class="flex items-start gap-space-md my-space-xs">
+<div class="w-14 h-16 shrink-0 bg-surface-container-lowest rounded-lg p-1.5 flex items-center justify-center shadow-inner">
+<!-- Vector Procedural Shield: Chevron Dual-Tone -->
+<svg class="w-full h-full drop-shadow" viewbox="0 0 100 120">
+<path d="M10 10 H90 V70 C90 95 50 115 50 115 C50 115 10 95 10 70 Z" fill="#1b2028"></path>
+<path d="M10 10 H50 V115 C50 115 10 95 10 70 Z" fill="#ff525d"></path>
+<path d="M50 10 H90 V70 C90 95 50 115 50 115 Z" fill="#30353e"></path>
+<polygon fill="#dee2ee" points="50,25 75,55 50,85 25,55"></polygon>
+<circle cx="50" cy="55" fill="#ff525d" r="8"></circle>
+</svg>
+</div>
+<div class="min-w-0 flex-1">
+<h3 class="font-headline-md text-headline-md tracking-wide uppercase text-on-surface truncate group-hover:text-primary transition-colors">Sporting Ventimonti</h3>
+<p class="font-body-sm text-body-sm text-outline truncate">Fondato nel 1913 • Ventimonti Arena</p>
+<p class="font-label-numeric-sm text-label-numeric-sm text-outline-variant">Capienza: 18.420 posti (Coperto)</p>
+</div>
+</div>
+<!-- Financial Strip (Strict Single Line) -->
+<div class="bg-surface-container-lowest px-2.5 py-1.5 rounded my-space-xs">
+<p class="font-label-numeric-sm text-label-numeric-sm text-on-surface truncate">
+<span class="text-secondary font-semibold">Budget: 28,4 Mln €</span> • <span class="text-tertiary font-semibold">Monte Ingaggi: 34,2 Mln €/a</span>
+</p>
+</div>
+<!-- Squad & Facility Matrices -->
+<div class="flex flex-col gap-1.5 py-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Forza Rosa:</span>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star_half</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface ml-1">4.5 / 5.0</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Reputazione:</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface">★★★★☆ (Nazionale)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Settore Giovanile:</span>
+<span class="font-body-sm text-body-sm text-secondary font-medium">Eccellenti (Liv. 4/5)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Identità Tattica:</span>
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface bg-surface-container px-2 py-0.5 rounded">Contropiede Rapido</span>
+</div>
+</div>
+<!-- Bottom Micro Indicator Bar -->
+<div class="pt-2 flex items-center justify-between">
+<span class="font-label-numeric-sm text-label-numeric-sm text-outline">INDICE PRESSIONE CDA: 72%</span>
+<span class="material-symbols-outlined text-[18px] text-primary-container">arrow_forward</span>
+</div>
+</article>
+<!-- Club Card 2: Castel Rivo -->
+<article class="club-card relative cursor-pointer flex flex-col justify-between bg-surface-container-low rounded-xl p-space-md shadow-xl transition-all duration-200 group hover:bg-surface-container" data-budget="36,8 Mln €" data-club-id="castelrivo" data-club-name="Castel Rivo" data-league="Serie A" data-obj="Lotta Scudetto" data-wage="41,5 Mln €/a">
+<div class="flex items-center justify-between gap-space-xs pb-space-xs">
+<span class="inline-flex items-center gap-1 font-label-numeric-sm text-label-numeric-sm bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded">
+            DISPONIBILE
+          </span>
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider px-2 py-0.5 bg-primary-container/20 text-primary rounded">
+            Serie A • Lotta Scudetto
+          </span>
+</div>
+<div class="flex items-start gap-space-md my-space-xs">
+<div class="w-14 h-16 shrink-0 bg-surface-container-lowest rounded-lg p-1.5 flex items-center justify-center shadow-inner">
+<!-- Vector Procedural Shield: Castle / Tower Monogram -->
+<svg class="w-full h-full drop-shadow" viewbox="0 0 100 120">
+<path d="M10 10 H90 V75 C90 98 50 115 50 115 C50 115 10 98 10 75 Z" fill="#252a33"></path>
+<rect fill="#ffb95f" height="45" width="50" x="25" y="25"></rect>
+<rect fill="#252a33" height="10" width="8" x="35" y="20"></rect>
+<rect fill="#252a33" height="10" width="8" x="57" y="20"></rect>
+<path d="M50 70 L30 100 L70 100 Z" fill="#dee2ee"></path>
+</svg>
+</div>
+<div class="min-w-0 flex-1">
+<h3 class="font-headline-md text-headline-md tracking-wide uppercase text-on-surface truncate group-hover:text-primary transition-colors">Castel Rivo</h3>
+<p class="font-body-sm text-body-sm text-outline truncate">Fondato nel 1928 • Stadio della Rocca</p>
+<p class="font-label-numeric-sm text-label-numeric-sm text-outline-variant">Capienza: 22.100 posti</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest px-2.5 py-1.5 rounded my-space-xs">
+<p class="font-label-numeric-sm text-label-numeric-sm text-on-surface truncate">
+<span class="text-secondary font-semibold">Budget: 36,8 Mln €</span> • <span class="text-tertiary font-semibold">Monte Ingaggi: 41,5 Mln €/a</span>
+</p>
+</div>
+<div class="flex flex-col gap-1.5 py-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Forza Rosa:</span>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface ml-1">4.8 / 5.0</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Reputazione:</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface">★★★★★ (Continentale)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Settore Giovanile:</span>
+<span class="font-body-sm text-body-sm text-secondary font-medium">All'Avanguardia (Liv. 5/5)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Identità Tattica:</span>
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface bg-surface-container px-2 py-0.5 rounded">Possesso Manovrato</span>
+</div>
+</div>
+<div class="pt-2 flex items-center justify-between">
+<span class="font-label-numeric-sm text-label-numeric-sm text-outline">INDICE PRESSIONE CDA: 88%</span>
+<span class="material-symbols-outlined text-[18px] text-outline group-hover:text-primary transition-colors">touch_app</span>
+</div>
+</article>
+<!-- Club Card 3: Aurora Montelupo -->
+<article class="club-card relative cursor-pointer flex flex-col justify-between bg-surface-container-low rounded-xl p-space-md shadow-xl transition-all duration-200 group hover:bg-surface-container" data-budget="14,2 Mln €" data-club-id="montelupo" data-club-name="Aurora Montelupo" data-league="Serie A" data-obj="Metà Classifica" data-wage="19,8 Mln €/a">
+<div class="flex items-center justify-between gap-space-xs pb-space-xs">
+<span class="inline-flex items-center gap-1 font-label-numeric-sm text-label-numeric-sm bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded">
+            DISPONIBILE
+          </span>
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider px-2 py-0.5 bg-surface-container-high text-on-surface-variant rounded">
+            Serie A • Metà Classifica
+          </span>
+</div>
+<div class="flex items-start gap-space-md my-space-xs">
+<div class="w-14 h-16 shrink-0 bg-surface-container-lowest rounded-lg p-1.5 flex items-center justify-center shadow-inner">
+<!-- Vector Procedural Shield: Wolf Rays -->
+<svg class="w-full h-full drop-shadow" viewbox="0 0 100 120">
+<path d="M10 10 H90 V70 C90 95 50 115 50 115 C50 115 10 95 10 70 Z" fill="#171c24"></path>
+<polygon fill="#4edea3" points="50,15 65,45 85,35 70,65 85,85 50,75 15,85 30,65 15,35 35,45"></polygon>
+<circle cx="50" cy="55" fill="#0f141c" r="14"></circle>
+<polygon fill="#ffb95f" points="45,50 55,50 50,62"></polygon>
+</svg>
+</div>
+<div class="min-w-0 flex-1">
+<h3 class="font-headline-md text-headline-md tracking-wide uppercase text-on-surface truncate group-hover:text-primary transition-colors">Aurora Montelupo</h3>
+<p class="font-body-sm text-body-sm text-outline truncate">Fondato nel 1908 • Stadio Bellavista</p>
+<p class="font-label-numeric-sm text-label-numeric-sm text-outline-variant">Capienza: 16.500 posti</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest px-2.5 py-1.5 rounded my-space-xs">
+<p class="font-label-numeric-sm text-label-numeric-sm text-on-surface truncate">
+<span class="text-secondary font-semibold">Budget: 14,2 Mln €</span> • <span class="text-tertiary font-semibold">Monte Ingaggi: 19,8 Mln €/a</span>
+</p>
+</div>
+<div class="flex flex-col gap-1.5 py-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Forza Rosa:</span>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star_half</span>
+<span class="material-symbols-outlined text-[15px]">star</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface ml-1">3.5 / 5.0</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Reputazione:</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface">★★★☆☆ (Nazionale)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Settore Giovanile:</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Buone (Liv. 3/5)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Identità Tattica:</span>
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface bg-surface-container px-2 py-0.5 rounded">Gegenpressing Intenso</span>
+</div>
+</div>
+<div class="pt-2 flex items-center justify-between">
+<span class="font-label-numeric-sm text-label-numeric-sm text-outline">INDICE PRESSIONE CDA: 54%</span>
+<span class="material-symbols-outlined text-[18px] text-outline group-hover:text-primary transition-colors">touch_app</span>
+</div>
+</article>
+<!-- Club Card 4: Lanificio Sestri -->
+<article class="club-card relative cursor-pointer flex flex-col justify-between bg-surface-container-low rounded-xl p-space-md shadow-xl transition-all duration-200 group hover:bg-surface-container" data-budget="8,1 Mln €" data-club-id="sestri" data-club-name="Lanificio Sestri" data-league="Serie B" data-obj="Salvezza Tranquilla" data-wage="11,4 Mln €/a">
+<div class="flex items-center justify-between gap-space-xs pb-space-xs">
+<span class="inline-flex items-center gap-1 font-label-numeric-sm text-label-numeric-sm bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded">
+            DISPONIBILE
+          </span>
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider px-2 py-0.5 bg-surface-container-high text-on-surface-variant rounded">
+            Serie B • Salvezza Tranquilla
+          </span>
+</div>
+<div class="flex items-start gap-space-md my-space-xs">
+<div class="w-14 h-16 shrink-0 bg-surface-container-lowest rounded-lg p-1.5 flex items-center justify-center shadow-inner">
+<!-- Vector Procedural Shield: Industrial Loom Stripes -->
+<svg class="w-full h-full drop-shadow" viewbox="0 0 100 120">
+<path d="M10 10 H90 V70 C90 95 50 115 50 115 C50 115 10 95 10 70 Z" fill="#1b2028"></path>
+<line stroke="#ffb95f" stroke-width="8" x1="20" x2="20" y1="10" y2="75"></line>
+<line stroke="#dee2ee" stroke-width="8" x1="40" x2="40" y1="10" y2="90"></line>
+<line stroke="#ffb95f" stroke-width="8" x1="60" x2="60" y1="10" y2="90"></line>
+<line stroke="#dee2ee" stroke-width="8" x1="80" x2="80" y1="10" y2="75"></line>
+</svg>
+</div>
+<div class="min-w-0 flex-1">
+<h3 class="font-headline-md text-headline-md tracking-wide uppercase text-on-surface truncate group-hover:text-primary transition-colors">Lanificio Sestri</h3>
+<p class="font-body-sm text-body-sm text-outline truncate">Fondato nel 1935 • Comunale dei Mulini</p>
+<p class="font-label-numeric-sm text-label-numeric-sm text-outline-variant">Capienza: 12.800 posti</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest px-2.5 py-1.5 rounded my-space-xs">
+<p class="font-label-numeric-sm text-label-numeric-sm text-on-surface truncate">
+<span class="text-secondary font-semibold">Budget: 8,1 Mln €</span> • <span class="text-tertiary font-semibold">Monte Ingaggi: 11,4 Mln €/a</span>
+</p>
+</div>
+<div class="flex flex-col gap-1.5 py-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Forza Rosa:</span>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]">star</span>
+<span class="material-symbols-outlined text-[15px]">star</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface ml-1">3.0 / 5.0</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Reputazione:</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface">★★☆☆☆ (Regionale)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Settore Giovanile:</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Standard (Liv. 2/5)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Identità Tattica:</span>
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface bg-surface-container px-2 py-0.5 rounded">Fisico &amp; Difensivo</span>
+</div>
+</div>
+<div class="pt-2 flex items-center justify-between">
+<span class="font-label-numeric-sm text-label-numeric-sm text-outline">INDICE PRESSIONE CDA: 42%</span>
+<span class="material-symbols-outlined text-[18px] text-outline group-hover:text-primary transition-colors">touch_app</span>
+</div>
+</article>
+<!-- Club Card 5: Polisportiva Miravalle -->
+<article class="club-card relative cursor-pointer flex flex-col justify-between bg-surface-container-low rounded-xl p-space-md shadow-xl transition-all duration-200 group hover:bg-surface-container" data-budget="6,4 Mln €" data-club-id="miravalle" data-club-name="Polisportiva Miravalle" data-league="Serie B" data-obj="Evita Retrocessione" data-wage="9,1 Mln €/a">
+<div class="flex items-center justify-between gap-space-xs pb-space-xs">
+<span class="inline-flex items-center gap-1 font-label-numeric-sm text-label-numeric-sm bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded">
+            DISPONIBILE
+          </span>
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider px-2 py-0.5 bg-error-container/40 text-error rounded">
+            Serie B • Evita Retrocessione
+          </span>
+</div>
+<div class="flex items-start gap-space-md my-space-xs">
+<div class="w-14 h-16 shrink-0 bg-surface-container-lowest rounded-lg p-1.5 flex items-center justify-center shadow-inner">
+<!-- Vector Procedural Shield: Mountain Valley -->
+<svg class="w-full h-full drop-shadow" viewbox="0 0 100 120">
+<path d="M10 10 H90 V70 C90 95 50 115 50 115 C50 115 10 95 10 70 Z" fill="#0f141c"></path>
+<polygon fill="#252a33" points="50,20 15,90 85,90"></polygon>
+<polygon fill="#4edea3" points="50,20 35,60 65,60"></polygon>
+<circle cx="50" cy="30" fill="#dee2ee" r="5"></circle>
+</svg>
+</div>
+<div class="min-w-0 flex-1">
+<h3 class="font-headline-md text-headline-md tracking-wide uppercase text-on-surface truncate group-hover:text-primary transition-colors">Polisportiva Miravalle</h3>
+<p class="font-body-sm text-body-sm text-outline truncate">Fondato nel 1952 • Parco dei Colli</p>
+<p class="font-label-numeric-sm text-label-numeric-sm text-outline-variant">Capienza: 14.200 posti</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest px-2.5 py-1.5 rounded my-space-xs">
+<p class="font-label-numeric-sm text-label-numeric-sm text-on-surface truncate">
+<span class="text-secondary font-semibold">Budget: 6,4 Mln €</span> • <span class="text-tertiary font-semibold">Monte Ingaggi: 9,1 Mln €/a</span>
+</p>
+</div>
+<div class="flex flex-col gap-1.5 py-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Forza Rosa:</span>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star_half</span>
+<span class="material-symbols-outlined text-[15px]">star</span>
+<span class="material-symbols-outlined text-[15px]">star</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface ml-1">2.5 / 5.0</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Reputazione:</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface">★★☆☆☆ (Locale)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Settore Giovanile:</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Basilari (Liv. 2/5)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Identità Tattica:</span>
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface bg-surface-container px-2 py-0.5 rounded">Ripartenza Rapida</span>
+</div>
+</div>
+<div class="pt-2 flex items-center justify-between">
+<span class="font-label-numeric-sm text-label-numeric-sm text-outline">INDICE PRESSIONE CDA: 66%</span>
+<span class="material-symbols-outlined text-[18px] text-outline group-hover:text-primary transition-colors">touch_app</span>
+</div>
+</article>
+<!-- Club Card 6: Torre San Biagio -->
+<article class="club-card relative cursor-pointer flex flex-col justify-between bg-surface-container-low rounded-xl p-space-md shadow-xl transition-all duration-200 group hover:bg-surface-container" data-budget="2,2 Mln €" data-club-id="sanbiagio" data-club-name="Torre San Biagio" data-league="Serie C" data-obj="Salvezza Tranquilla" data-wage="4,5 Mln €/a">
+<div class="flex items-center justify-between gap-space-xs pb-space-xs">
+<span class="inline-flex items-center gap-1 font-label-numeric-sm text-label-numeric-sm bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded">
+            DISPONIBILE
+          </span>
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider px-2 py-0.5 bg-surface-container-high text-on-surface-variant rounded">
+            Serie C • Salvezza Tranquilla
+          </span>
+</div>
+<div class="flex items-start gap-space-md my-space-xs">
+<div class="w-14 h-16 shrink-0 bg-surface-container-lowest rounded-lg p-1.5 flex items-center justify-center shadow-inner">
+<!-- Vector Procedural Shield: Tower Cross Pattern -->
+<svg class="w-full h-full drop-shadow" viewbox="0 0 100 120">
+<path d="M10 10 H90 V70 C90 95 50 115 50 115 C50 115 10 95 10 70 Z" fill="#30353e"></path>
+<path d="M45 20 H55 V90 H45 Z" fill="#ff525d"></path>
+<path d="M25 45 H75 V55 H25 Z" fill="#ff525d"></path>
+<polygon fill="#dee2ee" points="50,20 60,10 40,10"></polygon>
+</svg>
+</div>
+<div class="min-w-0 flex-1">
+<h3 class="font-headline-md text-headline-md tracking-wide uppercase text-on-surface truncate group-hover:text-primary transition-colors">Torre San Biagio</h3>
+<p class="font-body-sm text-body-sm text-outline truncate">Fondato nel 1921 • Stadio Torrazzo</p>
+<p class="font-label-numeric-sm text-label-numeric-sm text-outline-variant">Capienza: 11.000 posti</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest px-2.5 py-1.5 rounded my-space-xs">
+<p class="font-label-numeric-sm text-label-numeric-sm text-on-surface truncate">
+<span class="text-secondary font-semibold">Budget: 2,2 Mln €</span> • <span class="text-tertiary font-semibold">Monte Ingaggi: 4,5 Mln €/a</span>
+</p>
+</div>
+<div class="flex flex-col gap-1.5 py-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Forza Rosa:</span>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]">star</span>
+<span class="material-symbols-outlined text-[15px]">star</span>
+<span class="material-symbols-outlined text-[15px]">star</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface ml-1">2.0 / 5.0</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Reputazione:</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface">★☆☆☆☆ (Provinciale)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Settore Giovanile:</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Adeguate (Liv. 2/5)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Identità Tattica:</span>
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface bg-surface-container px-2 py-0.5 rounded">Catenaccio Tradizionale</span>
+</div>
+</div>
+<div class="pt-2 flex items-center justify-between">
+<span class="font-label-numeric-sm text-label-numeric-sm text-outline">INDICE PRESSIONE CDA: 48%</span>
+<span class="material-symbols-outlined text-[18px] text-outline group-hover:text-primary transition-colors">touch_app</span>
+</div>
+</article>
+<!-- Club Card 7: Stella Alpina -->
+<article class="club-card relative cursor-pointer flex flex-col justify-between bg-surface-container-low rounded-xl p-space-md shadow-xl transition-all duration-200 group hover:bg-surface-container" data-budget="11,5 Mln €" data-club-id="stellaalpina" data-club-name="Stella Alpina" data-league="Serie B" data-obj="Zona Coppe" data-wage="15,3 Mln €/a">
+<div class="flex items-center justify-between gap-space-xs pb-space-xs">
+<span class="inline-flex items-center gap-1 font-label-numeric-sm text-label-numeric-sm bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded">
+            DISPONIBILE
+          </span>
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider px-2 py-0.5 bg-secondary-container/20 text-secondary rounded">
+            Serie B • Promozione Diretta
+          </span>
+</div>
+<div class="flex items-start gap-space-md my-space-xs">
+<div class="w-14 h-16 shrink-0 bg-surface-container-lowest rounded-lg p-1.5 flex items-center justify-center shadow-inner">
+<!-- Vector Procedural Shield: Star Edelweiss Alpine -->
+<svg class="w-full h-full drop-shadow" viewbox="0 0 100 120">
+<path d="M10 10 H90 V70 C90 95 50 115 50 115 C50 115 10 95 10 70 Z" fill="#171c24"></path>
+<path d="M50 25 L58 45 L80 48 L63 62 L68 83 L50 71 L32 83 L37 62 L20 48 L42 45 Z" fill="#dee2ee"></path>
+<circle cx="50" cy="54" fill="#4edea3" r="8"></circle>
+</svg>
+</div>
+<div class="min-w-0 flex-1">
+<h3 class="font-headline-md text-headline-md tracking-wide uppercase text-on-surface truncate group-hover:text-primary transition-colors">Stella Alpina</h3>
+<p class="font-body-sm text-body-sm text-outline truncate">Fondato nel 1919 • Arena dei Larici</p>
+<p class="font-label-numeric-sm text-label-numeric-sm text-outline-variant">Capienza: 15.000 posti</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest px-2.5 py-1.5 rounded my-space-xs">
+<p class="font-label-numeric-sm text-label-numeric-sm text-on-surface truncate">
+<span class="text-secondary font-semibold">Budget: 11,5 Mln €</span> • <span class="text-tertiary font-semibold">Monte Ingaggi: 15,3 Mln €/a</span>
+</p>
+</div>
+<div class="flex flex-col gap-1.5 py-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Forza Rosa:</span>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star_half</span>
+<span class="material-symbols-outlined text-[15px]">star</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface ml-1">3.5 / 5.0</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Reputazione:</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface">★★★☆☆ (Nazionale)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Settore Giovanile:</span>
+<span class="font-body-sm text-body-sm text-secondary font-medium">Eccellenti (Liv. 4/5)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Identità Tattica:</span>
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface bg-surface-container px-2 py-0.5 rounded">Costruzione dal Basso</span>
+</div>
+</div>
+<div class="pt-2 flex items-center justify-between">
+<span class="font-label-numeric-sm text-label-numeric-sm text-outline">INDICE PRESSIONE CDA: 60%</span>
+<span class="material-symbols-outlined text-[18px] text-outline group-hover:text-primary transition-colors">touch_app</span>
+</div>
+</article>
+<!-- Club Card 8: Virtus Brianza -->
+<article class="club-card relative cursor-pointer flex flex-col justify-between bg-surface-container-low rounded-xl p-space-md shadow-xl transition-all duration-200 group hover:bg-surface-container" data-budget="3,8 Mln €" data-club-id="virtusbrianza" data-club-name="Virtus Brianza" data-league="Serie C" data-obj="Salvezza Tranquilla" data-wage="6,2 Mln €/a">
+<div class="flex items-center justify-between gap-space-xs pb-space-xs">
+<span class="inline-flex items-center gap-1 font-label-numeric-sm text-label-numeric-sm bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded">
+            DISPONIBILE
+          </span>
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider px-2 py-0.5 bg-surface-container-high text-on-surface-variant rounded">
+            Serie C • Salvezza Tranquilla
+          </span>
+</div>
+<div class="flex items-start gap-space-md my-space-xs">
+<div class="w-14 h-16 shrink-0 bg-surface-container-lowest rounded-lg p-1.5 flex items-center justify-center shadow-inner">
+<!-- Vector Procedural Shield: Oak Crown Monogram -->
+<svg class="w-full h-full drop-shadow" viewbox="0 0 100 120">
+<path d="M10 10 H90 V70 C90 95 50 115 50 115 C50 115 10 95 10 70 Z" fill="#252a33"></path>
+<path d="M50 20 C65 20 75 35 75 55 C75 80 50 95 50 95 C50 95 25 80 25 55 C25 35 35 20 50 20 Z" fill="#ca8100"></path>
+<circle cx="50" cy="55" fill="#dee2ee" r="10"></circle>
+<path d="M48 45 L52 45 L52 65 L48 65 Z" fill="#0f141c"></path>
+</svg>
+</div>
+<div class="min-w-0 flex-1">
+<h3 class="font-headline-md text-headline-md tracking-wide uppercase text-on-surface truncate group-hover:text-primary transition-colors">Virtus Brianza</h3>
+<p class="font-body-sm text-body-sm text-outline truncate">Fondato nel 1964 • Stadio Delle Querce</p>
+<p class="font-label-numeric-sm text-label-numeric-sm text-outline-variant">Capienza: 13.500 posti</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest px-2.5 py-1.5 rounded my-space-xs">
+<p class="font-label-numeric-sm text-label-numeric-sm text-on-surface truncate">
+<span class="text-secondary font-semibold">Budget: 3,8 Mln €</span> • <span class="text-tertiary font-semibold">Monte Ingaggi: 6,2 Mln €/a</span>
+</p>
+</div>
+<div class="flex flex-col gap-1.5 py-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Forza Rosa:</span>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star_half</span>
+<span class="material-symbols-outlined text-[15px]">star</span>
+<span class="material-symbols-outlined text-[15px]">star</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface ml-1">2.5 / 5.0</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Reputazione:</span>
+<span class="font-label-numeric-sm text-label-numeric-sm text-on-surface">★★☆☆☆ (Regionale)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Settore Giovanile:</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Buone (Liv. 3/5)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-editorial text-label-editorial uppercase tracking-wider text-outline">Identità Tattica:</span>
+<span class="font-label-editorial text-label-editorial uppercase text-on-surface bg-surface-container px-2 py-0.5 rounded">Gioco Sulle Fasce</span>
+</div>
+</div>
+<div class="pt-2 flex items-center justify-between">
+<span class="font-label-numeric-sm text-label-numeric-sm text-outline">INDICE PRESSIONE CDA: 40%</span>
+<span class="material-symbols-outlined text-[18px] text-outline group-hover:text-primary transition-colors">touch_app</span>
+</div>
+</article>
+</div>
+</section>
+<!-- Sticky Bottom Cockpit / Assegnazione Rapida Bar -->
+<aside class="fixed bottom-0 left-0 w-full z-40 bg-surface-container-low border-t border-surface-variant shadow-[0_-8px_24px_rgba(0,0,0,0.6)] px-gutter py-space-sm">
+<div class="w-full flex flex-col md:flex-row items-center justify-between gap-space-md">
+<!-- Left: Selected Club Telemetry -->
+<div class="flex items-center gap-space-md min-w-0" id="sticky-club-info">
+<div class="w-10 h-10 shrink-0 bg-surface-container-lowest rounded p-1 flex items-center justify-center">
+<svg class="w-full h-full" id="sticky-crest" viewbox="0 0 100 120">
+<path d="M10 10 H90 V70 C90 95 50 115 50 115 C50 115 10 95 10 70 Z" fill="#ff525d"></path>
+<polygon fill="#dee2ee" points="50,25 75,55 50,85 25,55"></polygon>
+</svg>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm uppercase text-on-surface font-bold truncate" id="sticky-name">Sporting Ventimonti</span>
+<span class="font-label-editorial text-label-editorial uppercase px-1.5 py-0.2 bg-surface-container text-on-surface-variant rounded shrink-0" id="sticky-league">Serie A</span>
+</div>
+<div class="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant truncate">
+<span class="text-secondary font-semibold" id="sticky-budget">Budget: 28,4 Mln €</span> • <span class="text-on-surface" id="sticky-obj">Obiettivo: Qualificazione Europea</span>
+</div>
+</div>
+</div>
+<!-- Right: Actions -->
+<div class="flex items-center gap-space-md shrink-0 w-full md:w-auto justify-end">
+<button class="h-9 px-space-md bg-surface-container hover:bg-surface-container-high text-on-surface rounded font-label-editorial text-label-editorial uppercase tracking-wider flex items-center gap-1.5 transition-colors" id="btn-random-pick" type="button">
+<span class="material-symbols-outlined text-[16px]">casino</span>
+<span>Scegli a Sorpresa (Random)</span>
+</button>
+<a class="h-9 px-space-xl bg-primary-container hover:bg-inverse-primary text-on-primary-container hover:text-on-primary rounded font-label-editorial text-label-editorial uppercase tracking-widest flex items-center gap-2 shadow-lg transition-all active:scale-95" data-path="dossier-e-firma" href="#">
+<span>Vai al Dossier del Club</span>
+<span class="material-symbols-outlined text-[18px]">keyboard_double_arrow_right</span>
+</a>
+</div>
+</div>
+</aside>
+</div>
+<script>
+  (function () {
+    const cards = Array.from(document.querySelectorAll('.club-card'));
+    const stickyName = document.getElementById('sticky-name');
+    const stickyLeague = document.getElementById('sticky-league');
+    const stickyBudget = document.getElementById('sticky-budget');
+    const stickyObj = document.getElementById('sticky-obj');
+    const randomBtn = document.getElementById('btn-random-pick');
+    const searchInput = document.getElementById('club-search');
+    const sortSelect = document.getElementById('club-sort');
+    const leagueFilterBtns = Array.from(document.querySelectorAll('.filter-league-btn'));
+    const objFilterBtns = Array.from(document.querySelectorAll('.filter-obj-btn'));
+
+    function selectCard(card) {
+      cards.forEach(c => {
+        c.classList.remove('ring-2', 'ring-primary-container');
+        const badge = c.querySelector('.material-symbols-outlined.text-\\[13px\\]');
+        if (badge && badge.parentElement) {
+          badge.parentElement.classList.replace('bg-primary-container', 'bg-surface-container-high');
+          badge.parentElement.classList.replace('text-on-primary-container', 'text-on-surface-variant');
+          badge.parentElement.innerHTML = 'DISPONIBILE';
+        }
+      });
+
+      card.classList.add('ring-2', 'ring-primary-container');
+      const statusContainer = card.querySelector('.pb-space-xs > span:first-child');
+      if (statusContainer) {
+        statusContainer.className = 'inline-flex items-center gap-1 font-label-numeric-sm text-label-numeric-sm bg-primary-container text-on-primary-container px-2 py-0.5 rounded font-semibold tracking-wider';
+        statusContainer.innerHTML = '<span class="material-symbols-outlined text-[13px]">check_circle</span> SELEZIONATO';
+      }
+
+      const name = card.getAttribute('data-club-name') || 'Club';
+      const league = card.getAttribute('data-league') || 'Lega';
+      const budget = card.getAttribute('data-budget') || '0 Mln €';
+      const obj = card.getAttribute('data-obj') || 'Obiettivo Stagionale';
+
+      stickyName.textContent = name;
+      stickyLeague.textContent = league;
+      stickyBudget.textContent = `Budget: ${budget}`;
+      stickyObj.textContent = `Obiettivo: ${obj}`;
+    }
+
+    cards.forEach(card => {
+      card.addEventListener('click', () => selectCard(card));
+    });
+
+    randomBtn.addEventListener('click', () => {
+      const visibleCards = cards.filter(c => c.style.display !== 'none');
+      if (visibleCards.length === 0) return;
+      const pick = visibleCards[Math.floor(Math.random() * visibleCards.length)];
+      selectCard(pick);
+      pick.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    // League pill switching
+    leagueFilterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        leagueFilterBtns.forEach(b => {
+          b.className = 'filter-league-btn px-2.5 py-1 rounded bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-headline-sm text-headline-sm uppercase tracking-wider transition-all';
+        });
+        btn.className = 'filter-league-btn px-2.5 py-1 rounded bg-primary-container text-on-primary-container font-headline-sm text-headline-sm uppercase tracking-wider shadow-sm transition-all';
+        
+        const filterVal = btn.getAttribute('data-league');
+        cards.forEach(card => {
+          const l = card.getAttribute('data-league').toLowerCase();
+          if (filterVal === 'all') {
+            card.style.display = 'flex';
+          } else if (filterVal === 'serie-a' && l === 'serie a') {
+            card.style.display = 'flex';
+          } else if (filterVal === 'serie-b' && l === 'serie b') {
+            card.style.display = 'flex';
+          } else if (filterVal === 'serie-c' && l === 'serie c') {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Search query live filter
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(query) ? 'flex' : 'none';
+      });
+    });
+  })();
+</script></main><footer class="w-full bg-surface-container-lowest py-space-sm px-gutter flex items-center justify-between text-on-surface-variant"><div class="flex items-center gap-space-md font-label-numeric-sm text-label-numeric-sm"><span class="flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-secondary"></span>DATABASE STATUS: ATTIVO (v27.4.0)</span><span>BUILD ENGINE: SIM-CORE 9.2</span></div><div class="font-label-editorial text-label-editorial uppercase tracking-widest text-on-surface-variant">© 2027 TACTIC F.C. MANAGER • CALCOLO STRATEGICO AD ALTA DENSITÀ</div></footer></body></html>
