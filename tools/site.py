@@ -6,9 +6,9 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'site')
 REPO = 'https://github.com/XmarcoS10/talisman'
 SITE = 'https://xmarcos10.github.io/talisman/'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
-VERSION = '0.6.1'
+VERSION = '0.7.0'
 SIZE = '123 MB'
-SHA = 'a9d3ee84a2636ef0f539809636dd80543824027663cbcb649f083c682c1d872d'
+SHA = 'b885583b9dcd2f029b1b399f68ebf3a74ef92c3c1f7d0a8f66dcdd1d84bf2719'
 # pnpm sim -- --seasons 10 --seed 42 con la 0.2.0
 SIM_GOALS = {'it': '2,56', 'en': '2.56'}
 SIM_DRAWS = {'it': '23,2%', 'en': '23.2%'}
@@ -543,6 +543,7 @@ def download():
         <div class="panel">
           <h3>{x('Novità della', 'New in')} {VERSION}</h3>
           <ul class="checks">
+            <li>{x('<b>Interfaccia nuova</b>: cornice con «Continua» e il suo menu, Scrivania a riquadri da personalizzare.', '<b>New interface</b>: a new frame with Continue and its menu, a desk of tiles you can customise.')}</li>
             <li>{x('<b>Rifinito giocando</b>: «Avanza» senza clic a vuoto, report e analista più chiari, decimali giusti.', '<b>Polished by playing</b>: no empty clicks on Continue, clearer reports and analyst, proper decimals.')}</li>
             <li>{x('<b>La costruzione</b>: la squadra più forte fa girare palla, e un cambio di gioco apre la difesa avversaria.', '<b>The build-up</b>: the stronger side keeps the ball moving, and a switch of play opens up the opposing defence.')}</li>
             <li>{x('<b>Una guida più completa</b>: sei passi per la prima partita e suggerimenti per tutte le schermate principali.', '<b>A fuller guide</b>: six steps for the first match and hints for all the main screens.')}</li>
@@ -674,7 +675,7 @@ def community():
           <p>{x('Il gioco è costruito a fasi, ognuna provata prima di passare alla successiva.', 'The game is built in phases, each one tested before moving on to the next.')}</p></div>
         <div class="grid g3 road">
           <div class="panel done"><span class="tag">{x('Fatto', 'Done')} · 0.1</span><h3>{x('Il gioco completo e il collaudo', 'The complete game and first testing')}</h3><p>{x('Motore partita e campo 2D, spogliatoio, mercato e osservatori, storie e stampa, finanze e dirigenza, vivaio e nazionali, coppa e Primavera, installer per Windows.', 'Match engine and 2D pitch, dressing room, transfers and scouting, stories and press, finances and board, academy and national teams, cup and youth league, Windows installer.')}</p></div>
-          <div class="panel now"><span class="tag cy">{x('Adesso', 'Now')} · {VERSION}</span><h3>{x('La costruzione', 'The build-up')}</h3><p>{x("Fase di costruzione e movimento senza palla nel motore, guida rivista. Prima: allenatori dell'IA, arbitri, meteo, radiocronaca, database della community, record e storia, tema chiaro.", 'Build-up play and off-the-ball movement in the engine, a revised guide. Before that: AI managers, referees, weather, radio commentary, community database, records and history, light theme.')}</p></div>
+          <div class="panel now"><span class="tag cy">{x('Adesso', 'Now')} · {VERSION}</span><h3>{x('La nuova interfaccia', 'The new interface')}</h3><p>{x("Cornice e Scrivania personalizzabile; poi partita, rosa, tattica e le altre schermate, e funzioni nuove: discorsi alla squadra, staff. Prima: fase di costruzione nel motore, allenatori dell'IA, arbitri, meteo, radiocronaca, database della community.", 'Frame and customisable desk; then match, squad, tactics and the other screens, and new features: team talks, staff. Before that: build-up play in the engine, AI managers, referees, weather, radio commentary, community database.')}</p></div>
           <div class="panel next"><span class="tag am">{x('Dopo', 'Next')} · 1.0</span><h3>{x("Più campionati e l'editor", 'More leagues and the editor')}</h3><p>{x('Possesso più realistico, versione Linux, altre leghe, un editor per il mondo.', 'More realistic possession, a Linux version, more leagues, an editor for the world.')}</p></div>
         </div>
       </div>

@@ -1,5 +1,22 @@
 # Note di rilascio
 
+## 0.7.0 — la nuova interfaccia
+
+Le carriere della 0.6.x si aprono senza cambiamenti; la partita è la stessa. È la prima parte del rifacimento
+dell'interfaccia (`docs/design/ui-v2-piano.md`): i disegni fatti con Stitch nella struttura di Openfoot Manager.
+
+- **Cornice nuova.** Barra laterale con l'allenatore e il suo club, le voci divise in Club e Mondo, e si riduce alle
+  sole icone. In alto il titolo della schermata con la data, la ricerca, il tema, la cassa e **«Salva»**.
+- **«Continua» ha un menu**: scegli se guardare le tue partite **dal vivo** o avere **solo il risultato**. Nel giorno
+  della partita il pulsante dice cosa farà; lo Spazio fa lo stesso.
+- **La Scrivania si personalizza.** Tre layout pronti (Allenatore, Direttore sportivo, Essenziale) o il tuo: con
+  «Personalizza scrivania» sposti i riquadri, scegli la taglia, li togli e ne aggiungi dalla galleria. Riquadri nuovi:
+  prossime 5 partite, infermeria e squalificati, contratti in scadenza, fiducia di dirigenza, tifosi e squadra.
+- **Colori e caratteri nuovi**: rosso per i pulsanti e le scelte, verde per ciò che va bene; titoli condensati. Anche il
+  tema chiaro.
+
+Le altre schermate hanno già la cornice e i colori nuovi; il loro interno verrà rifatto nelle prossime versioni.
+
 ## 0.6.1 — il collaudo
 
 Le carriere della 0.6.0 si aprono senza cambiamenti; la partita è la stessa. Correzioni trovate giocando una stagione
@@ -147,6 +164,23 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.7.0 — the new interface (English)
+
+Careers from 0.6.x open unchanged; matches play the same. This is the first part of the interface redesign: the Stitch
+designs in the structure of Openfoot Manager.
+
+- **New frame.** A sidebar with the manager and their club, items grouped into Club and World, and it can shrink to
+  icons only. At the top, the screen title with the date, search, theme, cash and **Save**.
+- **Continue has a menu**: choose whether to watch your matches **live** or get the **result only**. On match day the
+  button says what it will do; the space bar does the same.
+- **The desk can be customised.** Three ready layouts (Manager, Director of football, Essential) or your own: with
+  "Customise desk" you move tiles, pick their size, remove them and add more from the gallery. New tiles: next 5
+  matches, injuries and bans, expiring contracts, trust of board, fans and squad.
+- **New colours and fonts**: red for buttons and choices, green for what is going well; condensed headings. The light
+  theme too.
+
+The other screens already have the new frame and colours; their insides will be redone in the next versions.
 
 ## 0.6.1 — the playtest (English)
 
