@@ -1,5 +1,22 @@
 # Note di rilascio
 
+## 0.9.0 — lo staff
+
+Le carriere della 0.8.0 si aprono senza cambiamenti e trovano subito uno staff medio.
+
+- **Staff nuovo nella sezione Club**: vice allenatore, preparatore atletico e medico, ognuno con nome, bravura da 1
+  a 20 e stipendio. A bravura 10 non cambiano nulla; sopra aiutano, sotto pesano.
+- **Il medico** accorcia (o allunga) le guarigioni fino al 25%. **Il preparatore** cambia il rischio di infortuni in
+  allenamento fino al 25%. **Il vice** sposta il morale verso cui tende lo spogliatoio di qualche punto.
+- **Candidati da assumere**: ogni ruolo ha liberi con l'effetto già scritto accanto («Guarigioni più rapide del 15%»).
+  Assumendone uno, chi c'era torna libero. A fine stagione arrivano candidati nuovi.
+- Gli stipendi dello staff entrano nel monte ingaggi (e quindi nel tetto del fair play finanziario).
+
+### Limiti noti
+
+- Gli altri club hanno uno staff medio che non si vede: le loro partite non cambiano.
+- Il vice non fa ancora i discorsi nelle partite giocate con «Solo il risultato».
+
 ## 0.8.0 — i discorsi alla squadra
 
 Le carriere della 0.7.0 si aprono senza cambiamenti; le partite giocate senza guardarle sono le stesse.
@@ -184,6 +201,23 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.9.0 — the staff (English)
+
+Careers from 0.8.0 open unchanged and find an average staff straight away.
+
+- **New Staff screen in the Club section**: assistant manager, fitness coach and doctor, each with a name, a skill
+  from 1 to 20 and a wage. At skill 10 they change nothing; above they help, below they hurt.
+- **The doctor** shortens (or lengthens) recoveries by up to 25%. **The fitness coach** changes the risk of training
+  injuries by up to 25%. **The assistant** shifts the morale the dressing room drifts towards by a few points.
+- **Candidates to hire**: every role has free staff with their effect written next to them. Hiring one makes the
+  current one free. New candidates arrive at the end of each season.
+- Staff wages count towards the wage bill (and so towards the financial fair play cap).
+
+### Known limits
+
+- Other clubs have an unseen average staff: their matches don't change.
+- The assistant doesn't give team talks yet in "Result only" matches.
 
 ## 0.8.0 — team talks (English)
 

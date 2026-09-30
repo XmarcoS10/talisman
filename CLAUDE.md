@@ -105,6 +105,11 @@ Scrivania a riquadri: catalogo in `screens/DeskWidgets.tsx` (taglie S/M/L su 12 
 `MATCH.talkBoost` al logit dei giocatori in campo; a fine partita `fullTimeTalk` muove morale e fiducia (`PSYCH.talkMorale`,
 `talkTrust`) sul mondo già chiuso (in `App.tsx`, dopo `closeDay`). Solo nelle partite guardate dal vivo; l'IA non ne fa.
 
+## Staff (0.9.0)
+`engine/staff.ts`: vice, preparatore e medico solo per il club dell'utente (`world.staff`, schema 31), bravura 1-20, a 10
+nessun effetto (`staffEdge`); guarigioni, infortuni in allenamento, morale (`STAFF` in balance.ts). Rng proprio: il caso
+del mondo non cambia. Nasce in `preseason`, in `passDays` e all'apertura della carriera (`ensureStaff`).
+
 ## Salvataggi e diagnostica
 In Electron gli slot sono file in `%APPDATA%/talisman/saves` (preload `electron/preload.cjs`), con intestazione davanti
 al mondo; il registro degli errori è in `%APPDATA%/talisman/logs`. Nel browser resta il localStorage.

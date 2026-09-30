@@ -6,9 +6,9 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'site')
 REPO = 'https://github.com/XmarcoS10/talisman'
 SITE = 'https://xmarcos10.github.io/talisman/'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
-VERSION = '0.8.0'
+VERSION = '0.9.0'
 SIZE = '123 MB'
-SHA = 'ede40dac46316123b1dc989ca70b45ff2037c05a083292addee4772ec7f17984'
+SHA = '3aa428ef81b9ce6c239398228ce09789d9c5109943f05b00291a3bd6f26f8b19'
 # pnpm sim -- --seasons 10 --seed 42 con la 0.2.0
 SIM_GOALS = {'it': '2,56', 'en': '2.56'}
 SIM_DRAWS = {'it': '23,2%', 'en': '23.2%'}
@@ -543,6 +543,7 @@ def download():
         <div class="panel">
           <h3>{x('Novità della', 'New in')} {VERSION}</h3>
           <ul class="checks">
+            <li>{x("<b>Lo staff</b>: vice, preparatore e medico da assumere, ognuno col suo effetto su morale, infortuni e guarigioni.", '<b>The staff</b>: assistant, fitness coach and doctor to hire, each with an effect on morale, injuries and recoveries.')}</li>
             <li>{x("<b>Discorsi alla squadra</b>: prima, all'intervallo e a fine partita; ognuno reagisce a modo suo.", '<b>Team talks</b>: before the match, at half time and at full time; every player reacts in their own way.')}</li>
             <li>{x('<b>Interfaccia nuova</b>: cornice con «Continua» e il suo menu, Scrivania a riquadri da personalizzare.', '<b>New interface</b>: a new frame with Continue and its menu, a desk of tiles you can customise.')}</li>
             <li>{x('<b>Rifinito giocando</b>: «Avanza» senza clic a vuoto, report e analista più chiari, decimali giusti.', '<b>Polished by playing</b>: no empty clicks on Continue, clearer reports and analyst, proper decimals.')}</li>
