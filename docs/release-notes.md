@@ -1,5 +1,25 @@
 # Note di rilascio
 
+## 0.8.0 — i discorsi alla squadra
+
+Le carriere della 0.7.0 si aprono senza cambiamenti; le partite giocate senza guardarle sono le stesse.
+
+- **Discorsi alla squadra** nelle partite guardate dal vivo: prima del calcio d'inizio, all'intervallo e a fine partita
+  scegli fra sei toni (calma, motivare, pretendere di più, scuoterli, lodare, delusione). Subito vedi quanti l'hanno
+  presa bene, quanti indifferenti e chi l'ha presa male.
+- **Chi reagisce come** dipende dal carattere e dal punteggio: lodare chi sta perdendo non convince, pretendere di più
+  pesa su chi regge male la pressione, la delusione scuote i professionisti solo quando si perde.
+- **Prima e all'intervallo** il discorso cambia la resa in campo per il resto della partita (quanto un richiamo da
+  bordo campo). **A fine partita** resta sul morale e sulla fiducia in te, e nel profilo del giocatore c'è scritto
+  perché.
+- **Partita dal vivo sul disegno nuovo**: parte alta su due righe e campo più grande, titolari con la barra
+  dell'energia, panchina intera, stadio e meteo sopra il campo. Tattica e Mercato stanno in una finestra da 1280×800
+  (i filtri del mercato diventano una barra sopra la tabella).
+
+### Limiti noti
+
+- Le squadre dell'IA non fanno discorsi, e con «Solo il risultato» non se ne fanno.
+
 ## 0.7.0 — la nuova interfaccia
 
 Le carriere della 0.6.x si aprono senza cambiamenti; la partita è la stessa. È la prima parte del rifacimento
@@ -164,6 +184,25 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.8.0 — team talks (English)
+
+Careers from 0.7.0 open unchanged; matches you don't watch play the same.
+
+- **Team talks** in matches watched live: before kick-off, at half time and at full time choose one of six tones
+  (calm, motivate, demand more, fire them up, praise, disappointment). You see right away how many took it well, how
+  many were indifferent and who took it badly.
+- **Who reacts how** depends on character and score: praising a losing side doesn't convince, demanding more weighs on
+  those who handle pressure badly, disappointment shakes professionals only when you're losing.
+- **Before the match and at half time** the talk changes performance for the rest of the match (as much as a touchline
+  shout). **At full time** it stays on morale and their trust in you, and the player profile says why.
+- **Live match on the new design**: two-row top area and a bigger pitch, starters with energy bars, the whole bench,
+  stadium and weather above the pitch. Tactics and Transfers fit a 1280×800 window (transfer filters become a bar
+  above the table).
+
+### Known limits
+
+- AI teams don't give team talks, and "Result only" matches have none.
 
 ## 0.7.0 — the new interface (English)
 

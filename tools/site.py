@@ -8,7 +8,7 @@ SITE = 'https://xmarcos10.github.io/talisman/'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
 VERSION = '0.8.0'
 SIZE = '123 MB'
-SHA = 'b885583b9dcd2f029b1b399f68ebf3a74ef92c3c1f7d0a8f66dcdd1d84bf2719'
+SHA = 'ede40dac46316123b1dc989ca70b45ff2037c05a083292addee4772ec7f17984'
 # pnpm sim -- --seasons 10 --seed 42 con la 0.2.0
 SIM_GOALS = {'it': '2,56', 'en': '2.56'}
 SIM_DRAWS = {'it': '23,2%', 'en': '23.2%'}
