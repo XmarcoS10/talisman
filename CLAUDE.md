@@ -115,6 +115,12 @@ del mondo non cambia. Nasce in `preseason`, in `passDays` e all'apertura della c
 niente caso del mondo), si insegnano o disimparano in allenamento (`weekTraits`, solo utente). In partita contano dai bit
 `MP.tr` attraverso `habit.*` (costanti in `TRAIT`): il motore non guarda mai la lista. Coppie opposte in `CONFLICTS`.
 
+## Tattica con e senza palla (0.11.0, come FM26)
+`Tactic.formationOut` e `rolesOut` (schema 33, facoltativi): modulo e ruolo senza palla. `phaseMap` (match/tactics.ts)
+abbina gli slot; nel motore contano solo in `shapeDef` (`MP.ox, oy, oHold`), nella pressione (`oPress`) e nella fatica
+(`oDrain`). Moduli di una fase sola in `PHASE_FORMATIONS` (3-2-5, 5-4-1), fuori da `FORMATION_IDS` (l'IA non li pesca).
+IA: `COACH.outShape` per stile. Misura: `node tools/diag-phases.ts`; diario in `docs/design/motore-v2.md` §12.
+
 ## Salvataggi e diagnostica
 In Electron gli slot sono file in `%APPDATA%/talisman/saves` (preload `electron/preload.cjs`), con intestazione davanti
 al mondo; il registro degli errori è in `%APPDATA%/talisman/logs`. Nel browser resta il localStorage.

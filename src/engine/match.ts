@@ -3,9 +3,9 @@ import { MATCH, TRAIN } from './balance.ts';
 import { injure, matchInjuryP, relapseRisk } from './injuries.ts';
 import { afterMatch } from './morale.ts';
 import { simulate, type SimOutput, type TeamSetup } from './match/engine.ts';
-import { validRole } from './match/roles.ts';
-import { FORMATIONS, defaultRoles, type Slot } from './match/tactics.ts';
-import { FORMATION_IDS, type Club, type ClubId, type FormationId, type Fixture, type Player, type WorldState } from './model.ts';
+import { oopRolesFor, validRole } from './match/roles.ts';
+import { FORMATIONS, defaultRoles, phaseMap, type Slot } from './match/tactics.ts';
+import { FORMATION_IDS, type Club, type ClubId, type FormationId, type Fixture, type Player, type Tactic, type WorldState } from './model.ts';
 import { addCause, addNews, pName } from './news.ts';
 import { ratingAt } from './players.ts';
 import { refereeFor, refFactor } from './referees.ts';
@@ -21,7 +21,10 @@ export const canPlay = (club: Club, p: Player, opponent?: ClubId) =>
   isAvailable(p) && !club.excluded.includes(p.id)
   // prestito con divieto: non lo puoi schierare contro chi possiede il cartellino (§7.5)
   && !(opponent !== undefined && p.contract.loan?.noPlayVsOwner && p.contract.loan.from === opponent);
-export const familiarityOf = (club: Club, f: FormationId = club.tactic.formation) => club.familiarity[f] ?? TRAIN.famOther;
+const famOne = (club: Club, f: FormationId) => club.familiarity[f] ?? TRAIN.famOther;
+/** familiarità col modulo; con la tattica a due fasi, la media fra il modulo con palla e quello senza */
+export const familiarityOf = (club: Club, f: FormationId = club.tactic.formation) =>
+  f === club.tactic.formation && club.tactic.formationOut && club.tactic.formationOut !== f ? (famOne(club, f) + famOne(club, club.tactic.formationOut)) / 2 : famOne(club, f);
 
 /** rendimento atteso di p nello slot, stanchezza compresa */
 export const slotRating = (p: Player, slot: Slot) => ratingAt(p, slot.pos) * (0.7 + (0.3 * p.condition.fitness) / 100);
@@ -87,6 +90,16 @@ export function userXI(world: WorldState, club: Club, opponent?: ClubId): Lineup
   return xi;
 }
 
+/** fase senza palla dello slot i (FM26): dove va nel modulo senza palla e con che ruolo; niente se il modulo è uno solo */
+function outOf(tac: Tactic, i: number) {
+  const outF = tac.formationOut;
+  const oop = tac.rolesOut?.[i] ?? null;
+  if ((!outF || outF === tac.formation) && !oop) return {};
+  const slot = outF && outF !== tac.formation ? FORMATIONS[outF][phaseMap(tac.formation, outF)[i]!] : undefined;
+  const pos = (slot ?? FORMATIONS[tac.formation][i])?.pos;
+  return { out: slot && { x: slot.x, y: slot.y }, oop: oop && pos && oopRolesFor(pos).includes(oop) ? oop : null };
+}
+
 /** la squadra pronta per il motore: titolari coi loro ruoli, panchina, familiarità, rischio di infortunio */
 export function teamSetup(world: WorldState, club: Club, xi: LineupSlot[], mentality: number, opponent?: ClubId): TeamSetup {
   const inXI = new Set(xi.map((e) => e.player.id));
@@ -97,7 +110,7 @@ export function teamSetup(world: WorldState, club: Club, xi: LineupSlot[], menta
   return {
     club, tactic: club.tactic, mentality, bench, familiarity: familiarityOf(club),
     injuryP: (p) => ({ muscle: matchInjuryP(p, world.season), relapse: relapseRisk(p) }),
-    xi: xi.map((e, i) => ({ player: e.player, slot: e.slot, role: validRole(club.tactic.roles[i], e.slot.pos) })),
+    xi: xi.map((e, i) => ({ player: e.player, slot: e.slot, role: validRole(club.tactic.roles[i], e.slot.pos), ...outOf(club.tactic, i) })),
   };
 }
 

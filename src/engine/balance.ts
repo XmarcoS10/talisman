@@ -1,6 +1,6 @@
 // Tutte le costanti di calibrazione in un unico file (GUIDA §11.3).
 // Si tarano guardando il report di `pnpm sim`, mai a occhio nel codice.
-import type { Position } from './model.ts';
+import type { FormationId, Position } from './model.ts';
 
 export const BALANCE = {
   // --- generazione ---
@@ -766,6 +766,12 @@ export const COACH = {
     possession: { mentality: 0, pressing: 1, tempo: 0, width: 2, line: 1, directness: 1, counterPress: 1 },
     counter: { mentality: 0, pressing: 1, tempo: 1, width: 1, line: 1, directness: 2, counterPress: 0 },
   },
+  // tattica a due fasi (FM26): il modulo senza palla di ogni stile, dato quello con palla; se manca, lo stesso
+  outShape: {
+    defensive: { '4-3-3': '4-4-2', '4-2-3-1': '4-4-2', '3-5-2': '5-3-2' },
+    counter: { '4-3-3': '4-4-2', '4-2-3-1': '4-4-2', '3-5-2': '5-3-2' },
+    pressing: { '4-2-3-1': '4-4-2' },
+  } as Record<string, Partial<Record<FormationId, FormationId>>>,
   sackFrom: 10, // giornate giocate prima che si possa esonerare
   sackGap: 5, // posizioni sotto il blasone
   sackP: 0.03, // probabilità a settimana, per posizione oltre la soglia

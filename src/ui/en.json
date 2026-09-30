@@ -2083,5 +2083,18 @@
   "news.traitLearned": "{name} has learned a trait: {trait}.",
   "news.traitUnlearned": "{name} has dropped a habit: {trait}.",
   "cause.traitLearned": "Learned a trait: {trait}",
-  "cause.traitUnlearned": "Unlearned a trait: {trait}"
+  "cause.traitUnlearned": "Unlearned a trait: {trait}",
+  "tactics.formationIn": "In-possession formation",
+  "tactics.formationOut": "Out-of-possession formation",
+  "tactics.sameOut": "Same ({f})",
+  "tactics.phase.in": "In possession",
+  "tactics.phase.out": "Out of possession",
+  "tactics.phase.transition": "In transition",
+  "tactics.roleOut": "Out-of-possession role",
+  "oop.same": "As in possession",
+  "oop.holdShape": "Holds position",
+  "oop.press": "Presses",
+  "oop.cover": "Covers",
+  "oop.outlet": "Stays high",
+  "live.formationOut": "Out-of-possession formation"
 }

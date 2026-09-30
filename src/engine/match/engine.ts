@@ -3,7 +3,8 @@
 // scelta, esecuzione, tempo che passa (docs/03-match-engine.md).
 import { talkResponse, type Talk } from '../talks.ts';
 import { MATCH } from '../balance.ts';
-import type { MatchEvent, Player } from '../model.ts';
+import { FORMATIONS, phaseMap } from './tactics.ts';
+import type { FormationId, MatchEvent, Player } from '../model.ts';
 import type { Rng } from '../rng.ts';
 import { choose, options } from './decision.ts';
 import { challenge, challengeP, drain, dueInjuries, foul, scheduleInjuries } from './events.ts';
@@ -36,6 +37,8 @@ export interface MatchRun {
   shout(side: 0 | 1, kind: Shout): boolean;
   /** minuto da cui si può dare la prossima indicazione */
   nextShout(side: 0 | 1): number;
+  /** modulo senza palla cambiato in partita (FM26): ognuno va al suo posto nel nuovo blocco */
+  formationOut(side: 0 | 1, f: FormationId): void;
   /** discorso alla squadra (prima della partita, all'intervallo): la reazione di ognuno in campo */
   talk(side: 0 | 1, kind: Talk): number[];
   rating(m: MP): number;
@@ -135,6 +138,12 @@ export function runMatch(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Trace
       return true;
     },
     nextShout: (side) => st.shoutAt[side]!,
+    formationOut(side, f) {
+      const tm = teams[side];
+      tm.tactic.formationOut = f === tm.tactic.formation ? undefined : f;
+      const map = phaseMap(tm.tactic.formation, f);
+      for (const m of tm.on) { const s = FORMATIONS[f][map[m.si] ?? m.si]; if (s) { m.ox = s.x; m.oy = s.y; } }
+    },
     talk(side, kind) {
       const diff = st.score[side] - st.score[1 - side]!;
       return teams[side].on.map((m) => { const r = talkResponse(m.p, kind, diff); m.mod += MATCH.talkBoost * r; return r; });

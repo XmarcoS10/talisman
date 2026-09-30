@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { canPlay, familiarityOf, pickXI, slotRating, xiStrength } from '../../engine/match.ts';
-import { validRole } from '../../engine/match/roles.ts';
+import { validRole, type OopRoleId } from '../../engine/match/roles.ts';
 import { FORMATIONS, defaultRoles } from '../../engine/match/tactics.ts';
-import { FORMATION_IDS, POSITIONS, type FormationId, type Tactic, type WorldState } from '../../engine/model.ts';
+import { ALL_FORMATIONS, POSITIONS, type FormationId, type Tactic, type WorldState } from '../../engine/model.ts';
 import { PosBadge, Stars, shortName } from '../bits.tsx';
 import { t } from '../i18n.ts';
 import { Pitch, fitClass } from './Pitch.tsx';
@@ -12,7 +12,8 @@ import { Plans } from './Plans.tsx';
 import { PlayerInstructions } from './PlayerInstructions.tsx';
 
 type Instr = 'pressing' | 'tempo' | 'width' | 'line' | 'directness' | 'counterPress';
-const INSTRUCTIONS: Instr[] = ['pressing', 'tempo', 'width', 'line', 'directness', 'counterPress'];
+/** istruzioni di squadra divise per fase, come in FM26 */
+const PHASES: [string, Instr[]][] = [['in', ['tempo', 'width', 'directness']], ['transition', ['counterPress']], ['out', ['pressing', 'line']]];
 
 export function Seg({ label, value, options, onChange }: { label: string; value: number; options: string[]; onChange: (v: number) => void }) {
   return (
@@ -35,6 +36,7 @@ export function Tactics({ world, onChange, onPlayer }: { world: WorldState; onCh
   if (club.lineup?.length !== slots.length) autoPick(); // prima apertura o modulo cambiato altrove
   const lineup = club.lineup!;
   const [selected, setSelected] = useState<number | null>(null);
+  const [phase, setPhase] = useState<'in' | 'out'>('in');
 
   const update = (f: () => void) => { f(); onChange(); };
   const setTactic = <K extends keyof Tactic>(k: K, v: Tactic[K]) => update(() => { tac[k] = v; });
@@ -43,7 +45,10 @@ export function Tactics({ world, onChange, onPlayer }: { world: WorldState; onCh
     if (j >= 0) lineup[j] = lineup[i] ?? null; // era già titolare: scambio
     lineup[i] = pid;
   });
-  const changeFormation = (f: FormationId) => update(() => { tac.formation = f; tac.roles = defaultRoles(f); autoPick(); });
+  const changeFormation = (f: FormationId) => update(() => { tac.formation = f; tac.roles = defaultRoles(f); tac.rolesOut = undefined; autoPick(); });
+  const changeOut = (f: FormationId | '') => update(() => { tac.formationOut = f || undefined; tac.rolesOut = undefined; });
+  // as: il valore viene dalle opzioni della tendina (ruoli senza palla o '')
+  const setOop = (i: number, r: string) => update(() => { const a = tac.rolesOut ?? slots.map(() => null); a[i] = (r || null) as OopRoleId | null; tac.rolesOut = a; });
 
   const sel = selected !== null ? slots[selected] : undefined;
   const players = club.playerIds.map((id) => world.players[id]!);
@@ -71,9 +76,14 @@ export function Tactics({ world, onChange, onPlayer }: { world: WorldState; onCh
   return (
     <div className="stack">
       <div className="panel tactic-head">
-        <label className="field"><span className="caps">{t('tactics.formation')}</span>
+        <label className="field"><span className="caps">{t('tactics.formationIn')}</span>
           <select value={tac.formation} onChange={(e) => changeFormation(e.target.value as FormationId)}>
-            {FORMATION_IDS.map((f) => <option key={f} value={f}>{f}</option>)}
+            {ALL_FORMATIONS.map((f) => <option key={f} value={f}>{f}</option>)}
+          </select></label>
+        <label className="field"><span className="caps">{t('tactics.formationOut')}</span>
+          <select value={tac.formationOut ?? ''} onChange={(e) => changeOut(e.target.value as FormationId | '')}>
+            <option value="">{t('tactics.sameOut', { f: tac.formation })}</option>
+            {ALL_FORMATIONS.filter((f) => f !== tac.formation).map((f) => <option key={f} value={f}>{f}</option>)}
           </select></label>
         <div className="field" style={{ flex: 1, minWidth: 200 }} title={t('tactics.familiarityHint')}>
           <span className="row" style={{ justifyContent: 'space-between' }}><span className="caps">{t('tactics.famLabel')}</span><b className="num pos-good">{fam}%</b></span>
@@ -85,8 +95,9 @@ export function Tactics({ world, onChange, onPlayer }: { world: WorldState; onCh
 
       <div className="grid tactics">
         <div className="stack">
-          <Pitch world={world} club={club} selected={selected} onSelect={setSelected} onAssign={assign}
-            onRole={(i, r) => update(() => { tac.roles = slots.map((s, k) => (k === i ? validRole(r, s.pos) : validRole(tac.roles[k], s.pos))); })} />
+          <div className="seg-tabs phase-tabs">{(['in', 'out'] as const).map((ph) => <button key={ph} className={phase === ph ? 'active hot' : ''} onClick={() => setPhase(ph)}>{t(`tactics.phase.${ph}`)}</button>)}</div>
+          <Pitch world={world} club={club} selected={selected} onSelect={setSelected} onAssign={assign} phase={phase}
+            onRole={(i, r) => (phase === 'out' ? setOop(i, r) : update(() => { tac.roles = slots.map((s, k) => (k === i ? validRole(r, s.pos) : validRole(tac.roles[k], s.pos))); }))} />
           <div className="row muted small"><span className="ring-key fit" /> {t('tactics.ringFit')} <span className="ring-key fam" /> {t('tactics.ringFam')}</div>
           {selRole && <div className="panel"><b className="deal-h">{t(`role.${selRole}`)}</b><span className="muted">{t(`role.${selRole}.desc`)}</span></div>}
           {selected !== null && lineup[selected] != null && <PlayerInstructions world={world} tactic={tac} playerId={lineup[selected]!} onChange={onChange} />}
@@ -97,8 +108,11 @@ export function Tactics({ world, onChange, onPlayer }: { world: WorldState; onCh
           <div className="panel">
             <h2>{t('tactics.instructions')}</h2>
             <Seg label={t('tactics.mentality')} value={tac.mentality - 1} options={[1, 2, 3, 4, 5].map((m) => t(`mentality.${m}`))} onChange={(v) => setTactic('mentality', v + 1)} />
-            {INSTRUCTIONS.map((k) => (
-              <Seg key={k} label={t(`instr.${k}`)} value={tac[k]} options={[0, 1, 2].map((v) => t(`instr.${k}.${v}`))} onChange={(v) => setTactic(k, v)} />
+            {PHASES.map(([ph, keys]) => (
+              <div key={ph} className="stack" style={{ gap: 6 }}>
+                <h3>{t(`tactics.phase.${ph}`)}</h3>
+                {keys.map((k) => <Seg key={k} label={t(`instr.${k}`)} value={tac[k]} options={[0, 1, 2].map((v) => t(`instr.${k}.${v}`))} onChange={(v) => setTactic(k, v)} />)}
+              </div>
             ))}
           </div>
           <Takers world={world} tactic={tac} playerIds={club.playerIds} onChange={onChange} />

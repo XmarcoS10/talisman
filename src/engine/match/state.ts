@@ -8,7 +8,7 @@ import type { Rng } from '../rng.ts';
 import type { OnPitch } from './decision.ts';
 import type { Beat } from './trace.ts';
 import { len } from './pitch.ts';
-import { ROLES, type RoleId } from './roles.ts';
+import { OOP_ROLES, ROLES, type OopRoleId, type RoleId } from './roles.ts';
 import type { Slot } from './tactics.ts';
 
 export interface PStats {
@@ -21,8 +21,14 @@ export interface PStats {
 
 export interface MP extends OnPitch {
   pos: Position;
-  hx: number; // posizione base nel modulo
+  hx: number; // posizione base nel modulo (con palla)
   hy: number;
+  ox: number; // posizione base senza palla (tattica a due fasi; uguale a hx, hy se il modulo è uno solo)
+  oy: number;
+  oHold: number; // senza palla: quanto resta alto e quanto pressa (ruolo senza palla, o quello con palla)
+  oPress: number;
+  oDrain: number; // fatica in più (o in meno) del ruolo senza palla
+  si: number; // slot nel modulo con palla (per rifare la fase senza palla se cambia il modulo in partita)
   roleId: RoleId;
   marked: number; // contrassegno interno della marcatura
   tx: number; // posizione ideale del momento (verso cui corre)
@@ -39,7 +45,8 @@ export interface TeamSetup {
   club: Club;
   tactic: Tactic;
   mentality: number;
-  xi: { player: Player; slot: Slot; role: RoleId }[];
+  /** out: posto nel modulo senza palla; oop: ruolo senza palla (FM26). Senza, valgono quelli con palla */
+  xi: { player: Player; slot: Slot; role: RoleId; out?: { x: number; y: number }; oop?: OopRoleId | null }[];
   bench: Player[];
   familiarity: number; // 0-100, col modulo in uso
   injuryP: (p: Player) => { muscle: number; relapse: number }; // rischio personale di infortunio in partita
@@ -216,14 +223,22 @@ const dayMod = (p: Player, fam: number) =>
   - MATCH.famK * Math.max(0, 1 - fam / 90);
 export const mp = (player: Player, slot: Slot, role: RoleId, fam: number, from = 0, ins: PlayerInstr = {}): MP =>
   ({ p: player, pos: slot.pos, hx: slot.x, hy: slot.y, roleId: role, role: ROLES[role], marked: 0, x: slot.x, y: slot.y, tx: slot.x, ty: slot.y,
-    jx: 0, jy: 0, run: false, runRoll: 1, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from), ins, tr: traitBits(player) });
+    jx: 0, jy: 0, run: false, runRoll: 1, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from), ins, tr: traitBits(player),
+    ox: slot.x, oy: slot.y, oHold: ROLES[role].hold, oPress: ROLES[role].press, oDrain: 1, si: 0 });
+
+/** la fase senza palla del giocatore: il suo posto nel modulo senza palla e il suo ruolo senza palla */
+export function outPhase(m: MP, out?: { x: number; y: number }, oop?: OopRoleId | null) {
+  if (out) { m.ox = out.x; m.oy = out.y; }
+  if (oop) { m.oHold = m.role.hold * OOP_ROLES[oop].hold; m.oPress = m.role.press * OOP_ROLES[oop].press; m.oDrain = OOP_ROLES[oop].drain; }
+  return m;
+}
 
 /** falli fischiati: l'arbitro severo ne vede di più (metà dell'effetto sui cartellini) */
 export const whistle = (st: MatchState) => 1 + (st.ref - 1) * REFEREE.foulShare;
 
 export function createState(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: TraceStep[]): MatchState {
   const teams = setups.map((s, i) => {
-    const on = s.xi.map((e) => mp(e.player, e.slot, e.role, s.familiarity, 0, s.tactic.players?.[e.player.id]));
+    const on = s.xi.map((e, i) => { const m = outPhase(mp(e.player, e.slot, e.role, s.familiarity, 0, s.tactic.players?.[e.player.id]), e.out, e.oop); m.si = i; return m; });
     return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity, auto: s.auto !== false, log: newLog(), q: null };
   }) as [Team, Team];
   return {

@@ -1,6 +1,6 @@
 // Modello dati (GUIDA §4). Entità normalizzate in Record<id, entità>, riferimenti per id.
 // Questo stesso formato è quello del "database della community" caricabile dall'utente.
-import type { RoleId } from './match/roles.ts';
+import type { OopRoleId, RoleId } from './match/roles.ts';
 import type { RngState } from './rng.ts';
 import type { Trait } from './traits.ts';
 
@@ -252,8 +252,12 @@ export interface CausalEvent {
   vars: Record<string, string | number>;
 }
 
+/** i moduli classici: quelli fra cui sceglie l'IA (bestFormation, allenatori) */
 export const FORMATION_IDS = ['4-3-3', '4-4-2', '4-2-3-1', '3-5-2', '5-3-2'] as const;
-export type FormationId = (typeof FORMATION_IDS)[number];
+/** moduli pensati per una fase sola (tattica con e senza palla, FM26): 3-2-5 con palla, 5-4-1 senza */
+export const PHASE_FORMATIONS = ['3-2-5', '5-4-1'] as const;
+export const ALL_FORMATIONS = [...FORMATION_IDS, ...PHASE_FORMATIONS] as const;
+export type FormationId = (typeof ALL_FORMATIONS)[number];
 
 /** tattica di squadra (GUIDA §6.4). Istruzioni 0 = basso, 1 = standard, 2 = alto */
 export interface Tactic {
@@ -266,6 +270,10 @@ export interface Tactic {
   directness: number; // passaggi diretti/verticali
   counterPress: number; // dopo la palla persa: 0 ripiega, 1 normale, 2 contro-pressing (schema 23)
   roles: RoleId[]; // ruolo di ogni slot del modulo, nello stesso ordine
+  /** modulo senza palla (tattica a due fasi, come FM26, schema 33); se manca è lo stesso di `formation` */
+  formationOut?: FormationId;
+  /** ruolo senza palla di ogni slot di `formation`; null = quello che viene dal ruolo con palla */
+  rolesOut?: (OopRoleId | null)[];
   /** battitori scelti dall'allenatore (id del giocatore); se manca o non è in campo, batte il migliore (schema 22) */
   takers?: { corners?: number; freeKicks?: number; penalties?: number };
   /** istruzioni individuali, per id del giocatore (schema 24) */

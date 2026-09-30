@@ -80,8 +80,8 @@ function shapeDef(def: Team, dbx: number, dby: number): MP | undefined {
   let presser: MP | undefined, best = Infinity;
   for (const m of def.on) {
     if (m.pos === 'GK') { m.tx = 0.6; m.ty = 4; continue; }
-    m.tx = clamp(1 + (m.hx - 1) * compact * m.role.hold + (dbx - 6) * 0.45 + shift, 0.9, 11.5);
-    m.ty = clamp(4 + (m.hy - 4) * 0.7 + (dby - 4) * 0.35, 0.2, 7.8);
+    m.tx = clamp(1 + (m.ox - 1) * compact * m.oHold + (dbx - 6) * 0.45 + shift, 0.9, 11.5); // modulo e ruolo senza palla
+    m.ty = clamp(4 + (m.oy - 4) * 0.7 + (dby - 4) * 0.35, 0.2, 7.8);
     const d = len(m.x - dbx, m.y - dby); // in pressione va chi è davvero più vicino adesso
     if (d < best) { best = d; presser = m; }
   }

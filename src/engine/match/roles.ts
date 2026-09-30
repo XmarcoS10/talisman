@@ -21,6 +21,23 @@ export interface Role {
   drain: number; // fatica: i ruoli che corrono di più si stancano prima
 }
 
+/**
+ * ruoli senza palla (tattica a due fasi, FM26): correggono come il giocatore sta nel blocco e quanto va in pressione
+ * rispetto al suo ruolo con palla (moltiplicano `hold` e `press`), e quanto si stanca. Senza un ruolo scelto resta
+ * tutto come prima. (Valori assoluti al posto dei moltiplicatori: «tutti pressano» valeva +0,34 punti a partita.)
+ */
+export const OOP_ROLES = {
+  holdShape: { hold: 1, press: 0.9, drain: 0.97 }, // tiene la posizione nel blocco
+  press: { hold: 1.05, press: 1.15, drain: 1.12 }, // esce forte sul portatore, e si stanca di più
+  cover: { hold: 0.9, press: 0.85, drain: 0.96 }, // si abbassa a coprire
+  outlet: { hold: 1.3, press: 0.6, drain: 0.93 }, // resta alto: sbocco del contropiede
+} as const;
+export type OopRoleId = keyof typeof OOP_ROLES;
+const OOP_DEF: OopRoleId[] = ['holdShape', 'press', 'cover'];
+const OOP_ALL: OopRoleId[] = ['holdShape', 'press', 'cover', 'outlet'];
+/** ruoli senza palla adatti a una posizione (il portiere non ne ha; i difensori non restano alti) */
+export const oopRolesFor = (pos: Position): OopRoleId[] => (pos === 'GK' ? [] : ['DC', 'DL', 'DR'].includes(pos) ? OOP_DEF : OOP_ALL);
+
 // nota di bilanciamento: hold > 1 (restare alti senza palla) dà uno sbocco al contropiede ma toglie un uomo alla
 // difesa. Lo usa solo l'ala del 4-3-3 e del 4-2-3-1 (1,2, intervento 9): con le ali che rientravano del tutto
 // il 4-3-3 batteva ogni modulo (1,66 punti a partita contro 1,2-1,4 degli altri)

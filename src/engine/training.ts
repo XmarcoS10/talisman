@@ -4,7 +4,7 @@ import { staffEdge } from './staff.ts';
 import { weekTraits } from './traits.ts';
 import { developPlayer, type DevContext } from './development.ts';
 import { injure, injuryRisk, relapseRisk } from './injuries.ts';
-import { FORMATION_IDS, type Club, type Player, type TrainingCat, type WorldState } from './model.ts';
+import { ALL_FORMATIONS, type Club, type Player, type TrainingCat, type WorldState } from './model.ts';
 import { addCause, addNews, pName } from './news.ts';
 import { age } from './players.ts';
 import type { Rng } from './rng.ts';
@@ -88,8 +88,8 @@ export function trainWeek(world: WorldState, club: Club, rng: Rng) {
   const adapt = players.reduce((s, p) => s + p.attrs.tacticalAdaptability, 0) / players.length / 11;
   const gain = TRAIN.famGain * (count(plan, 'tactical') + 0.5 * count(plan, 'match') + 1) * adapt
     * (me && world.manager.style === 'tactician' ? STYLE.famGain : 1);
-  for (const f of FORMATION_IDS) {
+  for (const f of ALL_FORMATIONS) {
     const v = club.familiarity[f] ?? TRAIN.famOther;
-    club.familiarity[f] = Math.round(Math.max(TRAIN.famOther / 2, Math.min(100, f === club.tactic.formation ? v + gain : v - TRAIN.famDecay)) * 10) / 10;
+    club.familiarity[f] = Math.round(Math.max(TRAIN.famOther / 2, Math.min(100, f === club.tactic.formation || f === club.tactic.formationOut ? v + gain : v - TRAIN.famDecay)) * 10) / 10;
   }
 }

@@ -2,7 +2,7 @@
 // regolazioni rapide, cronaca scorrevole.
 import { Megaphone, Flame, Wind } from 'lucide-react';
 import type { MatchRun, Shout, TraceStep } from '../../engine/match/engine.ts';
-import type { Club, Tactic, WorldState } from '../../engine/model.ts';
+import { ALL_FORMATIONS, type Club, type FormationId, type Tactic, type WorldState } from '../../engine/model.ts';
 import { Crest } from '../Crest.tsx';
 import { shortName } from '../bits.tsx';
 import { t } from '../i18n.ts';
@@ -82,6 +82,17 @@ export function Ticker({ frames, i, names, world, run, quiet = false }: { frames
         <span key={k} className="muted small">→ {e.min}' {EV_ICON[e.type]} {e.type === 'plan' ? t('live.planFired', { name: e.plan ?? '' }) : world.players[e.playerId] ? shortName(world.players[e.playerId]!) : ''}</span>
       ))}
     </div>
+  );
+}
+
+/** modulo senza palla cambiato dal vivo (FM26) */
+export function OutFormation({ run, me, onChange }: { run: MatchRun; me: 0 | 1; onChange: () => void }) {
+  const tac = run.teams[me].tactic;
+  return (
+    <label className="seg-row"><span className="muted">{t('live.formationOut')}</span>
+      <select value={tac.formationOut ?? tac.formation} onChange={(e) => { run.formationOut(me, e.target.value as FormationId); onChange(); /* as: opzioni qui sotto */ }}>
+        {ALL_FORMATIONS.map((f) => <option key={f} value={f}>{f}</option>)}
+      </select></label>
   );
 }
 

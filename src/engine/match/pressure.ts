@@ -69,7 +69,7 @@ export function readPlay(st: MatchState): { view: View; pressure: number; closes
     if (qx * qx + qy * qy > FAR) continue;
     const d = len(qx, qy);
     if (d < cd && m.pos !== 'GK') { cd = d; closest = m; }
-    if (d < MATCH.pressRadius) pressure += (1 - d / MATCH.pressRadius) * (0.7 + 0.03 * m.p.attrs.workRate) * (m.energy / 100) * PRESS[def.tactic.pressing]! * cv * cp * m.role.press;
+    if (d < MATCH.pressRadius) pressure += (1 - d / MATCH.pressRadius) * (0.7 + 0.03 * m.p.attrs.workRate) * (m.energy / 100) * PRESS[def.tactic.pressing]! * cv * cp * m.oPress; // ruolo senza palla
   }
   const c = st.carrier;
   const sign = st.s === 0 ? 1 : -1;

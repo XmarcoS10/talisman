@@ -42,7 +42,8 @@ export function coachTactics(world: WorldState, club: Club) {
   }
   const s = COACH.styles[coach?.style ?? 'balanced'];
   Object.assign(club.tactic, { formation, roles: defaultRoles(formation), mentality: 3 + s.mentality, pressing: s.pressing, tempo: s.tempo,
-    width: s.width, line: s.line, directness: s.directness, counterPress: s.counterPress });
+    width: s.width, line: s.line, directness: s.directness, counterPress: s.counterPress,
+    formationOut: COACH.outShape[coach?.style ?? 'balanced']?.[formation], rolesOut: undefined }); // modulo senza palla dello stile (FM26)
 }
 
 /** chi prende una panchina: il senza panchina col blasone più adatto al club */

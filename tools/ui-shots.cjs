@@ -18,7 +18,13 @@ app.on('browser-window-created', async (_e, win) => {
   const loaded = () => new Promise((r) => win.webContents.once('did-finish-load', r));
   const js = (code) => win.webContents.executeJavaScript(code);
   const click = (sel, text = '') => js(`(() => { const b = [...document.querySelectorAll(${JSON.stringify(sel)})].find((b) => b.textContent.includes(${JSON.stringify(text)})); if (b) b.click(); return !!b; })()`);
-  const shot = async (name) => { await wait(500); fs.writeFileSync(path.join(out, `${name}.png`), (await win.webContents.capturePage()).toPNG()); console.log(`foto: ${path.join(out, name)}.png`); };
+  const shot = async (name) => {
+    await wait(500);
+    fs.writeFileSync(path.join(out, `${name}.png`), (await win.webContents.capturePage()).toPNG());
+    // la pagina non deve scorrere di lato a 1280×800: se succede lo si dice, con quanti pixel
+    const over = await js(`(() => { const m = document.querySelector('main') ?? document.body; return m.scrollWidth - m.clientWidth; })()`);
+    console.log(`foto: ${path.join(out, name)}.png${over > 1 ? ` · ESCE DI LATO di ${over} px` : ''}`);
+  };
   try {
     await loaded();
     win.setContentSize(1280, 800);
@@ -35,6 +41,13 @@ app.on('browser-window-created', async (_e, win) => {
       await wait(800);
       await shot(name);
     }
+    // tattica a due fasi: 4-4-2 senza palla, vista «Senza palla»
+    await click('.sidebar button', 'Tattica');
+    await wait(500);
+    await js(`(() => { const s = document.querySelectorAll('.tactic-head select')[1]; const set = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set; set.call(s, '4-4-2'); s.dispatchEvent(new Event('change', { bubbles: true })); return true; })()`);
+    await click('.phase-tabs button', 'Senza palla');
+    await wait(500);
+    await shot('tattica-senza-palla');
     await click('.sidebar button', 'Rosa');
     await wait(500);
     await click('tbody tr');

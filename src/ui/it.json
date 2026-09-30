@@ -2083,5 +2083,18 @@
   "news.traitLearned": "{name} ha imparato un tratto: {trait}.",
   "news.traitUnlearned": "{name} ha perso un'abitudine: {trait}.",
   "cause.traitLearned": "Ha imparato un tratto: {trait}",
-  "cause.traitUnlearned": "Ha disimparato un tratto: {trait}"
+  "cause.traitUnlearned": "Ha disimparato un tratto: {trait}",
+  "tactics.formationIn": "Modulo con palla",
+  "tactics.formationOut": "Modulo senza palla",
+  "tactics.sameOut": "Uguale ({f})",
+  "tactics.phase.in": "Con palla",
+  "tactics.phase.out": "Senza palla",
+  "tactics.phase.transition": "In transizione",
+  "tactics.roleOut": "Ruolo senza palla",
+  "oop.same": "Come con palla",
+  "oop.holdShape": "Tiene la posizione",
+  "oop.press": "Pressa",
+  "oop.cover": "Copre",
+  "oop.outlet": "Resta alto",
+  "live.formationOut": "Modulo senza palla"
 }

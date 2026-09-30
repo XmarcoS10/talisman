@@ -15,7 +15,7 @@ import { CloudSun, Landmark, Pause, Play, SkipForward, SlidersHorizontal } from 
 import { Hint } from '../Hint.tsx';
 import { crowdIntensity, crowdStart, crowdStop, playUi } from '../audio.ts';
 import { shortName } from '../bits.tsx';
-import { ClipStrip, Inertia, OverlayChips, ReplayTag, Scoreboard, Shouts, SkipCard, Ticker, ViewBar } from './LiveParts.tsx';
+import { ClipStrip, Inertia, OutFormation, OverlayChips, ReplayTag, Scoreboard, Shouts, SkipCard, Ticker, ViewBar } from './LiveParts.tsx';
 import { t } from '../i18n.ts';
 import { LiveAnalyst } from './LiveAnalyst.tsx';
 import { LiveBench } from './LiveBench.tsx';
@@ -182,6 +182,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
           <LiveAnalyst run={run} me={me} names={look.names} phrase={phrase} ctx={ctx} upTo={st?.i ?? 0} />
           <div className="panel quick">
             <h3>{t('live.quick')}</h3>
+            <OutFormation run={run} me={me} onChange={rerender} />
             <Seg label={t('tactics.mentality')} value={tac.mentality - 1} options={[1, 2, 3, 4, 5].map((m) => t(`mentality.${m}`))} onChange={(v) => setTac('mentality', v + 1)} />
             {INSTR.map((k) => (
               <Seg key={k} label={t(`instr.${k}`)} value={tac[k]} options={[0, 1, 2].map((v) => t(`instr.${k}.${v}`))} onChange={(v) => setTac(k, v)} />

@@ -661,3 +661,34 @@ col coefficiente di correlazione.
 
 Pulizia: tolte da `balance.ts` le costanti del disordine del 25/09 (`disSwitch`, `disLine`, `disDribble`, `disTau`,
 `disOrg`, `disK`, `disXg`, `disValue`), che nessuno usava: le partite non cambiano (golden master uguale).
+
+## 12. Tratti del giocatore e tattica con e senza palla (0.10.0-0.11.0, 30/09)
+
+**Tratti** (`engine/traits.ts`, come in FM): nove abitudini salvate sul giocatore, nascono da id e attributi, si
+insegnano in allenamento. In partita contano dai bit `MP.tr` (`habit.*`, costanti `TRAIT`). Riferimento misurato allo
+stesso momento, 3000 partite: gol 2,46 → 2,62 al primo tentativo (pareggi 22,2% → 20,4%, sotto il target); effetti
+ridotti una volta (tiri da fuori 1,6 → 1,4, cross 1,25 → 1,15, inserimenti 1,8 → 1,5): gol 2,59, pareggi 21,9%, il
+resto invariato. Golden master rigenerato apposta.
+
+**Tattica a due fasi** (proposta in `docs/design/tattica-fasi.md`, poi «la stessa di FM26»): modulo con palla
+(`formation`) e senza palla (`formationOut`, abbinamento fisso degli slot `phaseMap`), ruolo senza palla per giocatore
+(`rolesOut`, `OOP_ROLES`), istruzioni divise per fase nella schermata. Nel motore cambiano solo `shapeDef` (case
+`MP.ox, oy` e `oHold`), la pressione (`oPress`) e la fatica (`oDrain`): con un modulo solo e nessun ruolo senza palla
+tutto coincide, e il golden master è rimasto identico.
+
+`tools/diag-phases.ts`, 1200 partite per riga, neutro 1,38 punti a partita:
+- coppie di moduli tutte entro 0,10 (4-3-3/5-4-1 1,32; 3-2-5 da solo 1,47, il più alto);
+- «tutti Pressa», primo tentativo con valori assoluti: 1,72; con la fatica (+15%): 1,61; come moltiplicatori del
+  ruolo con palla (pressa il 15% in più di quanto farebbe): 1,48. «Copre» 1,32, «Tiene la posizione» 1,39. Fermo lì
+  (secondo tentativo): sono casi estremi, undici giocatori sullo stesso ruolo.
+
+IA (`COACH.outShape`): difensivi e contropiede senza palla in 4-4-2 o 5-3-2, pressing dal 4-2-3-1 in 4-4-2.
+`tools/diag-coaches.ts`, punti sopra le attese per stile: prima +4,2 … −7,9 (contropiede −7,9); col 5-4-1 per i
+difensivi: difensivi −7,2 su 10 stagioni di club; col 5-3-2: seme 42 +3,2 … −5,1, seme 7 +2,9 … −5,5. Lo stile
+offensivo resta il più debole, com'era già.
+
+Carriere di 25 stagioni (seme 42), stesso codice e stesso momento: senza le coppie dell'IA (solo i tratti)
+correlazione forza-punti **0,64** (era circa 0,72 dopo la fase di costruzione: i tratti, distribuiti a prescindere
+dalla forza, aggiungono caso); con le coppie dell'IA **0,75**, dentro il target. Distacco A-B (11,4 e 10,6) e
+bancarotte (3,2 e 4,4 ogni 10 stagioni) fuori target in tutte e due, come prima. Da tenere d'occhio: se una
+prossima misura riporta la correlazione sotto 0,72, la prima cosa da guardare è la nascita dei tratti (`TRAIT.born*`).
