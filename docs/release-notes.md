@@ -1,5 +1,18 @@
 # Note di rilascio
 
+## 0.14.2 — passaggi, contrasti e gol credibili
+
+Seconda fase del piano per la partita 2D: cambia solo come si vedono le azioni, i risultati restano identici.
+
+- **Passaggi alla velocità giusta**: la palla viaggia a 17 m/s, i lanci e i cross a 21, i tiri a 28. Prima ogni
+  passaggio durava una quota fissa dell'azione, e uno di 15 m andava a passo d'uomo (circa 200 a partita).
+- **La palla arriva ai piedi**: finito il volo raggiunge chi l'ha presa e lo segue, non resta più a metri da lui.
+- **Intercetti veri**: la palla si ferma sulla sua traiettoria dove la prende il difensore, invece di cambiare
+  direzione a metà strada.
+- **Contrasti veri**: la palla resta al portatore finché il difensore non gli arriva addosso.
+- **Il gol si vede**: la palla entra in rete (anche di testa e da calcio piazzato) e resta lì un paio di secondi prima
+  del calcio d'inizio.
+
 ## 0.14.1 — la partita si legge meglio
 
 Prima fase del piano per la partita 2D (`docs/design/partita-2d-piano.md`): solo l'aspetto, le partite non cambiano.
@@ -326,6 +339,18 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.14.2 — believable passes, tackles and goals (English)
+
+Second phase of the 2D match plan: only how actions look changes, results stay identical.
+
+- **Passes at the right speed**: 17 m/s, long balls and crosses 21, shots 28. Before, every pass lasted a fixed share
+  of the action, and a 15 m pass went at walking pace (about 200 per match).
+- **The ball reaches the feet**: after the flight it goes to whoever took it and follows them.
+- **Real interceptions**: the ball stops on its path where the defender takes it, instead of turning halfway.
+- **Real tackles**: the ball stays with the carrier until the defender reaches them.
+- **You see the goal**: the ball goes into the net (headers and set pieces too) and stays there for a couple of seconds
+  before the kick-off.
 
 ## 0.14.1 — an easier match to read (English)
 

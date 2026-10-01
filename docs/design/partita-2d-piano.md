@@ -58,7 +58,13 @@ giocatori e più leggera, fallo e cartellino accanto al giocatore (`fx.ts`). La 
   attacco) di ciascuna squadra, così si legge 4-4-2 o 3-5-2 a colpo d'occhio.
 - Verifica: `tools/match-film.cjs`, sovrapposizioni misurate sul disegno = 0, foto prima/dopo.
 
-### Fase 2 — passaggi, contrasti, tiri e gol (racconto del motore: il bilanciamento NON cambia)
+### Fase 2 — passaggi, contrasti, tiri e gol (racconto del motore: il bilanciamento NON cambia) — FATTA nella 0.14.2
+`ballPlan` e `shotTarget` in `positioning.ts`, velocità `MATCH.ballPass/ballLong/ballShot`, `ballGlue`, `tackleContest`,
+`goalHold`. Misure `diag-glitches` (6 partite), prima → dopo: palla che salta 2,2 → 0 a partita; passaggi lenti
+207 → 0,5; presi a più di 2 m 9,1 → 3,7%; palla lontana da chi la porta 8,1 → 2,1% del tempo; gol con la palla in
+rete 0 → 20 su 20. Golden master: risultati identici, cambia solo l'impronta della traccia. Restano ~10 salti di
+giocatori a partita (calci d'inizio e cambi) e il portiere a volte oltre la linea.
+
 Tutto in `replay` di `match/positioning.ts`, che racconta come si arriva alle posizioni già decise dal motore (il
 vincolo scritto lì: le posizioni di fine intervallo restano quelle del motore, stesso consumo di caso).
 - **Palla alla velocità giusta**: il volo dura distanza / velocità (passaggio 15-22 m/s, lancio 20-25, tiro 25-30,

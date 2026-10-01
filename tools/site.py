@@ -6,9 +6,9 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'site')
 REPO = 'https://github.com/XmarcoS10/talisman'
 SITE = 'https://xmarcos10.github.io/talisman/'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
-VERSION = '0.14.1'
+VERSION = '0.14.2'
 SIZE = '123 MB'
-SHA = '6715353561a286588f5eb0414c6a1796d0b90833015e937fe8f6af3997b15aad'
+SHA = '198db3b98ebc956117e626cd7cfd12ef8893e85a6b9f70985e6050e826e6b8f6'
 # pnpm sim -- --seasons 10 --seed 42 con la 0.2.0
 SIM_GOALS = {'it': '2,48', 'en': '2.48'}
 SIM_DRAWS = {'it': '21,9%', 'en': '21.9%'}
@@ -543,6 +543,7 @@ def download():
         <div class="panel">
           <h3>{x('Novità della', 'New in')} {VERSION}</h3>
           <ul class="checks">
+            <li>{x("<b>Azioni credibili</b>: passaggi veloci, intercetti e contrasti veri, la palla in rete.", '<b>Believable actions</b>: fast passes, real interceptions and tackles, the ball in the net.')}</li>
             <li>{x("<b>Partita più leggibile</b>: campo grande, reparti in campo, pallini che non si coprono.", '<b>An easier match to read</b>: big pitch, units on the pitch, dots that do not cover each other.')}</li>
             <li>{x("<b>Ritaratura del motore</b>: la stanchezza conta meno, più pareggi e gol nella norma in campionato.", '<b>Engine recalibration</b>: fatigue matters less, more draws and normal scoring in the league.')}</li>
             <li>{x("<b>Colloqui individuali</b>: lodare o criticare il rendimento di un giocatore, che risponde a modo suo.", "<b>One-to-one talks</b>: praise or criticise a player's form, and they answer in their own way.")}</li>

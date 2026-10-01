@@ -171,7 +171,12 @@ export const MATCH = {
   runSpeed: 0.55, // zone al secondo con cui un giocatore raggiunge la sua posizione (≈ 4,8 m/s di media)
   // movimento continuo (F6.2): tra una decisione e l'altra il campo avanza a passi fissi
   frameTick: 0.25, // secondi di gioco per fotogramma di posizione
-  ballFlight: 0.6, // quota dell'intervallo in cui la palla è in viaggio (il resto è gioco fermo o conduzione)
+  ballFlight: 0.6, // quota dell'intervallo in cui la palla è in viaggio quando l'azione è già raccontata
+  // racconto della palla (piano 2D, fase 2; solo riproduzione, il bilanciamento non cambia): velocità in m/s
+  ballPass: 17, ballLong: 21, ballShot: 28,
+  ballGlue: 0.12, // quota dell'intervallo in cui la palla, finito il volo, raggiunge i piedi di chi l'ha presa
+  tackleContest: 0.5, // contrasto: quota dell'intervallo in cui la palla resta al portatore e il difensore gli va addosso
+  goalHold: 2.5, // secondi di gioco a velocità vera con la palla in rete prima che il ritorno a centrocampo scorra veloce
   deadSpeed: 8, // il gioco fermo (rimesse, esultanza) scorre più in fretta nella riproduzione
   deadFrom: 12, // oltre questi secondi un intervallo è gioco fermo
   offBallMove: 1.2, // ampiezza (zone) degli smarcamenti casuali di chi attacca

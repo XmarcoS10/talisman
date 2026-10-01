@@ -206,22 +206,65 @@ function waypoint(f: TraceStep | null, fresh: boolean, g1: { x: number; y: numbe
   return f.tx !== undefined ? { x: f.tx, y: f.ty! } : g1;
 }
 
+type P = { x: number; y: number };
+const meters = (a: P, b: P) => len((b.x - a.x) * 8.75, (b.y - a.y) * 8.5);
+const has = (f: TraceStep, k: string) => !!f.beats?.some((b) => b.kind === k);
+
+/** dove finisce il tiro: in rete se è gol, contro chi lo mura, altrimenti davanti alla linea (parata o fuori) */
+function shotTarget(f: TraceStep, goal: boolean, g0: P, wp: P): P {
+  const gx = f.side === 0 ? 1 : -1, y = clamp(4 + (f.by - 4) * 0.15, 3.65, 4.35);
+  if (goal) return { x: 6 + gx * 6.2, y };
+  return has(f, 'block') ? { x: g0.x + (wp.x - g0.x) * 0.25, y: g0.y + (y - g0.y) * 0.25 } : { x: 6 + gx * 5.75, y };
+}
+
+/**
+ * il racconto della palla nell'intervallo (piano 2D, fase 2): dove va, quanto dura il volo (distanza / velocità, non
+ * una quota fissa), quanto resta a velocità vera nel gioco fermo (il gol). Intercetto: la palla si ferma sulla
+ * traiettoria dove la prende il difensore. Contrasto: resta al portatore finché il difensore non gli è addosso.
+ * Tiro: entra in rete se è gol, altrimenti si ferma davanti alla linea (parata, muro, fuori: poi riparte da g1).
+ */
+function ballPlan(f: TraceStep | null, fresh: boolean, dead: boolean, g0: P, g1: P, next: MP, dt: number): { wp: P; flight: number; live: number } {
+  let wp = waypoint(f, fresh, g1);
+  if (!f || !fresh) return { wp, flight: dead ? 0.2 : MATCH.ballFlight, live: 0 };
+  if (f.kind === 'dribble') return { wp, flight: 0, live: 0 }; // conduzione: la palla è ai piedi di chi corre (glue)
+  if (f.kind === 'tackle') return { wp: g0, flight: MATCH.tackleContest, live: 0 };
+  const goal = has(f, 'goal'); // anche di testa su cross, da corner o da punizione
+  if (f.kind === 'shot' || goal) wp = shotTarget(f, goal, g0, wp);
+  else if (f.kind === 'pass' && f.to !== undefined && f.to !== next.p.id) {
+    // intercettato: il punto della traiettoria più vicino a dove finisce chi l'ha presa
+    const vx = wp.x - g0.x, vy = wp.y - g0.y, l2 = vx * vx + vy * vy || 1;
+    const k = clamp(((g1.x - g0.x) * vx + (g1.y - g0.y) * vy) / l2, 0.25, 1);
+    wp = { x: g0.x + vx * k, y: g0.y + vy * k };
+  }
+  const speed = f.kind === 'shot' || goal ? MATCH.ballShot : f.high || f.kind === 'cross' ? MATCH.ballLong : MATCH.ballPass;
+  const flight = clamp(meters(g0, wp) / speed / dt, 0.04, 0.9);
+  // gol: volo e palla in rete a velocità vera, poi il ritorno a centrocampo scorre veloce
+  return { wp, flight, live: goal && dead ? Math.min(0.95, flight + MATCH.goalHold / dt) : 0 };
+}
+
 /** un passo fisso dell'intervallo: la palla sulla sua traiettoria, i 22 che si muovono e si ricongiungono */
 function replayStep(st: MatchState, k: number, n: number, dt: number, path: ReplayPath) {
-  const { g0, g1, wp, flight, fresh, f, next, all, sx, sy, ex, ey, dead } = path;
+  const { g0, g1, wp, flight, live, fresh, f, next, all, sx, sy, ex, ey, dead } = path;
+  const glue = !dead && fresh;
   const u = k / n;
   const v = ease(Math.min(1, u / flight));
   let px = g0.x + (wp.x - g0.x) * v, py = g0.y + (wp.y - g0.y) * v;
-  if (u > flight) { // raccordo verso dove riparte davvero l'azione (rimessa, rinvio, recupero)
+  if (live > 0) { // gol: la palla resta in rete, e torna al centro solo alla fine
+    if (u > 0.92) { px = g1.x; py = g1.y; }
+  } else if (glue && u >= flight) { // dopo il volo la palla va ai piedi di chi l'ha presa e lo segue
+    const w = flight >= 1 ? 1 : Math.min(1, (u - flight) / MATCH.ballGlue);
+    px += (gx(st, next.x) - px) * w;
+    py += (gy(st, next.y) - py) * w;
+  } else if (u > flight) { // raccordo verso dove riparte davvero l'azione (rimessa, rinvio, recupero)
     const w = (u - flight) / (1 - flight);
     px += (g1.x - px) * w;
     py += (g1.y - py) * w;
   }
   st.bx = st.s === 0 ? px : 12 - px;
   st.by = st.s === 0 ? py : 8 - py;
-  const flying = u < flight && fresh && f!.kind !== 'dribble';
+  const flying = (u < flight && fresh && f!.kind !== 'dribble') || (live > 0 && u <= 0.92); // palla in rete: di nessuno
   st.holder = flying ? null : next;
-  st.meet = flying ? next : null;
+  st.meet = flying && live === 0 ? next : null;
   st.snap = false;
   advance(st, dt / n);
   st.snap = true;
@@ -230,13 +273,13 @@ function replayStep(st: MatchState, k: number, n: number, dt: number, path: Repl
     m.x += (sx[i]! + (ex[i]! - sx[i]!) * u - m.x) * w;
     m.y += (sy[i]! + (ey[i]! - sy[i]!) * u - m.y) * w;
   });
-  emit(st, dead);
-  st.playAt += dt / n / (dead ? MATCH.deadSpeed : 1);
+  emit(st, dead && u > live);
+  st.playAt += dt / n / (dead && u > live ? MATCH.deadSpeed : 1);
 }
 
 interface ReplayPath {
   g0: { x: number; y: number }; g1: { x: number; y: number }; wp: { x: number; y: number };
-  flight: number; fresh: boolean; f: TraceStep | null; next: MP; dead: boolean;
+  flight: number; live: number; fresh: boolean; f: TraceStep | null; next: MP; dead: boolean;
   all: MP[]; sx: number[]; sy: number[]; ex: number[]; ey: number[];
 }
 
@@ -269,17 +312,17 @@ function replay(st: MatchState) {
 
   const fresh = f !== null && trace.length - 1 !== st.lastStep;
   st.lastStep = trace.length - 1;
-  const wp = waypoint(f, fresh, g1);
-  const flight = dead ? 0.2 : f && f.kind === 'dribble' ? 1 : MATCH.ballFlight;
+  const { wp, flight, live } = ballPlan(f, fresh, dead, g0, g1, next, dt);
   const n = Math.max(1, Math.ceil(dt / MATCH.frameTick));
-  const path: ReplayPath = { g0, g1, wp, flight, fresh, f, next, dead, all, sx, sy, ex, ey };
+  const path: ReplayPath = { g0, g1, wp, flight, live, fresh, f, next, dead, all, sx, sy, ex, ey };
   for (let k = 1; k <= n; k++) replayStep(st, k, n, dt, path);
   all.forEach((m, i) => { m.x = ex[i]!; m.y = ey[i]!; });
   st.holder = next;
   st.meet = null;
   st.bx = st.s === 0 ? g1.x : 12 - g1.x;
   st.by = st.s === 0 ? g1.y : 8 - g1.y;
-  st.lastBall = g1;
+  // la prossima azione parte dai piedi di chi ha la palla a schermo (solo racconto: st.bx resta quella del motore)
+  st.lastBall = !dead && fresh ? { x: gx(st, next.x), y: gy(st, next.y) } : g1;
 }
 
 /** i 22 si spostano fino a questo momento: a salti nel sim-cli, a passi fissi nella partita guardata */

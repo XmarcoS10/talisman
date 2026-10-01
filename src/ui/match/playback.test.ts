@@ -93,7 +93,7 @@ describe('partita in 2D (F6)', { timeout: 30000 }, () => {
       expect(s.h).toBeLessThanOrEqual(1);
       if (s.h > 0) { up++; expect(s.carrier).toBe(0); } // nessuno la tiene mentre è in aria
     }
-    expect(up).toBeGreaterThan(50); // cross e lanci lunghi ci sono in ogni partita
+    expect(up).toBeGreaterThan(30); // cross e lanci lunghi ci sono in ogni partita (dalla 0.14.2 volano a velocità vera: meno tempo in aria)
   });
 
   it('ogni gol, cartellino e fuorigioco del registro si vede sul campo come momento (Blocco 3)', () => {

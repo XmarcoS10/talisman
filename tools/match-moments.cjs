@@ -23,6 +23,7 @@ app.on('browser-window-created', async (_e, win) => {
   const click = (text) => js(`(() => { const b = [...document.querySelectorAll('button')].find((b) => b.textContent.includes(${JSON.stringify(text)})); if (b) b.click(); return !!b; })()`);
   const until = async (cond, ms = 15000) => { for (let t = 0; t < ms; t += 100) { if (await js(cond)) return true; await wait(100); } return false; };
   const key = () => js(`window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' })); true`);
+  win.webContents.on('console-message', (ev, level, message) => { const lv = ev?.level ?? level; if (lv === 'error' || lv === 3) console.log('ERRORE', ev?.message ?? message); });
   try {
     win.webContents.setBackgroundThrottling(false);
     await loaded();
@@ -52,6 +53,7 @@ app.on('browser-window-created', async (_e, win) => {
         await js(`window.talismanLive.speed = 0; window.talismanLive.seek(${at - 1.5 + i * 0.1}); true`);
         await wait(70);
         const png = await js(`document.querySelector('canvas.pitch2d').toDataURL('image/png')`);
+        if (png.length < 100) { console.log('campo vuoto; bottoni:', await js(`[...document.querySelectorAll('button')].map((b) => b.textContent.trim()).filter(Boolean).slice(0, 30).join(' | ')`)); break; }
         fs.writeFileSync(path.join(dir, `t${String(i).padStart(2, '0')}.png`), Buffer.from(png.split(',')[1], 'base64'));
       }
       console.log(name, 'a', at.toFixed(1), 's →', dir);
