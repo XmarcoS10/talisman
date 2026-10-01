@@ -226,10 +226,14 @@ const dayMod = (p: Player, fam: number) =>
  * 6 conta un po' meno che sulla carta: più pareggi e più sorprese (ritaratura 0.14.0). Scelte e valori usano i veri.
  */
 export function matchAttrs(p: Player): Attributes {
-  const k: number = MATCH.attrSpread; // number: il valore in balance.ts è una costante letterale
-  if (k === 1) return p.attrs;
+  const k: number = MATCH.attrSpread, s: number = MATCH.attrSat; // number: in balance.ts sono costanti letterali
+  if (k === 1 && s === 0) return p.attrs;
   const out = { ...p.attrs };
-  for (const key of Object.keys(out) as (keyof Attributes)[]) out[key] = 11 + (out[key] - 11) * k;
+  // saturazione: la fascia media resta quasi com'è, gli estremi si avvicinano (un 18 vale meno di 7 punti sopra l'11)
+  for (const key of Object.keys(out) as (keyof Attributes)[]) {
+    const d = (out[key] - 11) * k;
+    out[key] = 11 + (s > 0 ? s * Math.tanh(d / s) : d);
+  }
   return out;
 }
 

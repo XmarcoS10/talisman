@@ -327,7 +327,8 @@ export function advanceToMine(world: WorldState): Fixture[] {
   const played = advance(world);
   const offers = world.offers.length, press = world.press;
   for (let guard = 0; guard < 30 && !played.some(mine) && !isSeasonOver(world); guard++) {
-    if (world.offers.length !== offers || world.press !== press) break;
+    // si ferma per le novità (un'offerta in più, una conferenza nuova), non per quelle scadute nel frattempo
+    if (world.offers.length > offers || (world.press !== null && world.press !== press)) break;
     const more = advance(world);
     if (!more.length && nextMatchDay(world) === null) break;
     played.push(...more);

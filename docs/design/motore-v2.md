@@ -725,3 +725,33 @@ Tentativi:
 Tenuta solo la manopola `attrSpread` a 1 (golden master identico). Da capire prima di riprovare: perché la debole non
 esce dalla propria metà contro una molto più forte (pressing e recuperi immediati della forte: contrasti 79-86 a
 partita), e se la forbice di forza del mondo generato (seme 42: 51 punti fra prima e ultima) sia più larga del vero.
+
+### 13.1 Ripresa (01/10, «insisti»): la stanchezza, tenuta
+
+`tools/diag-chains.ts` (possessi): l'ultima parte dal proprio terzo nell'88% dei possessi, ne porta negli ultimi
+metri il 10% (la prima il 79%, una partita pari 50-58%), l'82% finisce con un passaggio perso. `tools/diag-pair.ts`
+con gli attributi di partita compressi: a 0 la coppia è simmetrica (xG 0,9 - 1,2), a 0,3 già 1,5 - 0,5, a 1
+3,7 - 0,16: il divario viene dagli attributi e la risposta è troppo ripida nei divari grandi. Né i tratti, né la
+mentalità, né la marcatura, né il lancio lungo, né le punte alte lo spiegano.
+
+Saturazione degli estremi (`MATCH.attrSat`, tangente iperbolica): a 4-5,5 la prima contro l'ultima scende a 72-85%
+e i pareggi delle partite isolate entrano nel target, ma la correlazione delle stagioni scende a 0,62-0,76 e quella
+della carriera a 0,70, e la forbice fra gli stili dell'IA sale a 13 punti. Non tenuta: le due richieste («la prima non
+vince sempre» e «il campionato segue la forza») tirano in direzioni opposte con una curva sola.
+
+Trovato invece perché le stagioni segnano 0,3-0,45 gol più delle partite isolate: la **stanchezza**. Con la condizione
+a 88 invece di 100 le partite isolate fanno +0,18 gol e −4,3 punti di pareggi, perché la pressione di chi difende era
+tutta proporzionale alla sua energia. `MATCH.pressEnergy` 0,5 (metà della pressione dipende dall'energia): +0,07 gol e
+−0,5 punti. Con `xgBase` −1,03 → −0,99, batteria (`tools/battery.sh`, 10.000 partite e 10 stagioni per seme 42/7/99,
+carriere 42 e 7), stesso momento:
+
+| | prima | dopo | target |
+|---|---|---|---|
+| partite isolate: gol · pareggi | 2,56 · 21,8% | 2,48 · 22,2% | 2,5-2,9 · 22-30% |
+| stagioni: gol · pareggi · correlazione | 2,92 · 19,8% · 0,83 | **2,76** · 21,5% · 0,81 | 2,5-2,9 · 22-30% · 0,75-0,85 |
+| carriere 42 / 7: correlazione | 0,81 / 0,72 | 0,73 / 0,77 | 0,75-0,85 |
+| prima contro ultima (42 / 7 / 99) | 95 / 98 / 81% | 95 / 96 / 80% | 65-80% |
+
+Rumore di una misura singola (3000 partite, 10 stagioni): ±2 punti di pareggi, ±0,05 di correlazione: prima di
+decidere, la batteria. Restano aperti i pareggi delle stagioni (21,5%) e la coppia estrema. Manopole lasciate spente:
+`attrSpread` 1, `attrSat` 0, lancio lungo dei giocatori di movimento `longMaxX` 0.

@@ -1,5 +1,16 @@
 # Note di rilascio
 
+## 0.14.0 — la stanchezza e la ritaratura
+
+Le partite cambiano un po' (ritaratura del motore, col via di Marco). Le carriere si aprono senza cambiamenti.
+
+- **La stanchezza conta meno**: chi difende stanco pressava in proporzione esatta alla sua energia, e una squadra un po'
+  affaticata subiva troppo. Ora pesa la metà. In campionato i gol tornano nel target (da 2,92 a 2,76 a partita) e i
+  pareggi salgono (da 19,8% a 21,5%), mentre la classifica segue la forza delle rose come prima.
+- **«Avanza»** non si ferma più quando un'offerta scade o una conferenza sparisce, solo quando ne arriva una nuova.
+- Aperto: la squadra più forte del campionato batte ancora l'ultima nel 95% dei casi; il diario del motore (§13)
+  spiega che cosa si è provato e perché non è stato tenuto.
+
 ## 0.13.2 — istruzioni individuali per fase
 
 I salvataggi passano alla versione 34, senza cambiamenti per la tua squadra.
@@ -302,6 +313,17 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.14.0 — fatigue and recalibration (English)
+
+Matches change a little (engine recalibration). Careers open unchanged.
+
+- **Fatigue matters less**: a tired defender used to press in exact proportion to their energy, and a slightly tired
+  side conceded too much. Now it weighs half as much. In the league, goals are back in range (from 2.92 to 2.76 per
+  match) and draws rise (from 19.8% to 21.5%), while the table still follows squad strength as before.
+- **Continue** no longer stops when an offer expires or a press conference disappears, only when a new one arrives.
+- Still open: the strongest side still beats the bottom side 95% of the time; the engine diary (§13) explains what
+  was tried and why it was not kept.
 
 ## 0.13.2 — player instructions by phase (English)
 

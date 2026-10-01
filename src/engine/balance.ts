@@ -220,7 +220,7 @@ export const MATCH = {
 
   // tiro e xG (§6.3): logit = base + angolo·a − distanza_m·d − pressione·p (+ colpo di testa)
   shotMinX: 7,
-  xgBase: -1.03,
+  xgBase: -0.99,
   xgAngle: 1.6,
   xgDist: 0.1,
   xgPress: 0.45,
@@ -246,6 +246,12 @@ export const MATCH = {
   kickBase: -0.2, // rinvio lungo: logit che arrivi a un compagno…
   kickSkill: 0.08, // …per punto di Rinvio sopra 11 e di Colpo di testa del compagno
   kickDirect: 0.03, // voglia di rinviare lungo, × istruzione di verticalità
+  // lancio lungo dei giocatori di movimento (decision.ts, longBalls; motore-v2 §13)
+  longBase: -0.6, // logit che arrivi al compagno…
+  longSkill: 0.08, // …per punto di Passaggi di chi lancia e di Colpo di testa di chi riceve sopra 11
+  longPress: 0.3, // quanto della pressione del passaggio corto pesa sul lancio
+  longMaxX: 0, // si lancia dalla propria metà campo (fino a questa x; 0 = spento)…
+  longMinX: 7, // …verso chi è nella metà avversaria
   onTargetBase: 0.25,
   onTargetXg: 0.3,
   blockedShare: 0.25,
@@ -321,6 +327,7 @@ export const MATCH = {
   drainBase: 0.22, // energia persa al minuto
   drainStamina: 0.5, // in più con Resistenza bassa (era 0,25: al 75' erano tutti fra 76 e 80 di energia)
   energySkill: 0.018, // logit perso per ogni punto di energia sotto 100
+  pressEnergy: 0.5, // quanta della pressione di chi difende dipende dalla sua energia (1 = tutta)
   fitnessRecoveryPerDay: 12,
   subMinutes: [58, 68, 78],
   subEnergy: 74,
@@ -336,6 +343,7 @@ export const MATCH = {
   // persone (F5): logit in più/in meno per il portatore
   moraleK: 0.002, // per punto di morale sopra/sotto 60
   attrSpread: 1, // attributi di partita: quanto resta del divario da 11 (state.ts, matchAttrs; 1 = quelli veri)
+  attrSat: 0, // …e quanto si saturano gli estremi (scala della tangente iperbolica in punti; 0 = niente)
   sharpK: 0.003, // per punto di condizione partita sotto 100
   famK: 0.15, // modulo del tutto sconosciuto
   chemPass: 0.08, // peso della scelta di passaggio: ±8% tra amici/nemici (§7.3)

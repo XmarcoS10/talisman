@@ -5,6 +5,8 @@ import type { Fixture } from '../src/engine/model.ts';
 import { Rng } from '../src/engine/rng.ts';
 import { newWorld } from '../src/engine/world.ts';
 
+import { MATCH } from '../src/engine/balance.ts';
+for (const kv of (process.env.OV ?? '').split(',').filter(Boolean)) { const [k, v] = kv.split('='); (MATCH as unknown as Record<string, number>)[k!] = Number(v); }
 const seed = Number(process.argv[2] ?? 42), n = Number(process.argv[3] ?? 3000);
 const w = newWorld(seed);
 w.manager.clubId = -1;
@@ -24,7 +26,7 @@ for (let i = 0; i < n; i++) {
   const home = rng.pick(A);
   let away = rng.pick(A);
   while (away === home) away = rng.pick(A);
-  for (const p of Object.values(w.players)) { p.condition.fitness = 100; p.condition.injuryDays = 0; p.discipline.ban = 0; }
+  for (const p of Object.values(w.players)) { p.condition.fitness = Number(process.env.FIT ?? 100); p.condition.injuryDays = 0; p.discipline.ban = 0; }
   const fx: Fixture = { day: 0, home, away };
   playMatch(w, rng, fx);
   const diff = str.get(home)! - str.get(away)!;

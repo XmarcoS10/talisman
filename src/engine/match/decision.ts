@@ -160,6 +160,24 @@ function longKicks(v: View, x: Ctx, out: Option[]) {
   }
 }
 
+/**
+ * 1d) LANCIO LUNGO di un giocatore di movimento dalla propria metà campo verso chi sta nella metà avversaria:
+ * Passaggi di chi lancia, Colpo di testa di chi riceve, la pressione conta meno che nel passaggio corto. Persa lassù
+ * la palla costa meno: è la via d'uscita di chi è schiacciato dal pressing (motore-v2 §13).
+ */
+function longBalls(v: View, x: Ctx, out: Option[]) {
+  const { carrier: c, bx, by, pressure } = v;
+  if (bx >= MATCH.longMaxX) return;
+  const here = Math.max(1e-6, lossCost(bx, by)), risk = x.loss - x.keep;
+  for (const m of v.mates) {
+    if (m === c || m.x < MATCH.longMinX || m.x - bx < 3) continue;
+    const p = sigmoid(MATCH.longBase + MATCH.longSkill * (a(c, 'passing') + a(m, 'heading')) - MATCH.passPress * MATCH.longPress * pressure + v.bonus - v.wind);
+    const loss = risk * (lossCost(m.x, m.y) / here) + x.keep;
+    out.push({ kind: 'pass', to: m, tx: m.x, ty: m.y, p, off: 0, u: p * (xT(m.x, m.y) + x.keep) - (1 - p) * loss + x.direct * (m.x - bx),
+      w: chem(x.rel[m.p.id]), deep: false, long: true });
+  }
+}
+
 /** 2) DRIBBLING: puntare l'uomo, portando palla verso il centro negli ultimi metri */
 function dribble(v: View, x: Ctx): Option {
   const { carrier: c, bx, by, pressure } = v;
@@ -219,6 +237,7 @@ export function options(v: View): Option[] {
   passes(v, x, out);
   throughBalls(v, x, out);
   if (v.isGK) { longKicks(v, x, out); return out; } // il portiere la gioca corta o la rinvia lunga
+  longBalls(v, x, out);
   out.push(dribble(v, x));
   shot(v, x, out);
   cross(v, x, out);

@@ -97,7 +97,7 @@ function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, 
   const { rng } = st;
   att.stats.passes++; c.st.passes++;
   if (o.deep) att.log.deep++;
-  if (o.long) att.log.longKicks++;
+  if (o.long && c.pos === 'GK') att.log.longKicks++;
   // palla in profondità: il portiere può uscire e prenderla prima
   const keeper = o.deep ? sweeps(st, def) : null;
   if (keeper) { def.log.sweeps++; beat(st, 'sweep', keeper); st.t += MATCH.passTime; gain(st, def, keeper); return; }
