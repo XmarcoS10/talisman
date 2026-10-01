@@ -18,7 +18,7 @@ const TEMPO = [1.2, 1, 0.85];
 type ShotKind = 'open' | 'header' | 'pen' | 'fk';
 
 function shotSkill(st: MatchState, sh: MP, kind: ShotKind) {
-  const a = sh.p.attrs;
+  const a = sh.a;
   if (kind === 'pen') return a.penalties;
   if (kind === 'fk') return a.freeKicks;
   if (kind === 'header') return a.heading;
@@ -88,8 +88,8 @@ export function shoot(st: MatchState, sh: MP, xg: number, kind: ShotKind, origin
  */
 function unsettle(st: MatchState, c: MP, def: Team) {
   let dq = 0;
-  for (const m of def.on) dq += (m.p.attrs.positioning + m.p.attrs.concentration) / 2;
-  const edge = (c.p.attrs.passing + c.p.attrs.vision) / 2 - dq / def.on.length;
+  for (const m of def.on) dq += (m.a.positioning + m.a.concentration) / 2;
+  const edge = (c.a.passing + c.a.vision) / 2 - dq / def.on.length;
   st.dis = Math.min(1, st.dis + MATCH.disGain * Math.max(0, MATCH.disSkill * edge)); // una difesa migliore non si apre
 }
 
@@ -140,7 +140,7 @@ function doPass(st: MatchState, att: Team, def: Team, c: MP, o: Extract<Option, 
 function doDribble(st: MatchState, def: Team, c: MP, o: Extract<Option, { kind: 'dribble' }>, f: TraceStep | null) {
   const tk = o.tackler as MP | undefined;
   st.teams[st.s].log.dribbles++;
-  const foulP = MATCH.foulBase * (1 + MATCH.foulAggression * (tk ? tk.p.attrs.aggression - 11 : 0)) * PRESS[def.tactic.pressing]!
+  const foulP = MATCH.foulBase * (1 + MATCH.foulAggression * (tk ? tk.a.aggression - 11 : 0)) * PRESS[def.tactic.pressing]!
     * (inBox(st.bx, st.by) ? MATCH.foulInBox : 1) * (tk?.st.yellows ? MATCH.bookedCaution : 1) * whistle(st) * habit.foul(tk?.tr ?? 0);
   if (tk && st.rng.next() < foulP) foul(st, tk, c);
   else if (st.rng.next() < o.p) {

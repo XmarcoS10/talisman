@@ -3,7 +3,7 @@
 import { FLAGS, MATCH, REFEREE } from '../balance.ts';
 import { TRAIT_BIT, traitBits } from '../traits.ts';
 import { CALM, type WeatherFx } from '../weather.ts';
-import type { Club, MatchEvent, MatchEventType, MatchResult, Player, PlayerInstr, Position, SideStats, Tactic } from '../model.ts';
+import type { Attributes, Club, MatchEvent, MatchEventType, MatchResult, Player, PlayerInstr, Position, SideStats, Tactic } from '../model.ts';
 import type { Rng } from '../rng.ts';
 import type { OnPitch } from './decision.ts';
 import type { Beat } from './trace.ts';
@@ -221,8 +221,20 @@ const newSide = (): SideStats => ({ possession: 0, shots: 0, onTarget: 0, xg: 0,
 const dayMod = (p: Player, fam: number) =>
   (FLAGS.psychology ? MATCH.moraleK * (p.psych.morale - 65) : 0) - MATCH.sharpK * Math.max(0, 80 - p.condition.sharpness)
   - MATCH.famK * Math.max(0, 1 - fam / 90);
+/**
+ * attributi di partita: quelli veri avvicinati alla media (11) di MATCH.attrSpread. In campo il divario fra un 18 e un
+ * 6 conta un po' meno che sulla carta: più pareggi e più sorprese (ritaratura 0.14.0). Scelte e valori usano i veri.
+ */
+export function matchAttrs(p: Player): Attributes {
+  const k: number = MATCH.attrSpread; // number: il valore in balance.ts è una costante letterale
+  if (k === 1) return p.attrs;
+  const out = { ...p.attrs };
+  for (const key of Object.keys(out) as (keyof Attributes)[]) out[key] = 11 + (out[key] - 11) * k;
+  return out;
+}
+
 export const mp = (player: Player, slot: Slot, role: RoleId, fam: number, from = 0, ins: PlayerInstr = {}): MP =>
-  ({ p: player, pos: slot.pos, hx: slot.x, hy: slot.y, roleId: role, role: ROLES[role], marked: 0, x: slot.x, y: slot.y, tx: slot.x, ty: slot.y,
+  ({ p: player, a: matchAttrs(player), pos: slot.pos, hx: slot.x, hy: slot.y, roleId: role, role: ROLES[role], marked: 0, x: slot.x, y: slot.y, tx: slot.x, ty: slot.y,
     jx: 0, jy: 0, run: false, runRoll: 1, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from), ins, tr: traitBits(player) | (ins.tackle ? TRAIT_BIT.divesIn : 0),
     ox: slot.x, oy: slot.y, oHold: ROLES[role].hold, oPress: ROLES[role].press, oDrain: 1, si: 0 });
 

@@ -81,7 +81,7 @@ function step(st: MatchState) {
     * (closest?.st.yellows ? MATCH.bookedCaution : 1) * whistle(st);
   // fallo tattico: la ripartenza trova la difesa scoperta a metà campo, e il più vicino la ferma
   const tactical = closest && exposed > MATCH.counterFrom && st.bx >= 4 && st.bx <= 8
-    ? MATCH.tacticalFoul * closest.p.attrs.aggression / 10 : 0;
+    ? MATCH.tacticalFoul * closest.a.aggression / 10 : 0;
   st.curFrame = null; // i momenti di questa azione vanno nel suo fotogramma
   if (closest && st.rng.next() < pressFoul) { mark(st, 'foul'); foul(st, closest, c); }
   else if (closest && tactical && st.rng.next() < tactical) { def.log.tacticalFouls++; mark(st, 'foul'); foul(st, closest, c, true); }

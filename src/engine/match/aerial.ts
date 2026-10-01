@@ -9,13 +9,13 @@ import { beat } from './trace.ts';
 
 /** forza nel gioco aereo: Colpo di testa, Coraggio, Forza e altezza (182 cm = 11), più il bonus del ruolo (la punta di peso) */
 export const aerial = (m: MP) => {
-  const a = m.p.attrs;
+  const a = m.a;
   return 0.45 * a.heading + 0.15 * a.bravery + 0.15 * a.strength + 0.25 * (11 + (m.p.heightCm - 182) / 2) + m.role.aerial;
 };
 
 /** il portiere esce sul cross alto e lo blocca: Uscite alte e Comando dell'area */
 export const claims = (st: MatchState, gk: MP | undefined) =>
-  !!gk && st.rng.next() < MATCH.claimBase + MATCH.claimSkill * ((gk.p.attrs.aerialReach + gk.p.attrs.commandOfArea) / 2 - 11);
+  !!gk && st.rng.next() < MATCH.claimBase + MATCH.claimSkill * ((gk.a.aerialReach + gk.a.commandOfArea) / 2 - 11);
 
 /** chi va sulla palla in area: fra quelli che ci sono, il più forte di testa; se non c'è nessuno, il migliore in campo */
 function target(att: Team, c: MP): MP {
@@ -89,8 +89,8 @@ function cutbackTarget(att: Team, c: MP): MP {
 /** palla bassa all'indietro dal fondo: anticipo, e il tiro è di piatto dal dischetto contro una difesa che rientra */
 function cutback(st: MatchState, att: Team, def: Team, c: MP): boolean {
   const a = cutbackTarget(att, c), d = marker(def);
-  const margin = (a.p.attrs.offTheBall + a.p.attrs.firstTouch - d.p.attrs.anticipation - d.p.attrs.positioning) / 2;
-  if (st.rng.next() >= sigmoid(MATCH.lowBase + MATCH.duelSkill * margin + MATCH.crossSkill * (c.p.attrs.crossing - 11))) { cleared(st, att, def, d); return false; }
+  const margin = (a.a.offTheBall + a.a.firstTouch - d.a.anticipation - d.a.positioning) / 2;
+  if (st.rng.next() >= sigmoid(MATCH.lowBase + MATCH.duelSkill * margin + MATCH.crossSkill * (c.a.crossing - 11))) { cleared(st, att, def, d); return false; }
   st.lastPass = c;
   st.bx = 10.2; st.by = 4;
   shoot(st, a, xG(10.2, 4, MATCH.lowPressure), 'open', 'cross');
@@ -109,5 +109,5 @@ export function cross(st: MatchState, att: Team, def: Team, c: MP, p: number, lo
   }
   const gk = def.on.find((m) => m.pos === 'GK');
   if (!low && claims(st, gk)) { beat(st, 'claim', gk!, undefined, true); gain(st, def, gk!); return false; }
-  return low ? cutback(st, att, def, c) : headerDuel(st, att, def, c, MATCH.crossSkill * (c.p.attrs.crossing - 11), MATCH.duelBase, 1, 'cross');
+  return low ? cutback(st, att, def, c) : headerDuel(st, att, def, c, MATCH.crossSkill * (c.a.crossing - 11), MATCH.duelBase, 1, 'cross');
 }

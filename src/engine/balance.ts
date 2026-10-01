@@ -335,6 +335,7 @@ export const MATCH = {
 
   // persone (F5): logit in più/in meno per il portatore
   moraleK: 0.002, // per punto di morale sopra/sotto 60
+  attrSpread: 1, // attributi di partita: quanto resta del divario da 11 (state.ts, matchAttrs; 1 = quelli veri)
   sharpK: 0.003, // per punto di condizione partita sotto 100
   famK: 0.15, // modulo del tutto sconosciuto
   chemPass: 0.08, // peso della scelta di passaggio: ±8% tra amici/nemici (§7.3)

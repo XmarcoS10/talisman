@@ -17,7 +17,7 @@ const ease = (u: number) => (u < 0.5 ? 2 * u * u : 1 - (1 - u) ** 2 * 2);
 function runTo(m: MP, x: number, y: number, dt: number) {
   const dx = x - m.x, dy = y - m.y;
   const d = len(dx, dy);
-  const max = dt * MATCH.runSpeed * (0.7 + 0.3 * (m.p.attrs.pace + m.p.attrs.acceleration) / 40) * (0.6 + 0.4 * m.energy / 100);
+  const max = dt * MATCH.runSpeed * (0.7 + 0.3 * (m.a.pace + m.a.acceleration) / 40) * (0.6 + 0.4 * m.energy / 100);
   if (d <= max) { m.x = x; m.y = y; } else { m.x += (dx * max) / d; m.y += (dy * max) / d; }
 }
 
@@ -32,7 +32,7 @@ function jitter(st: MatchState) {
     // solo col pallone sull'altra fascia, a chiudere sul secondo palo (sulla sua resta largo per il cross)
     const wide = m.hy > 4.3 ? 1 : m.hy < 3.7 ? -1 : 0;
     if (st.bx >= MATCH.runFromX && m.pos !== 'ST' && (m.role.runs || m.ins.runs === 2) && !(wide && (st.by - 4) * wide > 0)) {
-      m.run = st.rng.next() < MATCH.runInsert * MATCH.insRuns[m.ins.runs ?? 1]! * m.p.attrs.offTheBall / 10
+      m.run = st.rng.next() < MATCH.runInsert * MATCH.insRuns[m.ins.runs ?? 1]! * m.a.offTheBall / 10
         * habit.runs(m.tr); // tratti: si inserisce, resta dietro
       if (m.run) m.runRoll = st.rng.next();
     }
@@ -60,10 +60,10 @@ function aimAtt(st: MatchState) {
     let x = Math.max(m.hx, rl.baseX) + rl.push + (bx - 6) * rl.follow + MATCH.mentalityPush * mmA;
     // negli ultimi 30 metri chi sa inserirsi attacca l'area
     const runs = MATCH.insRuns[m.ins.runs ?? 1]!; // istruzione individuale: inserimenti di meno o di più
-    if (bx >= 8 && (rl.runs || m.ins.runs === 2)) x += (m.p.attrs.offTheBall / 20) * MATCH.boxRun * runs;
+    if (bx >= 8 && (rl.runs || m.ins.runs === 2)) x += (m.a.offTheBall / 20) * MATCH.boxRun * runs;
     if (m.ins.stayBack) x = Math.min(x, MATCH.stayBackX);
     // movimento senza palla: smarcamenti che aprono (o chiudono) le linee di passaggio
-    const mv = 0.5 + m.p.attrs.offTheBall / 20;
+    const mv = 0.5 + m.a.offTheBall / 20;
     const side = m.hy > 4.3 ? 1 : m.hy < 3.7 ? -1 : 0; // da che lato gioca, per allargarsi o stringere
     const wide = side * MATCH.insWidth * ((m.ins.width ?? 1) - 1); // "resta largo" / "stringi"
     m.tx = clamp(x + m.jx * mv, 0.3, rl.maxX);
@@ -134,7 +134,7 @@ function markUp(st: MatchState, att: Team, def: Team, presser: MP | undefined, d
  */
 function runLag(runner: MP, m: MP) {
   if (!runner.run) return 1;
-  const a = runner.p.attrs, d = m.p.attrs;
+  const a = runner.a, d = m.a;
   const edge = (a.offTheBall + a.acceleration + a.pace - d.positioning - d.anticipation - d.pace) / 3;
   return runner.runRoll < sigmoid(MATCH.runDuelBase + MATCH.runDuelK * edge) ? MATCH.runLag : 1;
 }

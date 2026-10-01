@@ -42,7 +42,7 @@ export function corner(st: MatchState) {
     return;
   }
   const near = r < MATCH.cornerShort + MATCH.cornerNear; // primo palo: spizzata, duello più facile, tiro peggiore
-  delivery(st, att, def, tk, tk.p.attrs.corners, MATCH.duelBase + MATCH.cornerDuel + (near ? MATCH.nearPostDuel : 0), MATCH.cornerXg * (near ? MATCH.nearPostXg : 1), 'corner');
+  delivery(st, att, def, tk, tk.a.corners, MATCH.duelBase + MATCH.cornerDuel + (near ? MATCH.nearPostDuel : 0), MATCH.cornerXg * (near ? MATCH.nearPostXg : 1), 'corner');
 }
 
 /** punizione dal limite: tira lo specialista; la barriera può respingere (a volte in corner) */
@@ -58,7 +58,7 @@ function directFreeKick(st: MatchState, att: Team, def: Team) {
     else gain(st, def, nearest(def, 12 - st.bx, 8 - st.by, true));
     return;
   }
-  shoot(st, tk, MATCH.fkXg * (1 + 0.08 * (tk.p.attrs.freeKicks - 11)), 'fk', 'fk');
+  shoot(st, tk, MATCH.fkXg * (1 + 0.08 * (tk.a.freeKicks - 11)), 'fk', 'fk');
 }
 
 /** dopo un fallo subito: rigore se in area; dal limite punizione diretta; dalla trequarti palla in area */
@@ -73,6 +73,6 @@ export function afterFoul(st: MatchState, att: Team) {
   } else if (st.bx >= MATCH.fkCrossX && st.rng.next() < MATCH.fkCross) {
     const tk = taker(att, 'freeKicks');
     beat(st, 'freeKick', tk, undefined, true);
-    delivery(st, att, def, tk, tk.p.attrs.freeKicks, MATCH.duelBase, 1, 'fk');
+    delivery(st, att, def, tk, tk.a.freeKicks, MATCH.duelBase, 1, 'fk');
   }
 }

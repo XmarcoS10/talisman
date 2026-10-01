@@ -701,3 +701,27 @@ prossima misura riporta la correlazione sotto 0,72, la prima cosa da guardare è
   bancarotte 3,2 ogni 10 stagioni (fuori target come prima).
 
 I calci piazzati restano sulle posizioni di sempre: come in FM, hanno schemi loro e non seguono il modulo senza palla.
+
+## 13. Ritaratura «la più forte vince troppo» (01/10, con il via di Marco): misurata, non tenuta
+
+Partenza (seme 42, 3000 partite): gol 2,59, pareggi 21,9%, prima contro ultima 95,3%. `tools/diag-strength.ts`
+(esito per fascia di scarto di forza dell'undici): con scarto 13+ la più forte vince il 71%, xG 1,85 - 0,67, tiri
+16,6 - 7,9: rapporti realistici. Il 95% nasce dalla coppia estrema: col seme 42 la prima (173) stacca la seconda di 11
+e l'ultima (122) vale una squadra di metà Serie B; prima contro ultima xG **2,86 - 0,17**. L'ultima tiene palla quanto
+la prima (433 passaggi, 82%) ma gioca 395 azioni su 468 nella propria metà e 25 negli ultimi metri (5%).
+
+Tentativi:
+1. giornata di squadra (logit comune casuale, 0,08 e 0,25): nulla, `mod` conta in pochi punti. Tolta.
+2. attributi di partita compressi verso 11 (`MATCH.attrSpread`, `matchAttrs` in state.ts; il motore legge `m.a`):
+   0,85 → pareggi 23,1% ma solo perché i gol scendono a 2,32; prima contro ultima 93,5%. A 0,7 e 0,6 gli xG
+   dell'ultima restano 0,23-0,26: il crollo non è negli attributi.
+3. mentalità entrambe equilibrate, marcatura (`markSkill` 0,2 → 0,05), punte dell'ultima «Resta alto»: xG dell'ultima
+   0,12-0,32, mai vicino a 0,6-0,9.
+4. lancio lungo dei giocatori di movimento (prima solo il portiere: **0% di lanci** anche in partite pari, nella realtà
+   10-15%): 5-6% dei passaggi, xG dell'ultima 0,20. Tolto: da solo non sposta i target.
+5. con 0,8 e `xgBase` −0,98 (gol ritarati): semi 42 / 7 / 99 gol 2,47 / 2,46 / 2,52, pareggi 21,9 / 21,3 / 22,2%,
+   prima contro ultima 91 / 93 / **74%**. A parità di gol i pareggi non si muovono.
+
+Tenuta solo la manopola `attrSpread` a 1 (golden master identico). Da capire prima di riprovare: perché la debole non
+esce dalla propria metà contro una molto più forte (pressing e recuperi immediati della forte: contrasti 79-86 a
+partita), e se la forbice di forza del mondo generato (seme 42: 51 punti fra prima e ultima) sia più larga del vero.

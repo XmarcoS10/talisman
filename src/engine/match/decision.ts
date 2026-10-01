@@ -4,7 +4,7 @@
 // La scelta è un softmax con temperatura: Decisioni alte → quasi sempre l'opzione migliore.
 import { FLAGS, MATCH } from '../balance.ts';
 import { habit } from '../traits.ts';
-import type { Player, PlayerInstr, Tactic } from '../model.ts';
+import type { Attributes, Player, PlayerInstr, Tactic } from '../model.ts';
 import type { Rng } from '../rng.ts';
 import { len, lossCost, segDist, sigmoid, xG, xT } from './pitch.ts';
 import type { Role } from './roles.ts';
@@ -12,6 +12,7 @@ import type { Role } from './roles.ts';
 /** giocatore in campo: posizione nel sistema della propria squadra (x verso la porta avversaria) */
 export interface OnPitch {
   p: Player;
+  a: Attributes; // attributi di partita: quelli veri avvicinati a 11 di MATCH.attrSpread (state.ts, matchAttrs)
   x: number;
   y: number;
   energy: number;
@@ -51,7 +52,7 @@ export type Option =
   | { kind: 'shot'; xg: number; block: number; u: number }
   | { kind: 'cross'; p: number; u: number; low: boolean }; // p: che arrivi; low: palla bassa all'indietro dal fondo
 
-const a = (pl: OnPitch, k: keyof Player['attrs']) => pl.p.attrs[k] - 11; // attributo centrato su 11
+const a = (pl: OnPitch, k: keyof Player['attrs']) => pl.a[k] - 11; // attributo centrato su 11
 const NO_REL: Record<number, number> = {};
 /** moltiplicatore del peso di scelta di un passaggio dalla relazione tra i due (−100…100): ±8% al massimo */
 export const chem = (s: number | undefined) => (s === undefined ? 1 : 1 + (Math.max(-100, Math.min(100, s)) / 100) * MATCH.chemPass);
@@ -116,7 +117,7 @@ function passes(v: View, x: Ctx, out: Option[]) {
       if (d < lr) lane += (1 - d / lr) * v.defAnt[i]!;
     }
     const logit = passLogit0 - MATCH.passDist * dist - MATCH.passLane * lane - MARK_W[+(m.x >= 10.1)]! * mark
-      + (dist > 3.5 ? vision + longHabit : 0) + MATCH.passTouch * (m.p.attrs.firstTouch - 11);
+      + (dist > 3.5 ? vision + longHabit : 0) + MATCH.passTouch * (m.a.firstTouch - 11);
     const p = sigmoid(logit);
     // fuorigioco: passaggi in avanti verso chi attacca la profondità vicino alla linea difensiva
     const edge = v.offsideLine - MATCH.offsideWindow;
@@ -134,14 +135,14 @@ function throughBalls(v: View, x: Ctx, out: Option[]) {
   if (!(space > 1 && bx < v.offsideLine - 0.5)) return;
   const tx = v.offsideLine + Math.min(space, MATCH.throughDepth);
   let defPace = 0; // il difensore più veloce vicino alla linea
-  for (let i = 0; i < v.defX.length; i++) if (v.defX[i]! > v.offsideLine - 1.5) defPace = Math.max(defPace, v.defs[i]!.p.attrs.pace);
+  for (let i = 0; i < v.defX.length; i++) if (v.defX[i]! > v.offsideLine - 1.5) defPace = Math.max(defPace, v.defs[i]!.a.pace);
   for (const m of v.mates) {
     if (m === c || m.x < v.offsideLine - 1.5 || m.x <= bx) continue; // solo chi è già vicino alla linea
     const dist = len(tx - bx, m.y - by);
-    const race = (m.p.attrs.pace + m.p.attrs.acceleration) / 2 - defPace; // corsa uomo contro uomo
+    const race = (m.a.pace + m.a.acceleration) / 2 - defPace; // corsa uomo contro uomo
     const p = sigmoid(MATCH.throughBase + MATCH.throughRace * race - MATCH.passDist * 0.6 * dist - MATCH.passPress * pressure
       + MATCH.passSkill * a(c, 'passing') + 2 * vision + v.bonus);
-    const off = MATCH.throughOffside * (1 - (m.p.attrs.offTheBall - 11) * 0.04);
+    const off = MATCH.throughOffside * (1 - (m.a.offTheBall - 11) * 0.04);
     const pe = p * (1 - off);
     const th = habit.through(c.tr); // tratti: filtranti sì o no
     out.push({ kind: 'pass', to: m, tx, ty: m.y, p, off, u: pe * (xT(tx, m.y) + keep) - (1 - pe) * loss + direct * (tx - bx) + th, w: chem(rel[m.p.id]), deep: true });
@@ -188,7 +189,7 @@ function shot(v: View, x: Ctx, out: Option[]) {
   // tirare chiude quasi sempre l'azione: si rinuncia a metà del valore del possesso
   // ruolo e istruzione individuale; da fuori area tira chi ha il tiro da lontano più che la finalizzazione
   const want = c.role.shoot * MATCH.insShoot[c.ins.shoot ?? 1]!
-    * (bx < 10.1 ? MATCH.longShotBias * c.p.attrs.longShots / Math.max(1, c.p.attrs.finishing) * habit.longShot(c.tr) : 1);
+    * (bx < 10.1 ? MATCH.longShotBias * c.a.longShots / Math.max(1, c.a.finishing) * habit.longShot(c.tr) : 1);
   out.push({ kind: 'shot', xg, block: v.block, u: xg * (1 + MATCH.shotSkill * skill) * MATCH.shotBias * want * (1 + MATCH.mentalityShot * mm) - (1 - xg) * x.keep * 0.5 });
 }
 
@@ -226,8 +227,8 @@ export function options(v: View): Option[] {
 
 /** softmax con temperatura (§6.2 punto 4) */
 export function choose(rng: Rng, opts: Option[], c: OnPitch, pressure: number): Option {
-  const temp = Math.max(0.003, MATCH.tempBase * (1 + MATCH.tempDecisions * (11 - c.p.attrs.decisions))
-    * (1 + MATCH.tempPressure * pressure * (1 - c.p.attrs.composure / 20)));
+  const temp = Math.max(0.003, MATCH.tempBase * (1 + MATCH.tempDecisions * (11 - c.a.decisions))
+    * (1 + MATCH.tempPressure * pressure * (1 - c.a.composure / 20)));
   let max = -Infinity;
   for (const o of opts) if (o.u > max) max = o.u;
   let tot = 0;

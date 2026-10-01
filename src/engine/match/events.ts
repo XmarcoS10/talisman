@@ -33,7 +33,7 @@ function sendOff(st: MatchState, tm: Team, m: MP) {
 
 /** quanto è probabile che il difensore più vicino porti via palla al portatore pressato, prima che giochi */
 export function challengeP(tk: MP, c: MP, pressure: number) {
-  const a = tk.p.attrs, b = c.p.attrs;
+  const a = tk.a, b = c.a;
   const diff = 0.4 * a.tackling + 0.3 * (a.positioning + a.anticipation) - 0.5 * b.technique - 0.25 * (b.composure + b.balance);
   return MATCH.pressTackle * pressure * Math.max(0.2, 1 + MATCH.tackleSkill * diff) * habit.tackle(tk.tr);
 }
@@ -56,7 +56,7 @@ export function foul(st: MatchState, fouler: MP, victim: MP, tactical = false) {
   st.t += MATCH.restartTime;
   if (rng.next() < MATCH.redP * st.ref) sendOff(st, def, fouler);
   // chi è già ammonito entra con più prudenza: il secondo giallo è più raro
-  else if (rng.next() < MATCH.yellowP * st.ref * (tactical ? MATCH.tacticalYellow : 1) * (1 + 0.08 * (fouler.p.attrs.aggression - 11)) * (fouler.st.yellows ? MATCH.bookedCaution : 1)) {
+  else if (rng.next() < MATCH.yellowP * st.ref * (tactical ? MATCH.tacticalYellow : 1) * (1 + 0.08 * (fouler.a.aggression - 11)) * (fouler.st.yellows ? MATCH.bookedCaution : 1)) {
     fouler.st.yellows++; def.stats.yellows++;
     beat(st, 'yellow', fouler);
     ev(st, 'yellow', def.side, fouler);
@@ -86,7 +86,7 @@ export function dueInjuries(st: MatchState, min: number) {
 export function drain(st: MatchState) {
   for (const tm of st.teams) {
     const mins = st.pendingDrain[tm.side] / 60;
-    for (const m of tm.on) m.energy = Math.max(30, m.energy - mins * st.wx.drain * m.role.drain * m.oDrain * (MATCH.drainBase + MATCH.drainStamina * (1 - m.p.attrs.stamina / 20)));
+    for (const m of tm.on) m.energy = Math.max(30, m.energy - mins * st.wx.drain * m.role.drain * m.oDrain * (MATCH.drainBase + MATCH.drainStamina * (1 - m.a.stamina / 20)));
     st.pendingDrain[tm.side] = 0;
   }
 }

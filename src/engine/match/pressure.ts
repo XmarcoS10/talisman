@@ -16,7 +16,7 @@ function quality(tm: Team) {
   if (tm.q?.on === tm.on) return tm.q;
   let pal = 0, att = 0;
   for (const m of tm.on) {
-    const a = m.p.attrs;
+    const a = m.a;
     pal += (a.passing + a.technique + a.firstTouch) / 3;
     att += (a.offTheBall + a.firstTouch) / 2;
   }
@@ -38,9 +38,9 @@ function readDefence(st: MatchState, att: Team, def: Team, cv: number) {
     const m = def.on[i]!;
     defX[i] = 12 - m.x;
     defY[i] = 8 - m.y;
-    defAnt[i] = (0.6 + 0.03 * m.p.attrs.anticipation) * cv * open;
+    defAnt[i] = (0.6 + 0.03 * m.a.anticipation) * cv * open;
     // chi marca bene sta addosso al ricevitore e fa da muro al tiro (motore-v2 §11: conta la qualità, non solo il corpo)
-    defMark[i] = Math.max(0.3, 1 + MATCH.markSkill * ((m.p.attrs.marking + m.p.attrs.positioning) / 2 - attQ)) * cv * open;
+    defMark[i] = Math.max(0.3, 1 + MATCH.markSkill * ((m.a.marking + m.a.positioning) / 2 - attQ)) * cv * open;
   }
 }
 
@@ -69,7 +69,7 @@ export function readPlay(st: MatchState): { view: View; pressure: number; closes
     if (qx * qx + qy * qy > FAR) continue;
     const d = len(qx, qy);
     if (d < cd && m.pos !== 'GK') { cd = d; closest = m; }
-    if (d < MATCH.pressRadius) pressure += (1 - d / MATCH.pressRadius) * (0.7 + 0.03 * m.p.attrs.workRate) * (m.energy / 100) * PRESS[def.tactic.pressing]! * cv * cp * m.oPress; // ruolo senza palla
+    if (d < MATCH.pressRadius) pressure += (1 - d / MATCH.pressRadius) * (0.7 + 0.03 * m.a.workRate) * (m.energy / 100) * PRESS[def.tactic.pressing]! * cv * cp * m.oPress; // ruolo senza palla
   }
   const c = st.carrier;
   const sign = st.s === 0 ? 1 : -1;
@@ -77,7 +77,7 @@ export function readPlay(st: MatchState): { view: View; pressure: number; closes
     carrier: c, isGK: c.pos === 'GK', bx, by, mates: att.on, defs: def.on, defX, defY, defAnt, defMark, pressure, block, keepEdge: st.keepEdge,
     offsideLine: Math.max(line, bx), tactic: att.tactic, mentality: att.mentality,
     wind: st.wx.cross,
-    bonus: -st.wx.pass + (st.s === 0 ? MATCH.homeBoost : 0) + (sign * st.momentum / 100) * MATCH.momentumK * (1 - c.p.attrs.composure / 25)
+    bonus: -st.wx.pass + (st.s === 0 ? MATCH.homeBoost : 0) + (sign * st.momentum / 100) * MATCH.momentumK * (1 - c.a.composure / 25)
       - (100 - c.energy) * MATCH.energySkill + c.mod,
     chain: st.chain,
     counter: trans ? Math.max(0, exposed - MATCH.counterFrom) : 0,
