@@ -20,6 +20,24 @@ e `tools/diag-avgpos.ts` (posizioni medie per ruolo, come la mappa di FM).
 6. **Lettura dello schermo**: in vista Completa il campo è piccolo (circa metà della finestra), la pioggia disegna
    righe sopra tutto, le scritte («FALLO», cartellino) coprono palla e giocatori, i numeri sono quelli dello slot.
 
+7. **Passaggi al rallentatore.** La palla viaggia sempre per il 60% dell'azione (`MATCH.ballFlight`), qualunque sia
+   la distanza: un passaggio di 15 m in un'azione di 3 s va a 5 m/s (reale 15-25). Circa 200 passaggi lenti a
+   partita; il 9% dei passaggi arriva a più di 2 m dal ricevitore (fino a 14 m: la palla «si incolla» al giocatore).
+8. **Contrasti a distanza.** Il difensore parte in media da 4 m (64% dei contrasti oltre 3 m) e non va verso la palla:
+   è la palla che scivola da lui, come un passaggio all'avversario.
+9. **Intercetti che cambiano direzione.** La palla vola verso il destinatario previsto, poi a metà strada cambia
+   direzione verso chi la intercetta; l'anello del possesso passa a lui prima che la palla arrivi (per l'8% del tempo
+   la palla è a più di 1,5 m da chi «la porta»).
+10. **Il gol non si vede.** La palla arriva sulla linea e in 0,6 s si riparte dal centrocampo con tutti già al loro
+    posto: il tempo morto è compresso, niente palla in rete, niente pausa. Anche per questo ~10 salti di giocatori a
+    partita.
+11. **Tiro uguale a un passaggio** (nessuna scia né effetto); il portiere a volte finisce col pallino oltre la linea.
+12. **Bordi**: chi è sulla linea laterale è tagliato a metà dal bordo del campo, nome compreso; gruppi di 3-4 pallini
+    uno sull'altro dove c'è la palla.
+
+Misure: `tools/diag-glitches.ts` (campiona la riproduzione come lo schermo, ogni 0,1 s); momenti al rallentatore
+(contrasto, intercetto, tiro, gol, un fotogramma ogni 0,1 s) con `tools/match-moments.cjs`.
+
 Causa nel codice (`match/positioning.ts`): le posizioni seguono la palla con coefficienti fissi e piccoli
 (senza palla 0,45 zone per zona di palla, con palla `role.follow` ≈ 0,5), invece di agganciare tutti a una
 **linea difensiva** che si sposta con la palla e da cui le altre linee stanno a distanza fissa.
@@ -28,6 +46,7 @@ Causa nel codice (`match/positioning.ts`): le posizioni seguono la palla con coe
 
 ### Fase 1 — leggere lo schermo (solo interfaccia, il motore non cambia)
 - **Campo grande**: in vista Completa il campo prende lo spazio dei pannelli laterali (pannelli richiudibili, come FM).
+- **Bordi**: un margine attorno al campo, così chi è sulla linea laterale si vede intero.
 - **Pallini che non si coprono**: nel disegno, chi è a meno di un pallino da un altro viene scostato di quel poco
   che serve (le posizioni del motore restano quelle).
 - **Meno rumore**: pioggia più leggera e sotto i giocatori; scritte di fallo e cartellino accanto, non sopra.
@@ -35,7 +54,22 @@ Causa nel codice (`match/positioning.ts`): le posizioni seguono la palla con coe
   attacco) di ciascuna squadra, così si legge 4-4-2 o 3-5-2 a colpo d'occhio.
 - Verifica: `tools/match-film.cjs`, sovrapposizioni misurate sul disegno = 0, foto prima/dopo.
 
-### Fase 2 — il blocco che si muove insieme (motore)
+### Fase 2 — passaggi, contrasti, tiri e gol (racconto del motore: il bilanciamento NON cambia)
+Tutto in `replay` di `match/positioning.ts`, che racconta come si arriva alle posizioni già decise dal motore (il
+vincolo scritto lì: le posizioni di fine intervallo restano quelle del motore, stesso consumo di caso).
+- **Palla alla velocità giusta**: il volo dura distanza / velocità (passaggio 15-22 m/s, lancio 20-25, tiro 25-30,
+  conduzione col passo di chi corre), non il 60% fisso dell'azione; il resto è controllo e conduzione.
+- **Intercetto vero**: la palla va verso il destinatario e si ferma dove la prende il difensore, sulla traiettoria;
+  l'anello del possesso passa quando la palla arriva.
+- **Contrasto vero**: il difensore va addosso al portatore, la palla resta al portatore fino al contatto e poi
+  schizza al vincitore (o lì vicino).
+- **Gol**: la palla entra in rete, gioco fermo di 2-3 s di riproduzione con la scritta, i giocatori tornano nella
+  propria metà camminando, poi il calcio d'inizio. Stesso trattamento leggero per rimesse e falli.
+- **Tiro riconoscibile**: palla più veloce con scia; portiere che resta davanti alla linea.
+- Misure (`diag-glitches`): passaggi lenti ~0, presi a più di 2 m < 1%, palla lontana da chi la porta < 1% del
+  tempo, contrasti entro 1,5 m, salti di giocatori 0 fuori dai cambi; golden master invariato.
+
+### Fase 3 — il blocco che si muove insieme (motore)
 - **Linea difensiva agganciata alla palla**: altezza = palla meno 25-30 m (con palla meno 35-45 m), fra un minimo
   vicino all'area e un massimo verso la metà campo, spostata dall'istruzione Linea difensiva e dalla mentalità.
 - **Reparti a distanza fissa dalla linea** (difesa → centrocampo → attacco, 10-15 m l'uno dall'altro) presi dal
@@ -50,11 +84,12 @@ Causa nel codice (`match/positioning.ts`): le posizioni seguono la palla con coe
   (`tools/battery.sh`): cambiando le posizioni cambiano linee di passaggio, pressione e fuorigioco, quindi va
   ritarato. Golden master aggiornato apposta.
 
-### Fase 3 — rifinitura
+### Fase 4 — rifinitura
 - **Test della forma**: un test che fallisce se un 4-4-2 senza palla non ha due linee da quattro o se il blocco
   supera 40 m (la forma non deve più rompersi senza che ce ne accorgiamo).
 - **Transizioni leggibili**: dopo la palla persa si vede chi contrapressa e chi rientra (la logica c'è già).
-- **Palla**: ombra e altezza nei lanci, scia del passaggio, il destinatario evidenziato.
+- **Palla**: ombra e altezza nei lanci, il destinatario evidenziato.
 - Nuovo video e confronto con quello di oggi.
 
-Ordine consigliato: Fase 1 subito (rischio zero, si vede la differenza), poi Fase 2 (il cuore, con le misure), poi 3.
+Ordine consigliato: Fase 1 e Fase 2 subito (rischio zero per il bilanciamento: sono schermo e racconto), poi la
+Fase 3 (il cuore, con le misure e la ritaratura), poi la 4.
