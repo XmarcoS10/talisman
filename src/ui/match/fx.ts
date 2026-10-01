@@ -105,10 +105,11 @@ export function drawMoments(ctx: C2D, moments: Moment[], live: Live, look: Look,
         pulse(ctx, qx, qy, v.r0, m.age, '#fff');
         break;
       }
-      case 'foul': badge(ctx, t('fx.foul'), px, py - v.r0 * 2.2, fs, '#fff'); break;
-      case 'yellow': card(ctx, px, py, v.r0 * 1.2, GOLD); break;
-      case 'red': card(ctx, px, py, v.r0 * 1.2, RED); break;
-      case 'injury': badge(ctx, '+', px, py - v.r0 * 2.2, fs, '#fff', RED); break;
+      // sotto il giocatore e accanto: sopra c'è il nome di chi ha palla, e il pallino deve restare visibile
+      case 'foul': badge(ctx, t('fx.foul'), px, py + v.r0 * 2.3, fs, '#fff'); break;
+      case 'yellow': card(ctx, px + v.r0 * 1.5, py - v.r0 * 1.2, v.r0 * 1.0, GOLD); break;
+      case 'red': card(ctx, px + v.r0 * 1.5, py - v.r0 * 1.2, v.r0 * 1.0, RED); break;
+      case 'injury': badge(ctx, '+', px, py + v.r0 * 2.3, fs, '#fff', RED); break;
       case 'offside': {
         ctx.save();
         ctx.setLineDash([v.r0 * 0.6, v.r0 * 0.45]);

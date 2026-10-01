@@ -654,6 +654,10 @@ html.rail .shell { grid-template-columns: 80px 1fr; }
 .live-bench td.energy .meter { display: block; width: 100%; }
 .live-top .live-ctl .seg-tabs { flex-wrap: nowrap; }
 .live-cols { grid-template-columns: 270px minmax(0, 1fr) 320px; }
+/* campo grande (piano 2D, fase 1): restano campo, salienti e racconto; il campo sta tutto nell'altezza della finestra */
+.live.big .live-cols { grid-template-columns: minmax(0, 1fr); }
+.live.big .live-cols > .stack:first-child, .live.big .live-cols > .stack:last-child { display: none; }
+.live.big .pitch2d { width: min(100%, calc((100vh - 250px) * 16 / 9)); margin: 0 auto; }
 .live-subs span { text-overflow: ellipsis; }
 .live-top { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "sb in" "ctl view"; }
 .live-top .live-ctl { justify-content: flex-start; }

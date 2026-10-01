@@ -1,5 +1,18 @@
 # Note di rilascio
 
+## 0.14.1 — la partita si legge meglio
+
+Prima fase del piano per la partita 2D (`docs/design/partita-2d-piano.md`): solo l'aspetto, le partite non cambiano.
+
+- **Campo grande**: un pulsante accanto alla telecamera nasconde le colonne laterali e il campo prende tutta la
+  larghezza (la scelta resta).
+- **Reparti**: nuova sovrapposizione che unisce i giocatori di ogni reparto delle due squadre: difesa, mediana,
+  centrocampo e attacco. Il modulo si legge in campo.
+- **Pallini che non si coprono**: chi è attaccato a un altro viene scostato quanto basta, solo nel disegno.
+- **Bordi**: un margine attorno al campo, chi è sulla linea laterale si vede intero.
+- **Meno rumore**: pioggia più leggera e sotto i giocatori; la scritta del fallo sotto il giocatore e il cartellino
+  accanto, non più sopra il pallino e sul nome di chi ha palla.
+
 ## 0.14.0 — la stanchezza e la ritaratura
 
 Le partite cambiano un po' (ritaratura del motore, col via di Marco). Le carriere si aprono senza cambiamenti.
@@ -313,6 +326,18 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.14.1 — an easier match to read (English)
+
+First phase of the 2D match plan: looks only, matches do not change.
+
+- **Big pitch**: a button next to the camera hides the side columns and the pitch takes the full width (remembered).
+- **Units**: a new overlay that joins the players of each unit of both teams (defence, holding midfield, midfield,
+  attack): you can read the formation on the pitch.
+- **Dots that do not cover each other**: players stuck together are nudged apart just enough, only on screen.
+- **Edges**: a margin around the pitch, players on the touchline are fully visible.
+- **Less clutter**: lighter rain drawn under the players; the foul label under the player and the card beside it,
+  no longer over the dot and the ball carrier's name.
 
 ## 0.14.0 — fatigue and recalibration (English)
 

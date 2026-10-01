@@ -6,9 +6,9 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'site')
 REPO = 'https://github.com/XmarcoS10/talisman'
 SITE = 'https://xmarcos10.github.io/talisman/'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
-VERSION = '0.14.0'
+VERSION = '0.14.1'
 SIZE = '123 MB'
-SHA = '6ce52e5be462fa6b970c8ef36fdb0feb5fae486f35c984270cb459afffdbc58c'
+SHA = '6715353561a286588f5eb0414c6a1796d0b90833015e937fe8f6af3997b15aad'
 # pnpm sim -- --seasons 10 --seed 42 con la 0.2.0
 SIM_GOALS = {'it': '2,48', 'en': '2.48'}
 SIM_DRAWS = {'it': '21,9%', 'en': '21.9%'}
@@ -543,6 +543,7 @@ def download():
         <div class="panel">
           <h3>{x('Novità della', 'New in')} {VERSION}</h3>
           <ul class="checks">
+            <li>{x("<b>Partita più leggibile</b>: campo grande, reparti in campo, pallini che non si coprono.", '<b>An easier match to read</b>: big pitch, units on the pitch, dots that do not cover each other.')}</li>
             <li>{x("<b>Ritaratura del motore</b>: la stanchezza conta meno, più pareggi e gol nella norma in campionato.", '<b>Engine recalibration</b>: fatigue matters less, more draws and normal scoring in the league.')}</li>
             <li>{x("<b>Colloqui individuali</b>: lodare o criticare il rendimento di un giocatore, che risponde a modo suo.", "<b>One-to-one talks</b>: praise or criticise a player's form, and they answer in their own way.")}</li>
             <li>{x("<b>Il vice parla alla squadra</b> quando giochi con «Solo il risultato»; l'IA usa i ruoli senza palla.", '<b>Your assistant gives the team talks</b> when you play "Result only"; the AI uses out-of-possession roles.')}</li>

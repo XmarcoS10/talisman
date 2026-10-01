@@ -36,7 +36,7 @@ app.on('browser-window-created', async (_e, win) => {
     win.setContentSize(1440, 900);
     win.show();
     const s = { lang: 'it', hints: false, seen: [], visited: ['board', 'squad', 'tactics', 'training', 'live'], guideDone: true, volume: { ui: 0, crowd: 0, fx: 0 },
-      view: 'full', camera, overlays: [] };
+      view: 'full', camera, overlays: (process.env.OVERLAYS ?? '').split(',').filter(Boolean), bigPitch: !!process.env.BIG };
     await js(`localStorage.setItem('talisman-settings', ${JSON.stringify(JSON.stringify(s))}); location.reload();`);
     await loaded();
     await wait(800);
@@ -54,7 +54,7 @@ app.on('browser-window-created', async (_e, win) => {
       await until(`(window.talismanLive?.run.track.at(-1)?.at ?? 0) > ${skip}`, 120000);
       for (const b of ['Riprendi il secondo tempo', 'Torna al campo']) await click(b);
     }
-    await js(`window.talismanLive.speed = 1; true`);
+    await js(`window.talismanLive.speed = ${Number(process.env.SPEED ?? 1)}; true`); // secondi di gioco per secondo reale (1× dell'interfaccia = 6)
     await wait(500);
     fs.writeFileSync(path.join(out, 'schermata.png'), (await win.webContents.capturePage()).toPNG());
     // video della finestra, in parallelo ai fotogrammi

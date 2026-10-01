@@ -1,6 +1,6 @@
 // Pezzi della partita dal vivo: tabellone, barra dell'inerzia con gli eventi, indicazioni dalla panchina,
 // regolazioni rapide, cronaca scorrevole.
-import { Megaphone, Flame, Wind } from 'lucide-react';
+import { Megaphone, Flame, Maximize2, Minimize2, Wind } from 'lucide-react';
 import type { MatchRun, Shout, TraceStep } from '../../engine/match/engine.ts';
 import { ALL_FORMATIONS, type Club, type FormationId, type Tactic, type WorldState } from '../../engine/model.ts';
 import { Crest } from '../Crest.tsx';
@@ -10,6 +10,7 @@ import { lines } from '../match/commentary.ts';
 import { VIEW_MODES, type Clip, type ViewMode } from '../match/highlights.ts';
 import { CAMERA_MODES, type CameraMode } from '../match/renderer.ts';
 import { OVERLAYS, type OverlayKind } from '../match/overlays.ts';
+import { settings, updateSettings } from '../settings.ts';
 import { FastForward, Rewind } from 'lucide-react';
 
 const EV_ICON: Record<string, string> = { goal: '⚽', penGoal: '⚽', penMiss: '✖', chance: '◎', yellow: '🟨', red: '🟥', injury: '✚', sub: '⇄', plan: '📋' };
@@ -97,13 +98,17 @@ export function OutFormation({ run, me, onChange }: { run: MatchRun; me: 0 | 1; 
 }
 
 /** visione (Salienti, Estesa, Completa) e telecamera: si scelgono anche in Impostazioni */
-export function ViewBar({ view, camera, onView, onCamera }: { view: ViewMode; camera: CameraMode; onView: (v: ViewMode) => void; onCamera: (c: CameraMode) => void }) {
+export function ViewBar({ view, camera, onView, onCamera, onBig }: { view: ViewMode; camera: CameraMode; onView: (v: ViewMode) => void; onCamera: (c: CameraMode) => void; onBig: () => void }) {
+  const big = !!settings().bigPitch;
   return (
     <div className="view-bar">
       <span className="caps">{t('live.view')}</span>
       <div className="seg-tabs">{VIEW_MODES.map((v) => <button key={v} className={v === view ? 'active hot' : ''} title={t(`view.${v}.hint`)} onClick={() => onView(v)}>{t(`view.${v}`)}</button>)}</div>
       <span className="caps">{t('live.camera')}</span>
       <div className="seg-tabs">{CAMERA_MODES.map((c) => <button key={c} className={c === camera ? 'active hot' : ''} onClick={() => onCamera(c)}>{t(`camera.${c}`)}</button>)}</div>
+      {/* campo grande: le colonne laterali si nascondono e il campo prende tutta la larghezza */}
+      <button className={`btn sq ${big ? 'primary' : ''}`} title={t(big ? 'live.smallPitch' : 'live.bigPitch')} aria-label={t(big ? 'live.smallPitch' : 'live.bigPitch')}
+        onClick={() => { updateSettings({ bigPitch: !big }); onBig(); }}>{big ? <Minimize2 size={15} /> : <Maximize2 size={15} />}</button>
     </div>
   );
 }

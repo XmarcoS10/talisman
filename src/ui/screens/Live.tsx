@@ -47,12 +47,12 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
 
   const look: Look = useRef<Look>({
     ...matchKits(clubs[0], clubs[1]), // gli stessi colori delle maglie, con il bordo se si confondono
-    numbers: new Map(), names: new Map(), mine: me, weather: weatherFor(world, fx),
+    numbers: new Map(), names: new Map(), pos: new Map(), mine: me, weather: weatherFor(world, fx),
   }).current;
   const mirror = me === 1; // la squadra dell'utente attacca sempre verso destra
   run.teams.forEach((tm) => tm.played.forEach((m, i) => {
     if (!look.numbers.has(m.p.id)) look.numbers.set(m.p.id, i + 1);
-    look.names.set(m.p.id, shortName(m.p));
+    look.names.set(m.p.id, shortName(m.p)); look.pos.set(m.p.id, m.pos);
   }));
 
   const { T, reel, moments, replay, startReplay, stopReplay, overlays: ov } = useLiveLoop(run, canvas, look, mirror,
@@ -125,7 +125,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   const setTac = <K extends keyof Tactic>(k: K, v: Tactic[K]) => { ov.current.snapshot(min); tac[k] = v; run.teams[me].baseMentality = tac.mentality; rerender(); };
 
   return (
-    <div className="live">
+    <div className={`live ${settings().bigPitch ? 'big' : ''}`}>
       <div className="panel live-top">
         <Scoreboard clubs={clubs} score={score} min={min} over={over} me={me} flash={moments.current.some((m) => m.kind === 'goal')}
           tactics={[{ ...run.teams[0].tactic, mentality: run.teams[0].mentality }, { ...run.teams[1].tactic, mentality: run.teams[1].mentality }]} />
@@ -140,7 +140,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
           {view === 'full' && <span className="muted small">{t('live.duration', { n: matchMinutes(speed) })}</span>}
         </div>
         <ViewBar view={view} camera={camera}
-          onView={(v) => { setView(v); updateSettings({ view: v }); }} onCamera={(c) => { setCamera(c); updateSettings({ camera: c }); }} />
+          onView={(v) => { setView(v); updateSettings({ view: v }); }} onCamera={(c) => { setCamera(c); updateSettings({ camera: c }); }} onBig={rerender} />
         <Inertia run={run} me={me} min={min} onJump={jumpTo} />
       </div>
 

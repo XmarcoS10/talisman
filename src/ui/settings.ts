@@ -25,6 +25,7 @@ export interface Settings {
   view: ViewMode; // partita: Salienti, Estesa o Completa (Blocco 3)
   camera: CameraMode; // partita: campo intero, segui la palla, ravvicinata sui salienti
   overlays: OverlayKind[]; // partita: sovrapposizioni tattiche accese
+  bigPitch?: boolean; // partita: campo grande, colonne laterali nascoste (piano 2D, fase 1)
   lang: Lang | ''; // lingua (Blocco 5); vuota finché non la si sceglie alla prima apertura
   theme: 'dark' | 'light' | 'system'; // tema (0.3.0); «system» segue il sistema operativo
   desk: DeskLayout;

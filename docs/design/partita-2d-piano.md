@@ -44,7 +44,11 @@ Causa nel codice (`match/positioning.ts`): le posizioni seguono la palla con coe
 
 ## Il piano
 
-### Fase 1 — leggere lo schermo (solo interfaccia, il motore non cambia)
+### Fase 1 — leggere lo schermo (solo interfaccia, il motore non cambia) — FATTA nella 0.14.1
+Pulsante «Campo grande» (`settings.bigPitch`, classe `.live.big`), margine `PAD` in `renderer.ts` (`fitScale`),
+pallini scostati solo nel disegno (`spread`), sovrapposizione «Reparti» (`units`, ruoli in `Look.pos`), pioggia sotto i
+giocatori e più leggera, fallo e cartellino accanto al giocatore (`fx.ts`). La linea del modulo resta da provare a occhio.
+
 - **Campo grande**: in vista Completa il campo prende lo spazio dei pannelli laterali (pannelli richiudibili, come FM).
 - **Bordi**: un margine attorno al campo, così chi è sulla linea laterale si vede intero.
 - **Pallini che non si coprono**: nel disegno, chi è a meno di un pallino da un altro viene scostato di quel poco

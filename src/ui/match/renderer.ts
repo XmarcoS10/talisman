@@ -12,6 +12,11 @@ export const PITCH_X = 12, PITCH_Y = 8;
 export type CameraMode = 'wide' | 'follow' | 'close';
 export const CAMERA_MODES: CameraMode[] = ['wide', 'follow', 'close'];
 /** zoom della telecamera: campo intero fermo, segui la palla, ravvicinata (solo dentro un saliente) */
+/** margine attorno al campo (zone): chi sta sulla linea laterale si vede intero, nome compreso (piano 2D, fase 1) */
+const PAD = 0.45;
+/** pixel per zona col campo intero e il suo margine dentro w × h */
+export const fitScale = (w: number, h: number) => Math.min(w / (PITCH_X + 2 * PAD), h / (PITCH_Y + 2 * PAD));
+
 export const cameraZoom = (mode: CameraMode, inClip: boolean) => (mode === 'wide' ? 1 : mode === 'close' && inClip ? 1.8 : 1.3);
 
 export interface Look {
@@ -21,6 +26,7 @@ export interface Look {
   names: Map<number, string>;
   mine: 0 | 1; // quale delle due è la squadra dell'utente
   weather?: Weather; // meteo della partita (0.5.0): pioggia che cade, campo pesante più scuro
+  pos: Map<number, string>; // ruolo nello slot (GK, DC, MC…): reparti per la sovrapposizione «Reparti»
 }
 
 export class Camera {
@@ -36,7 +42,7 @@ export class Camera {
     const k = Math.min(1, dt * 1.25);
     const follow = zoom > 1;
     this.zoom += (zoom - this.zoom) * k;
-    const scale = Math.min(w / PITCH_X, h / PITCH_Y) * this.zoom;
+    const scale = fitScale(w, h) * this.zoom;
     const halfX = Math.min(PITCH_X, w / scale) / 2;
     const halfY = Math.min(PITCH_Y, h / scale) / 2;
     const hold = (c: number, b: number, half: number) => (Math.abs(b - c) < half * 0.3 ? c : b - Math.sign(b - c) * half * 0.3);
@@ -122,19 +128,21 @@ function pitchImage(css: (v: string) => string, px: number): HTMLCanvasElement |
 
 export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: Live | null, look: Look, cam: Camera, css: (v: string) => string,
   moments: Moment[] = [], over?: OverlayView) {
-  const scale = Math.min(w / PITCH_X, h / PITCH_Y) * cam.zoom;
+  const scale = fitScale(w, h) * cam.zoom;
   const ox = w / 2 - cam.cx * scale;
   const oy = h / 2 - cam.cy * scale;
   const X = (x: number) => ox + x * scale;
   const Y = (y: number) => oy + y * scale;
 
   // il campo è sempre lo stesso: si disegna una volta in un'immagine e a ogni fotogramma la si copia con la telecamera
-  const img = pitchImage(css, Math.min(w / PITCH_X, h / PITCH_Y) * PITCH_RES);
+  const img = pitchImage(css, fitScale(w, h) * PITCH_RES);
   ctx.fillStyle = css('--bg-0');
   ctx.fillRect(0, 0, w, h);
   if (img) ctx.drawImage(img, X(-MARGIN), Y(-MARGIN), (PITCH_X + 2 * MARGIN) * scale, (PITCH_Y + 2 * MARGIN) * scale);
   if (look.weather?.heavy) { ctx.fillStyle = 'rgba(30,18,6,0.22)'; ctx.fillRect(X(0), Y(0), PITCH_X * scale, PITCH_Y * scale); } // campo pesante
+  if (look.weather) rain(ctx, w, h, look.weather); // sotto i giocatori: non copre il gioco
   if (!live) return;
+  if (over?.on.has('lines')) units(ctx, live, look, X, Y, scale);
   if (over?.on.size) {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -157,11 +165,12 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: 
   ctx.textBaseline = 'middle';
   const ci = live.ids.indexOf(live.carrier);
   pressers(ctx, live, ci, X, Y, r0);
+  const [sx, sy] = spread(live, ci, (r0 * 1.8) / scale);
   live.ids.forEach((id, i) => {
     const side = i < live.n0 ? 0 : 1;
     const hasBall = i === ci;
     const r = hasBall ? r0 * 1.25 : r0;
-    const px = X(live.x[i]!), py = Y(live.y[i]!);
+    const px = X(sx[i]!), py = Y(sy[i]!);
     ctx.beginPath();
     ctx.arc(px, py, r, 0, Math.PI * 2);
     ctx.fillStyle = look.colors[side]!;
@@ -192,7 +201,50 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: 
   if (ci >= 0) nameTag(ctx, look.names.get(live.carrier) ?? '', X(live.x[ci]!), Y(live.y[ci]!) - r0 * 2.1, r0);
   ball(ctx, X(live.bx), Y(live.by), live.h, scale);
   drawMoments(ctx, moments, live, look, { X, Y, r0, w, css });
-  if (look.weather) rain(ctx, w, h, look.weather);
+}
+
+/**
+ * pallini che non si coprono: solo nel disegno, chi è a meno di `d` zone da un altro viene scostato di quanto manca
+ * (lo spostamento cresce con continuità, niente scatti). Chi ha la palla resta fermo: la palla è sua.
+ */
+function spread(live: Live, ci: number, d: number): [number[], number[]] {
+  const x = [...live.x], y = [...live.y], n = x.length;
+  for (let pass = 0; pass < 3; pass++)
+    for (let i = 0; i < n; i++)
+      for (let j = i + 1; j < n; j++) {
+        let dx = x[j]! - x[i]!, dy = y[j]! - y[i]!;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist >= d) continue;
+        if (dist < 1e-4) { dx = 0; dy = 1; } else { dx /= dist; dy /= dist; }
+        const push = d - Math.max(dist, 1e-4);
+        const wi = i === ci ? 0 : j === ci ? 1 : 0.5; // quanto si sposta i (il resto lo fa j)
+        x[i]! -= dx * push * wi; y[i]! -= dy * push * wi;
+        x[j]! += dx * push * (1 - wi); y[j]! += dy * push * (1 - wi);
+      }
+  return [x, y];
+}
+
+/** reparti: difesa, mediana, centrocampo e attacco di ogni squadra uniti da una linea, così il modulo si legge */
+const UNITS: string[][] = [['DL', 'DC', 'DR'], ['DM'], ['ML', 'MC', 'MR'], ['AML', 'AMC', 'AMR', 'ST']];
+function units(ctx: CanvasRenderingContext2D, live: Live, look: Look, X: (x: number) => number, Y: (y: number) => number, scale: number) {
+  ctx.lineWidth = Math.max(1.5, scale * 0.05);
+  for (const side of [0, 1] as const) {
+    const [from, to] = side === 0 ? [0, live.n0] : [live.n0, live.ids.length];
+    // maglie scure schiarite: una linea blu notte sul prato non si vedrebbe
+    const [r, g, b] = rgb(look.colors[side]!), lift = (c: number) => Math.round(c + (255 - c) * 0.45);
+    ctx.strokeStyle = `rgb(${lift(r)},${lift(g)},${lift(b)})`;
+    ctx.globalAlpha = 0.75;
+    for (const u of UNITS) {
+      const pts: [number, number][] = [];
+      for (let k = from; k < to; k++) if (u.includes(look.pos.get(live.ids[k]!) ?? '')) pts.push([live.x[k]!, live.y[k]!]);
+      if (pts.length < 2) continue;
+      pts.sort((a, b) => a[1] - b[1]);
+      ctx.beginPath();
+      pts.forEach(([px, py], i) => (i ? ctx.lineTo(X(px), Y(py)) : ctx.moveTo(X(px), Y(py))));
+      ctx.stroke();
+    }
+  }
+  ctx.globalAlpha = 1;
 }
 
 /** pioggia che cade (e col vento di traverso): righe che scorrono, stabili fra un fotogramma e l'altro */
@@ -202,7 +254,7 @@ function rain(ctx: CanvasRenderingContext2D, w: number, h: number, wx: Weather) 
   const t = performance.now();
   const slant = wx.kind === 'wind' ? 0.9 : wx.kind === 'storm' ? 0.35 : 0.15;
   const len = wx.kind === 'wind' ? 26 : 14;
-  ctx.strokeStyle = wx.kind === 'wind' ? 'rgba(255,255,255,0.18)' : 'rgba(190,210,255,0.35)';
+  ctx.strokeStyle = wx.kind === 'wind' ? 'rgba(255,255,255,0.12)' : 'rgba(190,210,255,0.18)'; // leggera: è atmosfera, non deve coprire il gioco
   ctx.lineWidth = 1;
   ctx.beginPath();
   for (let i = 0; i < n; i++) {

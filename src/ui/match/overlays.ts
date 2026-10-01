@@ -4,8 +4,8 @@
 // Quando l'utente cambia un'istruzione resta per 10 minuti di gioco il «prima», tratteggiato (scelta di Marco).
 import type { MatchRun } from '../../engine/match/engine.ts';
 
-export type OverlayKind = 'shape' | 'passes' | 'heat' | 'press';
-export const OVERLAYS: OverlayKind[] = ['shape', 'passes', 'heat', 'press'];
+export type OverlayKind = 'lines' | 'shape' | 'passes' | 'heat' | 'press'; // lines: reparti, disegnati in renderer.ts
+export const OVERLAYS: OverlayKind[] = ['lines', 'shape', 'passes', 'heat', 'press'];
 
 const TAU = 180; // secondi di gioco: dopo tre minuti una posizione pesa un terzo
 const WINDOW = 600; // passaggi e recuperi degli ultimi 10 minuti
