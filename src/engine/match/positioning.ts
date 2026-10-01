@@ -39,10 +39,20 @@ function jitter(st: MatchState) {
   }
 }
 
+/** il reparto più arretrato del modulo (x minima fra i dieci di movimento): da lì si misura la forma del blocco */
+function backX(tm: Team, out: boolean) {
+  let lo = 12;
+  for (const m of tm.on) if (m.pos !== 'GK') lo = Math.min(lo, out ? m.ox : Math.max(m.hx, m.role.baseX));
+  return lo;
+}
+
 function aimAtt(st: MatchState) {
   const att = st.teams[st.s];
   const { bx, by } = st;
-  const mmA = att.mentality - 3, wf = WIDTH[att.tactic.width]!;
+  const mmA = att.mentality - 3, wf = WIDTH[att.tactic.width]! * MATCH.attWidth;
+  // la squadra sale a blocco (piano 2D, fase 3): la linea arretrata sta a blockAttGap dietro la palla, gli altri
+  // reparti alla loro distanza nel modulo; il ruolo sposta poco (follow) attorno al blocco
+  const line = clamp(bx - MATCH.blockAttGap, MATCH.blockAttMin, MATCH.blockAttMax), back = backX(att, false);
   for (const m of att.on) {
     if (m === st.holder) {
       if (st.snap) { m.x = bx; m.y = by; }
@@ -57,7 +67,7 @@ function aimAtt(st: MatchState) {
     }
     // la squadra sale a blocco secondo il ruolo di ognuno (roles.ts)
     const rl = m.role;
-    let x = Math.max(m.hx, rl.baseX) + rl.push + (bx - 6) * rl.follow + MATCH.mentalityPush * mmA;
+    let x = line + (Math.max(m.hx, rl.baseX) - back) * MATCH.blockAttDepth + rl.push + (bx - 6) * (rl.follow - 0.5) + MATCH.mentalityPush * mmA;
     // negli ultimi 30 metri chi sa inserirsi attacca l'area
     const runs = MATCH.insRuns[m.ins.runs ?? 1]!; // istruzione individuale: inserimenti di meno o di più
     if (bx >= 8 && (rl.runs || m.ins.runs === 2)) x += (m.a.offTheBall / 20) * MATCH.boxRun * runs;
@@ -75,18 +85,24 @@ function aimAtt(st: MatchState) {
 /** il blocco senza palla: ognuno al suo posto nel modulo accorciato, e chi è più vicino adesso va in pressione */
 function shapeDef(def: Team, dbx: number, dby: number): MP | undefined {
   const shift = LINE[def.tactic.line]! + 0.25 * (def.mentality - 3);
-  // senza palla il blocco si accorcia: anche punte e trequartisti rientrano, di più se la mentalità è prudente
-  const compact = MATCH.defCompact + MATCH.mentalityCompact * (def.mentality - 3);
+  // blocco senza palla (piano 2D, fase 3): la linea difensiva a blockDefGap dietro la palla, fra un minimo vicino
+  // all'area e un massimo verso la metà campo; gli altri reparti alla loro distanza nel modulo, accorciata
+  // (di più se la mentalità è prudente); il ruolo senza palla (oHold) allunga o accorcia la sua
+  const depth = MATCH.blockDefDepth + MATCH.mentalityCompact * (def.mentality - 3);
+  const line = clamp(dbx - MATCH.blockDefGap, MATCH.blockDefMin, MATCH.blockDefMax) + shift, back = backX(def, true);
   let presser: MP | undefined, best = Infinity;
   for (const m of def.on) {
     if (m.pos === 'GK') { m.tx = 0.6; m.ty = 4; continue; }
-    m.tx = clamp(1 + (m.ox - 1) * compact * m.oHold + (dbx - 6) * 0.45 + shift, 0.9, 11.5); // modulo e ruolo senza palla
-    m.ty = clamp(4 + (m.oy - 4) * 0.7 + (dby - 4) * 0.35, 0.2, 7.8);
+    m.tx = clamp(line + (m.ox - back) * depth * m.oHold, 0.9, 11.5); // modulo e ruolo senza palla
+    m.ty = clamp(4 + (m.oy - 4) * MATCH.blockDefWidth + (dby - 4) * 0.35, 0.2, 7.8);
     const d = len(m.x - dbx, m.y - dby); // in pressione va chi è davvero più vicino adesso
     if (d < best) { best = d; presser = m; }
   }
   return presser;
 }
+
+/** a zona: si tiene il posto nella linea, e si prende l'uomo solo vicino alla palla o in area */
+const inMarkZone = (st: MatchState, m: MP, dby: number) => m.tx <= MATCH.markBoxX || len(m.tx - (12 - st.bx), m.ty - dby) <= MATCH.markNearBall;
 
 /**
  * marcatura a uomo nella propria metà campo: ognuno prende l'attaccante libero più vicino (uno a testa),
@@ -105,13 +121,15 @@ function markUp(st: MatchState, att: Team, def: Team, presser: MP | undefined, d
     m.tx += (12 - target.x - MATCH.markGoalSide - m.tx) * tight;
     m.ty += (8 - target.y - m.ty) * tight;
   }
+  const r = MATCH.markRange, r2 = r * r + 0.004;
   for (const m of def.on) {
     if (m === presser || m.pos === 'GK' || m.tx > 5 || m.marked === -stamp) continue;
-    let target: MP | undefined, bd = 2;
+    if (!inMarkZone(st, m, dby)) continue;
+    let target: MP | undefined, bd: number = r;
     for (const a of att.on) {
       if (a === st.carrier || a.pos === 'GK' || a.marked === stamp) continue;
       const qx = 12 - a.x - m.tx, qy = 8 - a.y - m.ty;
-      if (qx * qx + qy * qy > 4.004) continue; // oltre 2 zone non lo marca (margine per restare esatti sul bordo)
+      if (qx * qx + qy * qy > r2) continue; // oltre markRange zone non lo marca (margine per restare esatti sul bordo)
       const d = len(qx, qy);
       if (d < bd) { bd = d; target = a; }
     }

@@ -190,6 +190,15 @@ export const MATCH = {
   runLag: 0, // chi perde il duello resta a questa frazione della marcatura
   boxRun: 0.6, // zone di inserimento in area (× Inserimenti/20) per centrocampisti e trequartisti
   defCompact: 0.75, // senza palla: quanto si accorcia il modulo verso la propria porta (1 = per niente)
+  // blocco (piano 2D, fase 3): linea arretrata agganciata alla palla, reparti a distanza fissa (zone; 1 = 8,75 m)
+  blockDefGap: 3.0, blockDefMin: 1.4, blockDefMax: 5.0, // senza palla: dietro la palla di gap, fra min e max
+  blockDefDepth: 0.5, // senza palla: quanto della profondità del modulo resta (lunghezza del blocco)
+  blockDefWidth: 0.7, // senza palla: quanto della larghezza del modulo resta
+  blockAttGap: 3.5, blockAttMin: 1.6, blockAttMax: 6.0, // con palla
+  blockAttDepth: 1.0, // con palla
+  attWidth: 1.15, // con palla: larghezza in più (× istruzione Ampiezza)
+  markRange: 1.5, // marcatura: zone entro cui si prende l'uomo
+  markNearBall: 3, markBoxX: 2.5, // a zona: l'uomo solo entro markNearBall zone dalla palla o con la linea sotto markBoxX
   mentalityCompact: 0.04, // per livello di mentalità: più offensiva = meno uomini che rientrano
   mentalityPush: 0.1, // zone in avanti in possesso per livello di mentalità
   mentalityCover: 0.15, // per livello: impegno difensivo in meno (pressione, corsie, marcature)
@@ -225,7 +234,7 @@ export const MATCH = {
 
   // tiro e xG (§6.3): logit = base + angolo·a − distanza_m·d − pressione·p (+ colpo di testa)
   shotMinX: 7,
-  xgBase: -0.99,
+  xgBase: -0.87,
   xgAngle: 1.6,
   xgDist: 0.1,
   xgPress: 0.45,
@@ -321,7 +330,7 @@ export const MATCH = {
   foulBase: 0.3,
   foulAggression: 0.05,
   foulInBox: 0.12, // in area si entra con più cautela
-  pressFoul: 0.045, // fallo "di pressione" per unità di pressione, a ogni azione
+  pressFoul: 0.04, // fallo "di pressione" per unità di pressione, a ogni azione
   yellowP: 0.18,
   bookedCaution: 0.35, // probabilità di giallo ridotta per chi è già ammonito
   redP: 0.003,
@@ -756,8 +765,8 @@ export const WEATHER = {
   winter: { rain: 0.3, storm: 0.08, cold: 0.25, wind: 0.1 } as Record<string, number>, // dicembre, gennaio, febbraio
   fx: {
     clear: { pass: 0, cross: 0, drain: 1, speed: 1, slip: 0 },
-    rain: { pass: 0.12, cross: 0.04, drain: 1, speed: 1, slip: 0.06 },
-    storm: { pass: 0.3, cross: 0.12, drain: 1, speed: 1, slip: 0.1 },
+    rain: { pass: 0.15, cross: 0.04, drain: 1, speed: 1, slip: 0.06 },
+    storm: { pass: 0.38, cross: 0.12, drain: 1, speed: 1, slip: 0.1 },
     wind: { pass: 0, cross: 0.18, drain: 1, speed: 1, slip: 0.03 },
     heat: { pass: 0, cross: 0, drain: 1.12, speed: 1, slip: 0 },
     cold: { pass: 0.03, cross: 0, drain: 1, speed: 1, slip: 0.02 },

@@ -79,7 +79,14 @@ vincolo scritto lì: le posizioni di fine intervallo restano quelle del motore, 
 - Misure (`diag-glitches`): passaggi lenti ~0, presi a più di 2 m < 1%, palla lontana da chi la porta < 1% del
   tempo, contrasti entro 1,5 m, salti di giocatori 0 fuori dai cambi; golden master invariato.
 
-### Fase 3 — il blocco che si muove insieme (motore)
+### Fase 3 — il blocco che si muove insieme (motore) — FATTA nella 0.15.0
+`aimAtt` e `shapeDef` in `positioning.ts`: linea arretrata a `blockAttGap`/`blockDefGap` dietro la palla fra un minimo e
+un massimo, reparti a distanza fissa (`blockAttDepth`, `blockDefDepth`), marcatura a zona (`inMarkZone`: l'uomo solo
+entro `markNearBall` dalla palla o con la linea sotto `markBoxX`). Forma (`diag-shape`): senza palla 46 × 36 m → 37 × 38,
+con palla 59 × 49 → 55 × 53; test `match/shape.test.ts`. Ritaratura: attaccanti più alti (`blockAttDepth` 1),
+`xgBase` −0,99 → −0,87, `pressFoul` 0,045 → 0,04, pioggia sui passaggi 0,12/0,30 → 0,15/0,38. Batteria in
+`motore-v2.md` §14.
+
 - **Linea difensiva agganciata alla palla**: altezza = palla meno 25-30 m (con palla meno 35-45 m), fra un minimo
   vicino all'area e un massimo verso la metà campo, spostata dall'istruzione Linea difensiva e dalla mentalità.
 - **Reparti a distanza fissa dalla linea** (difesa → centrocampo → attacco, 10-15 m l'uno dall'altro) presi dal

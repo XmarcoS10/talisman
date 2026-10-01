@@ -85,7 +85,8 @@ Spiegato in `docs/03-match-engine.md`, decisioni in `docs/adr/0002-motore-l2.md`
 Fase di costruzione (0.6.0): pazienza di chi palleggia meglio (`patientKeep` in `decision.ts`) e disordine della difesa
 dai cambi di gioco (`unsettle` in `execute.ts`, `st.dis`), diario in `docs/design/motore-v2.md`. Moduli con stato esplicito (`match/state.ts`), nessuna funzione oltre 80 righe o complessità 20 (`structure.test.ts`);
 il golden master (`golden.test.ts`) dice se una modifica cambia le partite. Le decisioni restano per azione; col registro acceso (partita seguita dal vivo) il motore emette anche `run.track`,
-il campo ogni 0,25 s. Ritaratura 0.14.0 (diario §13): pressione legata per metà all'energia (`pressEnergy`), il motore legge
+il campo ogni 0,25 s. Posizioni a blocco (0.15.0, diario §14, `match/shape.test.ts`): linea agganciata alla palla, reparti a distanza
+fissa, marcatura a zona. Ritaratura 0.14.0 (diario §13): pressione legata per metà all'energia (`pressEnergy`), il motore legge
 gli attributi di partita `m.a` (`matchAttrs`, manopole `attrSpread`/`attrSat` spente); misure con `bash tools/battery.sh`. Le posizioni di fine intervallo sono quelle del motore: i passi intermedi non spostano il
 bilanciamento e il sim-cli non li calcola. Il ciclo più caldo è `options()` in
 `match/decision.ts`: niente allocazioni dentro i loop, niente `Math.hypot` (usa `len`).

@@ -6,3 +6,4 @@ for s in 42 7 99; do
   pnpm sim -- --seasons 10 --seed $s 2>&1 | grep -E "Gol per|Pareggi|Correlazione|Punti massimi" | sed "s/^/stagioni $s /"
 done
 pnpm sim -- --career 25 --seed 42 2>&1 | grep -E "Correlazione|Distacco|Bancarotte" | sed "s/^/carriera 42 /"
+pnpm sim -- --career 25 --seed 7 2>&1 | grep -E "Correlazione|Distacco|Bancarotte" | sed "s/^/carriera 7 /"

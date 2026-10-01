@@ -6,12 +6,12 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'site')
 REPO = 'https://github.com/XmarcoS10/talisman'
 SITE = 'https://xmarcos10.github.io/talisman/'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
-VERSION = '0.14.2'
+VERSION = '0.15.0'
 SIZE = '123 MB'
-SHA = '198db3b98ebc956117e626cd7cfd12ef8893e85a6b9f70985e6050e826e6b8f6'
+SHA = '61f92f24300c5cddc2cf4a5d5470439ef76de308fa15c86c35c74bb345dbaa0c'
 # pnpm sim -- --seasons 10 --seed 42 con la 0.2.0
-SIM_GOALS = {'it': '2,48', 'en': '2.48'}
-SIM_DRAWS = {'it': '21,9%', 'en': '21.9%'}
+SIM_GOALS = {'it': '2,60', 'en': '2.60'}
+SIM_DRAWS = {'it': '22,1%', 'en': '22.1%'}
 
 # icone (tracciati di lucide, licenza ISC)
 I = {
@@ -543,6 +543,7 @@ def download():
         <div class="panel">
           <h3>{x('Novità della', 'New in')} {VERSION}</h3>
           <ul class="checks">
+            <li>{x("<b>La squadra come un blocco</b>: linea che segue la palla, difesa a zona, moduli riconoscibili in campo.", '<b>The team as a block</b>: a back line that follows the ball, zonal defending, formations you can recognise.')}</li>
             <li>{x("<b>Azioni credibili</b>: passaggi veloci, intercetti e contrasti veri, la palla in rete.", '<b>Believable actions</b>: fast passes, real interceptions and tackles, the ball in the net.')}</li>
             <li>{x("<b>Partita più leggibile</b>: campo grande, reparti in campo, pallini che non si coprono.", '<b>An easier match to read</b>: big pitch, units on the pitch, dots that do not cover each other.')}</li>
             <li>{x("<b>Ritaratura del motore</b>: la stanchezza conta meno, più pareggi e gol nella norma in campionato.", '<b>Engine recalibration</b>: fatigue matters less, more draws and normal scoring in the league.')}</li>

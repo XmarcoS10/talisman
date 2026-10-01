@@ -1,5 +1,18 @@
 # Note di rilascio
 
+## 0.15.0 — la squadra si muove come un blocco
+
+Terza fase del piano per la partita 2D: cambiano le posizioni in campo, e quindi anche le partite (ritaratura).
+
+- **Il blocco**: la linea difensiva si sposta con la palla, sale fino a metà campo quando si attacca e si abbassa
+  verso l'area quando si difende; centrocampo e attacco la seguono a distanza fissa, nella forma del modulo. Senza
+  palla la squadra è lunga 37 m (prima 46, nella realtà 30-40), con palla larga 53 m (prima 49).
+- **Difesa a zona**: ognuno tiene il suo posto nella linea e prende l'uomo solo vicino alla palla o in area; prima
+  ogni difensore inseguiva l'attaccante più vicino e la linea spariva.
+- **I moduli si riconoscono mentre si gioca**, ancora meglio con la sovrapposizione «Reparti».
+- **Ritaratura**: in campionato più pareggi (24%, nel target) e la classifica segue la forza delle rose come prima;
+  la pioggia pesa un po' di più sui passaggi.
+
 ## 0.14.2 — passaggi, contrasti e gol credibili
 
 Seconda fase del piano per la partita 2D: cambia solo come si vedono le azioni, i risultati restano identici.
@@ -339,6 +352,19 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.15.0 — the team moves as a block (English)
+
+Third phase of the 2D match plan: positions on the pitch change, and so do matches (recalibration).
+
+- **The block**: the back line moves with the ball, up to halfway when attacking and down towards the box when
+  defending; midfield and attack follow at a fixed distance, in the shape of the formation. Out of possession the
+  team is 37 m long (46 before, 30-40 in real football), in possession 53 m wide (49 before).
+- **Zonal defending**: everyone holds their place in the line and picks up a man only near the ball or in the box;
+  before, every defender chased the nearest attacker and the line disappeared.
+- **Formations are recognisable while playing**, even more with the "Units" overlay.
+- **Recalibration**: more league draws (24%, in range) and the table still follows squad strength; rain weighs a
+  little more on passing.
 
 ## 0.14.2 — believable passes, tackles and goals (English)
 

@@ -755,3 +755,21 @@ carriere 42 e 7), stesso momento:
 Rumore di una misura singola (3000 partite, 10 stagioni): ±2 punti di pareggi, ±0,05 di correlazione: prima di
 decidere, la batteria. Restano aperti i pareggi delle stagioni (21,5%) e la coppia estrema. Manopole lasciate spente:
 `attrSpread` 1, `attrSat` 0, lancio lungo dei giocatori di movimento `longMaxX` 0.
+
+## 14. Il blocco (0.15.0, piano della partita 2D fase 3)
+
+Posizioni a blocco (`docs/design/partita-2d-piano.md`): primo tentativo con i valori di forma reali e il resto del
+motore com'era: gol 1,47, tiri 7,8, falli 35, pareggi 33,6% (il motore era tarato su una difesa sfilacciata).
+Attaccanti alzati (`blockAttDepth` 0,8 → 1, `blockAttMax` 6): gol 2,21, tiri 11,5. Poi `xgBase` e `pressFoul`.
+Batteria (`tools/battery.sh`, ora con la carriera del seme 7), 0.14.0 → 0.15.0:
+
+| | 0.14.0 | 0.15.0 | target |
+|---|---|---|---|
+| partite isolate: gol · pareggi | 2,48 · 22,2% | 2,62 · 21,8% | 2,5-2,9 · 22-30% |
+| stagioni: gol · pareggi · correlazione | 2,76 · 21,5% · 0,81 | 2,43 · **24,4%** · 0,81 | 2,5-2,9 · 22-30% · 0,75-0,85 |
+| carriere 42 / 7: correlazione | 0,73 / 0,77 | 0,72 / 0,73 | 0,75-0,85 |
+| prima contro ultima | 95 / 96 / 80% | 92 / 92 / 87% | 65-80% |
+
+Tre batterie di fila con `xgBase` −0,89 / −0,85 / −0,87 hanno dato correlazioni delle stagioni fra 0,68 e 0,86 sullo
+stesso seme: il rumore di 10 stagioni è ±0,08, le decisioni si prendono sulle medie. Il motore costa il 5% in più
+(4,9 ms a partita, `backX` a ogni passo).
