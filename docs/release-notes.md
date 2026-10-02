@@ -1,5 +1,11 @@
 # Note di rilascio
 
+## 0.15.2 — chi ha la palla si legge
+
+- Il pallino di chi ha la palla (più grande e con l'anello) non copre più i giocatori attaccati a lui: gli altri si
+  scostano di quanto serve.
+- La palla di chi la porta è disegnata ai suoi piedi, sul bordo del pallino, e non più sopra il suo numero.
+
 ## 0.15.1 — la rifinitura
 
 Ultima fase del piano per la partita 2D.
@@ -362,6 +368,12 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.15.2 — the ball carrier is readable (English)
+
+- The ball carrier's dot (bigger, with a ring) no longer covers the players next to them: the others move aside as
+  much as needed.
+- The carrier's ball is drawn at their feet, on the edge of the dot, no longer over their number.
 
 ## 0.15.1 — the finishing touches (English)
 

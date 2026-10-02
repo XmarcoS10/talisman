@@ -199,7 +199,9 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: 
     }
   });
   if (ci >= 0) nameTag(ctx, look.names.get(live.carrier) ?? '', X(live.x[ci]!), Y(live.y[ci]!) - r0 * 2.1, r0);
-  ball(ctx, X(live.bx), Y(live.by), live.h, scale);
+  // la palla di chi la porta va ai suoi piedi, sul bordo del pallino: sopra il centro coprirebbe il numero
+  if (ci >= 0) ball(ctx, X(sx[ci]!) + r0 * 1.0, Y(sy[ci]!) + r0 * 0.75, 0, scale);
+  else ball(ctx, X(live.bx), Y(live.by), live.h, scale);
   drawMoments(ctx, moments, live, look, { X, Y, r0, w, css });
 }
 
@@ -207,6 +209,8 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, live: 
  * pallini che non si coprono: solo nel disegno, chi è a meno di `d` zone da un altro viene scostato di quanto manca
  * (lo spostamento cresce con continuità, niente scatti). Chi ha la palla resta fermo: la palla è sua.
  */
+/** distanza in più attorno al portatore: pallino 1,25 volte più grande, anello a 1,45 del suo raggio */
+const CARRIER_GAP = 1.55;
 function spread(live: Live, ci: number, d: number): [number[], number[]] {
   const x = [...live.x], y = [...live.y], n = x.length;
   for (let pass = 0; pass < 3; pass++)
@@ -214,9 +218,10 @@ function spread(live: Live, ci: number, d: number): [number[], number[]] {
       for (let j = i + 1; j < n; j++) {
         let dx = x[j]! - x[i]!, dy = y[j]! - y[i]!;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist >= d) continue;
+        const dd = i === ci || j === ci ? d * CARRIER_GAP : d; // chi ha palla è più grande e ha l'anello: serve più spazio
+        if (dist >= dd) continue;
         if (dist < 1e-4) { dx = 0; dy = 1; } else { dx /= dist; dy /= dist; }
-        const push = d - Math.max(dist, 1e-4);
+        const push = dd - Math.max(dist, 1e-4);
         const wi = i === ci ? 0 : j === ci ? 1 : 0.5; // quanto si sposta i (il resto lo fa j)
         x[i]! -= dx * push * wi; y[i]! -= dy * push * wi;
         x[j]! += dx * push * (1 - wi); y[j]! += dy * push * (1 - wi);

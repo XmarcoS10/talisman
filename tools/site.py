@@ -6,9 +6,9 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'site')
 REPO = 'https://github.com/XmarcoS10/talisman'
 SITE = 'https://xmarcos10.github.io/talisman/'
 DL = REPO + '/releases/latest/download/TFM27-Setup.exe'
-VERSION = '0.15.1'
+VERSION = '0.15.2'
 SIZE = '123 MB'
-SHA = 'c8f63c61fcb3bfbe5565b1398419c49242019938ae3249ab9e061b429b11863d'
+SHA = '7738a15c867b2c51ad24357fcf9bb09f36fbee0b66ac75010079caba2c05c991'
 # pnpm sim -- --seasons 10 --seed 42 con la 0.2.0
 SIM_GOALS = {'it': '2,70', 'en': '2.70'}
 SIM_DRAWS = {'it': '20,9%', 'en': '20.9%'}
