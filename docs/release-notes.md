@@ -1,5 +1,16 @@
 # Note di rilascio
 
+## 0.16.1 — la partita più fluida
+
+Solo come si vede la partita: i risultati restano identici.
+
+- **I giocatori accelerano e frenano** (circa 4 m/s², come un calciatore vero) invece di partire a velocità piena e
+  fermarsi di colpo; chi ha o insegue la palla resta reattivo, per arrivarci in tempo.
+- **Curve al posto delle spezzate**: fra un punto e l'altro del movimento (quattro al secondo di gioco) la traiettoria
+  ora è una curva morbida, senza spigoli.
+- Misurato: accelerazioni impossibili (oltre 8 m/s²) dal 7% all'1,8% del tempo, partenze e frenate di colpo da 0,02
+  a 0 per istante; il disegno resta a 240 fotogrammi al secondo.
+
 ## 0.16.0 — la conferenza pre-partita
 
 I salvataggi passano alla versione 35, senza cambiamenti per la tua carriera.
@@ -381,6 +392,16 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.16.1 — a smoother match (English)
+
+Only how the match looks: results stay identical.
+
+- **Players accelerate and brake** (about 4 m/s², like a real footballer) instead of starting at full speed and stopping
+  dead; whoever has or chases the ball stays sharp, to get there in time.
+- **Curves instead of zigzags**: between the movement points (four per second of play) the path is now a smooth curve.
+- Measured: impossible accelerations (over 8 m/s²) from 7% to 1.8% of the time, sudden starts and stops from 0.02 to 0
+  per instant; drawing stays at 240 frames per second.
 
 ## 0.16.0 — the pre-match press conference (English)
 

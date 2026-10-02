@@ -14,11 +14,24 @@ const PRESS_STEP = MATCH.pressStep;
 /** accelerazione e frenata: la palla non viaggia a velocità costante */
 const ease = (u: number) => (u < 0.5 ? 2 * u * u : 1 - (1 - u) ** 2 * 2);
 
-function runTo(m: MP, x: number, y: number, dt: number) {
+function runTo(m: MP, x: number, y: number, dt: number, inertia: boolean) {
   const dx = x - m.x, dy = y - m.y;
   const d = len(dx, dy);
-  const max = dt * MATCH.runSpeed * (0.7 + 0.3 * (m.a.pace + m.a.acceleration) / 40) * (0.6 + 0.4 * m.energy / 100);
-  if (d <= max) { m.x = x; m.y = y; } else { m.x += (dx * max) / d; m.y += (dy * max) / d; }
+  const vmax = MATCH.runSpeed * (0.7 + 0.3 * (m.a.pace + m.a.acceleration) / 40) * (0.6 + 0.4 * m.energy / 100);
+  if (!inertia) { // il motore: a salti, alla velocità massima (decide le posizioni vere)
+    const max = dt * vmax;
+    if (d <= max) { m.x = x; m.y = y; } else { m.x += (dx * max) / d; m.y += (dy * max) / d; }
+    return;
+  }
+  // racconto (piano 2D, fluidità): verso il bersaglio con accelerazione limitata, frenando per arrivarci (v = √(2·a·d))
+  const acc = MATCH.runAccel * (0.8 + 0.2 * m.a.acceleration / 10);
+  const want = Math.min(vmax, Math.sqrt(2 * acc * d));
+  const wx = d > 1e-6 ? (dx / d) * want : 0, wy = d > 1e-6 ? (dy / d) * want : 0;
+  let ax = wx - m.vx, ay = wy - m.vy;
+  const al = len(ax, ay), dv = acc * dt;
+  if (al > dv) { ax *= dv / al; ay *= dv / al; }
+  m.vx += ax; m.vy += ay;
+  m.x += m.vx * dt; m.y += m.vy * dt;
 }
 
 /** gli smarcamenti si estraggono una volta per azione: dentro l'azione il movimento è continuo, non nervoso */
@@ -170,13 +183,20 @@ function aimDef(st: MatchState) {
   }
 }
 
-const move = (tm: Team, dt: number) => { for (const m of tm.on) runTo(m, m.tx, m.ty, dt); };
+const move = (st: MatchState, tm: Team, dt: number) => {
+  for (const m of tm.on) {
+    // chi ha o insegue la palla non ha inerzia nel racconto: deve arrivarci in tempo (la velocità resta coerente)
+    const chase = m === st.holder || m === st.meet, x0 = m.x, y0 = m.y;
+    runTo(m, m.tx, m.ty, dt, st.narr && !chase);
+    if (st.narr && chase && dt > 0) { m.vx = (m.x - x0) / dt; m.vy = (m.y - y0) / dt; }
+  }
+};
 /** un passo di movimento: prima si muove chi ha palla, poi la difesa si riposiziona su quello che vede */
 function advance(st: MatchState, dt: number) {
   aimAtt(st);
-  move(st.teams[st.s], dt * st.wx.speed); // campo pesante: si corre più piano
+  move(st, st.teams[st.s], dt * st.wx.speed); // campo pesante: si corre più piano
   aimDef(st);
-  move(st.teams[1 - st.s]!, dt * st.wx.speed);
+  move(st, st.teams[1 - st.s]!, dt * st.wx.speed);
 }
 
 /** senza registro il campo fa un salto solo per azione: è la modalità del sim-cli e del mondo che avanza */
@@ -286,9 +306,11 @@ function replayStep(st: MatchState, k: number, n: number, dt: number, path: Repl
   st.holder = flying ? null : next;
   st.meet = flying && live === 0 ? next : null;
   st.snap = false;
+  st.narr = true;
   advance(st, dt / n);
+  st.narr = false;
   st.snap = true;
-  const w = u * u; // ricongiungimento alle posizioni autorevoli
+  const w = u ** MATCH.rejoinPow; // ricongiungimento alle posizioni autorevoli (tardi: prima vale l'inerzia)
   all.forEach((m, i) => {
     m.x += (sx[i]! + (ex[i]! - sx[i]!) * u - m.x) * w;
     m.y += (sy[i]! + (ey[i]! - sy[i]!) * u - m.y) * w;

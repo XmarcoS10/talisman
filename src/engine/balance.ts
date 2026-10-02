@@ -169,6 +169,8 @@ export const MATCH = {
   markRadius: 1.5,
   pressRadius: 1.4,
   runSpeed: 0.55, // zone al secondo con cui un giocatore raggiunge la sua posizione (≈ 4,8 m/s di media)
+  runAccel: 0.45, // racconto della partita guardata: accelerazione (zone/s², ≈ 4 m/s²) con cui si parte e si frena
+  rejoinPow: 3, // racconto: quanto tardi i passi intermedi si ricongiungono alle posizioni del motore (u^rejoinPow)
   // movimento continuo (F6.2): tra una decisione e l'altra il campo avanza a passi fissi
   frameTick: 0.25, // secondi di gioco per fotogramma di posizione
   ballFlight: 0.6, // quota dell'intervallo in cui la palla è in viaggio quando l'azione è già raccontata

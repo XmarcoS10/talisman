@@ -34,6 +34,7 @@ export interface MP extends OnPitch {
   tx: number; // posizione ideale del momento (verso cui corre)
   ty: number;
   jx: number; // smarcamento casuale dell'azione in corso (estratto una volta per azione)
+  vx: number; vy: number; // velocità nel racconto della partita guardata (zone/s): accelera e frena, non scatta
   jy: number;
   run: boolean; // inserimento in area in questa azione (motore-v2 §11)
   runRoll: number; // estrazione del duello con chi lo segue, una per azione (la partita guardata non ne pesca altre)
@@ -189,6 +190,7 @@ export interface MatchState {
   holder: MP | null; // chi tiene la palla adesso (nessuno mentre è in viaggio)
   meet: MP | null; // chi la sta aspettando
   snap: boolean; // il portatore sta sulla palla; nei passi intermedi ci corre invece di comparirci
+  narr: boolean; // passi intermedi del racconto (replay): ci si muove con inerzia
   // registro e traccia densa (F6.2): solo per la partita guardata
   trace: TraceStep[] | undefined;
   curFrame: TraceStep | null; // fotogramma dell'azione in corso, a cui si aggiungono i momenti
@@ -241,7 +243,7 @@ export function matchAttrs(p: Player): Attributes {
 
 export const mp = (player: Player, slot: Slot, role: RoleId, fam: number, from = 0, ins: PlayerInstr = {}): MP =>
   ({ p: player, a: matchAttrs(player), pos: slot.pos, hx: slot.x, hy: slot.y, roleId: role, role: ROLES[role], marked: 0, x: slot.x, y: slot.y, tx: slot.x, ty: slot.y,
-    jx: 0, jy: 0, run: false, runRoll: 1, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from), ins, tr: traitBits(player) | (ins.tackle ? TRAIT_BIT.divesIn : 0),
+    jx: 0, jy: 0, vx: 0, vy: 0, run: false, runRoll: 1, energy: player.condition.fitness, mod: dayMod(player, fam), on: true, st: newPStats(from), ins, tr: traitBits(player) | (ins.tackle ? TRAIT_BIT.divesIn : 0),
     ox: slot.x, oy: slot.y, oHold: ROLES[role].hold, oPress: ROLES[role].press, oDrain: 1, si: 0 });
 
 /** la fase senza palla del giocatore: il suo posto nel modulo senza palla e il suo ruolo senza palla */
@@ -262,7 +264,7 @@ export function createState(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: Tr
   }) as [Team, Team];
   return {
     rng, ref: setups[0].ref ?? 1, wx: setups[0].wx ?? CALM, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, counterNow: false, momentum: 0,
-    half: 1, t: 0, length: 0, scheduled: [], lastPlace: 0, markStamp: 0, holder: null, meet: null, snap: true,
+    half: 1, t: 0, length: 0, scheduled: [], lastPlace: 0, markStamp: 0, holder: null, meet: null, snap: true, narr: false,
     trace, curFrame: null, track: [], playAt: 0, lastBall: { x: 6, y: 4 }, lastStep: -1, ids0: [], idsDirty: true,
     defX: [], defY: [], defAnt: [], defMark: [], keepEdge: 0, dis: 0, disAt: 0, pendingDrain: [0, 0], subIdx: 0, shoutAt: [0, 0], output: null, plansFired: [[], []], planUndo: [null, null],
   };

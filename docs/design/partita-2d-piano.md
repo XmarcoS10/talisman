@@ -112,5 +112,11 @@ ferma sulle mani del portiere, quello fuori accanto al palo (`shotTarget`). `xgB
 - **Palla**: ombra e altezza nei lanci, il destinatario evidenziato.
 - Nuovo video e confronto con quello di oggi.
 
+### Fluidità (0.16.1, dopo il collaudo di Marco: «non è molto fluida»)
+`tools/diag-smooth.ts`: i giocatori partivano a velocità piena e si fermavano di colpo (41% del tempo a 3-5 m/s
+esatti, 7% di accelerazioni oltre 8 m/s²); la riproduzione univa con linee rette fotogrammi ogni 0,25 s. Inerzia nel
+racconto (`runTo` con `st.narr`, `MATCH.runAccel` 0,45 zone/s², ricongiungimento `rejoinPow` 3, niente inerzia per chi
+ha o insegue la palla) e Catmull-Rom in `playback.ts`: accelerazioni oltre 8 m/s² 1,8%, fermo-corsa 0.
+
 Ordine consigliato: Fase 1 e Fase 2 subito (rischio zero per il bilanciamento: sono schermo e racconto), poi la
 Fase 3 (il cuore, con le misure e la ritaratura), poi la 4.

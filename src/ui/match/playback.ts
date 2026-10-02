@@ -55,6 +55,10 @@ function height(run: MatchRun, i: number, T: number): number {
   return 4 * u * (1 - u);
 }
 
+/** Catmull-Rom fra p1 e p2 (u da 0 a 1), con p0 e p3 i punti prima e dopo */
+const spline = (p0: number, p1: number, p2: number, p3: number, u: number) =>
+  p1 + 0.5 * u * (p2 - p0 + u * (2 * p0 - 5 * p1 + 4 * p2 - p3 + u * (3 * (p1 - p2) + p3 - p0)));
+
 /** stato del campo all'istante di riproduzione `T`. `mirror`: la squadra dell'utente attacca sempre verso destra */
 export function sample(run: MatchRun, T: number, mirror = false): Live | null {
   const track = run.track;
@@ -70,10 +74,17 @@ export function sample(run: MatchRun, T: number, mirror = false): Live | null {
   const same = !!nx && nx.ids === f.ids; // formazione cambiata: niente interpolazione
   const n = f.ids.length;
   const x = new Array<number>(n), y = new Array<number>(n);
+  // curva di Catmull-Rom sui quattro fotogrammi attorno: velocità continua, niente spigoli ogni 0,25 s (fluidità)
+  const pv = track[lo - 1], nn = track[lo + 2];
+  const before = !!pv && pv.ids === f.ids, after = same && !!nn && nn.ids === f.ids;
   for (let k = 0; k < n; k++) {
     const ax = f.xy[2 * k]!, ay = f.xy[2 * k + 1]!;
-    const px = same ? ax + (nx!.xy[2 * k]! - ax) * u : ax;
-    const py = same ? ay + (nx!.xy[2 * k + 1]! - ay) * u : ay;
+    let px = ax, py = ay;
+    if (same) {
+      const bx = nx!.xy[2 * k]!, by = nx!.xy[2 * k + 1]!;
+      px = spline(before ? pv!.xy[2 * k]! : 2 * ax - bx, ax, bx, after ? nn!.xy[2 * k]! : 2 * bx - ax, u);
+      py = spline(before ? pv!.xy[2 * k + 1]! : 2 * ay - by, ay, by, after ? nn!.xy[2 * k + 1]! : 2 * by - ay, u);
+    }
     x[k] = mirror ? 12 - px : px;
     y[k] = mirror ? 8 - py : py;
   }
