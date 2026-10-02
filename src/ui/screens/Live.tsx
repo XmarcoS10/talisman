@@ -5,7 +5,7 @@ import { matchKits } from '../procgen/kit.ts';
 import type { Tactic, WorldState } from '../../engine/model.ts';
 import type { LiveDay } from '../../engine/world.ts';
 import { context, pick } from '../match/analyst.ts';
-import { atMinute, duration, ensure, matchMinutes, sample, SPEED_LABELS } from '../match/playback.ts';
+import { atMinute, duration, ensure, matchMinutes, sample, SPEED_BASE, SPEED_LABELS } from '../match/playback.ts';
 import { lines } from '../match/commentary.ts';
 import { resetTrail, type CameraMode, type Look } from '../match/renderer.ts';
 import type { ViewMode } from '../match/highlights.ts';
@@ -33,7 +33,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
   const canvas = useRef<HTMLCanvasElement>(null);
   const said = useRef(new Map<string, number>());
   const [playing, setPlaying] = useState(true);
-  const [speed, setSpeed] = useState(0);
+  const [speed, setSpeed] = useState(settings().speed ?? SPEED_BASE); // l'ultima velocità scelta
   const [view, setView] = useState<ViewMode>(settings().view);
   const [camera, setCamera] = useState<CameraMode>(settings().camera);
   const [overlays, setOverlays] = useState(settings().overlays);
@@ -132,7 +132,7 @@ export function Live({ world, live, onFinish }: { world: WorldState; live: LiveD
         <div className="live-ctl">
           {over ? <button className="btn primary big" onClick={() => onFinish(endTalk.current)}>{t('live.report')}</button> : <>
             <button className="btn primary sq" onClick={() => setPlaying(!playing)} aria-label={t('live.play')}>{playing ? <Pause size={16} /> : <Play size={16} />}</button>
-            <div className="seg-tabs">{SPEED_LABELS.map((l, i) => <button key={l} className={i === speed ? 'active hot' : ''} onClick={() => setSpeed(i)}>{l}</button>)}</div>
+            <div className="seg-tabs">{SPEED_LABELS.map((l, i) => <button key={l} className={i === speed ? 'active hot' : ''} onClick={() => { setSpeed(i); updateSettings({ speed: i }); }}>{l}</button>)}</div>
             <button className="btn" onClick={nextEvent}><SkipForward size={14} /> {t('live.nextEvent')}</button>
             <button className={`btn ${pause ? 'primary' : ''}`} onClick={() => setPause(!pause)}><SlidersHorizontal size={14} /> {t('live.tacticalPause')}</button>
             <button className="btn" onClick={toEnd}>{t('live.toEnd')}</button>

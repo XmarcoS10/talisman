@@ -4,8 +4,10 @@
 import type { MatchRun, PosFrame, TraceStep } from '../../engine/match/engine.ts';
 
 // secondi di gioco per secondo reale
-export const SPEEDS = [6, 12, 30] as const;
-export const SPEED_LABELS = ['1×', '2×', '5×'] as const;
+// ½×: più vicina al tempo reale (0.16.2, richiesta di Marco); 1× resta il riferimento dei salienti (SPEED_BASE)
+export const SPEEDS = [3, 6, 12, 30] as const;
+export const SPEED_LABELS = ['½×', '1×', '2×', '5×'] as const;
+export const SPEED_BASE = 1;
 
 export interface Live {
   x: number[];

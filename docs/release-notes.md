@@ -1,5 +1,11 @@
 # Note di rilascio
 
+## 0.16.2 — la velocità ½×
+
+- **Nuova velocità ½×** nella partita dal vivo, più vicina al tempo reale: in vista Completa una partita intera dura
+  circa 23 minuti (a 1× sono 12). Nei salienti rallenta allo stesso modo.
+- La partita **ricorda la velocità** scelta l'ultima volta.
+
 ## 0.16.1 — la partita più fluida
 
 Solo come si vede la partita: i risultati restano identici.
@@ -392,6 +398,12 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.16.2 — the ½× speed (English)
+
+- **New ½× speed** for the live match, closer to real time: in Full view a whole match takes about 23 minutes (12 at
+  1×). Highlights slow down the same way.
+- The match **remembers the speed** you chose last time.
 
 ## 0.16.1 — a smoother match (English)
 

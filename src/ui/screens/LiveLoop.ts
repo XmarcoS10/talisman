@@ -3,7 +3,7 @@
 import { useEffect, useRef, type RefObject } from 'react';
 import type { MatchRun } from '../../engine/match/engine.ts';
 import { Reel, speedAt, PRE, type ViewMode } from '../match/highlights.ts';
-import { sample, SPEEDS, ensure } from '../match/playback.ts';
+import { sample, SPEED_BASE, SPEEDS, ensure } from '../match/playback.ts';
 import { Camera, cameraZoom, draw, resetTrail, type CameraMode, type Look } from '../match/renderer.ts';
 import { focusOf } from '../match/fx.ts';
 import { beatTime, momentsAt, type Moment } from '../match/moments.ts';
@@ -69,7 +69,7 @@ export function useLiveLoop(run: MatchRun, canvas: RefObject<HTMLCanvasElement |
       last = now;
       const r = o.view === 'full' ? null : reel.current;
       const rp = replay.current;
-      const speed = rp ? REPLAY_SPEED : window.talismanLive?.speed ?? speedAt(r, T.current, SPEEDS[o.speed]!) * (r ? SPEEDS[o.speed]! / SPEEDS[0] : 1);
+      const speed = rp ? REPLAY_SPEED : window.talismanLive?.speed ?? speedAt(r, T.current, SPEEDS[o.speed]!) * (r ? SPEEDS[o.speed]! / SPEEDS[SPEED_BASE] : 1);
       const prevT = T.current;
       if (o.playing) {
         T.current += dt * speed;
