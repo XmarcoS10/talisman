@@ -526,7 +526,7 @@ export interface Arc {
 
 /** effetto dichiarato di una risposta in conferenza stampa: si vede prima di scegliere (§7.4) */
 export interface PressEffect {
-  target: 'player' | 'squad' | 'board' | 'fans' | 'press';
+  target: 'player' | 'squad' | 'board' | 'fans' | 'press' | 'rival'; // rival: carica (o innervosisce) l'avversario della prossima partita
   playerId?: PlayerId;
   delta: number; // punti di morale (giocatore, squadra) o di fiducia (dirigenza, tifosi, stampa)
 }
@@ -540,6 +540,8 @@ export interface PressOption {
 
 export interface PressQuestion {
   arcId: number | null; // la storia da cui nasce la domanda
+  vs?: ClubId; // domanda pre-partita (0.16.0): l'avversario…
+  matchDay?: number; // …e il giorno della partita
   asker: Line; // la testata
   text: Line;
   options: PressOption[];

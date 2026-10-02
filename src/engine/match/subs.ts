@@ -10,6 +10,7 @@ export function substitute(st: MatchState, tm: Team, out: MP, chosen?: Player): 
   const inP = chosen ?? tm.bench.reduce((a, b) => (ratingAt(b, out.pos) > ratingAt(a, out.pos) ? b : a));
   tm.bench = tm.bench.filter((b) => b !== inP);
   const m = mp(inP, { pos: out.pos, x: out.hx, y: out.hy }, out.roleId, tm.fam, minute(st), tm.tactic.players?.[inP.id]); // entra nello stesso ruolo
+  m.mod += tm.boost;
   m.ox = out.ox; m.oy = out.oy; m.oHold = out.oHold; m.oPress = out.oPress; m.oDrain = out.oDrain; m.si = out.si; // e nella stessa fase senza palla
   m.x = out.x; m.y = out.y;
   tm.on = tm.on.map((x) => (x === out ? m : x));

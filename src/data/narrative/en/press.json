@@ -107,5 +107,18 @@
   "a.noComment": [
     "[I have nothing to add|I'd rather not answer|No comment].",
     "[Next question|I'm not talking about that]."
+  ],
+  "q.preMatch": [
+    "Boss, [next up|this weekend] it's {rival}. [What kind of game do you expect?|How are you going into it?|What worries you about them?]",
+    "[A big one|A headline clash] against {rival}: [who are the favourites?|is it the game of the season?|what message do you send them?]"
+  ],
+  "a.preRespect": [
+    "[Huge respect for {rival}|{rival} are a great side]: [we'll need the perfect game|we'll have to be at our best]."
+  ],
+  "a.preConfident": [
+    "[We're the better side|We fear nobody]: [we're going there to win|we'll prove it on the pitch]."
+  ],
+  "a.prePressure": [
+    "[All the pressure is on them|They're the ones who have to win]: we [can play freely|have nothing to lose]."
   ]
 }

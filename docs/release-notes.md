@@ -1,5 +1,18 @@
 # Note di rilascio
 
+## 0.16.0 — la conferenza pre-partita
+
+I salvataggi passano alla versione 35, senza cambiamenti per la tua carriera.
+
+- **Prima dei big match** (avversario fra i primi quattro del suo campionato per blasone, o della tua stessa città) la
+  conferenza stampa della settimana si apre con una domanda sulla partita, come in FM:
+  - **rispetto** per l'avversario: un po' di morale alla squadra, la stampa apprezza;
+  - **spavalderia** («siamo più forti noi»): squadra e tifosi si caricano, ma **anche l'avversario**, che in partita
+    gioca un po' meglio;
+  - **la pressione è tutta su di loro**: l'avversario si innervosisce un poco, la stampa storce il naso;
+  - nessun commento.
+- Come sempre gli effetti sono scritti accanto a ogni risposta prima che tu la scelga.
+
 ## 0.15.2 — chi ha la palla si legge
 
 - Il pallino di chi ha la palla (più grande e con l'anello) non copre più i giocatori attaccati a lui: gli altri si
@@ -368,6 +381,19 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.16.0 — the pre-match press conference (English)
+
+Saves move to version 35, with no change for your career.
+
+- **Before big matches** (an opponent among the top four of its league by reputation, or from your own city) the weekly
+  press conference opens with a question about the game, as in FM:
+  - **respect** for the opponent: a little morale for the squad, the press likes it;
+  - **confidence** ("we're the better side"): squad and fans get fired up, but **so does the opponent**, who plays a
+    little better in the match;
+  - **all the pressure is on them**: the opponent gets a little nervous, the press frowns;
+  - no comment.
+- As always, the effects are written next to each answer before you choose it.
 
 ## 0.15.2 — the ball carrier is readable (English)
 

@@ -2,7 +2,8 @@
 // Ogni risposta dichiara i suoi effetti prima che tu la scelga — su giocatori con nome e cognome, sul gruppo,
 // su dirigenza, tifosi e stampa — e quello che tocca un giocatore finisce nel suo Causal Log.
 import { PRESS } from '../balance.ts';
-import type { Arc, PressEffect, PressOption, PressQuestion, WorldState } from '../model.ts';
+import type { Arc, ClubId, Fixture, PressEffect, PressOption, PressQuestion, WorldState } from '../model.ts';
+import type { Vars } from '../narrative/text.ts';
 import { addCause } from '../news.ts';
 import type { Rng } from '../rng.ts';
 import { pack, rawVars, said, TEXTS } from '../narrative/say.ts';
@@ -57,6 +58,41 @@ function options(world: WorldState, a: Arc, kind: Kind): { key: string; effects:
   ];
 }
 
+/** la prossima partita dell'utente entro una settimana, se è un big match: avversario fra i primi per blasone o della stessa città */
+function bigMatch(world: WorldState, fixtures: Fixture[]): Fixture | null {
+  const me = world.manager.clubId, mine = world.clubs[me]!;
+  const next = fixtures.filter((f) => !f.result && (f.home === me || f.away === me) && f.day > world.day && f.day <= world.day + 7)
+    .sort((a, b) => a.day - b.day)[0];
+  if (!next) return null;
+  const opp = world.clubs[next.home === me ? next.away : next.home]!;
+  const comp = world.competitions[opp.compId];
+  const rank = comp ? [...comp.clubIds].sort((a, b) => world.clubs[b]!.reputation - world.clubs[a]!.reputation).indexOf(opp.id) : 99;
+  return rank < PRESS.bigRank || opp.city === mine.city ? next : null;
+}
+
+/** la domanda pre-partita (come in FM): rispetto, spavalderia (carica l'avversario) o pressione sull'avversario */
+function preMatch(world: WorldState, fx: Fixture, rng: Rng): PressQuestion {
+  const me = world.manager.clubId, vs: ClubId = fx.home === me ? fx.away : fx.home;
+  const raw: Vars = { clubCity: world.clubs[me]!.city, rivalCity: world.clubs[vs]!.city, mgr: world.manager.name };
+  const seed = () => rng.int(1, 2 ** 31 - 1);
+  const opts: { key: string; effects: PressEffect[] }[] = [
+    { key: 'a.preRespect', effects: [{ target: 'squad', delta: PRESS.squadSmall / 2 }, { target: 'press', delta: PRESS.bar / 2 }] },
+    { key: 'a.preConfident', effects: [{ target: 'squad', delta: PRESS.squadSmall }, { target: 'fans', delta: PRESS.bar }, { target: 'rival', delta: PRESS.rivalFire }] },
+    { key: 'a.prePressure', effects: [{ target: 'rival', delta: PRESS.rivalUnsettle }, { target: 'press', delta: -PRESS.bar / 2 }] },
+    { key: 'a.noComment', effects: [{ target: 'press', delta: PRESS.noComment }] },
+  ];
+  return {
+    arcId: null, vs, matchDay: fx.day, asker: said('askers', raw, seed()), text: said('q.preMatch', raw, seed()),
+    options: opts.map((o): PressOption => ({ key: o.key.slice(2), text: said(o.key, raw, seed()), effects: o.effects })), answered: null,
+  };
+}
+
+/** carica dell'avversario `vs` per la partita del giorno `day`, dalle risposte date in conferenza (punti) */
+export function rivalFire(world: WorldState, vs: ClubId, day: number): number {
+  const q = world.press?.questions.find((x) => x.vs === vs && x.matchDay === day && x.answered !== null);
+  return q ? q.options[q.answered!]!.effects.filter((e) => e.target === 'rival').reduce((s, e) => s + e.delta, 0) : 0;
+}
+
 /**
  * la conferenza della settimana: una domanda per ciascuna delle storie aperte più fresche che ti riguardano.
  * Senza storie non c'è conferenza: nessuno ti fa domande per riempire il tempo.
@@ -68,8 +104,9 @@ export function weekPress(world: WorldState, rng: Rng) {
     .filter((a) => !a.subject.player || world.players[a.subject.player]?.clubId === me || kindOf(a).startsWith('club'))
     .sort((a, b) => b.opened - a.opened)
     .slice(0, PRESS.questions);
-  if (!arcs.length) { world.press = null; return; }
-  const questions: PressQuestion[] = arcs.map((a) => {
+  const big = bigMatch(world, Object.values(world.competitions).flatMap((c) => c.fixtures));
+  if (!arcs.length && !big) { world.press = null; return; }
+  const questions: PressQuestion[] = arcs.slice(0, big ? PRESS.questions - 1 : PRESS.questions).map((a) => {
     const kind = kindOf(a);
     // domande e risposte si scrivono al momento della lettura, nella lingua di chi legge (say.ts)
     const raw = rawVars(world, a);
@@ -83,6 +120,7 @@ export function weekPress(world: WorldState, rng: Rng) {
       answered: null,
     };
   });
+  if (big) questions.unshift(preMatch(world, big, rng));
   world.press = { season: world.season, day: world.day, questions };
 }
 
@@ -102,7 +140,7 @@ export function answerPress(world: WorldState, qi: number, oi: number): boolean 
       addCause(world, p, e.delta >= 0 ? 'cause.pressUp' : 'cause.pressDown', { text: pack(o.text) });
     } else if (e.target === 'squad') {
       for (const id of club.playerIds) world.players[id]!.psych.morale = clamp(world.players[id]!.psych.morale + e.delta, 0, 100);
-    } else if (e.target !== 'player') {
+    } else if (e.target !== 'player' && e.target !== 'rival') { // rival: conta in partita (rivalFire)
       board[e.target] = clamp(board[e.target] + e.delta, 0, 100);
     }
   }

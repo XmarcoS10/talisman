@@ -365,6 +365,7 @@ export const MATCH = {
   shoutEvery: 15, // minuti tra un'indicazione e la successiva
   shoutBoost: 0.03, // logit in più per chi risponde bene (≈ 15 punti di morale)
   shoutBackfire: 0.02, // logit in meno per chi la prende male
+  rivalFireK: 0.01, // conferenza pre-partita: logit per punto di carica dell'avversario (press.ts)
   talkBoost: 0.03, // discorso prima della partita o all'intervallo: logit per chi lo prende bene (talks.ts), in meno per chi lo prende male
 
   // transizioni (Blocco 2b, intervento 6): i secondi dopo un cambio di possesso
@@ -735,6 +736,10 @@ export const PRESS = {
   squadBlame: -4,
   bar: 4, // fiducia di dirigenza, tifosi o stampa mossa da una risposta
   noComment: -3, // la stampa non ama i "no comment"
+  // conferenza pre-partita (0.16.0): prima dei big match (avversario fra i primi per blasone, o della stessa città)
+  bigRank: 4, // l'avversario è fra i primi `bigRank` del suo campionato per reputazione
+  rivalFire: 3, // spavalderia: l'avversario si carica (punti mostrati; in campo × MATCH.rivalFireK)…
+  rivalUnsettle: -2, // …mettergli pressione lo innervosisce un poco
 } as const;
 
 // --- settore giovanile (GUIDA §7.8) ---

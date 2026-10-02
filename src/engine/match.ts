@@ -8,6 +8,7 @@ import { FORMATIONS, defaultRoles, phaseMap, type Slot } from './match/tactics.t
 import { FORMATION_IDS, type Club, type ClubId, type FormationId, type Fixture, type Player, type Tactic, type WorldState } from './model.ts';
 import { addCause, addNews, pName } from './news.ts';
 import { ratingAt } from './players.ts';
+import { rivalFire } from './press/press.ts';
 import { refereeFor, refFactor } from './referees.ts';
 import { staffOf } from './staff.ts';
 import { fullTimeTalk, viceTalk } from './talks.ts';
@@ -134,7 +135,9 @@ export function matchSetups(world: WorldState, fx: Fixture, live = false): [Team
     const mine = c.id === me;
     // l'IA: la mentalità segue il rapporto di forze, spostata dallo stile del suo allenatore (tactic.mentality − 3)
     const mentality = mine ? c.tactic.mentality : clamp(aiMentality(str[i]!, str[1 - i]!, i === 0) + c.tactic.mentality - 3, 1, 5);
-    return { ...teamSetup(world, c, xis[i]!, mentality, clubs[1 - i]!.id), auto: !(mine && live), ref, wx };
+    // la carica della conferenza pre-partita, per l'avversario dell'utente
+    const boost = clubs[1 - i]!.id === me ? rivalFire(world, c.id, fx.day) * MATCH.rivalFireK : 0;
+    return { ...teamSetup(world, c, xis[i]!, mentality, clubs[1 - i]!.id), auto: !(mine && live), ref, wx, boost };
   }) as [TeamSetup, TeamSetup];
 }
 

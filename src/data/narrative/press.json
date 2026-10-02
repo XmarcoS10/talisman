@@ -107,5 +107,18 @@
   "a.noComment": [
     "[Non ho nulla da aggiungere|Preferisco non rispondere|Nessun commento].",
     "[Passiamo alla prossima domanda|Su questo non parlo]."
+  ],
+  "q.preMatch": [
+    "Mister, [domenica|nel prossimo turno|alla prossima] c'è {rival}. [Che partita si aspetta?|Come ci arrivate?|Che cosa teme di loro?]",
+    "[Sfida di cartello|Partitissima] con {rival}: [chi è favorito?|è la partita della stagione?|che messaggio manda all'avversario?]"
+  ],
+  "a.preRespect": [
+    "[Massimo rispetto per {rival}|{rival} è una grande squadra]: [servirà la partita perfetta|dovremo essere al cento per cento]."
+  ],
+  "a.preConfident": [
+    "[Siamo più forti noi|Non temiamo nessuno]: [andiamo lì a vincere|lo dimostreremo in campo]."
+  ],
+  "a.prePressure": [
+    "[La pressione è tutta su di loro|Sono loro a dover vincere]: noi [giochiamo liberi|non abbiamo niente da perdere]."
   ]
 }

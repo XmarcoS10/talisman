@@ -53,6 +53,7 @@ export interface TeamSetup {
   auto?: boolean; // false: cambi e mentalità li decide l'utente dal vivo (schermata Live)
   ref?: number; // severità dell'arbitro della partita (uguale nei due lati; 1 = media, referees.ts)
   wx?: WeatherFx; // meteo della partita (uguale nei due lati; weather.ts)
+  boost?: number; // logit comune a tutta la squadra: la carica della conferenza pre-partita (press.ts, rivalFire)
 }
 
 /** da dove nasce un tiro: serve a contare i gol per origine (piazzati, cross, contropiede) */
@@ -86,6 +87,7 @@ export interface Team {
   side: 0 | 1;
   tactic: Tactic;
   baseMentality: number; // quella decisa dall'allenatore
+  boost: number; // logit comune (TeamSetup.boost): vale anche per chi entra
   mentality: number; // quella in campo, adattata al punteggio
   on: MP[];
   bench: Player[];
@@ -254,8 +256,9 @@ export const whistle = (st: MatchState) => 1 + (st.ref - 1) * REFEREE.foulShare;
 
 export function createState(rng: Rng, setups: [TeamSetup, TeamSetup], trace?: TraceStep[]): MatchState {
   const teams = setups.map((s, i) => {
-    const on = s.xi.map((e, i) => { const m = outPhase(mp(e.player, e.slot, e.role, s.familiarity, 0, s.tactic.players?.[e.player.id]), e.out, e.oop); m.si = i; return m; });
-    return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity, auto: s.auto !== false, log: newLog(), q: null };
+    const boost = s.boost ?? 0;
+    const on = s.xi.map((e, i) => { const m = outPhase(mp(e.player, e.slot, e.role, s.familiarity, 0, s.tactic.players?.[e.player.id]), e.out, e.oop); m.si = i; m.mod += boost; return m; });
+    return { side: i as 0 | 1, tactic: s.tactic, baseMentality: s.mentality, boost, mentality: s.mentality, on, bench: [...s.bench], played: [...on], subs: MATCH.maxSubs, stats: newSide(), fam: s.familiarity, auto: s.auto !== false, log: newLog(), q: null };
   }) as [Team, Team];
   return {
     rng, ref: setups[0].ref ?? 1, wx: setups[0].wx ?? CALM, setups, teams, events: [], score: [0, 0], s: 0, bx: 6, by: 4, carrier: teams[0].on[0]!, lastPass: null, chain: 0, poss: { t: 0, half: 1, x: 6, acts: 0 }, counterNow: false, momentum: 0,

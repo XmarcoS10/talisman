@@ -4,7 +4,8 @@ import { render } from '../narrative/say.ts';
 import { PRESS } from '../balance.ts';
 import { Rng } from '../rng.ts';
 import { advance, isSeasonOver, newWorld } from '../world.ts';
-import { answerPress, weekPress } from './press.ts';
+import { matchSetups } from '../match.ts';
+import { answerPress, rivalFire, weekPress } from './press.ts';
 
 const setup = () => {
   const world = newWorld(42);
@@ -80,5 +81,29 @@ describe('conferenze stampa (F8)', { timeout: 60000 }, () => {
     world.manager.clubId = world.competitions.ITA1!.clubIds[0]!;
     weekPress(world, new Rng(1));
     expect(world.press).toBeNull();
+  });
+});
+
+describe('conferenza pre-partita (0.16.0)', { timeout: 120000 }, () => {
+  it("prima di un big match c'è la domanda sull'avversario; la spavalderia lo carica in campo", () => {
+    const world = newWorld(42);
+    const comp = world.competitions.ITA1!;
+    const byRep = [...comp.clubIds].sort((a, b) => world.clubs[b]!.reputation - world.clubs[a]!.reputation);
+    world.manager.clubId = byRep[12]!;
+    world.manager.name = 'Marco Talisman';
+    const big = new Set(byRep.slice(0, PRESS.bigRank));
+    let q = null;
+    while (!isSeasonOver(world) && !(q = world.press?.questions.find((x) => x.vs !== undefined) ?? null)) advance(world);
+    expect(q).not.toBeNull();
+    expect(big.has(q!.vs!) || world.clubs[q!.vs!]!.city === world.clubs[world.manager.clubId]!.city).toBe(true);
+    const qi = world.press!.questions.indexOf(q!);
+    const oi = q!.options.findIndex((o) => o.key === 'preConfident');
+    expect(answerPress(world, qi, oi)).toBe(true);
+    expect(rivalFire(world, q!.vs!, q!.matchDay!)).toBe(PRESS.rivalFire);
+    const fx = Object.values(world.competitions).flatMap((c) => c.fixtures).find((f) => f.day === q!.matchDay && (f.home === q!.vs || f.away === q!.vs))!;
+    const su = matchSetups(world, fx);
+    const opp = su.find((s) => s.club.id === q!.vs)!, mine = su.find((s) => s.club.id === world.manager.clubId)!;
+    expect(opp.boost).toBeGreaterThan(0);
+    expect(mine.boost).toBe(0);
   });
 });
