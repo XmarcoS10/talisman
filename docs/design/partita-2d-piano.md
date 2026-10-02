@@ -101,7 +101,11 @@ con palla 59 × 49 → 55 × 53; test `match/shape.test.ts`. Ritaratura: attacca
   (`tools/battery.sh`): cambiando le posizioni cambiano linee di passaggio, pressione e fuorigioco, quindi va
   ritarato. Golden master aggiornato apposta.
 
-### Fase 4 — rifinitura
+### Fase 4 — rifinitura — FATTA nella 0.15.1
+Salti dei giocatori: nessuno oltre 2 m in 0,1 s (restano ~11 scatti da 12-15 m/s quando si ricongiungono alle
+posizioni del motore a fine azione). Portiere oltre la linea: non più presente dalla 0.15.0. Tiro parato: la palla si
+ferma sulle mani del portiere, quello fuori accanto al palo (`shotTarget`). `xgBase` −0,87 → −0,84: stagioni gol
+2,55, pareggi 22,9%, correlazione 0,80; carriere 0,74 / 0,73.
 - **Test della forma**: un test che fallisce se un 4-4-2 senza palla non ha due linee da quattro o se il blocco
   supera 40 m (la forma non deve più rompersi senza che ce ne accorgiamo).
 - **Transizioni leggibili**: dopo la palla persa si vede chi contrapressa e chi rientra (la logica c'è già).

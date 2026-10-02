@@ -232,7 +232,9 @@ const has = (f: TraceStep, k: string) => !!f.beats?.some((b) => b.kind === k);
 function shotTarget(f: TraceStep, goal: boolean, g0: P, wp: P): P {
   const gx = f.side === 0 ? 1 : -1, y = clamp(4 + (f.by - 4) * 0.15, 3.65, 4.35);
   if (goal) return { x: 6 + gx * 6.2, y };
-  return has(f, 'block') ? { x: g0.x + (wp.x - g0.x) * 0.25, y: g0.y + (y - g0.y) * 0.25 } : { x: 6 + gx * 5.75, y };
+  if (has(f, 'block')) return { x: g0.x + (wp.x - g0.x) * 0.25, y: g0.y + (y - g0.y) * 0.25 }; // contro chi lo mura
+  if (has(f, 'save') || has(f, 'parry') || has(f, 'claim')) return { x: 6 + gx * 5.4, y: 4 + (y - 4) * 0.5 }; // sulle mani del portiere
+  return { x: 6 + gx * 6.05, y: f.by < 4 ? 3.35 : 4.65 }; // fuori, accanto al palo
 }
 
 /**

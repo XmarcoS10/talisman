@@ -234,7 +234,7 @@ export const MATCH = {
 
   // tiro e xG (§6.3): logit = base + angolo·a − distanza_m·d − pressione·p (+ colpo di testa)
   shotMinX: 7,
-  xgBase: -0.87,
+  xgBase: -0.84,
   xgAngle: 1.6,
   xgDist: 0.1,
   xgPress: 0.45,

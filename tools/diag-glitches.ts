@@ -30,7 +30,10 @@ for (let g = 0; g < N; g++) {
     const idx = (id: number) => s.ids.indexOf(id);
     if (!s.dead && !prev.dead && s.i === prev.i) {
       if (m(s.bx - prev.bx, s.by - prev.by) > 5) { c.ballJump++; ex(`palla salta ${m(s.bx - prev.bx, s.by - prev.by).toFixed(1)} m in 0,1 s al ${s.min}' (azione ${trace[s.i]?.kind})`); }
-      if (s.ids === prev.ids) for (let k = 0; k < s.ids.length; k++) if (m(s.x[k]! - prev.x[k]!, s.y[k]! - prev.y[k]!) > 1.2) { c.playerJump++; break; }
+      if (s.ids === prev.ids) for (let k = 0; k < s.ids.length; k++) {
+        const d = m(s.x[k]! - prev.x[k]!, s.y[k]! - prev.y[k]!);
+        if (d > 1.2) { c.playerJump++; if (process.env.JUMPS) console.log(`salto ${d.toFixed(1)} m al ${s.min}' · azione ${trace[s.i]?.kind} ${(trace[s.i]?.beats ?? []).map((b) => b.kind).join(',')} · ${k < s.n0 ? 'casa' : 'ospiti'} · portatore ${s.carrier === s.ids[k] ? 'sì' : 'no'} · morta ${s.dead}`); break; }
+      }
     }
     if (!s.dead && s.carrier) {
       const k = idx(s.carrier);

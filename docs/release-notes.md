@@ -1,5 +1,15 @@
 # Note di rilascio
 
+## 0.15.1 — la rifinitura
+
+Ultima fase del piano per la partita 2D.
+
+- **Parate e tiri fuori**: sulla parata la palla finisce sulle mani del portiere, non più dietro di lui; il tiro fuori
+  passa accanto al palo.
+- **Gol in campionato nel target**: 2,55 a partita (erano 2,43), con pareggi al 23% e la classifica che segue la
+  forza delle rose.
+- Misurato: nessun giocatore si teletrasporta più (nessun salto oltre 2 m in un decimo di secondo).
+
 ## 0.15.0 — la squadra si muove come un blocco
 
 Terza fase del piano per la partita 2D: cambiano le posizioni in campo, e quindi anche le partite (ritaratura).
@@ -352,6 +362,15 @@ nuove si scrivono nella lingua che scegli.
 - Le partite delle nazionali non si guardano.
 - La distanza fra Serie A e Serie B oscilla più del previsto nelle prime stagioni. Si assesta dopo 5-10 stagioni
   (`docs/balance/2026-09-26.md`).
+
+## 0.15.1 — the finishing touches (English)
+
+Last phase of the 2D match plan.
+
+- **Saves and misses**: on a save the ball ends in the goalkeeper's hands, no longer behind them; a miss goes past
+  the post.
+- **League scoring in range**: 2.55 goals per match (2.43 before), with 23% draws and the table following squad strength.
+- Measured: no player teleports any more (no jump over 2 m in a tenth of a second).
 
 ## 0.15.0 — the team moves as a block (English)
 

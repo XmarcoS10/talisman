@@ -773,3 +773,6 @@ Batteria (`tools/battery.sh`, ora con la carriera del seme 7), 0.14.0 → 0.15.0
 Tre batterie di fila con `xgBase` −0,89 / −0,85 / −0,87 hanno dato correlazioni delle stagioni fra 0,68 e 0,86 sullo
 stesso seme: il rumore di 10 stagioni è ±0,08, le decisioni si prendono sulle medie. Il motore costa il 5% in più
 (4,9 ms a partita, `backX` a ogni passo).
+
+0.15.1: `xgBase` −0,84. Batteria: partite isolate gol 2,73, pareggi 21,0%; stagioni gol 2,55, pareggi 22,9%,
+correlazione 0,80; carriere 42 / 7 0,74 / 0,73; prima contro ultima 92 / 95 / 85%.
